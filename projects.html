@@ -1,0 +1,129 @@
+<!-- projects.html - Projects & Media Gallery Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Projects & Media</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f5f7fc;
+            color: #1a2c3e;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 320px;
+            background: #ffffff;
+            border-right: 1px solid #e6edf4;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .brand {
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid #eef2f8;
+            background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .logo-icon {
+            background: #02b3e4;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: #0b2b3b; }
+        .logo-text span { font-size: 0.65rem; color: #02b3e4; font-weight: 600; }
+        .tagline { font-size: 0.7rem; color: #5c6f87; margin-top: 8px; border-left: 3px solid #02b3e4; padding-left: 10px; }
+        .progress-card {
+            background: #f0f9fe;
+            margin: 16px 20px;
+            padding: 12px 16px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .progress-text { font-size: 0.7rem; font-weight: 600; }
+        .progress-number { font-size: 1.2rem; font-weight: 800; color: #02b3e4; }
+        .main-tabs {
+            display: flex;
+            border-bottom: 1px solid #eef2f8;
+            background: #fff;
+            padding: 0 12px;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 0;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #5f7f9c;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .tab-btn.active {
+            color: #02b3e4;
+            border-bottom: 3px solid #02b3e4;
+            background: #f9fbfe;
+        }
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 40px;
+        }
+        .project-card, .media-card {
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #eef2f8;
+            overflow: hidden;
+        }
+        .card-header { padding: 28px 32px 12px 32px; border-bottom: 1px solid #f0f4f9; }
+        .badge { font-size: 0.7rem; font-weight: 600; color: #02b3e4; background: #e2f0f7; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 700; color: #0b2b3b; }
+        .sub { color: #5c6f87; margin-top: 8px; }
+        .description-text { padding: 24px 32px 32px; line-height: 1.6; }
+        .task-list { background: #fef9e6; border-left: 4px solid #f5a623; padding: 16px 24px; border-radius: 16px; margin: 20px 0; }
+        .info-grid { background: #f9fbfe; border-radius: 18px; padding: 18px 24px; margin: 20px 0; border-left: 4px solid #02b3e4; }
+        .media-grid { display: flex; flex-wrap: wrap; gap: 24px; margin: 24px 0; justify-content: center; }
+        .media-card-item { background: #f9fbfe; border-radius: 24px; padding: 16px; text-align: center; flex: 1 1 260px; border: 1px solid #eef2f8; }
+        .media-card-item img { max-width: 100%; border-radius: 16px; }
+        .gif-placeholder { font-size: 3rem; background: #eef2ff; padding: 30px; border-radius: 20px; margin-bottom: 12px; }
+        .btn-link { display: inline-block; margin-top: 12px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; }
+        .btn-outline { background: #eef2ff; color: #026e8a; border: 1px solid #cbdde9; }
+        footer { text-align: center; margin-top: 40px; font-size: 0.75rem; color: #7f8c9a; border-top: 1px solid #e2e8f0; padding-top: 24px; }
+        @media (max-width: 780px) { .sidebar { width: 280px; } .content-area { padding: 20px; } }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="brand">
+        <div class="logo"><div class="logo-icon">🛡️</div><div class="logo-text"><h1>CyberDefend</h1><span>ACADEMY</span></div></div>
+        <div class="tagline">Part of Accenture | Defend · Detect · Respond</div>
+    </div>
+    <div class="progress-card"><span class="progress-text">📈 Course 4 Progress</span><span class="progress-number">99%</span></div>
+    <div class="main-tabs">
+        <a href="index.html" class="tab-btn">📘 COURSES</a>
+        <a href="projects.html" class="tab
