@@ -16,16 +16,42 @@
             flex-direction: column;
         }
         
+        /* Sidebar Style Back Link */
+        .back-link-container {
+            background: white;
+            border-bottom: 1px solid #eef2f8;
+            padding: 12px 32px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #02b3e4;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #f0f9fe;
+        }
+        .back-link::before {
+            content: "←";
+            font-size: 1.1rem;
+        }
+        
         /* Header */
         .header {
             background: white;
-            border-bottom: 1px solid #eef2f8;
             padding: 20px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 16px;
+            border-bottom: 1px solid #eef2f8;
         }
         .logo {
             display: flex;
@@ -60,18 +86,6 @@
             margin-top: 4px;
             border-left: 3px solid #02b3e4;
             padding-left: 10px;
-        }
-        .back-link {
-            color: #02b3e4;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 40px;
-            transition: 0.2s;
-        }
-        .back-link:hover {
-            background: #f0f9fe;
         }
         
         /* Main Content */
@@ -148,27 +162,6 @@
         }
         .tab-content.active {
             display: block;
-        }
-        
-        /* Video Container (for future use) */
-        .video-container {
-            border-radius: 20px;
-            overflow: hidden;
-            background: #000;
-            margin-bottom: 16px;
-        }
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
         }
         
         /* Google Slides Container */
@@ -257,6 +250,7 @@
             .tabs { margin: 0 16px; }
             .tab-content { padding: 16px; }
             .header { padding: 16px 20px; }
+            .back-link-container { padding: 8px 20px; }
         }
         
         ::-webkit-scrollbar { width: 5px; }
@@ -265,6 +259,11 @@
     </style>
 </head>
 <body>
+    <!-- Back Link - Like your dashboard style -->
+    <div class="back-link-container">
+        <a href="index.html" class="back-link">Back to Dashboard</a>
+    </div>
+    
     <div class="header">
         <div class="logo">
             <div class="logo-icon">📊</div>
@@ -273,7 +272,7 @@
                 <span>PRESENTATION VIEWER</span>
             </div>
         </div>
-        <a href="#" class="back-link" onclick="history.back(); return false;">← Back</a>
+        <div class="tagline">Part of Accenture | AI & Machine Learning</div>
     </div>
     
     <div class="main-content">
@@ -355,7 +354,7 @@
             });
         });
         
-        // Optional: Store presentation ID for future use
+        // Store presentation ID
         const PRESENTATION_ID = '1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A';
         console.log('Google Slides Presentation ID:', PRESENTATION_ID);
     </script>
