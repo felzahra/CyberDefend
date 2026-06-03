@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Google Slides · General Networking Concepts</title>
+    <title>CyberDefend · Google Slides Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +17,7 @@
             overflow: hidden;
         }
         
-        /* Sidebar - with multiple slides */
+        /* Sidebar */
         .sidebar {
             width: 340px;
             background: #fff;
@@ -85,7 +85,7 @@
             font-size: 1rem;
         }
         
-        /* Navigation List with Multiple Slides */
+        /* Navigation List */
         .nav-list {
             padding: 8px 0 20px 0;
         }
@@ -292,52 +292,45 @@
 <div class="sidebar">
     <div class="brand">
         <div class="logo">
-            <div class="logo-icon">🌐</div>
+            <div class="logo-icon">📊</div>
             <div class="logo-text">
                 <h1>CyberDefend</h1>
-                <span>NETWORKING LABS</span>
+                <span>SLIDES VIEWER</span>
             </div>
         </div>
-        <div class="tagline">Part of Accenture | Complete Networking Course</div>
+        <div class="tagline">Part of Accenture | DPA Summer Training</div>
     </div>
     
     <!-- Back to Dashboard Arrow -->
     <a href="index.html" class="back-link">Back to Dashboard</a>
     
-    <!-- Navigation with 5 duplicate slides -->
+    <!-- Navigation with 4 slides -->
     <div class="nav-list">
-        <div class="section-title">📡 24 VIDEO PLAYLIST</div>
+        <div class="section-title">📊 PRESENTATIONS</div>
         
-        <!-- Slide 1 (Original) -->
+        <!-- Slide 1: summer 2025 last -->
         <div class="nav-item active" data-slide="1">
-            <span class="check-icon">📊</span> DPA Summer Training Slides
+            <span class="check-icon">📊</span> Summer 2025 Training
         </div>
         
-        <!-- Slide 2 (Duplicate 1) -->
+        <!-- Slide 2: cybersecurity 1 -->
         <div class="nav-item" data-slide="2">
-            <span class="check-icon">📊</span> 1- CyberSecurity Course slides
+            <span class="check-icon">🔐</span> Cybersecurity Course (Part 1)
         </div>
         
-        <!-- Slide 3 (Duplicate 2) -->
+        <!-- Slide 3: cybersecurity 2 -->
         <div class="nav-item" data-slide="3">
-            <span class="check-icon">📊</span> 2- CyberSecurity Course slides
+            <span class="check-icon">🔐</span> Cybersecurity Course (Part 2)
         </div>
         
-        <!-- Slide 4 (Duplicate 3) -->
+        <!-- Slide 4: cybersecurity 3 -->
         <div class="nav-item" data-slide="4">
-            <span class="check-icon">📊</span> 3- CyberSecurity Course slides
+            <span class="check-icon">🔐</span> Cybersecurity Course (Part 3)
         </div>
-        
-        <!-- Slide 5 (Duplicate 4) -->
-        <div class="nav-item" data-slide="5">
-            <span class="check-icon">📊</span> 4- CyberSecurity Course slides
-        </div>
-        
-       
     </div>
     
     <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">
-        ⚡ 24 hands-on networking labs & concepts
+        ⚡ DPA Summer Training Program | 25+ Modules
     </div>
 </div>
 
@@ -345,8 +338,8 @@
     <div class="slides-card">
         <div class="card-header">
             <span class="lesson-badge">📊 GOOGLE SLIDES</span>
-            <h2 id="slide-title">Lec 0: General Networking Concepts</h2>
-            <div class="sub">Fundamentals · Network Types · Topologies · OSI Model Intro</div>
+            <h2 id="slide-title">Summer 2025 Training</h2>
+            <div class="sub" id="slide-sub">General Networking Concepts · Fundamentals · OSI Model</div>
         </div>
         
         <div class="tabs">
@@ -372,15 +365,15 @@
             <div class="downloads-list">
                 <div class="download-item">
                     <div class="download-info">
-                        <h4>📘 Lecture Slides - General Networking</h4>
+                        <h4 id="download-title">📘 Lecture Slides - Summer 2025 Training</h4>
                         <p>Open in Google Slides (new tab)</p>
                     </div>
-                    <a href="https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/edit?usp=sharing" target="_blank" class="btn-download">Open in new tab ↗</a>
+                    <a href="https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/edit?usp=sharing" target="_blank" id="download-link" class="btn-download">Open in new tab ↗</a>
                 </div>
                 <div class="download-item">
                     <div class="download-info">
-                        <h4>📝 Networking Basics Cheat Sheet</h4>
-                        <p>One-page reference for OSI, TCP/IP, topologies</p>
+                        <h4>📝 Course Cheat Sheet</h4>
+                        <p>One-page reference for key concepts</p>
                     </div>
                     <a href="#" class="btn-download" onclick="alert('Cheat sheet will be available soon'); return false;">Download</a>
                 </div>
@@ -392,7 +385,7 @@
     </div>
     
     <footer>
-        🌐 CyberDefend Academy — Complete Networking Course | Part of Accenture
+        🔐 CyberDefend Academy — DPA Summer Training | Part of Accenture
     </footer>
 </div>
 
@@ -417,56 +410,117 @@
         });
     });
     
-    // Navigation between slides (all 5 show the same presentation)
-    const navItems = document.querySelectorAll('.nav-item');
-    const slideTitle = document.getElementById('slide-title');
-    const slidesIframe = document.getElementById('slides-iframe');
-    const presentationUrl = 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000';
+    // ============================================
+    // GOOGLE SLIDES LINKS FOR EACH SLIDE
+    // ============================================
     
-    function activateSlide(slideId, slideName) {
+    // Presentation IDs (extracted from your links)
+    // Slide 1: 1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A
+    // Slide 2: 19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe
+    // Slide 3: 1bpruoSya8s3yshmLkUVxBzAsoes_fHEb
+    // Slide 4: 1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY
+    
+    // Embed URLs for iframe (must be published to web first)
+    const slideLinks = {
+        '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000',
+        '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/embed?start=false&loop=false&delayms=3000',
+        '3': 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/embed?start=false&loop=false&delayms=3000',
+        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/embed?start=false&loop=false&delayms=3000'
+    };
+    
+    // Edit URLs for "Open in new tab" button
+    const editLinks = {
+        '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/edit?usp=sharing',
+        '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/edit?usp=sharing',
+        '3': 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/edit?usp=sharing',
+        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/edit?usp=sharing'
+    };
+    
+    // Titles for each slide
+    const slideTitles = {
+        '1': 'Summer 2025 Training',
+        '2': 'Cybersecurity Course (Part 1)',
+        '3': 'Cybersecurity Course (Part 2)',
+        '4': 'Cybersecurity Course (Part 3)'
+    };
+    
+    // Subtitles for each slide
+    const slideSubtitles = {
+        '1': 'General Networking Concepts · Fundamentals · OSI Model',
+        '2': 'Introduction to Cybersecurity · Threat Landscape · Security Controls',
+        '3': 'Vulnerability Management · Risk Assessment · Mitigation Strategies',
+        '4': 'Security Operations · Incident Response · Best Practices'
+    };
+    
+    // Download button texts
+    const downloadTitles = {
+        '1': '📘 Lecture Slides - Summer 2025 Training',
+        '2': '🔐 Lecture Slides - Cybersecurity Course (Part 1)',
+        '3': '🔐 Lecture Slides - Cybersecurity Course (Part 2)',
+        '4': '🔐 Lecture Slides - Cybersecurity Course (Part 3)'
+    };
+    
+    // Get DOM elements
+    const navItems = document.querySelectorAll('.nav-item');
+    const slideTitleEl = document.getElementById('slide-title');
+    const slideSubEl = document.getElementById('slide-sub');
+    const slidesIframe = document.getElementById('slides-iframe');
+    const downloadBtn = document.getElementById('download-link');
+    const downloadTitleEl = document.getElementById('download-title');
+    
+    // Function to activate a slide
+    function activateSlide(slideId) {
         // Update active state in sidebar
         navItems.forEach(item => item.classList.remove('active'));
         const activeItem = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
         if (activeItem) activeItem.classList.add('active');
         
-        // Update title
-        if (slideName) {
-            slideTitle.textContent = slideName;
+        // Update title and subtitle
+        if (slideTitles[slideId]) {
+            slideTitleEl.textContent = slideTitles[slideId];
+        }
+        if (slideSubtitles[slideId]) {
+            slideSubEl.textContent = slideSubtitles[slideId];
         }
         
-        // Reset iframe to reload presentation (optional - keeps it fresh)
-        // slidesIframe.src = presentationUrl;
+        // Change iframe source to new presentation
+        if (slideLinks[slideId]) {
+            slidesIframe.src = slideLinks[slideId];
+        }
+        
+        // Update download button link and title
+        if (downloadBtn && editLinks[slideId]) {
+            downloadBtn.href = editLinks[slideId];
+        }
+        if (downloadTitleEl && downloadTitles[slideId]) {
+            downloadTitleEl.textContent = downloadTitles[slideId];
+        }
+        
+        console.log(`Switched to slide ${slideId}: ${slideTitles[slideId]}`);
     }
     
     // Add click handlers for all nav items
     navItems.forEach(item => {
         item.addEventListener('click', () => {
             const slideId = item.getAttribute('data-slide');
-            const slideText = item.querySelector('.check-icon')?.nextSibling?.nodeValue?.trim() || item.textContent.replace('📊', '').trim();
-            
-            if (slideId === '1') {
-                activateSlide('1', 'Lec 0: General Networking Concepts');
-            } else if (slideId === '2') {
-                activateSlide('2', 'Lec 0: General Networking Concepts (Copy 1)');
-            } else if (slideId === '3') {
-                activateSlide('3', 'Lec 0: General Networking Concepts (Copy 2)');
-            } else if (slideId === '4') {
-                activateSlide('4', 'Lec 0: General Networking Concepts (Copy 3)');
-            } else if (slideId === '5') {
-                activateSlide('5', 'Lec 0: General Networking Concepts (Copy 4)');
+            if (slideId && slideId >= '1' && slideId <= '4') {
+                activateSlide(slideId);
             } else {
-                // For other lessons, just show a message
-                slideTitle.textContent = slideText;
+                slideTitleEl.textContent = item.textContent.replace('📊', '').trim();
                 navItems.forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
-                alert('This lesson is coming soon! The presentation will be added later.');
+                alert('This presentation is coming soon!');
             }
         });
     });
     
-    // Store presentation ID
-    const PRESENTATION_ID = '1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A';
-    console.log('Google Slides Presentation ID:', PRESENTATION_ID);
+    // Store presentation IDs for reference
+    console.log('=== Google Slides Presentations ===');
+    console.log('Slide 1 ID: 1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A');
+    console.log('Slide 2 ID: 19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe');
+    console.log('Slide 3 ID: 1bpruoSya8s3yshmLkUVxBzAsoes_fHEb');
+    console.log('Slide 4 ID: 1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY');
+    console.log('===================================');
 </script>
 </body>
 </html>
