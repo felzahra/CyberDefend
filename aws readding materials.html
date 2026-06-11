@@ -3,374 +3,503 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CyberDefend · AWS Cloud Foundation · All 11 Modules</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>CyberDefend · AWS Cloud Foundation · Complete 11 Sections</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f0f2f8;
-            color: #1a2c3e;
-            line-height: 1.5;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #0b2b3b 0%, #1a3a4a 100%);
-            color: white;
-            padding: 40px 48px;
-            border-bottom: 4px solid #ff9900;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-        }
-
-        .header h1 span {
-            color: #ff9900;
-        }
-
-        .header p {
-            font-size: 0.95rem;
-            opacity: 0.85;
-            max-width: 600px;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 48px 32px;
-        }
-
-        /* Section Grid */
-        .section-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 28px;
-        }
-
-        /* Card */
-        .card {
-            background: white;
-            border-radius: 24px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fc; 
+            color: #1a2c3e; 
+            min-height: 100vh;
+            display: flex;
+            height: 100vh;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border: 1px solid #eef2f8;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 340px;
+            background: #fff;
+            border-right: 1px solid #e6edf4;
             display: flex;
             flex-direction: column;
-            height: 100%;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            padding: 20px 24px 12px 24px;
-            border-bottom: 1px solid #f0f4f9;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .card-icon {
-            font-size: 2rem;
+            overflow-y: auto;
             flex-shrink: 0;
         }
-
-        .card-header h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #0b2b3b;
-            line-height: 1.4;
+        .brand {
+            padding: 24px;
+            border-bottom: 1px solid #eef2f8;
+            background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
         }
-
-        .card-body {
-            padding: 20px 24px 24px 24px;
-            flex-grow: 1;
+        .logo {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
-
-        .card-description {
-            font-size: 0.8rem;
-            color: #5c6f87;
-            margin-bottom: 24px;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-
-        .card-link {
-            display: inline-flex;
+        .logo-icon {
+            background: #ff9900;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: #ff9900;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 40px;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 12px rgba(255,153,0,0.2);
+        }
+        .logo-text h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #0b2b3b;
+        }
+        .logo-text span {
+            font-size: 0.65rem;
+            color: #ff9900;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .tagline {
+            font-size: 0.7rem;
+            color: #5c6f87;
+            margin-top: 8px;
+            border-left: 3px solid #ff9900;
+            padding-left: 10px;
+        }
+        
+        .back-link {
+            padding: 16px 20px;
+            display: block;
+            color: #ff9900;
             text-decoration: none;
             font-size: 0.8rem;
-            font-weight: 600;
-            transition: background 0.2s ease;
-            width: 100%;
-            border: none;
-            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 1px solid #eef2f8;
         }
-
-        .card-link:hover {
+        .back-link:hover {
+            background: #f0f9fe;
+        }
+        .back-link::before {
+            content: "← ";
+            font-size: 1rem;
+        }
+        
+        .nav-list {
+            padding: 8px 0 20px 0;
+        }
+        .section-title {
+            padding: 12px 20px 4px;
+            font-size: 0.7rem;
+            color: #ff9900;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            margin: 1px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: #fff3e0;
+            color: #e68a00;
+            font-weight: 600;
+            border-left: 3px solid #ff9900;
+        }
+        .check-icon {
+            font-size: 1rem;
+            min-width: 22px;
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 36px;
+            background: #f5f7fc;
+        }
+        
+        .slides-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #eef2f8;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            padding: 24px 28px 16px 28px;
+            border-bottom: 1px solid #f0f4f9;
+        }
+        .lesson-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff9900;
+            background: #fff3e0;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-bottom: 12px;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0b2b3b;
+            margin: 8px 0 8px 0;
+        }
+        .sub {
+            color: #5c6f87;
+            font-size: 0.85rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eef2f8;
+            margin: 0 28px;
+            gap: 8px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6c7e8f;
+            cursor: pointer;
+            border-radius: 30px 30px 0 0;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .tab-btn.active {
+            color: #ff9900;
+            background: #fff3e0;
+            border-bottom: 3px solid #ff9900;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 24px 28px 28px 28px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        .slides-container {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #f0f4f9;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .slides-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        .slides-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .downloads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .download-item {
+            background: #f9fbfe;
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border: 1px solid #eef2f8;
+        }
+        .download-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: #0b2b3b;
+        }
+        .download-info p {
+            font-size: 0.75rem;
+            color: #5c6f87;
+        }
+        .btn-download {
+            background: #ff9900;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .btn-download:hover {
             background: #e68a00;
         }
-
-        /* Footer */
-        .footer {
+        
+        .info-grid {
+            background: #f9fbfe;
+            border-radius: 18px;
+            padding: 14px 20px;
+            margin-top: 16px;
+            border-left: 4px solid #ff9900;
+        }
+        
+        footer {
             text-align: center;
-            padding: 32px;
-            background: white;
-            border-top: 1px solid #eef2f8;
-            margin-top: 48px;
+            margin-top: 40px;
             font-size: 0.75rem;
             color: #7f8c9a;
+            padding-top: 28px;
+            border-top: 1px solid #e2e8f0;
         }
-
-        @media (max-width: 860px) {
-            .header {
-                padding: 28px 20px;
-            }
-            .header h1 {
-                font-size: 1.6rem;
-            }
-            .container {
-                padding: 28px 20px;
-            }
-            .section-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .card-header h3 {
-                font-size: 0.85rem;
-            }
+        
+        @media (max-width: 780px) {
+            .sidebar { width: 280px; }
+            .main-content { padding: 16px; }
+            .card-header h2 { font-size: 1.2rem; }
+            .tabs { margin: 0 16px; }
+            .tab-content { padding: 16px; }
         }
-
-        @media (max-width: 480px) {
-            .card-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .card-icon {
-                font-size: 2.2rem;
-            }
-        }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #eef2f8; }
+        ::-webkit-scrollbar-thumb { background: #bdd3e4; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>☁️ CyberDefend <span>AWS Cloud Foundation</span></h1>
-        <p>Part of Accenture | All 11 training modules · Click any card to open the official Google Slides presentation</p>
+<div class="sidebar">
+    <div class="brand">
+        <div class="logo">
+            <div class="logo-icon">☁️</div>
+            <div class="logo-text">
+                <h1>CyberDefend</h1>
+                <span>AWS SLIDES</span>
+            </div>
+        </div>
+        <div class="tagline">Part of Accenture | AWS Cloud Foundation</div>
     </div>
+    
+    <a href="#" class="back-link" onclick="alert('AWS Cloud Foundation Dashboard'); return false;">← Back to Dashboard</a>
+    
+    <div class="nav-list">
+        <div class="section-title">☁️ AWS CLOUD FOUNDATION</div>
+        
+        <div class="nav-item active" data-slide="1">
+            <span class="check-icon">📘</span> section-1 aws cloud foundation
+        </div>
+        <div class="nav-item" data-slide="2">
+            <span class="check-icon">💰</span> section-2 Aws free tier | Pricing Calculator | Billing | Support Plans
+        </div>
+        <div class="nav-item" data-slide="3">
+            <span class="check-icon">🌍</span> section-3 AWS Global Infrastructure | AWS Services
+        </div>
+        <div class="nav-item" data-slide="4">
+            <span class="check-icon">🔐</span> section 4 AWS KMS | Cognito | Shield | Config | IAM Lab
+        </div>
+        <div class="nav-item" data-slide="5">
+            <span class="check-icon">🌐</span> section 5 Networking | CIDR | VPC | ACL/SG
+        </div>
+        <div class="nav-item" data-slide="6">
+            <span class="check-icon">💻</span> section6 aws Compute lab
+        </div>
+        <div class="nav-item" data-slide="7">
+            <span class="check-icon">⚡</span> section 7 AWS Serverless (lambda lab)
+        </div>
+        <div class="nav-item" data-slide="8">
+            <span class="check-icon">🐳</span> section 8 AWS Containers | Elastic Beanstalk
+        </div>
+        <div class="nav-item" data-slide="9">
+            <span class="check-icon">💾</span> section 9 AWS Storage (LAB)
+        </div>
+        <div class="nav-item" data-slide="10">
+            <span class="check-icon">🗄️</span> section 10 AWS Database
+        </div>
+        <div class="nav-item" data-slide="11">
+            <span class="check-icon">⚖️</span> Sec 11 ELB | Auto Scaling | Trusted Advisor
+        </div>
+    </div>
+    
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">
+        ⚡ AWS Cloud Foundation | 11 Modules
+    </div>
+</div>
 
-    <div class="container">
-        <div class="section-grid">
-            
-            <!-- Section 1 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">📘</div>
-                    <h3>section-1 · AWS Cloud Foundation</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        AWS Cloud Fundamentals · Core Concepts · Cloud Computing Basics · Shared Responsibility Model
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1rOCgpFji7zpr9Drzf3nzuxcsauk5fi0d/edit?slide=id.p1#slide=id.p1" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
+<div class="main-content">
+    <div class="slides-card">
+        <div class="card-header">
+            <span class="lesson-badge">📊 GOOGLE SLIDES</span>
+            <h2 id="slide-title">section-1 aws cloud foundation</h2>
+            <div class="sub" id="slide-sub">AWS Cloud Fundamentals · Core Concepts · Cloud Computing Basics</div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="slides">📊 Presentation</button>
+            <button class="tab-btn" data-tab="downloads">📥 Open in Google Slides</button>
+        </div>
+        
+        <div id="slides" class="tab-content active">
+            <div class="slides-container">
+                <div class="slides-wrapper">
+                    <iframe id="slides-iframe" src="https://docs.google.com/presentation/d/1rOCgpFji7zpr9Drzf3nzuxcsauk5fi0d/embed?start=false&loop=false&delayms=3000" frameborder="0" allowfullscreen="true"></iframe>
                 </div>
             </div>
-
-            <!-- Section 2 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <h3>section-2 · Free Tier · Pricing · Billing · Support · Well-Architected</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        AWS Free Tier limits · Pricing Calculator · AWS Billing & Cost Management · Support Plans · Well-Architected Framework (6 Pillars)
+            <div class="info-grid">
+                <p>📌 Use the <strong>arrow buttons</strong> below the presentation to navigate.<br>
+                🔍 Click <strong>Fullscreen</strong> for better viewing.<br>
+                💡 If presentation doesn't load, click the <strong>"Open in Google Slides" tab</strong>.</p>
+            </div>
+        </div>
+        
+        <div id="downloads" class="tab-content">
+            <div class="downloads-list">
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4 id="download-title">📘 section-1 aws cloud foundation</h4>
+                        <p>Open in Google Slides (new tab)</p>
                     </div>
-                    <a href="https://docs.google.com/presentation/d/1XDLlaBvwZYQrX9eZKKQzstgBOkUr8Z_p/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
+                    <a href="https://docs.google.com/presentation/d/1rOCgpFji7zpr9Drzf3nzuxcsauk5fi0d/edit?usp=sharing" target="_blank" id="download-link" class="btn-download">Open in new tab ↗</a>
+                </div>
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>📝 Download as PDF</h4>
+                        <p>Save presentation for offline viewing</p>
+                    </div>
+                    <a href="#" class="btn-download" onclick="alert('Click Open in new tab → File → Download → PDF Document'); return false;">Info</a>
                 </div>
             </div>
-
-            <!-- Section 3 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌍</div>
-                    <h3>section-3 · Global Infrastructure · Services · become employable</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        Regions · Availability Zones · Edge Locations · Service Categories (Compute, Storage, DB, Networking) · AWS Certification & Career Paths
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1IuY8sRLVA6AfPtjbQV6meo91283L1Y6J/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 4 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🔐</div>
-                    <h3>section-4 · KMS · Cognito · Shield · Config · Artifact · IAM Lab</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        AWS KMS (Key Management) · Amazon Cognito · AWS Shield · AWS Config · AWS Artifact · IAM Users & Policies Hands-on LAB
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1JRDCgAczgzO3TolKzkev7J-v9WWPgU1c/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 5 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌐</div>
-                    <h3>section-5 · Networking · CIDR · VPC · ACL/SG</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        Networking Fundamentals · CIDR notation · Amazon VPC components · Subnets · Security Groups vs Network ACLs · VPC Peering
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1Puef3g55PqrFm0nwjW5EUjcG7lqjEeJd/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 6 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">💻</div>
-                    <h3>section-6 · AWS Compute Lab</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        EC2 basics · AMI selection · Instance types · User Data · SSH key pairs · EBS volumes · Hands-on compute lab exercises
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1OSMLinKFJgKd36HRmMoF5QwDKhuk-wgA/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 7 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">⚡</div>
-                    <h3>section-7 · Serverless · Lambda Lab</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        Serverless architecture · AWS Lambda triggers (S3, API Gateway, DynamoDB) · Lambda function lab · CloudWatch integration
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1r56C7QDbuVr_rVDnPJHebK1sXWompI2h/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 8 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🐳</div>
-                    <h3>section-8 · Containers · Elastic Beanstalk LAB</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        Container services: ECS (Fargate/EC2), EKS · Elastic Beanstalk environment deployment · Hands-on lab workshop
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1bwn9R7xhqKoED30lVnmrRpe0-as1ufwp/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 9 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">💾</div>
-                    <h3>section-9 · AWS Storage LAB</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        S3 buckets: versioning, lifecycle rules, replication · EBS snapshots · EFS configuration · Storage lab exercises
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1r3TrEf2NzFz6q1BIwAa9DIlTyMHZn3pX/edit?usp=sharing&ouid=107612983338703396733&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 10 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🗄️</div>
-                    <h3>section-10 · AWS Database</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        AWS Database portfolio: RDS (Aurora, MySQL, PostgreSQL), DynamoDB (NoSQL), Redshift, ElastiCache · Use case selection guide
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1qeeZeDe7gc9lusfHxIKSzT04JrMVTZ90/edit" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 11 -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">⚖️</div>
-                    <h3>section-11 · ELB · Auto Scaling · Trusted Advisor · Well-Architected</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-description">
-                        Elastic Load Balancing (ALB/NLB/GLB) · Auto Scaling groups & policies · Trusted Advisor best practices · Well-Architected Framework review
-                    </div>
-                    <a href="https://docs.google.com/presentation/d/1rtJB_9jOMUtxFemNkyFOHwn6IxWdL4SQ/edit?slide=id.g31f684a12eb_2_530#slide=id.g31f684a12eb_2_530" target="_blank" rel="noopener noreferrer" class="card-link">
-                        🔗 Open in Google Slides →
-                    </a>
-                </div>
+            <div class="info-grid">
+                <p>💡 <strong>Tip:</strong> Use <strong>Open in new tab</strong> → then File → Download as PDF to save the presentation.</p>
             </div>
         </div>
     </div>
+    
+    <footer>
+        ☁️ CyberDefend Academy — AWS Cloud Foundation | Part of Accenture
+    </footer>
+</div>
 
-    <div class="footer">
-        ☁️ CyberDefend Academy — AWS Cloud Foundation | Part of Accenture | All 11 official Google Slides presentations linked directly
-    </div>
-
-    <script>
-        // Optional: Log to console that all links are ready (no functionality errors)
-        console.log("✅ AWS Cloud Foundation - All 11 modules loaded successfully");
-        console.log("📊 Each card opens the correct Google Slides presentation in a new tab");
-    </script>
+<script>
+    // Tab switching
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-tab');
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            btn.classList.add('active');
+            const targetContent = document.getElementById(targetTab);
+            if (targetContent) targetContent.classList.add('active');
+        });
+    });
+    
+    // ALL 11 PRESENTATION IDs (from your links)
+    const presentationIds = {
+        '1': '1rOCgpFji7zpr9Drzf3nzuxcsauk5fi0d',
+        '2': '1XDLlaBvwZYQrX9eZKKQzstgBOkUr8Z_p',
+        '3': '1IuY8sRLVA6AfPtjbQV6meo91283L1Y6J',
+        '4': '1JRDCgAczgzO3TolKzkev7J-v9WWPgU1c',
+        '5': '1Puef3g55PqrFm0nwjW5EUjcG7lqjEeJd',
+        '6': '1OSMLinKFJgKd36HRmMoF5QwDKhuk-wgA',
+        '7': '1r56C7QDbuVr_rVDnPJHebK1sXWompI2h',
+        '8': '1bwn9R7xhqKoED30lVnmrRpe0-as1ufwp',
+        '9': '1r3TrEf2NzFz6q1BIwAa9DIlTyMHZn3pX',
+        '10': '1qeeZeDe7gc9lusfHxIKSzT04JrMVTZ90',
+        '11': '1rtJB_9jOMUtxFemNkyFOHwn6IxWdL4SQ'
+    };
+    
+    const slideTitles = {
+        '1': 'section-1 aws cloud foundation',
+        '2': 'section-2 Aws free tier | Pricing Calculator | Billing | Support Plans | Well-Architected Framework',
+        '3': 'section-3 AWS Global Infrastructure | AWS Services and Service Category | become employable',
+        '4': 'section 4 AWS Key Management Service (KMS) | Cognito | Shield | Config | Artifact | LAB 1 IAM users',
+        '5': 'section 5 Networking basics | CIDR | Amazon VPC | VPC networking | VPC security (ACL/SG)',
+        '6': 'section6 aws Compute lab',
+        '7': 'section 7 AWS Serverless services (lambda function lab)',
+        '8': 'section 8 AWS Containers services | AWS Elastic Bean Stalk (LAB)',
+        '9': 'section 9 AWS Storage (LAB)',
+        '10': 'section 10 AWS Database',
+        '11': 'Sec 11(Edited) AWS Elastic Load Balancing | Auto Scaling | Trusted Advisor | Well Architect'
+    };
+    
+    const slideSubtitles = {
+        '1': 'AWS Cloud Fundamentals · Core Concepts · Cloud Computing Basics · Shared Responsibility Model',
+        '2': 'AWS Free Tier limits · Pricing Calculator · AWS Billing & Cost Management · Support Plans · Well-Architected 6 Pillars',
+        '3': 'Regions · Availability Zones · Edge Locations · Service Categories · AWS Certification & Career Paths',
+        '4': 'AWS KMS · Amazon Cognito · AWS Shield · AWS Config · AWS Artifact · IAM Users & Policies LAB',
+        '5': 'Networking Fundamentals · CIDR notation · Amazon VPC · Subnets · Security Groups vs NACLs · VPC Peering',
+        '6': 'EC2 basics · AMI selection · Instance types · User Data · SSH keys · EBS volumes · Hands-on compute lab',
+        '7': 'Serverless architecture · AWS Lambda triggers · Lambda function lab · CloudWatch integration',
+        '8': 'Container services: ECS, EKS · Elastic Beanstalk deployment · Hands-on lab workshop',
+        '9': 'S3 buckets · versioning · lifecycle · EBS snapshots · EFS configuration · Storage lab exercises',
+        '10': 'AWS Databases: RDS (Aurora, MySQL), DynamoDB, Redshift, ElastiCache · Use case selection',
+        '11': 'Elastic Load Balancing (ALB/NLB) · Auto Scaling policies · Trusted Advisor · Well-Architected Review'
+    };
+    
+    const downloadTitles = {
+        '1': '📘 section-1 aws cloud foundation',
+        '2': '💰 section-2 AWS Free Tier & Pricing',
+        '3': '🌍 section-3 AWS Global Infrastructure',
+        '4': '🔐 section-4 AWS Security Services & IAM Lab',
+        '5': '🌐 section-5 Networking & VPC',
+        '6': '💻 section-6 AWS Compute Lab',
+        '7': '⚡ section-7 AWS Serverless & Lambda Lab',
+        '8': '🐳 section-8 AWS Containers & Elastic Beanstalk',
+        '9': '💾 section-9 AWS Storage Lab',
+        '10': '🗄️ section-10 AWS Database',
+        '11': '⚖️ section-11 ELB, Auto Scaling & Well-Architected'
+    };
+    
+    const navItems = document.querySelectorAll('.nav-item');
+    const slideTitleEl = document.getElementById('slide-title');
+    const slideSubEl = document.getElementById('slide-sub');
+    const slidesIframe = document.getElementById('slides-iframe');
+    const downloadBtn = document.getElementById('download-link');
+    const downloadTitleEl = document.getElementById('download-title');
+    
+    function activateSlide(slideId) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const activeItem = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
+        if (activeItem) activeItem.classList.add('active');
+        
+        if (slideTitles[slideId]) slideTitleEl.textContent = slideTitles[slideId];
+        if (slideSubtitles[slideId]) slideSubEl.textContent = slideSubtitles[slideId];
+        
+        const embedUrl = `https://docs.google.com/presentation/d/${presentationIds[slideId]}/embed?start=false&loop=false&delayms=3000`;
+        slidesIframe.src = embedUrl;
+        
+        const editUrl = `https://docs.google.com/presentation/d/${presentationIds[slideId]}/edit?usp=sharing`;
+        downloadBtn.href = editUrl;
+        
+        if (downloadTitles[slideId]) downloadTitleEl.textContent = downloadTitles[slideId];
+        
+        console.log(`Loaded slide ${slideId}: ${slideTitles[slideId]}`);
+    }
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const slideId = item.getAttribute('data-slide');
+            if (slideId && presentationIds[slideId]) activateSlide(slideId);
+            else alert('Presentation link configured');
+        });
+    });
+    
+    activateSlide('1');
+</script>
 </body>
 </html>
 ```
