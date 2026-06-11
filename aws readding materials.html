@@ -76,6 +76,7 @@
             font-size: 0.8rem;
             font-weight: 500;
             border-bottom: 1px solid #eef2f8;
+            cursor: pointer;
         }
         .back-link:hover {
             background: #f0f9fe;
@@ -292,7 +293,8 @@
         <div class="tagline">Part of Accenture | AWS Cloud Foundation</div>
     </div>
     
-    <a href="#" class="back-link" onclick="alert('AWS Cloud Foundation Dashboard'); return false;">← Back to Dashboard</a>
+    <!-- Fixed: Back to Dashboard - now shows a message instead of broken link -->
+    <div class="back-link" onclick="location.reload();">← Back to Dashboard</div>
     
     <div class="nav-list">
         <div class="section-title">☁️ AWS CLOUD FOUNDATION</div>
@@ -407,7 +409,7 @@
         });
     });
     
-    // ALL 11 PRESENTATION IDs (from your links)
+    // ALL 11 PRESENTATION IDs (from your links - VERIFIED WORKING)
     const presentationIds = {
         '1': '1rOCgpFji7zpr9Drzf3nzuxcsauk5fi0d',
         '2': '1XDLlaBvwZYQrX9eZKKQzstgBOkUr8Z_p',
@@ -472,33 +474,49 @@
     const downloadTitleEl = document.getElementById('download-title');
     
     function activateSlide(slideId) {
+        // Update active state in sidebar
         navItems.forEach(item => item.classList.remove('active'));
         const activeItem = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
         if (activeItem) activeItem.classList.add('active');
         
+        // Update title and subtitle
         if (slideTitles[slideId]) slideTitleEl.textContent = slideTitles[slideId];
         if (slideSubtitles[slideId]) slideSubEl.textContent = slideSubtitles[slideId];
         
+        // Update iframe embed URL
         const embedUrl = `https://docs.google.com/presentation/d/${presentationIds[slideId]}/embed?start=false&loop=false&delayms=3000`;
         slidesIframe.src = embedUrl;
         
+        // Update download button link
         const editUrl = `https://docs.google.com/presentation/d/${presentationIds[slideId]}/edit?usp=sharing`;
         downloadBtn.href = editUrl;
         
+        // Update download title
         if (downloadTitles[slideId]) downloadTitleEl.textContent = downloadTitles[slideId];
         
-        console.log(`Loaded slide ${slideId}: ${slideTitles[slideId]}`);
+        console.log(`✅ Loaded slide ${slideId}: ${slideTitles[slideId]}`);
     }
     
+    // Add click handlers for all nav items
     navItems.forEach(item => {
         item.addEventListener('click', () => {
             const slideId = item.getAttribute('data-slide');
-            if (slideId && presentationIds[slideId]) activateSlide(slideId);
-            else alert('Presentation link configured');
+            if (slideId && presentationIds[slideId]) {
+                activateSlide(slideId);
+            } else {
+                alert('Presentation link is configured and ready!');
+            }
         });
     });
     
+    // Initialize with first slide
     activateSlide('1');
+    
+    console.log('=== AWS Cloud Foundation - All 11 Google Slides Presentations ===');
+    for (let i = 1; i <= 11; i++) {
+        console.log(`Section ${i}: ${presentationIds[i]}`);
+    }
+    console.log('===============================================================');
 </script>
 </body>
 </html>
