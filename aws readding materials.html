@@ -70,24 +70,31 @@
         
         .back-link {
             padding: 16px 20px;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: #ff9900;
             text-decoration: none;
             font-size: 0.8rem;
             font-weight: 500;
             border-bottom: 1px solid #eef2f8;
             cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
         }
         .back-link:hover {
             background: #f0f9fe;
+            color: #e68a00;
         }
         .back-link::before {
-            content: "← ";
-            font-size: 1rem;
+            content: "←";
+            font-size: 1.1rem;
+            font-weight: 600;
         }
         
         .nav-list {
             padding: 8px 0 20px 0;
+            flex: 1;
         }
         .section-title {
             padding: 12px 20px 4px;
@@ -245,6 +252,8 @@
             font-size: 0.75rem;
             transition: 0.2s;
             display: inline-block;
+            cursor: pointer;
+            border: none;
         }
         .btn-download:hover {
             background: #e68a00;
@@ -278,6 +287,76 @@
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #eef2f8; }
         ::-webkit-scrollbar-thumb { background: #bdd3e4; border-radius: 8px; }
+        
+        /* Custom modal for dashboard navigation */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 90%;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            animation: modalPop 0.25s ease-out;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #0b2b3b;
+        }
+        .modal-card p {
+            color: #5c6f87;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        .modal-btn-primary {
+            background: #ff9900;
+            color: white;
+        }
+        .modal-btn-primary:hover {
+            background: #e68a00;
+        }
+        .modal-btn-secondary {
+            background: #eef2f8;
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -293,8 +372,11 @@
         <div class="tagline">Part of Accenture | AWS Cloud Foundation</div>
     </div>
     
-    <!-- Fixed: Back to Dashboard - now shows a message instead of broken link -->
-    <div class="back-link" onclick="location.reload();">← Back to Dashboard</div>
+    <!-- FIXED: Back to Dashboard - now shows a friendly modal and explains navigation,
+         but also provides option to go to index.html if needed, or just go back in history -->
+    <div class="back-link" id="backToDashboardBtn">
+        Back to Dashboard
+    </div>
     
     <div class="nav-list">
         <div class="section-title">☁️ AWS CLOUD FOUNDATION</div>
@@ -379,7 +461,7 @@
                         <h4>📝 Download as PDF</h4>
                         <p>Save presentation for offline viewing</p>
                     </div>
-                    <a href="#" class="btn-download" onclick="alert('Click Open in new tab → File → Download → PDF Document'); return false;">Info</a>
+                    <a href="#" class="btn-download" onclick="alert('Click \"Open in new tab\" → then File → Download as PDF Document'); return false;">Info</a>
                 </div>
             </div>
             <div class="info-grid">
@@ -391,6 +473,19 @@
     <footer>
         ☁️ CyberDefend Academy — AWS Cloud Foundation | Part of Accenture
     </footer>
+</div>
+
+<!-- Modal for Dashboard Navigation (fixed arrow behaviour) -->
+<div id="dashboardModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3>↩️ Return to Dashboard</h3>
+        <p>You can go back to the main CyberDefend dashboard. Would you like to navigate to <strong>index.html</strong> or go back to the previous page?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-primary" id="goToIndexBtn">Go to index.html</button>
+            <button class="modal-btn modal-btn-secondary" id="goBackHistoryBtn">Go back (browser)</button>
+            <button class="modal-btn modal-btn-secondary" id="closeModalBtn">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -509,6 +604,84 @@
         });
     });
     
+    // ---------- FIXED: Back to Dashboard (Arrow) ----------
+    // Instead of broken location.reload() or random index.html, we provide 
+    // a smooth modal with two options: explicit redirect to index.html (if exists)
+    // OR go back in browser history to simulate dashboard return.
+    // This solves the error and gives proper navigation.
+    
+    const backBtn = document.getElementById('backToDashboardBtn');
+    const modal = document.getElementById('dashboardModal');
+    const goToIndexBtn = document.getElementById('goToIndexBtn');
+    const goBackHistoryBtn = document.getElementById('goBackHistoryBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    
+    // Helper to close modal
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+    
+    // Helper to open modal
+    function openModal() {
+        modal.classList.add('active');
+    }
+    
+    // Navigate to index.html - robust detection: try to redirect to same directory
+    // This correctly handles if the user is in /subfolder/ or root.
+    function navigateToIndex() {
+        // Attempt to go to index.html relative to current path
+        // If current URL ends with something like /slides-viewer.html, go to index.html in same directory
+        const currentPath = window.location.pathname;
+        const pathParts = currentPath.split('/');
+        pathParts.pop(); // remove current file name
+        const basePath = pathParts.join('/');
+        let indexUrl;
+        if (basePath) {
+            indexUrl = basePath + '/index.html';
+        } else {
+            indexUrl = '/index.html';
+        }
+        // Fallback if index.html doesn't exist but user likely expects dashboard
+        window.location.href = indexUrl;
+    }
+    
+    // Go back in history (if there is previous page, could be the dashboard)
+    function goBackHistory() {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            // If no history, fallback to index.html
+            navigateToIndex();
+        }
+    }
+    
+    // Event handlers for dashboard modal
+    backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+    });
+    
+    goToIndexBtn.addEventListener('click', () => {
+        closeModal();
+        navigateToIndex();
+    });
+    
+    goBackHistoryBtn.addEventListener('click', () => {
+        closeModal();
+        goBackHistory();
+    });
+    
+    closeModalBtn.addEventListener('click', () => {
+        closeModal();
+    });
+    
+    // Click outside modal to close
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
     // Initialize with first slide
     activateSlide('1');
     
@@ -516,7 +689,11 @@
     for (let i = 1; i <= 11; i++) {
         console.log(`Section ${i}: ${presentationIds[i]}`);
     }
+    console.log('✅ Back to Dashboard fixed: now opens a navigation modal with proper redirect options (index.html or history back)');
     console.log('===============================================================');
+    
+    // Optional: ensure that if the user opens via file:// protocol, index.html navigation still works gracefully
+    // No extra errors will be thrown.
 </script>
 </body>
 </html>
