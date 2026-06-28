@@ -304,11 +304,11 @@
     <!-- Back to Dashboard Arrow -->
     <a href="index.html" class="back-link">Back to Dashboard</a>
     
-    <!-- Navigation with 4 slides -->
+    <!-- Navigation with 6 slides (order: 1,2,3,4,5,6) -->
     <div class="nav-list">
         <div class="section-title">📊 PRESENTATIONS</div>
         
-        <!-- Slide 1: summer 2025 last -->
+        <!-- Slide 1: summer 2025 -->
         <div class="nav-item active" data-slide="1">
             <span class="check-icon">📊</span> Summer 2025 Training
         </div>
@@ -326,6 +326,16 @@
         <!-- Slide 4: cybersecurity 3 -->
         <div class="nav-item" data-slide="4">
             <span class="check-icon">🔐</span> Cybersecurity Course (Part 3)
+        </div>
+        
+        <!-- Slide 5: NEW - from your first link -->
+        <div class="nav-item" data-slide="5">
+            <span class="check-icon">📄</span> DPA Summer Training - Session 1
+        </div>
+        
+        <!-- Slide 6: NEW - from your second link -->
+        <div class="nav-item" data-slide="6">
+            <span class="check-icon">📄</span> DPA Summer Training - Session 2
         </div>
     </div>
     
@@ -412,20 +422,24 @@
     
     // ============================================
     // GOOGLE SLIDES LINKS FOR EACH SLIDE
+    // order: 1, 2, 3, 4, 5, 6
     // ============================================
     
-    // Presentation IDs (extracted from your links)
     // Slide 1: 1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A
     // Slide 2: 19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe
     // Slide 3: 1bpruoSya8s3yshmLkUVxBzAsoes_fHEb
     // Slide 4: 1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY
+    // Slide 5: 199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt (from first new link)
+    // Slide 6: 1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc (from second new link)
     
-    // Embed URLs for iframe (must be published to web first)
+    // Embed URLs for iframe
     const slideLinks = {
         '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000',
         '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/embed?start=false&loop=false&delayms=3000',
         '3': 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/embed?start=false&loop=false&delayms=3000',
-        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/embed?start=false&loop=false&delayms=3000'
+        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/embed?start=false&loop=false&delayms=3000',
+        '5': 'https://docs.google.com/presentation/d/199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt/embed?start=false&loop=false&delayms=3000',
+        '6': 'https://docs.google.com/presentation/d/1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc/embed?start=false&loop=false&delayms=3000'
     };
     
     // Edit URLs for "Open in new tab" button
@@ -433,7 +447,9 @@
         '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/edit?usp=sharing',
         '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/edit?usp=sharing',
         '3': 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/edit?usp=sharing',
-        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/edit?usp=sharing'
+        '4': 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/edit?usp=sharing',
+        '5': 'https://docs.google.com/presentation/d/199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt/edit?usp=sharing',
+        '6': 'https://docs.google.com/presentation/d/1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc/edit?usp=sharing'
     };
     
     // Titles for each slide
@@ -441,7 +457,9 @@
         '1': 'Summer 2025 Training',
         '2': 'Cybersecurity Course (Part 1)',
         '3': 'Cybersecurity Course (Part 2)',
-        '4': 'Cybersecurity Course (Part 3)'
+        '4': 'Cybersecurity Course (Part 3)',
+        '5': 'DPA Summer Training - Session 1',
+        '6': 'DPA Summer Training - Session 2'
     };
     
     // Subtitles for each slide
@@ -449,7 +467,9 @@
         '1': 'General Networking Concepts · Fundamentals · OSI Model',
         '2': 'Introduction to Cybersecurity · Threat Landscape · Security Controls',
         '3': 'Vulnerability Management · Risk Assessment · Mitigation Strategies',
-        '4': 'Security Operations · Incident Response · Best Practices'
+        '4': 'Security Operations · Incident Response · Best Practices',
+        '5': 'DPA Program Overview · Core Concepts · Learning Path',
+        '6': 'Advanced Topics · Case Studies · Practical Applications'
     };
     
     // Download button texts
@@ -457,7 +477,9 @@
         '1': '📘 Lecture Slides - Summer 2025 Training',
         '2': '🔐 Lecture Slides - Cybersecurity Course (Part 1)',
         '3': '🔐 Lecture Slides - Cybersecurity Course (Part 2)',
-        '4': '🔐 Lecture Slides - Cybersecurity Course (Part 3)'
+        '4': '🔐 Lecture Slides - Cybersecurity Course (Part 3)',
+        '5': '📄 Lecture Slides - DPA Summer Training Session 1',
+        '6': '📄 Lecture Slides - DPA Summer Training Session 2'
     };
     
     // Get DOM elements
@@ -503,7 +525,7 @@
     navItems.forEach(item => {
         item.addEventListener('click', () => {
             const slideId = item.getAttribute('data-slide');
-            if (slideId && slideId >= '1' && slideId <= '4') {
+            if (slideId && slideId >= '1' && slideId <= '6') {
                 activateSlide(slideId);
             } else {
                 slideTitleEl.textContent = item.textContent.replace('📊', '').trim();
@@ -520,6 +542,8 @@
     console.log('Slide 2 ID: 19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe');
     console.log('Slide 3 ID: 1bpruoSya8s3yshmLkUVxBzAsoes_fHEb');
     console.log('Slide 4 ID: 1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY');
+    console.log('Slide 5 ID: 199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt');
+    console.log('Slide 6 ID: 1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc');
     console.log('===================================');
 </script>
 </body>
