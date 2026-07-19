@@ -322,6 +322,12 @@
         <div class="nav-item" data-slide="9">
             <span class="check-icon">📅</span> 19-7-2026 · Session 2 (Part 2)
         </div>
+
+        <!-- ================= NEW TAB ADDED BELOW ================= -->
+        <div class="nav-item" data-slide="10">
+            <span class="check-icon">📅</span> 22-7-2026 · Session 3
+        </div>
+        <!-- ======================================================== -->
         
         <!-- Slide 4 (originally 1): summer 2025 -->
         <div class="nav-item" data-slide="1">
@@ -3099,6 +3105,7 @@
         '7': 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/embed?start=false&loop=false&delayms=3000', // REPLACED
         '8': 'https://docs.google.com/presentation/d/1RUelw8LyBE1EQv_xsbvD76DIeWiXYnru/embed?start=false&loop=false&delayms=3000',
         '9': 'https://docs.google.com/presentation/d/1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG/embed?start=false&loop=false&delayms=3000',
+        '10': 'https://docs.google.com/presentation/d/1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG/embed?start=false&loop=false&delayms=3000', // ADDED FOR 22-7-2026
         // Original slides
         '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000',
         '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/embed?start=false&loop=false&delayms=3000',
@@ -3113,6 +3120,7 @@
         '7': 'https://docs.google.com/presentation/d/1cg8l5jyVdX9o4ulTCgxGQQkkCalmbhY1/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true', // REPLACED
         '8': 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true',
         '9': 'https://docs.google.com/presentation/d/1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true',
+        '10': 'https://docs.google.com/presentation/d/1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true', // ADDED FOR 22-7-2026
         '1': 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/edit?usp=sharing',
         '2': 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/edit?usp=sharing',
         '3': 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/edit?usp=sharing',
@@ -3126,6 +3134,7 @@
         '7': '15-7-2026 · Session 1',
         '8': '19-7-2026 · Session 2 (Part 1)',
         '9': '19-7-2026 · Session 2 (Part 2)',
+        '10': '22-7-2026 · Session 3', // ADDED FOR 22-7-2026
         '1': 'Summer 2025 Training',
         '2': 'Cybersecurity Course (Part 1)',
         '3': 'Cybersecurity Course (Part 2)',
@@ -3139,6 +3148,7 @@
         '7': 'DPA Summer Training · Day 1 · Core Concepts',
         '8': 'DPA Summer Training · Day 2 · Advanced Topics (Part 1)',
         '9': 'DPA Summer Training · Day 2 · Advanced Topics (Part 2)',
+        '10': 'DPA Summer Training · Day 2 · Advanced Topics (Part 2)', // ADDED FOR 22-7-2026
         '1': 'General Networking Concepts · Fundamentals · OSI Model',
         '2': 'Introduction to Cybersecurity · Threat Landscape · Security Controls',
         '3': 'Vulnerability Management · Risk Assessment · Mitigation Strategies',
@@ -3152,6 +3162,7 @@
         '7': '📘 Lecture Slides - 15-7-2026 Session 1',
         '8': '📘 Lecture Slides - 19-7-2026 Session 2 (Part 1)',
         '9': '📘 Lecture Slides - 19-7-2026 Session 2 (Part 2)',
+        '10': '📘 Lecture Slides - 22-7-2026 Session 3', // ADDED FOR 22-7-2026
         '1': '📘 Lecture Slides - Summer 2025 Training',
         '2': '🔐 Lecture Slides - Cybersecurity Course (Part 1)',
         '3': '🔐 Lecture Slides - Cybersecurity Course (Part 2)',
@@ -3209,7 +3220,10 @@
     navItems.forEach(item => {
         item.addEventListener('click', () => {
             const slideId = item.getAttribute('data-slide');
-            if (slideId && slideId >= '1' && slideId <= '9') {
+            const numId = parseInt(slideId, 10);
+            
+            // FIXED: Check if slideId is a number between 1 and 10
+            if (!isNaN(numId) && numId >= 1 && numId <= 10) {
                 activateSlide(slideId);
             } else {
                 slideTitleEl.textContent = item.textContent.replace('🌐', '').trim();
@@ -3247,6 +3261,7 @@
     console.log('Slide 7 ID: 1cg8l5jyVdX9o4ulTCgxGQQkkCalmbhY1 (15-7-2026 - REPLACED)');
     console.log('Slide 8 ID: 16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R (19-7-2026 p1)');
     console.log('Slide 9 ID: 1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG (19-7-2026 p2)');
+    console.log('Slide 10 ID: 1ByOz7RPwDa2g49Rh2zjC6KYxbn5hq-lG (22-7-2026 - ADDED)');
     console.log('Slide 1 ID: 1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A');
     console.log('Slide 2 ID: 19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe');
     console.log('Slide 3 ID: 1bpruoSya8s3yshmLkUVxBzAsoes_fHEb');
