@@ -352,6 +352,29 @@
         <div class="nav-item" data-slide="6">
             <span class="check-icon">📄</span> DPA Summer Training - Session 2
         </div>
+
+        <!-- ================= NEW TABS ADDED BELOW ================= -->
+        <div class="section-title" style="margin-top: 20px;">🌐 NETWORK DIAGRAMS</div>
+        
+        <div class="nav-item" data-slide="diagram1">
+            <span class="check-icon">🌐</span> FW IPS IDS switches DMZ apart vendors.html
+        </div>
+        <div class="nav-item" data-slide="diagram2">
+            <span class="check-icon">🌐</span> FW IPS IDS switches DMZ APART.html
+        </div>
+        <div class="nav-item" data-slide="diagram3">
+            <span class="check-icon">🌐</span> FW IPS IDS switches DMZ.html
+        </div>
+        <div class="nav-item" data-slide="diagram4">
+            <span class="check-icon">🌐</span> HA core-Dist-Access connection .html
+        </div>
+        <div class="nav-item" data-slide="diagram5">
+            <span class="check-icon">🌐</span> No HA core-Dist-Access connection .html
+        </div>
+        <div class="nav-item" data-slide="diagram6">
+            <span class="check-icon">🌐</span> Single FW design.html
+        </div>
+        <!-- ============================================================ -->
     </div>
     
     <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">
@@ -407,12 +430,2641 @@
                 <p>💡 <strong>Tip:</strong> The presentation is best viewed in fullscreen mode. Use the <strong>Open in new tab</strong> button for the full Google Slides experience with speaker notes.</p>
             </div>
         </div>
+
+        <!-- ================= NEW DIAGRAM TAB CONTENTS ================= -->
+        <div id="diagram1" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram1-iframe" style="width: 100%; height: 1450px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div id="diagram2" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram2-iframe" style="width: 100%; height: 1300px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div id="diagram3" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram3-iframe" style="width: 100%; height: 1500px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div id="diagram4" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram4-iframe" style="width: 100%; height: 950px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div id="diagram5" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram5-iframe" style="width: 100%; height: 850px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div id="diagram6" class="tab-content">
+            <div style="border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                <iframe id="diagram6-iframe" style="width: 100%; height: 900px; border: none; display: block;" frameborder="0"></iframe>
+            </div>
+        </div>
+        <!-- ============================================================ -->
     </div>
     
     <footer>
         🔐 CyberDefend Academy — DPA Summer Training | Part of Accenture
     </footer>
 </div>
+
+<!-- ================= HIDDEN HTML CODES FOR DIAGRAMS ================= -->
+<textarea id="diagram1-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dual Firewall Network Routing (Fortinet & Palo Alto)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B1026;
+    --panel: #151C3A;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --accent-internet: #38BDF8;
+    --accent-router: #A78BFA;
+    --accent-firewall: #F87171;
+    --accent-firewall2: #FB7185; /* Palo Alto slightly different red */
+    --accent-core: #FBBF24;
+    --accent-dist: #34D399;
+    --accent-access: #60A5FA;
+    --accent-pc: #F472B6;
+    --accent-dmz: #FB923C;
+    --accent-secops: #2DD4BF;
+    --line-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+  }
+
+  .network-stage {
+    position: relative;
+    width: 1400px;
+    height: 1270px; /* Increased height for Dual FWs */
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: visible;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  svg.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  path.link {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6;
+    animation: dash 1s linear infinite;
+  }
+  
+  path.ha-link {
+    stroke: #475569;
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+    animation: dash 1.5s linear infinite;
+  }
+
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  .node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 8px;
+    width: 110px;
+    height: 70px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .node i { font-size: 18px; margin-bottom: 2px; display: block; }
+  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
+  
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .internet { border-color: var(--accent-internet); color: var(--accent-internet); }
+  .router { border-color: var(--accent-router); color: var(--accent-router); }
+  .fortinet { border-color: var(--accent-firewall); color: var(--accent-firewall); }
+  .paloalto { border-color: var(--accent-firewall2); color: var(--accent-firewall2); }
+  .core { border-color: var(--accent-core); color: var(--accent-core); }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 80px; height: 60px; font-size: 10px; }
+  .pc i { font-size: 14px; margin-bottom: 2px; }
+  .pc .node-ip { font-size: 8px; }
+  
+  .dmz { border-color: var(--accent-dmz); color: var(--accent-dmz); }
+  .secops { border-color: var(--accent-secops); color: var(--accent-secops); }
+
+  .layer-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 10;
+    border-left: 2px solid currentColor;
+    padding-left: 8px;
+    background: var(--panel);
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .packet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    offset-rotate: auto;
+  }
+
+  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); }
+  .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); }
+  .packet.orange { background: var(--accent-dmz); box-shadow: 0 0 12px var(--accent-dmz); }
+  .packet.teal { background: var(--accent-secops); box-shadow: 0 0 12px var(--accent-secops); }
+
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px; 
+    background: rgba(0,0,0,0.6);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Dual Firewall Network Routing (Fortinet & Palo Alto)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <!-- Layer Labels -->
+  <div class="layer-label" style="top: 30px; left: 15px; color: var(--accent-internet);">Internet / WAN</div>
+  <div class="layer-label" style="top: 140px; left: 15px; color: var(--accent-router);">Edge Router</div>
+  <div class="layer-label" style="top: 260px; left: 15px; color: var(--accent-firewall);">Fortinet (HA Pair)</div>
+  <div class="layer-label" style="top: 380px; left: 15px; color: var(--accent-firewall2);">Palo Alto (HA Pair)</div>
+  <div class="layer-label" style="top: 500px; left: 15px; color: var(--accent-dmz);">IPS Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 620px; left: 15px; color: var(--accent-dmz);">IDS Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 740px; left: 15px; color: var(--accent-core);">Core Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 860px; left: 15px; color: var(--accent-dist);">Distribution (HA Pairs)</div>
+  <div class="layer-label" style="top: 990px; left: 15px; color: var(--accent-access);">Access Layer</div>
+  
+  <!-- Right Side Labels -->
+  <div class="layer-label" style="top: 260px; right: 15px; color: var(--accent-dmz); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">DMZ Zone</div>
+  <div class="layer-label" style="top: 740px; right: 15px; color: var(--accent-secops); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">SecOps Zone</div>
+
+  <!-- SVG Connections -->
+  <svg class="connections" viewBox="0 0 1400 1270">
+    <!-- Main Trunk -->
+    <path class="link" d="M700 90 L700 130" /> 
+    
+    <!-- Router to Fortinet -->
+    <path class="link" d="M700 200 L700 220 L570 220 L570 250" />
+    <path class="link" d="M700 200 L700 220 L830 220 L830 250" />
+    <path class="ha-link" d="M625 285 L775 285" /> 
+    
+    <!-- Fortinet to Palo Alto -->
+    <path class="link" d="M570 320 L570 370" />
+    <path class="link" d="M830 320 L830 370" />
+    <path class="ha-link" d="M625 405 L775 405" /> 
+
+    <!-- Palo Alto to IPS -->
+    <path class="link" d="M570 440 L570 490" />
+    <path class="link" d="M830 440 L830 490" />
+    <path class="ha-link" d="M625 525 L775 525" /> 
+
+    <!-- IPS to IDS -->
+    <path class="link" d="M570 560 L570 610" />
+    <path class="link" d="M830 560 L830 610" />
+    <path class="ha-link" d="M625 645 L775 645" /> 
+
+    <!-- IDS to Core -->
+    <path class="link" d="M570 680 L570 730" />
+    <path class="link" d="M830 680 L830 730" />
+    <path class="ha-link" d="M625 765 L775 765" /> 
+
+    <!-- Core to Dist -->
+    <path class="link" d="M570 810 L570 840 L360 840 L360 860" />
+    <path class="link" d="M570 810 L570 840 L520 840 L520 860" />
+    <path class="link" d="M830 810 L830 840 L780 840 L780 860" />
+    <path class="link" d="M830 810 L830 840 L940 840 L940 860" />
+    <path class="ha-link" d="M415 895 L465 895" /> 
+    <path class="ha-link" d="M835 895 L885 895" /> 
+
+    <!-- Dist to Access -->
+    <path class="link" d="M360 930 L360 960 L290 960 L290 990" />
+    <path class="link" d="M520 930 L520 960 L290 960 L290 990" />
+    <path class="link" d="M360 930 L360 960 L460 960 L460 990" />
+    <path class="link" d="M520 930 L520 960 L460 960 L460 990" />
+
+    <path class="link" d="M780 930 L780 960 L710 960 L710 990" />
+    <path class="link" d="M940 930 L940 960 L710 960 L710 990" />
+    <path class="link" d="M780 930 L780 960 L880 960 L880 990" />
+    <path class="link" d="M940 930 L940 960 L880 960 L880 990" />
+
+    <!-- Access to PCs -->
+    <path class="link" d="M290 1060 L290 1110" />
+    <path class="link" d="M460 1060 L460 1110" />
+    <path class="link" d="M710 1060 L710 1110" />
+    <path class="link" d="M880 1060 L880 1110" />
+
+    <!-- DMZ Connections (Direct from Fortinet B) -->
+    <path class="link" d="M885 285 L1130 285" /> 
+    <path class="link" d="M1185 320 L1185 340 L1095 340 L1095 370" /> 
+    <path class="link" d="M1185 320 L1185 340 L1275 340 L1275 370" /> 
+
+    <!-- SecOps Connections (Direct from Core A) -->
+    <path class="link" d="M515 775 L415 775" /> 
+    <path class="link" d="M360 810 L360 860" /> 
+  </svg>
+
+  <!-- Main Trunk Nodes -->
+  <div class="node internet" style="top: 20px; left: 645px;">
+    <i>🌐</i> Internet
+    <div class="node-label">google.com</div>
+    <div class="node-ip">8.8.8.8</div>
+  </div>
+
+  <div class="node router" style="top: 130px; left: 645px;">
+    <i>🛰️</i> Edge Router
+    <div class="node-label">WAN / LAN</div>
+    <div class="node-ip">41.33.25.11</div>
+  </div>
+
+  <!-- Fortinet Firewalls (HA Pair) -->
+  <div class="node fortinet" style="top: 250px; left: 515px;">
+    <i>🛡️</i> Fortinet A
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.11</div>
+  </div>
+  <div class="node fortinet" style="top: 250px; left: 775px;">
+    <i>🛡️</i> Fortinet B
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.12</div>
+  </div>
+
+  <!-- Palo Alto Firewalls (HA Pair) -->
+  <div class="node paloalto" style="top: 370px; left: 515px;">
+    <i>🧱</i> Palo Alto A
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.21</div>
+  </div>
+  <div class="node paloalto" style="top: 370px; left: 775px;">
+    <i>🧱</i> Palo Alto B
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.22</div>
+  </div>
+
+  <!-- IPS Nodes (Inline HA Pair) -->
+  <div class="node dmz" style="top: 490px; left: 515px;">
+    <i>🚧</i> IPS A
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.31</div>
+  </div>
+  <div class="node dmz" style="top: 490px; left: 775px;">
+    <i>🚧</i> IPS B
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.32</div>
+  </div>
+
+  <!-- IDS Nodes (Inline HA Pair) -->
+  <div class="node dmz" style="top: 610px; left: 515px;">
+    <i>👁️</i> IDS A
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.41</div>
+  </div>
+  <div class="node dmz" style="top: 610px; left: 775px;">
+    <i>👁️</i> IDS B
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.42</div>
+  </div>
+
+  <!-- Core Switches (HA Pair) -->
+  <div class="node core" style="top: 730px; left: 515px;">
+    <i>🟡</i> Core SW A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.1</div>
+  </div>
+  <div class="node core" style="top: 730px; left: 775px;">
+    <i>🟡</i> Core SW B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.2</div>
+  </div>
+
+  <!-- SecOps Nodes (Left of Core) -->
+  <div class="node secops" style="top: 730px; left: 305px;">
+    <i>📊</i> SIEM
+    <div class="node-label">Log Analyzer</div>
+    <div class="node-ip">10.9.9.10</div>
+  </div>
+  <div class="node secops" style="top: 860px; left: 305px;">
+    <i>🦠</i> EDR
+    <div class="node-label">Endpoint Sec</div>
+    <div class="node-ip">10.9.9.11</div>
+  </div>
+
+  <!-- Distribution Switches (HA Pairs) -->
+  <div class="node dist" style="top: 860px; left: 305px;">
+    <i>🟢</i> Dist SW 1A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.2</div>
+  </div>
+  <div class="node dist" style="top: 860px; left: 465px;">
+    <i>🟢</i> Dist SW 1B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.3</div>
+  </div>
+  <div class="node dist" style="top: 860px; left: 725px;">
+    <i>🟢</i> Dist SW 2A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.4</div>
+  </div>
+  <div class="node dist" style="top: 860px; left: 885px;">
+    <i>🟢</i> Dist SW 2B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.5</div>
+  </div>
+
+  <!-- Access Switches -->
+  <div class="node access" style="top: 990px; left: 235px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 137</div>
+    <div class="node-ip">10.0.137.1</div>
+  </div>
+  <div class="node access" style="top: 990px; left: 405px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 138</div>
+    <div class="node-ip">10.0.138.1</div>
+  </div>
+  <div class="node access" style="top: 990px; left: 655px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 139</div>
+    <div class="node-ip">10.0.139.1</div>
+  </div>
+  <div class="node access" style="top: 990px; left: 825px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 140</div>
+    <div class="node-ip">10.0.140.1</div>
+  </div>
+
+  <!-- PCs -->
+  <div class="node pc" style="top: 1110px; left: 250px;">
+    <i>💻</i> PC 1
+    <div class="node-ip">10.0.137.10</div>
+  </div>
+  <div class="node pc" style="top: 1110px; left: 420px;">
+    <i>💻</i> PC 2
+    <div class="node-ip">10.0.138.10</div>
+  </div>
+  <div class="node pc" style="top: 1110px; left: 670px;">
+    <i>💻</i> PC 3
+    <div class="node-ip">10.0.139.10</div>
+  </div>
+  <div class="node pc" style="top: 1110px; left: 840px;">
+    <i>💻</i> PC 4
+    <div class="node-ip">10.0.140.10</div>
+  </div>
+
+  <!-- DMZ Nodes -->
+  <div class="node dmz" style="top: 250px; left: 1130px;">
+    <i>🔄</i> DMZ SW
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.2.0.3</div>
+  </div>
+  <div class="node dmz" style="top: 370px; left: 1040px;">
+    <i>🖥️</i> Web Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.10</div>
+  </div>
+  <div class="node dmz" style="top: 370px; left: 1220px;">
+    <i>📬</i> Mail Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.11</div>
+  </div>
+
+  <!-- Packets Container -->
+  <div id="packet-container"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> PC 1 to google.com Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dmz)"></div> Internet to DMZ Traffic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Internal Inter-VLAN Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-secops)"></div> Logs sent to SIEM</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('packet-container');
+
+  // Updated packet routes to go through Dual Firewalls (Fortinet -> Palo Alto -> IPS -> IDS)
+  const routes = [
+    {
+      // PC1 to Google.com (Traces the exact IP path requested, via A side)
+      name: 'pc1-to-google',
+      path: 'M290 1110 L290 1060 L290 990 L290 960 L360 960 L360 930 L360 860 L360 840 L570 840 L570 810 L570 730 L570 680 L570 610 L570 560 L570 490 L570 440 L570 370 L570 320 L570 250 L570 220 L700 220 L700 200 L700 130 L700 90',
+      color: 'blue',
+      duration: 8500,
+      delay: 0
+    },
+    {
+      // Internet to Web Server (via Fortinet B to DMZ)
+      name: 'internet-to-web',
+      path: 'M700 90 L700 130 L700 200 L700 220 L830 220 L830 250 L885 285 L1130 285 L1185 320 L1185 340 L1095 340 L1095 370',
+      color: 'orange',
+      duration: 5500,
+      delay: 1000
+    },
+    {
+      // PC2 to PC3 (via Dist 1B, Core B, Dist 2A)
+      name: 'pc2-to-pc3',
+      path: 'M460 1110 L460 1060 L460 990 L460 960 L520 960 L520 930 L520 860 L520 840 L830 840 L830 810 L830 765 L780 765 L780 810 L780 840 L780 860 L780 930 L780 960 L710 960 L710 990 L710 1060 L710 1110',
+      color: 'green',
+      duration: 7500,
+      delay: 500
+    },
+    {
+      // Fortinet logs to SIEM (via PA, IPS, IDS, Core)
+      name: 'fw-to-siem',
+      path: 'M570 320 L570 370 L570 440 L570 490 L570 560 L570 610 L570 680 L570 730 L570 775 L415 775',
+      color: 'teal',
+      duration: 5500,
+      delay: 0
+    },
+    {
+      // Web Server logs to SIEM (via DMZ SW, Fortinet B, PA B, IPS B, IDS B, Core B)
+      name: 'web-to-siem',
+      path: 'M1095 370 L1095 340 L1185 340 L1185 320 L1130 285 L885 285 L830 285 L830 320 L830 370 L830 440 L830 490 L830 560 L830 610 L830 680 L830 730 L830 765 L570 765 L570 775 L415 775',
+      color: 'teal',
+      duration: 9000,
+      delay: 1500
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  // Inject keyframes
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // Create multiple packets per route
+  routes.forEach(route => {
+    createPacket(route);
+    const route2 = {...route, delay: route.delay + route.duration / 3};
+    createPacket(route2);
+    const route3 = {...route, delay: route.delay + 2 * (route.duration / 3)};
+    createPacket(route3);
+  });
+</script>
+</body>
+</html>
+</textarea>
+
+<textarea id="diagram2-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redundant Network Routing (Specific IPs)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B1026;
+    --panel: #151C3A;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --accent-internet: #38BDF8;
+    --accent-router: #A78BFA;
+    --accent-firewall: #F87171;
+    --accent-core: #FBBF24;
+    --accent-dist: #34D399;
+    --accent-access: #60A5FA;
+    --accent-pc: #F472B6;
+    --accent-dmz: #FB923C;
+    --accent-secops: #2DD4BF;
+    --line-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+  }
+
+  .network-stage {
+    position: relative;
+    width: 1400px;
+    height: 1150px; 
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: visible;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  svg.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  path.link {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6;
+    animation: dash 1s linear infinite;
+  }
+  
+  path.ha-link {
+    stroke: #475569;
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+    animation: dash 1.5s linear infinite;
+  }
+
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  .node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 8px;
+    width: 110px;
+    height: 70px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .node i { font-size: 18px; margin-bottom: 2px; display: block; }
+  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
+  
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .internet { border-color: var(--accent-internet); color: var(--accent-internet); }
+  .router { border-color: var(--accent-router); color: var(--accent-router); }
+  .firewall { border-color: var(--accent-firewall); color: var(--accent-firewall); }
+  .core { border-color: var(--accent-core); color: var(--accent-core); }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 80px; height: 60px; font-size: 10px; }
+  .pc i { font-size: 14px; margin-bottom: 2px; }
+  .pc .node-ip { font-size: 8px; }
+  
+  .dmz { border-color: var(--accent-dmz); color: var(--accent-dmz); }
+  .secops { border-color: var(--accent-secops); color: var(--accent-secops); }
+
+  .layer-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 10;
+    border-left: 2px solid currentColor;
+    padding-left: 8px;
+    background: var(--panel);
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .packet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    offset-rotate: auto;
+  }
+
+  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); }
+  .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); }
+  .packet.orange { background: var(--accent-dmz); box-shadow: 0 0 12px var(--accent-dmz); }
+  .packet.teal { background: var(--accent-secops); box-shadow: 0 0 12px var(--accent-secops); }
+
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px; 
+    background: rgba(0,0,0,0.6);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Redundant Network Routing (Explicit IP Hierarchy)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <!-- Layer Labels -->
+  <div class="layer-label" style="top: 30px; left: 15px; color: var(--accent-internet);">Internet / WAN</div>
+  <div class="layer-label" style="top: 140px; left: 15px; color: var(--accent-router);">Edge Router</div>
+  <div class="layer-label" style="top: 260px; left: 15px; color: var(--accent-firewall);">Firewall (HA Pair)</div>
+  <div class="layer-label" style="top: 380px; left: 15px; color: var(--accent-dmz);">IPS Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 500px; left: 15px; color: var(--accent-dmz);">IDS Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 620px; left: 15px; color: var(--accent-core);">Core Layer (HA Pair)</div>
+  <div class="layer-label" style="top: 740px; left: 15px; color: var(--accent-dist);">Distribution (HA Pairs)</div>
+  <div class="layer-label" style="top: 870px; left: 15px; color: var(--accent-access);">Access Layer</div>
+  
+  <!-- Right Side Labels -->
+  <div class="layer-label" style="top: 260px; right: 15px; color: var(--accent-dmz); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">DMZ Zone</div>
+  <div class="layer-label" style="top: 620px; right: 15px; color: var(--accent-secops); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">SecOps Zone</div>
+
+  <!-- SVG Connections -->
+  <svg class="connections" viewBox="0 0 1400 1150">
+    <!-- Main Trunk -->
+    <path class="link" d="M700 90 L700 130" /> 
+    <!-- Router to Firewalls -->
+    <path class="link" d="M700 200 L700 220 L570 220 L570 250" />
+    <path class="link" d="M700 200 L700 220 L830 220 L830 250" />
+    <path class="ha-link" d="M625 285 L775 285" /> 
+    
+    <!-- Firewalls to IPS -->
+    <path class="link" d="M570 320 L570 370" />
+    <path class="link" d="M830 320 L830 370" />
+    <path class="ha-link" d="M625 395 L775 395" /> 
+
+    <!-- IPS to IDS -->
+    <path class="link" d="M570 440 L570 490" />
+    <path class="link" d="M830 440 L830 490" />
+    <path class="ha-link" d="M625 515 L775 515" /> 
+
+    <!-- IDS to Core -->
+    <path class="link" d="M570 560 L570 610" />
+    <path class="link" d="M830 560 L830 610" />
+    <path class="ha-link" d="M625 635 L775 635" /> 
+
+    <!-- Core to Dist -->
+    <path class="link" d="M570 680 L570 710 L360 710 L360 730" />
+    <path class="link" d="M570 680 L570 710 L520 710 L520 730" />
+    <path class="link" d="M830 680 L830 710 L780 710 L780 730" />
+    <path class="link" d="M830 680 L830 710 L940 710 L940 730" />
+    <path class="ha-link" d="M415 765 L465 765" /> 
+    <path class="ha-link" d="M835 765 L885 765" /> 
+
+    <!-- Dist to Access -->
+    <path class="link" d="M360 800 L360 830 L290 830 L290 860" />
+    <path class="link" d="M520 800 L520 830 L290 830 L290 860" />
+    <path class="link" d="M360 800 L360 830 L460 830 L460 860" />
+    <path class="link" d="M520 800 L520 830 L460 830 L460 860" />
+
+    <path class="link" d="M780 800 L780 830 L710 830 L710 860" />
+    <path class="link" d="M940 800 L940 830 L710 830 L710 860" />
+    <path class="link" d="M780 800 L780 830 L880 830 L880 860" />
+    <path class="link" d="M940 800 L940 830 L880 830 L880 860" />
+
+    <!-- Access to PCs -->
+    <path class="link" d="M290 930 L290 980" />
+    <path class="link" d="M460 930 L460 980" />
+    <path class="link" d="M710 930 L710 980" />
+    <path class="link" d="M880 930 L880 980" />
+
+    <!-- DMZ Connections -->
+    <path class="link" d="M885 285 L1130 285" /> 
+    <path class="link" d="M1185 320 L1185 340 L1095 340 L1095 370" /> 
+    <path class="link" d="M1185 320 L1185 340 L1275 340 L1275 370" /> 
+
+    <!-- SecOps Connections -->
+    <path class="link" d="M515 645 L415 645" /> 
+    <path class="link" d="M360 680 L360 730" /> 
+  </svg>
+
+  <!-- Main Trunk Nodes -->
+  <div class="node internet" style="top: 20px; left: 645px;">
+    <i>🌐</i> Internet
+    <div class="node-label">google.com</div>
+    <div class="node-ip">8.8.8.8</div>
+  </div>
+
+  <div class="node router" style="top: 130px; left: 645px;">
+    <i>🛰️</i> Edge Router
+    <div class="node-label">WAN / LAN</div>
+    <div class="node-ip">41.33.25.11</div>
+  </div>
+
+  <!-- Firewalls (HA Pair) -->
+  <div class="node firewall" style="top: 250px; left: 515px;">
+    <i>🛡️</i> Firewall A
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.11</div>
+  </div>
+  <div class="node firewall" style="top: 250px; left: 775px;">
+    <i>🛡️</i> Firewall B
+    <div class="node-label">Active/Standby</div>
+    <div class="node-ip">10.0.254.12</div>
+  </div>
+
+  <!-- IPS Nodes (Inline HA Pair) -->
+  <div class="node dmz" style="top: 370px; left: 515px;">
+    <i>🚧</i> IPS A
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.21</div>
+  </div>
+  <div class="node dmz" style="top: 370px; left: 775px;">
+    <i>🚧</i> IPS B
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.22</div>
+  </div>
+
+  <!-- IDS Nodes (Inline HA Pair) -->
+  <div class="node dmz" style="top: 490px; left: 515px;">
+    <i>👁️</i> IDS A
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.31</div>
+  </div>
+  <div class="node dmz" style="top: 490px; left: 775px;">
+    <i>👁️</i> IDS B
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.32</div>
+  </div>
+
+  <!-- Core Switches (HA Pair) -->
+  <div class="node core" style="top: 610px; left: 515px;">
+    <i>🟡</i> Core SW A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.1</div>
+  </div>
+  <div class="node core" style="top: 610px; left: 775px;">
+    <i>🟡</i> Core SW B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.2</div>
+  </div>
+
+  <!-- SecOps Nodes (Left of Core) -->
+  <div class="node secops" style="top: 610px; left: 305px;">
+    <i>📊</i> SIEM
+    <div class="node-label">Log Analyzer</div>
+    <div class="node-ip">10.9.9.10</div>
+  </div>
+  <div class="node secops" style="top: 730px; left: 305px;">
+    <i>🦠</i> EDR
+    <div class="node-label">Endpoint Sec</div>
+    <div class="node-ip">10.9.9.11</div>
+  </div>
+
+  <!-- Distribution Switches (HA Pairs) -->
+  <div class="node dist" style="top: 730px; left: 305px;">
+    <i>🟢</i> Dist SW 1A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.2</div>
+  </div>
+  <div class="node dist" style="top: 730px; left: 465px;">
+    <i>🟢</i> Dist SW 1B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.3</div>
+  </div>
+  <div class="node dist" style="top: 730px; left: 725px;">
+    <i>🟢</i> Dist SW 2A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.4</div>
+  </div>
+  <div class="node dist" style="top: 730px; left: 885px;">
+    <i>🟢</i> Dist SW 2B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.5</div>
+  </div>
+
+  <!-- Access Switches -->
+  <div class="node access" style="top: 860px; left: 235px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 137</div>
+    <div class="node-ip">10.0.137.1</div>
+  </div>
+  <div class="node access" style="top: 860px; left: 405px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 138</div>
+    <div class="node-ip">10.0.138.1</div>
+  </div>
+  <div class="node access" style="top: 860px; left: 655px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 139</div>
+    <div class="node-ip">10.0.139.1</div>
+  </div>
+  <div class="node access" style="top: 860px; left: 825px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 140</div>
+    <div class="node-ip">10.0.140.1</div>
+  </div>
+
+  <!-- PCs -->
+  <div class="node pc" style="top: 980px; left: 250px;">
+    <i>💻</i> PC 1
+    <div class="node-ip">10.0.137.10</div>
+  </div>
+  <div class="node pc" style="top: 980px; left: 420px;">
+    <i>💻</i> PC 2
+    <div class="node-ip">10.0.138.10</div>
+  </div>
+  <div class="node pc" style="top: 980px; left: 670px;">
+    <i>💻</i> PC 3
+    <div class="node-ip">10.0.139.10</div>
+  </div>
+  <div class="node pc" style="top: 980px; left: 840px;">
+    <i>💻</i> PC 4
+    <div class="node-ip">10.0.140.10</div>
+  </div>
+
+  <!-- DMZ Nodes -->
+  <div class="node dmz" style="top: 250px; left: 1130px;">
+    <i>🔄</i> DMZ SW
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.2.0.3</div>
+  </div>
+  <div class="node dmz" style="top: 370px; left: 1040px;">
+    <i>🖥️</i> Web Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.10</div>
+  </div>
+  <div class="node dmz" style="top: 370px; left: 1220px;">
+    <i>📬</i> Mail Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.11</div>
+  </div>
+
+  <!-- Packets Container -->
+  <div id="packet-container"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> PC 1 to google.com Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dmz)"></div> Internet to DMZ Traffic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Internal Inter-VLAN Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-secops)"></div> Logs sent to SIEM</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('packet-container');
+
+  // Updated packet routes to specifically trace PC1 -> Access -> Dist -> Core -> FW -> Router -> Internet
+  const routes = [
+    {
+      // PC1 to Google.com (Traces the exact IP path requested)
+      name: 'pc1-to-google',
+      path: 'M290 980 L290 930 L290 860 L290 830 L360 830 L360 800 L360 730 L360 710 L570 710 L570 680 L570 610 L570 560 L570 490 L570 440 L570 370 L570 320 L570 250 L570 220 L700 220 L700 200 L700 130 L700 90',
+      color: 'blue',
+      duration: 7500,
+      delay: 0
+    },
+    {
+      // Internet to Web Server (via FW B to DMZ)
+      name: 'internet-to-web',
+      path: 'M700 90 L700 130 L700 200 L700 220 L830 220 L830 250 L885 285 L1130 285 L1185 320 L1185 340 L1095 340 L1095 370',
+      color: 'orange',
+      duration: 5500,
+      delay: 1000
+    },
+    {
+      // PC2 to PC3 (via Dist 1B, Core B, Dist 2A)
+      name: 'pc2-to-pc3',
+      path: 'M460 980 L460 930 L460 860 L460 830 L520 830 L520 800 L520 730 L520 710 L830 710 L830 680 L830 635 L780 635 L780 680 L780 710 L780 730 L780 800 L780 830 L710 830 L710 860 L710 930 L710 980',
+      color: 'green',
+      duration: 6500,
+      delay: 500
+    },
+    {
+      // Firewall logs to SIEM (via IPS, IDS, Core)
+      name: 'fw-to-siem',
+      path: 'M570 320 L570 370 L570 440 L570 490 L570 560 L570 610 L570 645 L415 645',
+      color: 'teal',
+      duration: 4500,
+      delay: 0
+    },
+    {
+      // Web Server logs to SIEM (via DMZ SW, FW B, IPS B, IDS B, Core B)
+      name: 'web-to-siem',
+      path: 'M1095 370 L1095 340 L1185 340 L1185 320 L1130 285 L885 285 L830 285 L830 320 L830 370 L830 440 L830 490 L830 560 L830 610 L830 635 L570 635 L570 645 L415 645',
+      color: 'teal',
+      duration: 8000,
+      delay: 1500
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  // Inject keyframes
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // Create multiple packets per route
+  routes.forEach(route => {
+    createPacket(route);
+    const route2 = {...route, delay: route.delay + route.duration / 3};
+    createPacket(route2);
+    const route3 = {...route, delay: route.delay + 2 * (route.duration / 3)};
+    createPacket(route3);
+  });
+</script>
+</body>
+</html>
+</textarea>
+
+<textarea id="diagram3-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vertical Stacked Network Routing Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Added FontAwesome for professional network icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0B1026;
+    --panel: #151C3A;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --accent-internet: #38BDF8;
+    --accent-router: #A78BFA;
+    --accent-firewall: #F87171;
+    --accent-firewall2: #FB7185;
+    --accent-core: #FBBF24;
+    --accent-dist: #34D399;
+    --accent-access: #60A5FA;
+    --accent-pc: #F472B6;
+    --accent-dmz: #FB923C;
+    --accent-secops: #2DD4BF;
+    --line-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+  }
+
+  .network-stage {
+    position: relative;
+    width: 900px;
+    height: 1350px;
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: visible;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  svg.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  path.link {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6;
+    animation: dash 1s linear infinite;
+  }
+  
+  path.ha-link {
+    stroke: #475569;
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+    animation: dash 1.5s linear infinite;
+  }
+
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  .node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 8px;
+    width: 110px;
+    height: 70px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+  }
+  
+  .node-a { z-index: 3; }
+  .node-b { z-index: 2; background: #111935; }
+
+  .node i { font-size: 20px; margin-bottom: 4px; display: block; }
+  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
+  
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .internet { border-color: var(--accent-internet); color: var(--accent-internet); }
+  .router { border-color: var(--accent-router); color: var(--accent-router); }
+  .fortinet { border-color: var(--accent-firewall); color: var(--accent-firewall); }
+  .paloalto { border-color: var(--accent-firewall2); color: var(--accent-firewall2); }
+  .core { border-color: var(--accent-core); color: var(--accent-core); }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 80px; height: 60px; font-size: 10px; }
+  .pc i { font-size: 18px; margin-bottom: 2px; }
+  .pc .node-ip { font-size: 8px; }
+  
+  .dmz { border-color: var(--accent-dmz); color: var(--accent-dmz); }
+  .secops { border-color: var(--accent-secops); color: var(--accent-secops); }
+
+  .layer-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 10;
+    border-left: 2px solid currentColor;
+    padding-left: 8px;
+    background: var(--panel);
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .packet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    offset-rotate: auto;
+  }
+
+  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); }
+  .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); }
+  .packet.orange { background: var(--accent-dmz); box-shadow: 0 0 12px var(--accent-dmz); }
+  .packet.teal { background: var(--accent-secops); box-shadow: 0 0 12px var(--accent-secops); }
+
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px; 
+    background: rgba(0,0,0,0.6);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+    z-index: 10;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Vertical Stacked Network (Multi-Site & DMZ)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <!-- Layer Labels -->
+  <div class="layer-label" style="top: 30px; left: 15px; color: var(--accent-internet);">Internet (Cloud)</div>
+  <div class="layer-label" style="top: 140px; left: 15px; color: var(--accent-router);">Main Edge Router</div>
+  <div class="layer-label" style="top: 280px; left: 15px; color: var(--accent-firewall);">Fortinet (HA)</div>
+  <div class="layer-label" style="top: 400px; left: 15px; color: var(--accent-firewall2);">Palo Alto (HA)</div>
+  <div class="layer-label" style="top: 520px; left: 15px; color: var(--accent-dmz);">IPS (HA)</div>
+  <div class="layer-label" style="top: 640px; left: 15px; color: var(--accent-dmz);">IDS (HA)</div>
+  <div class="layer-label" style="top: 760px; left: 15px; color: var(--accent-core);">Core Switch (HA)</div>
+  <div class="layer-label" style="top: 880px; left: 15px; color: var(--accent-dist);">Distribution (6 SWs, HA)</div>
+  <div class="layer-label" style="top: 1010px; left: 15px; color: var(--accent-access);">Access Layer</div>
+  
+  <!-- Right Side Labels -->
+  <div class="layer-label" style="top: 280px; right: 15px; color: var(--accent-router); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">Site Routers</div>
+  <div class="layer-label" style="top: 460px; right: 15px; color: var(--accent-dmz); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">DMZ Zone</div>
+  <div class="layer-label" style="top: 760px; right: 15px; color: var(--accent-secops); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">SecOps Zone</div>
+
+  <!-- SVG Connections -->
+  <svg class="connections" viewBox="0 0 900 1350">
+    <!-- Internet to Main Router -->
+    <path class="link" d="M450 90 L450 130" />
+    
+    <!-- Main Router to Fortinet -->
+    <path class="link" d="M450 200 L450 230 L420 230 L420 260" />
+    <path class="link" d="M450 200 L450 285" />
+    <path class="ha-link" d="M415 295 L445 320" /> 
+
+    <!-- Fortinet to Site Routers (Custom & MTS) -->
+    <path class="link" d="M475 295 L645 295" /> <!-- FW A to Custom -->
+    <path class="link" d="M475 320 L645 395" /> <!-- FW B to MTS -->
+
+    <!-- Fortinet to DMZ Switch -->
+    <path class="link" d="M450 355 L450 495 L645 495" />
+
+    <!-- Fortinet to Palo Alto -->
+    <path class="link" d="M420 330 L420 380" />
+    <path class="link" d="M450 355 L450 405" />
+    <path class="ha-link" d="M415 415 L445 440" /> 
+
+    <!-- Palo Alto to IPS -->
+    <path class="link" d="M420 450 L420 500" />
+    <path class="link" d="M450 475 L450 525" />
+    <path class="ha-link" d="M415 535 L445 560" /> 
+
+    <!-- IPS to IDS -->
+    <path class="link" d="M420 570 L420 620" />
+    <path class="link" d="M450 595 L450 645" />
+    <path class="ha-link" d="M415 655 L445 680" /> 
+
+    <!-- IDS to Core -->
+    <path class="link" d="M420 690 L420 740" />
+    <path class="link" d="M450 715 L450 765" />
+    <path class="ha-link" d="M415 775 L445 800" /> 
+
+    <!-- Core to 6 Dist Switches (3 Pairs) -->
+    <path class="link" d="M420 810 L420 840 L220 840 L220 870" />
+    <path class="link" d="M450 835 L450 840 L250 840 L250 895" />
+    <path class="ha-link" d="M215 905 L245 930" />
+    
+    <path class="link" d="M420 810 L420 870" />
+    <path class="link" d="M450 835 L450 895" />
+    <path class="ha-link" d="M415 905 L445 930" />
+    
+    <path class="link" d="M420 810 L420 840 L620 840 L620 870" />
+    <path class="link" d="M450 835 L450 840 L650 840 L650 895" />
+    <path class="ha-link" d="M615 905 L645 930" />
+
+    <!-- Dist to Access -->
+    <path class="link" d="M220 940 L220 980 L235 980 L235 1010" />
+    <path class="link" d="M250 965 L250 980 L235 980 L235 1010" />
+    <path class="link" d="M420 940 L420 980 L435 980 L435 1010" />
+    <path class="link" d="M450 965 L450 980 L435 980 L435 1010" />
+    <path class="link" d="M620 940 L620 980 L635 980 L635 1010" />
+    <path class="link" d="M650 965 L650 980 L635 980 L635 1010" />
+
+    <!-- Access to PCs -->
+    <path class="link" d="M235 1080 L235 1130" />
+    <path class="link" d="M435 1080 L435 1130" />
+    <path class="link" d="M635 1080 L635 1130" />
+
+    <!-- DMZ Internal Connections -->
+    <path class="link" d="M700 330 L700 370" /> 
+    <path class="link" d="M700 440 L700 480" /> 
+    <path class="link" d="M700 550 L700 590" /> 
+
+    <!-- SecOps Connections -->
+    <path class="link" d="M415 775 L150 775 L150 740" /> 
+    <path class="link" d="M150 810 L150 850" /> 
+  </svg>
+
+  <!-- Main Trunk Nodes -->
+  <div class="node internet" style="top: 20px; left: 395px;">
+    <i class="fas fa-cloud"></i>
+    Internet
+    <div class="node-label">google.com</div>
+    <div class="node-ip">8.8.8.8</div>
+  </div>
+
+  <div class="node router" style="top: 130px; left: 395px;">
+    <i class="fas fa-router"></i>
+    Main Router
+    <div class="node-label">ISP Primary</div>
+    <div class="node-ip">41.33.25.10</div>
+  </div>
+
+  <!-- Fortinet Firewalls (Stacked HA) -->
+  <div class="node fortinet node-a" style="top: 260px; left: 365px;">
+    <i class="fas fa-shield-halved"></i>
+    Fortinet A
+    <div class="node-label">Active</div>
+    <div class="node-ip">10.0.254.11</div>
+  </div>
+  <div class="node fortinet node-b" style="top: 285px; left: 395px;">
+    <i class="fas fa-shield-halved"></i>
+    Fortinet B
+    <div class="node-label">Standby</div>
+    <div class="node-ip">10.0.254.12</div>
+  </div>
+
+  <!-- Site Routers (Right Side, beside DMZ) -->
+  <div class="node router" style="top: 260px; left: 645px;">
+    <i class="fas fa-router"></i>
+    Custom Router
+    <div class="node-label">Site A</div>
+    <div class="node-ip">41.33.25.11</div>
+  </div>
+  <div class="node router" style="top: 360px; left: 645px;">
+    <i class="fas fa-router"></i>
+    MTS Router
+    <div class="node-label">Site B</div>
+    <div class="node-ip">41.33.25.12</div>
+  </div>
+
+  <!-- Palo Alto Firewalls (Stacked HA) -->
+  <div class="node paloalto node-a" style="top: 380px; left: 365px;">
+    <i class="fas fa-shield-halved"></i>
+    Palo Alto A
+    <div class="node-label">Active</div>
+    <div class="node-ip">10.0.254.21</div>
+  </div>
+  <div class="node paloalto node-b" style="top: 405px; left: 395px;">
+    <i class="fas fa-shield-halved"></i>
+    Palo Alto B
+    <div class="node-label">Standby</div>
+    <div class="node-ip">10.0.254.22</div>
+  </div>
+
+  <!-- IPS Nodes (Stacked HA) -->
+  <div class="node dmz node-a" style="top: 500px; left: 365px;">
+    <i class="fas fa-shield-virus"></i>
+    IPS A
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.31</div>
+  </div>
+  <div class="node dmz node-b" style="top: 525px; left: 395px;">
+    <i class="fas fa-shield-virus"></i>
+    IPS B
+    <div class="node-label">Prevention</div>
+    <div class="node-ip">10.0.254.32</div>
+  </div>
+
+  <!-- IDS Nodes (Stacked HA) -->
+  <div class="node dmz node-a" style="top: 620px; left: 365px;">
+    <i class="fas fa-eye"></i>
+    IDS A
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.41</div>
+  </div>
+  <div class="node dmz node-b" style="top: 645px; left: 395px;">
+    <i class="fas fa-eye"></i>
+    IDS B
+    <div class="node-label">Detection</div>
+    <div class="node-ip">10.0.254.42</div>
+  </div>
+
+  <!-- Core Switches (Stacked HA) -->
+  <div class="node core node-a" style="top: 740px; left: 365px;">
+    <i class="fas fa-network-wired"></i>
+    Core SW A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.1</div>
+  </div>
+  <div class="node core node-b" style="top: 765px; left: 395px;">
+    <i class="fas fa-network-wired"></i>
+    Core SW B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.250.2</div>
+  </div>
+
+  <!-- SecOps Nodes (Vertical, Left of Core) -->
+  <div class="node secops" style="top: 740px; left: 95px;">
+    <i class="fas fa-chart-line"></i>
+    SIEM
+    <div class="node-label">Log Analyzer</div>
+    <div class="node-ip">10.9.9.10</div>
+  </div>
+  <div class="node secops" style="top: 850px; left: 95px;">
+    <i class="fas fa-bug"></i>
+    EDR
+    <div class="node-label">Endpoint Sec</div>
+    <div class="node-ip">10.9.9.11</div>
+  </div>
+
+  <!-- 6 Distribution Switches (3 Stacked HA Pairs) -->
+  <div class="node dist node-a" style="top: 870px; left: 165px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 1A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.2</div>
+  </div>
+  <div class="node dist node-b" style="top: 895px; left: 195px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 1B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.3</div>
+  </div>
+  
+  <div class="node dist node-a" style="top: 870px; left: 365px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 2A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.4</div>
+  </div>
+  <div class="node dist node-b" style="top: 895px; left: 395px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 2B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.5</div>
+  </div>
+  
+  <div class="node dist node-a" style="top: 870px; left: 565px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 3A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.6</div>
+  </div>
+  <div class="node dist node-b" style="top: 895px; left: 595px;">
+    <i class="fas fa-network-wired"></i>
+    Dist SW 3B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.14.7</div>
+  </div>
+
+  <!-- Access Switches -->
+  <div class="node access" style="top: 1010px; left: 180px;">
+    <i class="fas fa-ethernet"></i>
+    Access SW
+    <div class="node-label">VLAN 137</div>
+    <div class="node-ip">10.0.137.1</div>
+  </div>
+  <div class="node access" style="top: 1010px; left: 380px;">
+    <i class="fas fa-ethernet"></i>
+    Access SW
+    <div class="node-label">VLAN 138</div>
+    <div class="node-ip">10.0.138.1</div>
+  </div>
+  <div class="node access" style="top: 1010px; left: 580px;">
+    <i class="fas fa-ethernet"></i>
+    Access SW
+    <div class="node-label">VLAN 139</div>
+    <div class="node-ip">10.0.139.1</div>
+  </div>
+
+  <!-- PCs -->
+  <div class="node pc" style="top: 1130px; left: 195px;">
+    <i class="fas fa-desktop"></i>
+    PC 1
+    <div class="node-ip">10.0.137.10</div>
+  </div>
+  <div class="node pc" style="top: 1130px; left: 395px;">
+    <i class="fas fa-desktop"></i>
+    PC 2
+    <div class="node-ip">10.0.138.10</div>
+  </div>
+  <div class="node pc" style="top: 1130px; left: 595px;">
+    <i class="fas fa-desktop"></i>
+    PC 3
+    <div class="node-ip">10.0.139.10</div>
+  </div>
+
+  <!-- DMZ Nodes (Vertical, Right Side) -->
+  <div class="node dmz" style="top: 460px; left: 645px;">
+    <i class="fas fa-network-wired"></i>
+    DMZ SW
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.2.0.3</div>
+  </div>
+  <div class="node dmz" style="top: 560px; left: 645px;">
+    <i class="fas fa-server"></i>
+    Web Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.10</div>
+  </div>
+  <div class="node dmz" style="top: 660px; left: 645px;">
+    <i class="fas fa-server"></i>
+    Mail Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.11</div>
+  </div>
+  <div class="node dmz" style="top: 760px; left: 645px;">
+    <i class="fas fa-server"></i>
+    App Server
+    <div class="node-label">VLAN 50</div>
+    <div class="node-ip">10.2.50.12</div>
+  </div>
+
+  <!-- Packets Container -->
+  <div id="packet-container"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> PC 1 to google.com Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dmz)"></div> Internet to DMZ Traffic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Internal Inter-VLAN Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-secops)"></div> Logs sent to SIEM</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('packet-container');
+
+  // Updated packet routes for vertical stacked layout
+  const routes = [
+    {
+      // PC1 to Google.com (via Dist 1A, Core A, IDS A, IPS A, PA A, FW A, Main Router)
+      name: 'pc1-to-google',
+      path: 'M235 1130 L235 1080 L235 1010 L235 980 L220 980 L220 940 L220 870 L220 840 L420 840 L420 810 L420 740 L420 690 L420 620 L420 570 L420 500 L420 450 L420 380 L420 330 L420 260 L420 230 L450 230 L450 200 L450 130 L450 90',
+      color: 'blue',
+      duration: 8500,
+      delay: 0
+    },
+    {
+      // Internet to DMZ Web Server (via Main Router, Fortinet B)
+      name: 'internet-to-web',
+      path: 'M450 90 L450 130 L450 200 L450 285 L450 355 L450 495 L645 495 L700 495 L700 560',
+      color: 'orange',
+      duration: 6000,
+      delay: 1000
+    },
+    {
+      // PC1 to PC3 (via Dist 1A, Core A, Dist 3A)
+      name: 'pc1-to-pc3',
+      path: 'M235 1130 L235 1080 L235 1010 L235 980 L220 980 L220 940 L220 870 L220 840 L420 840 L420 810 L420 775 L620 775 L620 840 L620 870 L620 940 L620 980 L635 980 L635 1010 L635 1080 L635 1130',
+      color: 'green',
+      duration: 7000,
+      delay: 500
+    },
+    {
+      // Fortinet logs to SIEM (via PA, IPS, IDS, Core A)
+      name: 'fw-to-siem',
+      path: 'M420 260 L420 380 L420 500 L420 620 L420 740 L415 775 L150 775 L150 740',
+      color: 'teal',
+      duration: 5500,
+      delay: 0
+    },
+    {
+      // Web Server logs to SIEM (via DMZ SW, FW B, PA B, IPS B, IDS B, Core B, Core A)
+      name: 'web-to-siem',
+      path: 'M700 560 L700 495 L450 495 L450 355 L450 405 L450 525 L450 645 L450 765 L445 800 L415 775 L150 775 L150 740',
+      color: 'teal',
+      duration: 9000,
+      delay: 1500
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  // Inject keyframes
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // Create multiple packets per route
+  routes.forEach(route => {
+    createPacket(route);
+    const route2 = {...route, delay: route.delay + route.duration / 3};
+    createPacket(route2);
+    const route3 = {...route, delay: route.delay + 2 * (route.duration / 3)};
+    createPacket(route3);
+  });
+</script>
+</body>
+</html>
+</textarea>
+
+<textarea id="diagram4-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core / Dist / Access HA Topology</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0B1026; --panel: #151C3A; --text: #E2E8F0; --muted: #94A3B8;
+    --accent-core: #FBBF24; --accent-dist: #34D399; --accent-access: #60A5FA; --accent-pc: #F472B6;
+    --accent-ok: #10B981; --accent-fault: #EF4444; --line-color: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px;
+  }
+  h1 { font-size: 24px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+  .network-stage {
+    position: relative; width: 900px; height: 800px; background: var(--panel);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .grid-bg {
+    position: absolute; inset: 0; background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px; border-radius: 16px;
+  }
+  svg.connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  
+  /* Line Styles */
+  path.link { stroke: var(--accent-ok); stroke-width: 4; fill: none; }
+  path.link-fault { stroke: var(--accent-fault); stroke-width: 4; fill: none; stroke-dasharray: 8 4; animation: dash 1s linear infinite; }
+  path.ha-link { stroke: #475569; stroke-width: 2; stroke-dasharray: 4 4; animation: dash 1.5s linear infinite; fill: none; }
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  .node {
+    position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; background: var(--bg); border: 2px solid; border-radius: 10px;
+    padding: 10px; width: 140px; height: 80px; font-size: 12px; font-weight: 600; text-align: center;
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+  }
+  .node-a { z-index: 3; }
+  .node-b { z-index: 2; background: #111935; }
+  
+  .node i { font-size: 22px; margin-bottom: 4px; display: block; }
+  .node-label { opacity: 0.9; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:2px; }
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #fff;
+    background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px; margin-top: 4px; width: 100%;
+  }
+
+  .core { border-color: var(--accent-core); color: var(--accent-core); width: 160px; }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 110px; height: 60px; font-size: 11px; }
+  .pc i { font-size: 18px; }
+
+  .status-badge {
+    position: absolute; top: -10px; right: -10px; font-size: 9px; font-weight: 800; 
+    padding: 3px 8px; border-radius: 50px; border: 2px solid var(--panel);
+  }
+  .status-ok { background: var(--accent-ok); color: #fff; }
+  .status-fault { background: var(--accent-fault); color: #fff; animation: pulse 1.5s infinite; }
+
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+  .link-label {
+    position: absolute; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--line-color);
+    padding: 4px 8px; border-radius: 6px; font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-core); z-index: 5; text-align: center; line-height: 1.4;
+  }
+  .link-label.user { color: var(--accent-access); border-color: var(--accent-access); }
+  .link-label.fault { color: var(--accent-fault); border-color: var(--accent-fault); }
+
+  .packet {
+    position: absolute; width: 12px; height: 12px; background: #fff; border-radius: 50%;
+    z-index: 4; box-shadow: 0 0 10px rgba(255,255,255,0.8); offset-rotate: auto;
+  }
+  .packet.blue { background: var(--accent-access); box-shadow: 0 0 12px var(--accent-access); }
+  .packet.red { background: var(--accent-fault); box-shadow: 0 0 12px var(--accent-fault); }
+
+  .legend {
+    position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 12px 16px;
+    border-radius: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; z-index: 10;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Hierarchical Topology (HA Core & Dist)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <svg class="connections" viewBox="0 0 900 800">
+    <!-- Core to Dist 1 -->
+    <path class="link" d="M450 130 L200 250" />
+    <path class="link" d="M480 155 L230 275" />
+    <!-- Core to Dist 2 -->
+    <path class="link" d="M450 130 L450 250" />
+    <path class="link" d="M480 155 L480 275" />
+    <!-- Core to Dist 3 -->
+    <path class="link" d="M450 130 L700 250" />
+    <path class="link" d="M480 155 L730 275" />
+
+    <!-- HA Links Core -->
+    <path class="ha-link" d="M465 115 L495 140" />
+    <!-- HA Links Dist -->
+    <path class="ha-link" d="M215 235 L245 260" />
+    <path class="ha-link" d="M465 235 L495 260" />
+    <path class="ha-link" d="M715 235 L745 260" />
+
+    <!-- Dist 1 to Access 1 -->
+    <path class="link" d="M200 340 L200 460" />
+    <path class="link" d="M230 365 L230 460" />
+    
+    <!-- Dist 2 to Access 2 (FAULT) -->
+    <path class="link-fault" d="M450 340 L450 460" />
+    <path class="link-fault" d="M480 365 L480 460" />
+    
+    <!-- Dist 3 to Access 3 -->
+    <path class="link" d="M700 340 L700 460" />
+    <path class="link" d="M730 365 L730 460" />
+
+    <!-- Access to PCs -->
+    <path class="link" d="M200 540 L200 630" />
+    <path class="link-fault" d="M450 540 L450 630" />
+    <path class="link" d="M700 540 L700 630" />
+  </svg>
+
+  <!-- Subnet Labels (Core to Dist) -->
+  <div class="link-label" style="top: 180px; left: 290px;">10.0.11.x</div>
+  <div class="link-label" style="top: 180px; left: 430px;">10.0.12.x</div>
+  <div class="link-label" style="top: 180px; left: 570px;">10.0.13.x</div>
+  
+  <!-- User VLAN Labels (Dist/Access to PC) -->
+  <div class="link-label user" style="top: 570px; left: 140px;">User VLAN<br>10.0.136.x</div>
+  <div class="link-label user fault" style="top: 570px; left: 390px;">User VLAN<br>10.0.137.x</div>
+  <div class="link-label user" style="top: 570px; left: 640px;">User VLAN<br>10.0.138.x</div>
+
+  <!-- Core Nodes (HA Pair) -->
+  <!-- IPs removed from Core as requested -->
+  <div class="node core node-a" style="top: 50px; left: 370px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Core SW A
+    <div class="node-label">L3 Routing</div>
+  </div>
+  <div class="node core node-b" style="top: 75px; left: 400px;">
+    <i class="fas fa-network-wired"></i> Core SW B
+    <div class="node-label">L3 Routing</div>
+  </div>
+
+  <!-- Dist 1 Nodes (HA Pair) -->
+  <div class="node dist node-a" style="top: 250px; left: 130px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 1A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.11.1</div>
+  </div>
+  <div class="node dist node-b" style="top: 275px; left: 160px;">
+    <i class="fas fa-network-wired"></i> Dist SW 1B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.11.1</div>
+  </div>
+  
+  <!-- Dist 2 Nodes (HA Pair) -->
+  <div class="node dist node-a" style="top: 250px; left: 380px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 2A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.12.1</div>
+  </div>
+  <div class="node dist node-b" style="top: 275px; left: 410px;">
+    <i class="fas fa-network-wired"></i> Dist SW 2B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.12.1</div>
+  </div>
+
+  <!-- Dist 3 Nodes (HA Pair) -->
+  <div class="node dist node-a" style="top: 250px; left: 630px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 3A
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.13.1</div>
+  </div>
+  <div class="node dist node-b" style="top: 275px; left: 660px;">
+    <i class="fas fa-network-wired"></i> Dist SW 3B
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.13.1</div>
+  </div>
+
+  <!-- Access Nodes -->
+  <div class="node access" style="top: 460px; left: 165px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-ethernet"></i> Access SW 1
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.21</div>
+  </div>
+
+  <div class="node access" style="top: 460px; left: 415px;">
+    <div class="status-badge status-fault">Ping timeout</div>
+    <i class="fas fa-ethernet"></i> Access SW 2
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.22</div>
+  </div>
+
+  <div class="node access" style="top: 460px; left: 665px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-ethernet"></i> Access SW 3
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.23</div>
+  </div>
+
+  <!-- PCs (User VLANs) -->
+  <div class="node pc" style="top: 630px; left: 150px;">
+    <i class="fas fa-desktop"></i> PC 1
+    <div class="node-ip">10.0.136.10</div>
+  </div>
+
+  <div class="node pc" style="top: 630px; left: 400px;">
+    <i class="fas fa-desktop"></i> PC 2
+    <div class="node-ip">10.0.137.10</div>
+  </div>
+
+  <div class="node pc" style="top: 630px; left: 650px;">
+    <i class="fas fa-desktop"></i> PC 3
+    <div class="node-ip">10.0.138.10</div>
+  </div>
+
+  <div id="packet-container"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-access)"></div> Successful Ping / Traffic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-fault)"></div> Ping Timeout (Dropped Traffic)</div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('packet-container');
+  const routes = [
+    { 
+      // Ping from PC 1 to PC 3 via Dist 1 -> Core -> Dist 3
+      name: 'ping-success-1-to-3', 
+      path: 'M200 630 L200 540 L200 460 L200 340 L200 250 L450 130 L700 250 L700 340 L700 460 L700 540 L700 630', 
+      color: 'blue', duration: 5500, delay: 0 
+    },
+    { 
+      // Ping Fail to PC 2 (drops at Access 2)
+      name: 'ping-fail-2', 
+      path: 'M450 630 L450 540 L450 460', 
+      color: 'red', duration: 2000, delay: 1000 
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; transform: scale(0.8); }
+      10% { opacity: 1; transform: scale(1); }
+      90% { opacity: 1; transform: scale(1); }
+      100% { offset-distance: 100%; opacity: 0; transform: scale(0.8); }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  routes.forEach(route => {
+    createPacket(route);
+    const route2 = {...route, delay: route.delay + route.duration / 2};
+    createPacket(route2);
+  });
+</script>
+</body>
+</html>
+</textarea>
+
+<textarea id="diagram5-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core to Dist to Access Topology</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0B1026; --panel: #151C3A; --text: #E2E8F0; --muted: #94A3B8;
+    --accent-core: #FBBF24; --accent-dist: #34D399; --accent-access: #60A5FA; --accent-pc: #F472B6;
+    --accent-ok: #10B981; --accent-fault: #EF4444; --line-color: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px;
+  }
+  h1 { font-size: 24px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+  .network-stage {
+    position: relative; width: 900px; height: 700px; background: var(--panel);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .grid-bg {
+    position: absolute; inset: 0; background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px; border-radius: 16px;
+  }
+  svg.connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  
+  /* Line Styles */
+  path.link { stroke: var(--accent-ok); stroke-width: 4; fill: none; }
+  path.link-fault { stroke: var(--accent-fault); stroke-width: 4; fill: none; stroke-dasharray: 8 4; animation: dash 1s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  .node {
+    position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; background: var(--bg); border: 2px solid; border-radius: 10px;
+    padding: 10px; width: 140px; height: 80px; font-size: 12px; font-weight: 600; text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .node i { font-size: 22px; margin-bottom: 4px; display: block; }
+  .node-label { opacity: 0.9; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:2px; }
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #fff;
+    background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px; margin-top: 4px; width: 100%;
+  }
+
+  .core { border-color: var(--accent-core); color: var(--accent-core); width: 160px; }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 110px; height: 60px; font-size: 11px; }
+  .pc i { font-size: 18px; }
+
+  /* Status Badges */
+  .status-badge {
+    position: absolute; top: -10px; right: -10px; font-size: 9px; font-weight: 800; 
+    padding: 3px 8px; border-radius: 50px; border: 2px solid var(--panel);
+  }
+  .status-ok { background: var(--accent-ok); color: #fff; }
+  .status-fault { background: var(--accent-fault); color: #fff; animation: pulse 1.5s infinite; }
+
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+  /* Link Labels */
+  .link-label {
+    position: absolute; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--line-color);
+    padding: 4px 8px; border-radius: 6px; font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--muted); z-index: 5; text-align: center; line-height: 1.4;
+  }
+  .link-label.fault { color: var(--accent-fault); border-color: var(--accent-fault); }
+
+  .packet {
+    position: absolute; width: 12px; height: 12px; background: #fff; border-radius: 50%;
+    z-index: 4; box-shadow: 0 0 10px rgba(255,255,255,0.8); offset-rotate: auto;
+  }
+  .packet.blue { background: var(--accent-access); box-shadow: 0 0 12px var(--accent-access); }
+  .packet.red { background: var(--accent-fault); box-shadow: 0 0 12px var(--accent-fault); }
+
+  .legend {
+    position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 12px 16px;
+    border-radius: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; z-index: 10;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Hierarchical Topology (Core / Dist / Access)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <svg class="connections" viewBox="0 0 900 700">
+    <!-- Core to Dist 1 (OK) -->
+    <path id="link-c-d1" class="link" d="M450 130 L200 260" />
+    <!-- Core to Dist 2 (OK) -->
+    <path id="link-c-d2" class="link" d="M450 130 L450 260" />
+    <!-- Core to Dist 3 (OK) -->
+    <path id="link-c-d3" class="link" d="M450 130 L700 260" />
+
+    <!-- Dist 1 to Access 1 (OK) -->
+    <path id="link-d1-a1" class="link" d="M200 340 L200 460" />
+    <!-- Dist 2 to Access 2 (FAULT) -->
+    <path id="link-d2-a2" class="link-fault" d="M450 340 L450 460" />
+    <!-- Dist 3 to Access 3 (OK) -->
+    <path id="link-d3-a3" class="link" d="M700 340 L700 460" />
+
+    <!-- Access to PCs -->
+    <path class="link" d="M200 540 L200 630" />
+    <path class="link-fault" d="M450 540 L450 630" />
+    <path class="link" d="M700 540 L700 630" />
+  </svg>
+
+  <!-- Link Labels -->
+  <div class="link-label" style="top: 190px; left: 300px; color: var(--accent-ok); border-color: var(--accent-ok);">OK</div>
+  <div class="link-label" style="top: 190px; left: 460px; color: var(--accent-ok); border-color: var(--accent-ok);">OK</div>
+  <div class="link-label" style="top: 190px; left: 590px; color: var(--accent-ok); border-color: var(--accent-ok);">OK</div>
+  
+  <div class="link-label fault" style="top: 380px; left: 460px;">Ping timeout</div>
+  <div class="link-label fault" style="top: 570px; left: 460px;">Ping timeout</div>
+
+  <!-- Nodes -->
+  <div class="node core" style="top: 50px; left: 370px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Core Switch
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.244.1</div>
+  </div>
+
+  <div class="node dist" style="top: 260px; left: 130px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 1
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.244.11</div>
+  </div>
+  
+  <div class="node dist" style="top: 260px; left: 380px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 2
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.244.12</div>
+  </div>
+
+  <div class="node dist" style="top: 260px; left: 630px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-network-wired"></i> Dist SW 3
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.244.13</div>
+  </div>
+
+  <div class="node access" style="top: 460px; left: 130px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-ethernet"></i> Access SW 1
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.21</div>
+  </div>
+
+  <div class="node access" style="top: 460px; left: 380px;">
+    <div class="status-badge status-fault">Ping timeout</div>
+    <i class="fas fa-ethernet"></i> Access SW 2
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.22</div>
+  </div>
+
+  <div class="node access" style="top: 460px; left: 630px;">
+    <div class="status-badge status-ok">OK</div>
+    <i class="fas fa-ethernet"></i> Access SW 3
+    <div class="node-label">L2 Switching</div>
+    <div class="node-ip">10.0.244.27</div>
+  </div>
+
+  <div class="node pc" style="top: 630px; left: 145px;">
+    <i class="fas fa-desktop"></i> PC 1
+    <div class="node-ip">10.0.10.51</div>
+  </div>
+
+  <div class="node pc" style="top: 630px; left: 395px;">
+    <i class="fas fa-desktop"></i> PC 2
+    <div class="node-ip">10.0.10.52</div>
+  </div>
+
+  <div class="node pc" style="top: 630px; left: 645px;">
+    <i class="fas fa-desktop"></i> PC 3
+    <div class="node-ip">10.0.10.53</div>
+  </div>
+
+  <div id="packet-container"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-access)"></div> Successful Ping / Traffic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-fault)"></div> Ping Timeout (Dropped Traffic)</div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('packet-container');
+  const routes = [
+    { 
+      name: 'ping-success-1', 
+      path: 'M200 630 L200 540 L200 460 L200 340 L200 260 L450 130 L700 260 L700 340 L700 460 L700 540 L700 630', 
+      color: 'blue', duration: 5000, delay: 0 
+    },
+    { 
+      name: 'ping-fail-2', 
+      path: 'M450 630 L450 540 L450 460', // Packet stops at the broken access switch
+      color: 'red', duration: 2000, delay: 1000 
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; transform: scale(0.8); }
+      10% { opacity: 1; transform: scale(1); }
+      90% { opacity: 1; transform: scale(1); }
+      100% { offset-distance: 100%; opacity: 0; transform: scale(0.8); }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  routes.forEach(route => {
+    createPacket(route);
+    // Add duplicate packets for continuous flow
+    const route2 = {...route, delay: route.delay + route.duration / 2};
+    createPacket(route2);
+  });
+</script>
+</body>
+</html>
+</textarea>
+
+<textarea id="diagram6-code" style="display:none">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Hierarchy Routing Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B1026;
+    --panel: #151C3A;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --accent-internet: #38BDF8;
+    --accent-router: #A78BFA;
+    --accent-firewall: #F87171;
+    --accent-core: #FBBF24;
+    --accent-dist: #34D399;
+    --accent-access: #60A5FA;
+    --accent-pc: #F472B6;
+    --line-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Changed to flex-start to prevent vertical clipping */
+    min-height: 100vh; /* Changed to min-height */
+    padding: 40px 20px; /* Added padding to prevent edge clipping */
+    overflow-y: auto; /* Allow scrolling if needed */
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+  }
+
+  .network-stage {
+    position: relative;
+    width: 850px;
+    height: 760px; /* Increased height to prevent bottom cropping */
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: visible; /* Changed to visible so labels don't clip */
+  }
+
+  /* Background Grid */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  /* SVG Lines */
+  svg.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  path.link {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6;
+    animation: dash 1s linear infinite;
+  }
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  /* Nodes */
+  .node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 8px;
+    width: 110px; /* Increased width to fit IP addresses */
+    height: 70px; /* Increased height */
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .node i { font-size: 18px; margin-bottom: 2px; display: block; }
+  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
+  
+  /* New IP Label Style */
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  /* Node Colors */
+  .internet { border-color: var(--accent-internet); color: var(--accent-internet); }
+  .router { border-color: var(--accent-router); color: var(--accent-router); }
+  .firewall { border-color: var(--accent-firewall); color: var(--accent-firewall); }
+  .core { border-color: var(--accent-core); color: var(--accent-core); }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { 
+    border-color: var(--accent-pc); 
+    color: var(--accent-pc); 
+    width: 80px; 
+    height: 60px; 
+    font-size: 10px;
+  }
+  .pc i { font-size: 14px; margin-bottom: 2px; }
+  .pc .node-ip { font-size: 8px; }
+
+  /* Layer Labels */
+  .layer-label {
+    position: absolute;
+    left: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 10;
+    border-left: 2px solid currentColor;
+    padding-left: 8px;
+  }
+
+  /* Packets (Moving Dots) */
+  .packet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    offset-rotate: auto;
+  }
+
+  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); }
+  .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); }
+  .packet.orange { background: var(--accent-core); box-shadow: 0 0 12px var(--accent-core); }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+</style>
+</head>
+<body>
+
+<h1>Hierarchical Network Routing Design (with IP Addressing)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <!-- Layer Labels (Adjusted Y positions for taller stage) -->
+  <div class="layer-label" style="top: 30px; color: var(--accent-internet);">Internet / WAN</div>
+  <div class="layer-label" style="top: 130px; color: var(--accent-router);">Edge Router</div>
+  <div class="layer-label" style="top: 240px; color: var(--accent-firewall);">Security / Firewall</div>
+  <div class="layer-label" style="top: 350px; color: var(--accent-core);">Core Layer</div>
+  <div class="layer-label" style="top: 470px; color: var(--accent-dist);">Distribution Layer</div>
+  <div class="layer-label" style="top: 600px; color: var(--accent-access);">Access Layer</div>
+
+  <!-- SVG Connections (Adjusted Y coordinates) -->
+  <svg class="connections" viewBox="0 0 850 760">
+    <!-- Vertical Trunk -->
+    <path id="path-internet" class="link" d="M425 90 L425 130" />
+    <path id="path-router" class="link" d="M425 200 L425 240" />
+    <path id="path-firewall" class="link" d="M425 310 L425 350" />
+    
+    <!-- Core to Dist -->
+    <path id="path-core-left" class="link" d="M425 420 L212.5 470" />
+    <path id="path-core-right" class="link" d="M425 420 L637.5 470" />
+
+    <!-- Dist to Access -->
+    <path id="path-dist1-acc1" class="link" d="M212.5 540 L106.25 600" />
+    <path id="path-dist1-acc2" class="link" d="M212.5 540 L318.75 600" />
+    <path id="path-dist2-acc3" class="link" d="M637.5 540 L531.25 600" />
+    <path id="path-dist2-acc4" class="link" d="M637.5 540 L743.75 600" />
+
+    <!-- Access to PCs -->
+    <path id="path-acc1-pc" class="link" d="M106.25 670 L106.25 700" />
+    <path id="path-acc2-pc" class="link" d="M318.75 670 L318.75 700" />
+    <path id="path-acc3-pc" class="link" d="M531.25 670 L531.25 700" />
+    <path id="path-acc4-pc" class="link" d="M743.75 670 L743.75 700" />
+  </svg>
+
+  <!-- Nodes (Adjusted top/left coordinates) -->
+  <!-- Internet -->
+  <div class="node internet" style="top: 20px; left: 370px;">
+    <i>🌐</i> Internet
+    <div class="node-label">Public DNS</div>
+    <div class="node-ip">8.8.8.8</div>
+  </div>
+
+  <!-- Router -->
+  <div class="node router" style="top: 130px; left: 370px;">
+    <i>🛰️</i> Edge Router
+    <div class="node-label">WAN / LAN</div>
+    <div class="node-ip">203.0.113.2</div>
+  </div>
+
+  <!-- Firewall -->
+  <div class="node firewall" style="top: 240px; left: 370px;">
+    <i>🛡️</i> Firewall
+    <div class="node-label">Security</div>
+    <div class="node-ip">10.0.0.2</div>
+  </div>
+
+  <!-- Core Switch -->
+  <div class="node core" style="top: 350px; left: 370px;">
+    <i>🟡</i> Core SW
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.0.1</div>
+  </div>
+
+  <!-- Distribution Switches -->
+  <div class="node dist" style="top: 470px; left: 157.5px;">
+    <i>🟢</i> Dist SW 1
+    <div class="node-label">VLAN 10, 20</div>
+    <div class="node-ip">10.1.10.1</div>
+  </div>
+  <div class="node dist" style="top: 470px; left: 582.5px;">
+    <i>🟢</i> Dist SW 2
+    <div class="node-label">VLAN 30, 40</div>
+    <div class="node-ip">10.1.30.1</div>
+  </div>
+
+  <!-- Access Switches -->
+  <div class="node access" style="top: 600px; left: 51.25px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 10</div>
+    <div class="node-ip">10.1.10.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 263.75px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 20</div>
+    <div class="node-ip">10.1.20.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 476.25px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 30</div>
+    <div class="node-ip">10.1.30.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 688.75px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 40</div>
+    <div class="node-ip">10.1.40.2</div>
+  </div>
+
+  <!-- PCs -->
+  <div class="node pc" style="top: 700px; left: 66.25px;">
+    <i>💻</i> PC 1
+    <div class="node-ip">10.1.10.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 278.75px;">
+    <i>💻</i> PC 2
+    <div class="node-ip">10.1.20.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 491.25px;">
+    <i>💻</i> PC 3
+    <div class="node-ip">10.1.30.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 703.75px;">
+    <i>💻</i> PC 4
+    <div class="node-ip">10.1.40.10</div>
+  </div>
+
+  <!-- Packets will be injected here by JS -->
+  <div id="packet-container"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> Internet Traffic (Ingress)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Inter-VLAN Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-pc)"></div> Client Traffic (Egress)</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('packet-container');
+
+  // Paths defined for JS animation (Match the new SVG coordinates)
+  const routes = [
+    {
+      // Internet to PC1
+      name: 'internet-to-pc1',
+      path: 'M425 90 L425 130 L425 200 L425 240 L425 310 L425 350 L425 420 L212.5 470 L212.5 540 L106.25 600 L106.25 670 L106.25 700',
+      color: 'blue',
+      duration: 4500,
+      delay: 0
+    },
+    {
+      // Internet to PC4
+      name: 'internet-to-pc4',
+      path: 'M425 90 L425 130 L425 200 L425 240 L425 310 L425 350 L425 420 L637.5 470 L637.5 540 L743.75 600 L743.75 670 L743.75 700',
+      color: 'blue',
+      duration: 5000,
+      delay: 1500
+    },
+    {
+      // PC2 to PC3 (Internal Routing through Dist -> Core -> Dist)
+      name: 'pc2-to-pc3',
+      path: 'M318.75 700 L318.75 670 L318.75 600 L212.5 540 L212.5 470 L425 420 L637.5 470 L637.5 540 L531.25 600 L531.25 670 L531.25 700',
+      color: 'green',
+      duration: 5500,
+      delay: 500
+    },
+    {
+      // PC3 to Internet (Upload)
+      name: 'pc3-to-internet',
+      path: 'M531.25 700 L531.25 670 L531.25 600 L637.5 540 L637.5 470 L425 420 L425 350 L425 310 L425 240 L425 200 L425 130 L425 90',
+      color: 'orange',
+      duration: 4500,
+      delay: 2000
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  // Inject keyframes dynamically to control movement
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // Create multiple packets per route for continuous flow
+  routes.forEach(route => {
+    // Create 3 packets per route with staggered delays
+    createPacket(route);
+    // Add delay variations for continuous stream
+    const route2 = {...route, delay: route.delay + route.duration / 3};
+    createPacket(route2);
+    const route3 = {...route, delay: route.delay + 2 * (route.duration / 3)};
+    createPacket(route3);
+  });
+
+</script>
+</body>
+</html>
+</textarea>
+<!-- ============================================================ -->
 
 <script>
     // Tab switching functionality
@@ -543,6 +3195,12 @@
         if (downloadTitleEl && downloadTitles[slideId]) {
             downloadTitleEl.textContent = downloadTitles[slideId];
         }
+
+        // Ensure standard tabs are shown and hidden ones are cleared
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        document.querySelector('.tab-btn[data-tab="slides"]').classList.add('active');
+        document.getElementById('slides').classList.add('active');
         
         console.log(`Switched to slide ${slideId}: ${slideTitles[slideId]}`);
     }
@@ -554,14 +3212,33 @@
             if (slideId && slideId >= '1' && slideId <= '9') {
                 activateSlide(slideId);
             } else {
-                slideTitleEl.textContent = item.textContent.replace('📊', '').trim();
+                slideTitleEl.textContent = item.textContent.replace('🌐', '').trim();
+                slideSubEl.textContent = 'Interactive Network Diagram';
                 navItems.forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
-                alert('This presentation is coming soon!');
+                
+                // Hide standard tab buttons active states and contents
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Show the corresponding diagram tab content
+                const targetContent = document.getElementById(slideId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
             }
         });
     });
     
+    // Initialize Diagram iframes using textarea contents to avoid escaping issues
+    for (let i = 1; i <= 6; i++) {
+        const codeEl = document.getElementById(`diagram${i}-code`);
+        const iframeEl = document.getElementById(`diagram${i}-iframe`);
+        if (codeEl && iframeEl) {
+            iframeEl.srcdoc = codeEl.value;
+        }
+    }
+
     // Activate first slide (7) by default
     activateSlide('7');
     
