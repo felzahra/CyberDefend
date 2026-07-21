@@ -124,19 +124,49 @@
             min-width: 22px;
         }
         
+        /* Main Content Layout - Fixed for cropping */
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 28px 36px;
+            overflow-x: hidden; /* Prevents horizontal scroll/crop */
             background: #f5f7fc;
             display: flex;
             flex-direction: column;
         }
         
+        /* Top Bar for Instructor */
+        .top-bar {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 40px 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .instructor-tag {
+            background: #fff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #eef2f8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5c6f87;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        /* Cards Wrapper */
+        .cards-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 40px 40px;
+            flex: 1;
+        }
+        
         .lesson-card {
             width: 100%;
-            max-width: 1100px;
-            margin: 0 auto 40px;
+            margin: 0 0 40px;
             background: white;
             border-radius: 28px;
             border: 1px solid #eef2f8;
@@ -200,18 +230,21 @@
             display: block;
         }
         
-        /* Video and Slides containers share similar styling */
+        /* Video and Slides containers - Fixed Aspect Ratio */
         .media-container { 
             margin: 0 0 16px 0; 
             border-radius: 20px; 
             overflow: hidden; 
-            background: #f0f4f9; 
+            background: #000; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
+            position: relative;
+            width: 100%;
         }
         .media-wrapper { 
             position: relative; 
-            padding-bottom: 56.25%; 
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio - Prevents Cropping */
             height: 0; 
+            overflow: hidden;
         }
         .media-wrapper iframe { 
             position: absolute; 
@@ -219,7 +252,7 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            border: none; 
+            border: 0; 
         }
         
         .description-text { line-height: 1.65; color: #2c3e50; font-size: 0.95rem; }
@@ -246,7 +279,7 @@
         
         @media (max-width: 780px) {
             .sidebar { width: 280px; }
-            .main-content { padding: 16px; }
+            .top-bar, .cards-wrapper { padding-left: 16px; padding-right: 16px; }
             .card-header h2 { font-size: 1.2rem; }
             .lesson-tabs { margin: 0 16px; }
             .tab-content { padding: 16px; }
@@ -282,8 +315,16 @@
     </div>
 </div>
 
-<div class="main-content" id="main-content-container">
-    <!-- Content injected by JS -->
+<div class="main-content">
+    <!-- Top Bar for Instructor -->
+    <div class="top-bar">
+        <div class="instructor-tag">👨‍🏫 Instructor - Dr fatma agery</div>
+    </div>
+    
+    <!-- Cards Wrapper -->
+    <div class="cards-wrapper" id="cards-wrapper">
+        <footer>☁️ CyberDefend Academy — AWS Cloud Foundation Course (17 modules) | Part of Accenture | AWS Academy</footer>
+    </div>
 </div>
 
 <script>
@@ -310,7 +351,7 @@
     ];
 
     const navContainer = document.getElementById('nav-list-container');
-    const mainContent = document.getElementById('main-content-container');
+    const cardsWrapper = document.getElementById('cards-wrapper');
 
     // 1. Dynamically generate Sidebar Nav Items
     lessons.forEach((lesson, index) => {
@@ -358,7 +399,8 @@
         </div>`;
     });
     
-    mainContent.innerHTML = allCardsHtml + `<footer>☁️ CyberDefend Academy — AWS Cloud Foundation Course (17 modules) | Part of Accenture | AWS Academy</footer>`;
+    // Insert cards BEFORE the footer
+    cardsWrapper.insertAdjacentHTML('afterbegin', allCardsHtml);
 
     // 3. Initialize Tab Switching Logic
     function initAllTabs() {
