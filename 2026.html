@@ -91,6 +91,7 @@
         <div class="nav-item active" data-slide="v1"><span class="check-icon">📅</span> 15 july 2026 summer</div>
         <div class="nav-item" data-slide="v2"><span class="check-icon">📅</span> 19-7-2026 summer</div>
         <div class="nav-item" data-slide="v3"><span class="check-icon">📅</span> 22-7-2026 summer</div>
+        <div class="nav-item" data-slide="v3b"><span class="check-icon">📅</span> CyberSecurity General Lec</div>
         <div class="nav-item" data-slide="v4"><span class="check-icon">📅</span> 2025 Session 1</div>
         <div class="nav-item" data-slide="v5"><span class="check-icon">📅</span> 2025 Session 2</div>
         <div class="section-title">📊 READING MATERIAL</div>
@@ -116,7 +117,7 @@
 <div class="main-content">
     <div class="slides-card">
         <div class="card-header">
-            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 5</span>
+            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 6</span>
             <h2 id="slide-title">15 july 2026 summer</h2>
             <div class="sub" id="slide-sub">Session 1 · Summer Training</div>
         </div>
@@ -242,33 +243,39 @@ const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ou
 const items = {
     /* ===== VIDEO + SLIDES BESIDE EACH OTHER ===== */
     v1: {
-        title: '15 july 2026 summer', sub: 'Session 1 · Summer Training', badge: 'VIDEO 1 / 5', badgeClass: 'badge-video',
+        title: '15 july 2026 summer', sub: 'Session 1 · Summer Training', badge: 'VIDEO 1 / 6', badgeClass: 'badge-video',
         videoId: 'Cu2lvvfuOug', slideEmbed: 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/embed?start=false&loop=false&delayms=3000', slideEditId: '16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R',
         desc: 'Recorded session for 15 july 2026 summer training.', topics: '📅 Topics: Summer training introductory concepts and lab overviews.',
         type: 'side-by-side'
     },
     v2: {
-        title: '19-7-2026 summer', sub: 'Session 2 · Summer Training', badge: 'VIDEO 2 / 5', badgeClass: 'badge-video',
+        title: '19-7-2026 summer', sub: 'Session 2 · Summer Training', badge: 'VIDEO 2 / 6', badgeClass: 'badge-video',
         videoId: 'SuGy_q0HCnQ', slideEmbed: 'https://docs.google.com/presentation/d/1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er/embed?start=false&loop=false&delayms=3000', slideEditId: '1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er',
         desc: 'Recorded session for 19-7-2026 summer training.', topics: '📅 Topics: Advanced networking and security concepts.',
         type: 'side-by-side'
     },
     v3: {
-        title: '22-7-2026 summer', sub: 'Session 3 · Summer Training', badge: 'VIDEO 3 / 5', badgeClass: 'badge-video',
+        title: '22-7-2026 summer', sub: 'Session 3 · Summer Training', badge: 'VIDEO 3 / 6', badgeClass: 'badge-video',
         videoId: 'N8oFOsIPOz0', slideEmbed: 'https://docs.google.com/presentation/d/1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo/embed?start=false&loop=false&delayms=3000', slideEditId: '1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo',
         desc: 'Recorded session for 22-7-2026 summer training.', topics: '📅 Topics: Cybersecurity tools and threat hunting basics.',
         type: 'side-by-side'
     },
 
     /* ===== VIDEO ONLY ===== */
+    v3b: {
+        title: 'CyberSecurity General Lec', sub: 'General Lecture · Cybersecurity', badge: 'VIDEO 4 / 6', badgeClass: 'badge-video',
+        videoId: 'sopv4UA0GHQ', slideEmbed: null, slideEditId: null,
+        desc: 'CyberSecurity General Lecture covering fundamental cybersecurity concepts.', topics: '📅 Topics: General cybersecurity fundamentals and overview.',
+        type: 'video-only'
+    },
     v4: {
-        title: '2025 Session 1', sub: 'Summer Training · 2025', badge: 'VIDEO 4 / 5', badgeClass: 'badge-video',
+        title: '2025 Session 1', sub: 'Summer Training · 2025', badge: 'VIDEO 5 / 6', badgeClass: 'badge-video',
         videoId: 'a5ifbdJSrvQ', slideEmbed: null, slideEditId: null,
         desc: 'Recorded session for 2025 Summer Training - Session 1.', topics: '📅 Topics: Summer training introductory concepts.',
         type: 'video-only'
     },
     v5: {
-        title: '2025 Session 2', sub: 'Summer Training · 2025', badge: 'VIDEO 5 / 5', badgeClass: 'badge-video',
+        title: '2025 Session 2', sub: 'Summer Training · 2025', badge: 'VIDEO 6 / 6', badgeClass: 'badge-video',
         videoId: 'IFKd4MR4nBg', slideEmbed: null, slideEditId: null,
         desc: 'Recorded session for 2025 Summer Training - Session 2.', topics: '📅 Topics: Advanced training concepts and hands-on labs.',
         type: 'video-only'
