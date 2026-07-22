@@ -29,7 +29,6 @@
         .lesson-badge { font-size: 0.7rem; font-weight: 600; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
         .badge-video { color: #dc2626; background: #fee2e2; }
         .badge-slides { color: #02b3e4; background: #e2f0f7; }
-        .badge-diagram { color: #7c3aed; background: #ede9fe; }
         .card-header h2 { font-size: 1.5rem; font-weight: 700; color: #0b2b3b; margin: 8px 0 8px 0; }
         .sub { color: #5c6f87; font-size: 0.85rem; }
         .content-area { padding: 24px 28px 28px 28px; }
@@ -63,8 +62,6 @@
         .btn-download:hover { background: #028cae; }
         .no-material { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.9rem; }
         .slide-hint { background: #f0f9fe; border-radius: 12px; padding: 10px 16px; margin-top: 10px; font-size: 0.75rem; color: #5c6f87; }
-        .diagram-frame { border-radius: 20px; overflow: hidden; background: #0B1026; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        .diagram-frame iframe { width: 100%; border: none; display: block; }
         footer { text-align: center; margin-top: 40px; font-size: 0.75rem; color: #7f8c9a; padding-top: 28px; border-top: 1px solid #e2e8f0; }
         @media (max-width: 1000px) { .side-by-side { grid-template-columns: 1fr; } }
         @media (max-width: 780px) { .sidebar { width: 280px; } .main-content { padding: 16px; } .card-header h2 { font-size: 1.2rem; } .content-area { padding: 16px; } }
@@ -101,13 +98,6 @@
         <div class="nav-item" data-slide="s4"><span class="check-icon">🔐</span> Cybersecurity Course (Part 3)</div>
         <div class="nav-item" data-slide="s5"><span class="check-icon">📄</span> DPA Summer Training - Session 1</div>
         <div class="nav-item" data-slide="s6"><span class="check-icon">📄</span> DPA Summer Training - Session 2</div>
-        <div class="section-title" style="margin-top: 20px;">🌐 NETWORK DIAGRAMS</div>
-        <div class="nav-item" data-slide="diagram1"><span class="check-icon">🌐</span> FW IPS IDS switches DMZ apart vendors</div>
-        <div class="nav-item" data-slide="diagram2"><span class="check-icon">🌐</span> FW IPS IDS switches DMZ APART</div>
-        <div class="nav-item" data-slide="diagram3"><span class="check-icon">🌐</span> FW IPS IDS switches DMZ</div>
-        <div class="nav-item" data-slide="diagram4"><span class="check-icon">🌐</span> HA core-Dist-Access connection</div>
-        <div class="nav-item" data-slide="diagram5"><span class="check-icon">🌐</span> No HA core-Dist-Access connection</div>
-        <div class="nav-item" data-slide="diagram6"><span class="check-icon">🌐</span> Single FW design</div>
     </div>
     <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">
         ⚡ DPA Summer Training Program | 25+ Modules
@@ -125,117 +115,6 @@
     </div>
     <footer>🎬 CyberDefend Academy — DPA Summer Training | Part of Accenture</footer>
 </div>
-
-<!-- ================= DIAGRAM 1 HTML ================= -->
-<textarea id="diagram1-code" style="display:none">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dual Firewall Network Routing (Fortinet & Palo Alto)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<style>
-  :root { --bg: #0B1026; --panel: #151C3A; --text: #E2E8F0; --muted: #94A3B8; --accent-internet: #38BDF8; --accent-router: #A78BFA; --accent-firewall: #F87171; --accent-firewall2: #FB7185; --accent-core: #FBBF24; --accent-dist: #34D399; --accent-access: #60A5FA; --accent-pc: #F472B6; --accent-dmz: #FB923C; --accent-secops: #2DD4BF; --line-color: #334155; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 40px 20px; overflow-y: auto; }
-  h1 { font-size: 24px; font-weight: 800; margin-bottom: 20px; color: var(--text); letter-spacing: -0.5px; text-align: center; }
-  .network-stage { position: relative; width: 1400px; height: 1270px; background: var(--panel); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: visible; }
-  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; border-radius: 16px; }
-  svg.connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-  path.link { stroke: var(--line-color); stroke-width: 2; fill: none; stroke-dasharray: 6; animation: dash 1s linear infinite; }
-  path.ha-link { stroke: #475569; stroke-width: 2; stroke-dasharray: 4 4; animation: dash 1.5s linear infinite; }
-  @keyframes dash { to { stroke-dashoffset: -12; } }
-  .node { position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); border: 2px solid; border-radius: 10px; padding: 8px; width: 110px; height: 70px; font-size: 11px; font-weight: 600; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-  .node i { font-size: 18px; margin-bottom: 2px; display: block; }
-  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
-  .node-ip { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 500; color: #fff; background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px; margin-top: 4px; width: 100%; }
-  .internet { border-color: var(--accent-internet); color: var(--accent-internet); } .router { border-color: var(--accent-router); color: var(--accent-router); } .fortinet { border-color: var(--accent-firewall); color: var(--accent-firewall); } .paloalto { border-color: var(--accent-firewall2); color: var(--accent-firewall2); } .core { border-color: var(--accent-core); color: var(--accent-core); } .dist { border-color: var(--accent-dist); color: var(--accent-dist); } .access { border-color: var(--accent-access); color: var(--accent-access); } .pc { border-color: var(--accent-pc); color: var(--accent-pc); width: 80px; height: 60px; font-size: 10px; } .pc i { font-size: 14px; margin-bottom: 2px; } .pc .node-ip { font-size: 8px; } .dmz { border-color: var(--accent-dmz); color: var(--accent-dmz); } .secops { border-color: var(--accent-secops); color: var(--accent-secops); }
-  .layer-label { position: absolute; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; z-index: 10; border-left: 2px solid currentColor; padding-left: 8px; background: var(--panel); padding-top: 2px; padding-bottom: 2px; }
-  .packet { position: absolute; width: 10px; height: 10px; background: #fff; border-radius: 50%; z-index: 3; box-shadow: 0 0 10px rgba(255,255,255,0.8); offset-rotate: auto; }
-  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); } .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); } .packet.orange { background: var(--accent-dmz); box-shadow: 0 0 12px var(--accent-dmz); } .packet.teal { background: var(--accent-secops); box-shadow: 0 0 12px var(--accent-secops); }
-  .legend { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; backdrop-filter: blur(4px); }
-  .legend-item { display: flex; align-items: center; gap: 8px; } .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-</style>
-</head>
-<body>
-<h1>Dual Firewall Network Routing (Fortinet & Palo Alto)</h1>
-<div class="network-stage" id="stage">
-  <div class="grid-bg"></div>
-  <div class="layer-label" style="top: 30px; left: 15px; color: var(--accent-internet);">Internet / WAN</div>
-  <div class="layer-label" style="top: 140px; left: 15px; color: var(--accent-router);">Edge Router</div>
-  <div class="layer-label" style="top: 260px; left: 15px; color: var(--accent-firewall);">Fortinet (HA Pair)</div>
-  <div class="layer-label" style="top: 380px; left: 15px; color: var(--accent-firewall2);">Palo Alto (HA Pair)</div>
-  <div class="layer-label" style="top: 500px; left: 15px; color: var(--accent-dmz);">IPS Layer (HA Pair)</div>
-  <div class="layer-label" style="top: 620px; left: 15px; color: var(--accent-dmz);">IDS Layer (HA Pair)</div>
-  <div class="layer-label" style="top: 740px; left: 15px; color: var(--accent-core);">Core Layer (HA Pair)</div>
-  <div class="layer-label" style="top: 860px; left: 15px; color: var(--accent-dist);">Distribution (HA Pairs)</div>
-  <div class="layer-label" style="top: 990px; left: 15px; color: var(--accent-access);">Access Layer</div>
-  <div class="layer-label" style="top: 260px; right: 15px; color: var(--accent-dmz); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">DMZ Zone</div>
-  <div class="layer-label" style="top: 740px; right: 15px; color: var(--accent-secops); border-left: none; border-right: 2px solid currentColor; padding-left: 0; padding-right: 8px;">SecOps Zone</div>
-  <svg class="connections" viewBox="0 0 1400 1270">
-    <path class="link" d="M700 90 L700 130" /><path class="link" d="M700 200 L700 220 L570 220 L570 250" /><path class="link" d="M700 200 L700 220 L830 220 L830 250" /><path class="ha-link" d="M625 285 L775 285" /><path class="link" d="M570 320 L570 370" /><path class="link" d="M830 320 L830 370" /><path class="ha-link" d="M625 405 L775 405" /><path class="link" d="M570 440 L570 490" /><path class="link" d="M830 440 L830 490" /><path class="ha-link" d="M625 525 L775 525" /><path class="link" d="M570 560 L570 610" /><path class="link" d="M830 560 L830 610" /><path class="ha-link" d="M625 645 L775 645" /><path class="link" d="M570 680 L570 730" /><path class="link" d="M830 680 L830 730" /><path class="ha-link" d="M625 765 L775 765" /><path class="link" d="M570 810 L570 840 L360 840 L360 860" /><path class="link" d="M570 810 L570 840 L520 840 L520 860" /><path class="link" d="M830 810 L830 840 L780 840 L780 860" /><path class="link" d="M830 810 L830 840 L940 840 L940 860" /><path class="ha-link" d="M415 895 L465 895" /><path class="ha-link" d="M835 895 L885 895" /><path class="link" d="M360 930 L360 960 L290 960 L290 990" /><path class="link" d="M520 930 L520 960 L290 960 L290 990" /><path class="link" d="M360 930 L360 960 L460 960 L460 990" /><path class="link" d="M520 930 L520 960 L460 960 L460 990" /><path class="link" d="M780 930 L780 960 L710 960 L710 990" /><path class="link" d="M940 930 L940 960 L710 960 L710 990" /><path class="link" d="M780 930 L780 960 L880 960 L880 990" /><path class="link" d="M940 930 L940 960 L880 960 L880 990" /><path class="link" d="M290 1060 L290 1110" /><path class="link" d="M460 1060 L460 1110" /><path class="link" d="M710 1060 L710 1110" /><path class="link" d="M880 1060 L880 1110" /><path class="link" d="M885 285 L1130 285" /><path class="link" d="M1185 320 L1185 340 L1095 340 L1095 370" /><path class="link" d="M1185 320 L1185 340 L1275 340 L1275 370" /><path class="link" d="M515 775 L415 775" /><path class="link" d="M360 810 L360 860" />
-  </svg>
-  <div class="node internet" style="top: 20px; left: 645px;"><i>🌐</i> Internet<div class="node-label">google.com</div><div class="node-ip">8.8.8.8</div></div>
-  <div class="node router" style="top: 130px; left: 645px;"><i>🛰️</i> Edge Router<div class="node-label">WAN / LAN</div><div class="node-ip">41.33.25.11</div></div>
-  <div class="node fortinet" style="top: 250px; left: 515px;"><i>🛡️</i> Fortinet A<div class="node-label">Active/Standby</div><div class="node-ip">10.0.254.11</div></div>
-  <div class="node fortinet" style="top: 250px; left: 775px;"><i>🛡️</i> Fortinet B<div class="node-label">Active/Standby</div><div class="node-ip">10.0.254.12</div></div>
-  <div class="node paloalto" style="top: 370px; left: 515px;"><i>🧱</i> Palo Alto A<div class="node-label">Active/Standby</div><div class="node-ip">10.0.254.21</div></div>
-  <div class="node paloalto" style="top: 370px; left: 775px;"><i>🧱</i> Palo Alto B<div class="node-label">Active/Standby</div><div class="node-ip">10.0.254.22</div></div>
-  <div class="node dmz" style="top: 490px; left: 515px;"><i>🚧</i> IPS A<div class="node-label">Prevention</div><div class="node-ip">10.0.254.31</div></div>
-  <div class="node dmz" style="top: 490px; left: 775px;"><i>🚧</i> IPS B<div class="node-label">Prevention</div><div class="node-ip">10.0.254.32</div></div>
-  <div class="node dmz" style="top: 610px; left: 515px;"><i>👁️</i> IDS A<div class="node-label">Detection</div><div class="node-ip">10.0.254.41</div></div>
-  <div class="node dmz" style="top: 610px; left: 775px;"><i>👁️</i> IDS B<div class="node-label">Detection</div><div class="node-ip">10.0.254.42</div></div>
-  <div class="node core" style="top: 730px; left: 515px;"><i>🟡</i> Core SW A<div class="node-label">L3 Routing</div><div class="node-ip">10.0.250.1</div></div>
-  <div class="node core" style="top: 730px; left: 775px;"><i>🟡</i> Core SW B<div class="node-label">L3 Routing</div><div class="node-ip">10.0.250.2</div></div>
-  <div class="node secops" style="top: 730px; left: 305px;"><i>📊</i> SIEM<div class="node-label">Log Analyzer</div><div class="node-ip">10.9.9.10</div></div>
-  <div class="node secops" style="top: 860px; left: 305px;"><i>🦠</i> EDR<div class="node-label">Endpoint Sec</div><div class="node-ip">10.9.9.11</div></div>
-  <div class="node dist" style="top: 860px; left: 305px;"><i>🟢</i> Dist SW 1A<div class="node-label">L3 Routing</div><div class="node-ip">10.0.14.2</div></div>
-  <div class="node dist" style="top: 860px; left: 465px;"><i>🟢</i> Dist SW 1B<div class="node-label">L3 Routing</div><div class="node-ip">10.0.14.3</div></div>
-  <div class="node dist" style="top: 860px; left: 725px;"><i>🟢</i> Dist SW 2A<div class="node-label">L3 Routing</div><div class="node-ip">10.0.14.4</div></div>
-  <div class="node dist" style="top: 860px; left: 885px;"><i>🟢</i> Dist SW 2B<div class="node-label">L3 Routing</div><div class="node-ip">10.0.14.5</div></div>
-  <div class="node access" style="top: 990px; left: 235px;"><i>🔵</i> Access SW<div class="node-label">VLAN 137</div><div class="node-ip">10.0.137.1</div></div>
-  <div class="node access" style="top: 990px; left: 405px;"><i>🔵</i> Access SW<div class="node-label">VLAN 138</div><div class="node-ip">10.0.138.1</div></div>
-  <div class="node access" style="top: 990px; left: 655px;"><i>🔵</i> Access SW<div class="node-label">VLAN 139</div><div class="node-ip">10.0.139.1</div></div>
-  <div class="node access" style="top: 990px; left: 825px;"><i>🔵</i> Access SW<div class="node-label">VLAN 140</div><div class="node-ip">10.0.140.1</div></div>
-  <div class="node pc" style="top: 1110px; left: 250px;"><i>💻</i> PC 1<div class="node-ip">10.0.137.10</div></div>
-  <div class="node pc" style="top: 1110px; left: 420px;"><i>💻</i> PC 2<div class="node-ip">10.0.138.10</div></div>
-  <div class="node pc" style="top: 1110px; left: 670px;"><i>💻</i> PC 3<div class="node-ip">10.0.139.10</div></div>
-  <div class="node pc" style="top: 1110px; left: 840px;"><i>💻</i> PC 4<div class="node-ip">10.0.140.10</div></div>
-  <div class="node dmz" style="top: 250px; left: 1130px;"><i>🔄</i> DMZ SW<div class="node-label">L2 Switching</div><div class="node-ip">10.2.0.3</div></div>
-  <div class="node dmz" style="top: 370px; left: 1040px;"><i>🖥️</i> Web Server<div class="node-label">VLAN 50</div><div class="node-ip">10.2.50.10</div></div>
-  <div class="node dmz" style="top: 370px; left: 1220px;"><i>📬</i> Mail Server<div class="node-label">VLAN 50</div><div class="node-ip">10.2.50.11</div></div>
-  <div id="packet-container"></div>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> PC 1 to google.com Routing</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dmz)"></div> Internet to DMZ Traffic</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Internal Inter-VLAN Routing</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-secops)"></div> Logs sent to SIEM</div>
-  </div>
-</div>
-<script>
-  const container = document.getElementById('packet-container');
-  const routes = [
-    { name:'pc1-to-google', path:'M290 1110 L290 1060 L290 990 L290 960 L360 960 L360 930 L360 860 L360 840 L570 840 L570 810 L570 730 L570 680 L570 610 L570 560 L570 490 L570 440 L570 370 L570 320 L570 250 L570 220 L700 220 L700 200 L700 130 L700 90', color:'blue', duration:8500, delay:0 },
-    { name:'internet-to-web', path:'M700 90 L700 130 L700 200 L700 220 L830 220 L830 250 L885 285 L1130 285 L1185 320 L1185 340 L1095 340 L1095 370', color:'orange', duration:5500, delay:1000 },
-    { name:'pc2-to-pc3', path:'M460 1110 L460 1060 L460 990 L460 960 L520 960 L520 930 L520 860 L520 840 L830 840 L830 810 L830 765 L780 765 L780 810 L780 840 L780 860 L780 930 L780 960 L710 960 L710 990 L710 1060 L710 1110', color:'green', duration:7500, delay:500 },
-    { name:'fw-to-siem', path:'M570 320 L570 370 L570 440 L570 490 L570 560 L570 610 L570 680 L570 730 L570 775 L415 775', color:'teal', duration:5500, delay:0 },
-    { name:'web-to-siem', path:'M1095 370 L1095 340 L1185 340 L1185 320 L1130 285 L885 285 L830 285 L830 320 L830 370 L830 440 L830 490 L830 560 L830 610 L830 680 L830 730 L830 765 L570 765 L570 775 L415 775', color:'teal', duration:9000, delay:1500 }
-  ];
-  function createPacket(route) { const p = document.createElement('div'); p.className = `packet ${route.color}`; p.style.offsetPath = `path('${route.path}')`; p.style.animation = `movePacket ${route.duration}ms linear infinite`; p.style.animationDelay = `${route.delay}ms`; container.appendChild(p); }
-  const ss = document.createElement('style'); ss.innerText = `@keyframes movePacket { 0% { offset-distance: 0%; opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }`; document.head.appendChild(ss);
-  routes.forEach(r => { createPacket(r); createPacket({...r, delay: r.delay + r.duration/3}); createPacket({...r, delay: r.delay + 2*(r.duration/3)}); });
-</script>
-</body>
-</html>
-</textarea>
-
-<!-- Paste your diagram 2-6 HTML here -->
-<textarea id="diagram2-code" style="display:none"><!-- PASTE diagram2 HTML --></textarea>
-<textarea id="diagram3-code" style="display:none"><!-- PASTE diagram3 HTML --></textarea>
-<textarea id="diagram4-code" style="display:none"><!-- PASTE diagram4 HTML --></textarea>
-<textarea id="diagram5-code" style="display:none"><!-- PASTE diagram5 HTML --></textarea>
-<textarea id="diagram6-code" style="display:none"><!-- PASTE diagram6 HTML --></textarea>
 
 <script>
 const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true';
@@ -352,27 +231,15 @@ function activate(slideId) {
     const titleEl = document.getElementById('slide-title');
     const subEl = document.getElementById('slide-sub');
 
-    if (slideId.startsWith('diagram')) {
-        const names = { diagram1:'FW IPS IDS switches DMZ apart vendors', diagram2:'FW IPS IDS switches DMZ APART', diagram3:'FW IPS IDS switches DMZ', diagram4:'HA core-Dist-Access connection', diagram5:'No HA core-Dist-Access connection', diagram6:'Single FW design' };
-        badge.textContent = '🌐 NETWORK DIAGRAM';
-        badge.className = 'lesson-badge badge-diagram';
-        titleEl.textContent = names[slideId] || slideId;
-        subEl.textContent = 'Interactive Network Topology Diagram';
-        area.innerHTML = `<div class="diagram-frame"><iframe id="diagram-live-iframe" style="height: ${({diagram1:1450,diagram2:1300,diagram3:1500,diagram4:950,diagram5:850,diagram6:900}[slideId]||1000)}px;" frameborder="0"></iframe></div>`;
-        const code = document.getElementById(slideId + '-code');
-        const ifr = document.getElementById('diagram-live-iframe');
-        if (code && ifr && code.value.trim() && !code.value.trim().startsWith('<!-- PASTE')) { ifr.srcdoc = code.value; }
-    } else {
-        const d = items[slideId];
-        if (!d) return;
-        badge.textContent = d.badge;
-        badge.className = 'lesson-badge ' + d.badgeClass;
-        titleEl.textContent = d.title;
-        subEl.textContent = d.sub;
-        if (d.type === 'side-by-side') area.innerHTML = renderSideBySide(d);
-        else if (d.type === 'video-only') area.innerHTML = renderVideoOnly(d);
-        else area.innerHTML = renderSlidesOnly(d);
-    }
+    const d = items[slideId];
+    if (!d) return;
+    badge.textContent = d.badge;
+    badge.className = 'lesson-badge ' + d.badgeClass;
+    titleEl.textContent = d.title;
+    subEl.textContent = d.sub;
+    if (d.type === 'side-by-side') area.innerHTML = renderSideBySide(d);
+    else if (d.type === 'video-only') area.innerHTML = renderVideoOnly(d);
+    else area.innerHTML = renderSlidesOnly(d);
 
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const active = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
