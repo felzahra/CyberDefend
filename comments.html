@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Announcements & FAQ · CyberDefend Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f5f7fc; color: #1a2c3e; padding: 40px 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            text-align: center; margin-bottom: 40px;
+        }
+        .header h1 { color: #0b2b3b; font-size: 2rem; margin-bottom: 10px; }
+        .header p { color: #5c6f87; font-size: 1rem; }
+        .back-btn {
+            display: inline-block; margin-top: 20px; padding: 10px 24px;
+            background: #02b3e4; color: white; border-radius: 30px;
+            text-decoration: none; font-weight: 600; transition: 0.2s;
+        }
+        .back-btn:hover { background: #0284a5; transform: translateY(-2px); }
+        
+        /* تصميم بطاقات الأسئلة والإعلانات */
+        .faq-card {
+            background: white; border: 1px solid #eef2f8; border-right: 4px solid #02b3e4;
+            padding: 20px 24px; border-radius: 12px; margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: right;
+        }
+        .faq-card h3 { font-size: 1.1rem; color: #0b2b3b; margin-bottom: 8px; font-weight: 700; }
+        .faq-card p { font-size: 0.95rem; color: #4a5568; line-height: 1.6; }
+        .loading { text-align: center; color: #8a9cb0; font-size: 1.2rem; margin-top: 40px; }
+        .error { text-align: center; color: red; font-size: 1.2rem; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📢 Announcements & FAQ</h1>
+        <p>Latest updates and frequently asked questions</p>
+        <a href="index.html" class="back-btn">← Back to Courses</a>
+    </div>
+    
+    <div id="content-area">
+        <p class="loading">Loading announcements...</p>
+    </div>
+</div>
+
+<script>
+    const ANNOUNCEMENTS_URL = "https://script.google.com/macros/s/AKfycbwbSAh3HpIF34lfBJS0dz2ADy1IPtzRd5qkOSrjE4PCSVG2iWEEC45NRgUFs3mL7m7DRw/exec";
+    const contentArea = document.getElementById('content-area');
+
+    async function loadComments() {
+        try {
+            const response = await fetch(ANNOUNCEMENTS_URL);
+            const data = await response.json();
+            
+            if(data.length === 0) {
+                contentArea.innerHTML = '<p class="loading">No announcements yet.</p>';
+                return;
+            }
+
+            // ترتيب المصفوفة بالعكس ليظهر الأحدث أولاً
+            data.reverse();
+
+            contentArea.innerHTML = ''; // تفريغ المحتوى
+            
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'faq-card';
+                card.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.content}</p>
+                `;
+                contentArea.appendChild(card);
+            });
+        } catch (error) {
+            console.error("Error loading data:", error);
+            contentArea.innerHTML = '<p class="error">Error loading data. Please try again later.</p>';
+        }
+    }
+
+    // تشغيل دالة جلب البيانات عند فتح الصفحة
+    loadComments();
+</script>
+
+</body>
+</html>
