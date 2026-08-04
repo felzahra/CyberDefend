@@ -4,144 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>CyberDefend Academy · Main Dashboard</title>
+    
+    <!-- LOAD GOOGLE LOGIN SCRIPT FIRST -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: #f5f7fc; color: #1a2c3e;
-            display: flex; height: 100vh; overflow: hidden;
-        }
-        .sidebar {
-            width: 320px; background: #ffffff; border-right: 1px solid #e6edf4;
-            display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; position: relative;
-        }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: #f5f7fc; color: #1a2c3e; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 320px; background: #ffffff; border-right: 1px solid #e6edf4; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; position: relative; }
         .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-track { background: #f0f2f5; }
         .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .brand {
-            padding: 24px 24px 16px 24px; border-bottom: 1px solid #eef2f8;
-            background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
-        }
+        .brand { padding: 24px 24px 16px 24px; border-bottom: 1px solid #eef2f8; background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%); }
         .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .logo-icon {
-            background: #02b3e4; width: 44px; height: 44px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; box-shadow: 0 6px 12px rgba(2, 179, 228, 0.2);
-        }
+        .logo-icon { background: #02b3e4; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(2, 179, 228, 0.2); }
         .logo-text h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.3px; color: #0b2b3b; line-height: 1.2; }
         .logo-text span { font-size: 0.65rem; color: #02b3e4; font-weight: 600; letter-spacing: 1px; }
         .tagline { font-size: 0.7rem; color: #5c6f87; margin-top: 8px; border-left: 3px solid #02b3e4; padding-left: 10px; }
-        .progress-card {
-            background: #f0f9fe; margin: 16px 20px; padding: 12px 16px;
-            border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
-        }
+        .progress-card { background: #f0f9fe; margin: 16px 20px; padding: 12px 16px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; }
         .progress-text { font-size: 0.7rem; font-weight: 600; }
         .progress-number { font-size: 1.2rem; font-weight: 800; color: #02b3e4; }
-        .about-card {
-            background: #fef9e6; margin: 16px 20px 8px 20px; padding: 16px;
-            border-radius: 24px; border: 1px solid #ffe6b3;
-            transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
+        .about-card { background: #fef9e6; margin: 16px 20px 8px 20px; padding: 16px; border-radius: 24px; border: 1px solid #ffe6b3; transition: all 0.2s ease; }
         .about-card:hover { background: #fff6e0; border-color: #ffd966; }
         .about-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .avatar {
-            width: 48px; height: 48px; background: linear-gradient(145deg, #02b3e4, #0284a5);
-            border-radius: 60px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 600; color: white; box-shadow: 0 4px 8px rgba(2,179,228,0.2);
-        }
-        .about-title { font-weight: 700; font-size: 0.9rem; color: #1e293b; letter-spacing: -0.2px; }
+        .avatar { width: 48px; height: 48px; background: linear-gradient(145deg, #02b3e4, #0284a5); border-radius: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 600; color: white; box-shadow: 0 4px 8px rgba(2,179,228,0.2); }
+        .about-title { font-weight: 700; font-size: 0.9rem; color: #1e293b; }
         .about-title span { font-size: 0.7rem; font-weight: 400; color: #5f6c84; display: block; margin-top: 2px; }
         .about-bio { font-size: 0.7rem; line-height: 1.4; color: #2d3a4b; margin-bottom: 12px; padding-right: 4px; }
-        .linkedin-btn {
-            display: inline-flex; align-items: center; gap: 8px; background: #0077b5;
-            color: white; text-decoration: none; font-size: 0.7rem; font-weight: 500;
-            padding: 6px 14px; border-radius: 30px; transition: 0.2s; width: fit-content;
-        }
-        .linkedin-btn:hover { background: #005e8c; transform: scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        
+        .linkedin-btn { display: inline-flex; align-items: center; gap: 8px; background: #0077b5; color: white; text-decoration: none; font-size: 0.7rem; font-weight: 500; padding: 6px 14px; border-radius: 30px; transition: 0.2s; width: fit-content; }
+        .linkedin-btn:hover { background: #005e8c; }
         .main-tabs { display: flex; border-bottom: 1px solid #eef2f8; background: #fff; padding: 0 12px; gap: 4px; margin-top: 8px; }
-        .tab-btn {
-            flex: 1; background: transparent; border: none; padding: 12px 0;
-            font-weight: 600; font-size: 0.8rem; color: #5f7f9c; cursor: pointer;
-            font-family: inherit; border-radius: 12px 12px 0 0; transition: 0.2s;
-            text-decoration: none; text-align: center; display: inline-block;
-        }
+        .tab-btn { flex: 1; background: transparent; border: none; padding: 12px 0; font-weight: 600; font-size: 0.8rem; color: #5f7f9c; cursor: pointer; font-family: inherit; border-radius: 12px 12px 0 0; transition: 0.2s; text-decoration: none; text-align: center; display: inline-block; }
         .tab-btn.active { color: #02b3e4; border-bottom: 3px solid #02b3e4; background: #f9fbfe; }
-
-        .sidebar-announ-btn {
-            display: block; margin: 16px 20px; padding: 12px 16px;
-            background: #02b3e4; color: white; text-decoration: none;
-            border-radius: 12px; font-weight: 600; font-size: 0.85rem;
-            text-align: center; transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(2, 179, 228, 0.2);
-        }
-        .sidebar-announ-btn:hover { background: #0284a5; transform: translateY(-2px); }
-
-        .sidebar-apk-btn {
-            display: block; margin: 0 20px 16px 20px; padding: 12px 16px;
-            background: #28a745; color: white; text-decoration: none;
-            border-radius: 12px; font-weight: 600; font-size: 0.85rem;
-            text-align: center; transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
-        }
-        .sidebar-apk-btn:hover { background: #218838; transform: translateY(-2px); }
-
+        .sidebar-announ-btn { display: block; margin: 16px 20px; padding: 12px 16px; background: #02b3e4; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 0.85rem; text-align: center; transition: 0.2s; }
+        .sidebar-apk-btn { display: block; margin: 0 20px 16px 20px; padding: 12px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 0.85rem; text-align: center; transition: 0.2s; }
         .content-area { flex: 1; overflow-y: auto; padding: 40px; text-align: center; }
-        .hero-card {
-            max-width: 700px; margin: 80px auto; background: white;
-            border-radius: 32px; padding: 48px; border: 1px solid #eef2f8;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02); text-align: center;
-        }
+        .hero-card { max-width: 700px; margin: 80px auto; background: white; border-radius: 32px; padding: 48px; border: 1px solid #eef2f8; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02); text-align: center; }
         .hero-card h2 { font-size: 2rem; margin-bottom: 16px; color: #0b2b3b; }
-        .btn-large {
-            display: inline-block; margin-top: 24px; padding: 12px 28px;
-            background: #02b3e4; color: white; border-radius: 40px; text-decoration: none;
-            font-weight: 600; transition: 0.2s; border: none; cursor: pointer;
-        }
+        .btn-large { display: inline-block; margin-top: 24px; padding: 12px 28px; background: #02b3e4; color: white; border-radius: 40px; text-decoration: none; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
         .btn-large:hover { background: #0284a5; transform: translateY(-2px); }
         .course-grid { display: flex; gap: 24px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
-        .course-card {
-            background: white; border-radius: 24px; padding: 28px; width: 260px;
-            border: 1px solid #eef2f8; text-decoration: none; color: inherit;
-            transition: transform 0.2s, box-shadow 0.2s; display: block; text-align: center;
-        }
+        .course-card { background: white; border-radius: 24px; padding: 28px; width: 260px; border: 1px solid #eef2f8; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; display: block; text-align: center; }
         .course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08); }
         .course-icon { font-size: 2.5rem; margin-bottom: 16px; }
         .course-card h3 { margin-bottom: 8px; }
         footer { margin-top: 60px; font-size: 0.7rem; color: #8a9cb0; }
-        .course-grid .logo { display: none; }
-
-        .chatbot-toggle {
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
-            background: #02b3e4; border-radius: 50%; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(2, 179, 228, 0.4); display: flex;
-            align-items: center; justify-content: center; font-size: 1.8rem;
-            color: white; border: none; z-index: 999; transition: transform 0.3s;
-        }
-        .chatbot-toggle:hover { transform: scale(1.05); }
-        .chatbot-window {
-            position: fixed; bottom: 100px; right: 25px; width: 350px; height: 450px;
-            background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid #e6edf4;
-        }
+        .chatbot-toggle { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: #02b3e4; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 15px rgba(2, 179, 228, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; border: none; z-index: 999; transition: transform 0.3s; }
+        .chatbot-window { position: fixed; bottom: 100px; right: 25px; width: 350px; height: 450px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid #e6edf4; }
         .chatbot-header { background: #02b3e4; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
-        .chatbot-header span { font-size: 1.2rem; }
         .chatbot-body { flex: 1; padding: 15px; overflow-y: auto; background: #f9fbfe; display: flex; flex-direction: column; gap: 10px; }
         .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
-        .bot-msg { background: white; border: 1px solid #eef2f8; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .user-msg { background: #02b3e4; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bot-msg { background: white; border: 1px solid #eef2f8; align-self: flex-start; }
+        .user-msg { background: #02b3e4; color: white; align-self: flex-end; }
         .chatbot-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid #eef2f8; }
         .chatbot-input { flex: 1; padding: 10px 14px; border: 1px solid #e6edf4; border-radius: 20px; outline: none; font-family: inherit; font-size: 0.85rem; }
-        .chatbot-send { background: #02b3e4; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .chatbot-send:hover { background: #0284a5; }
-
+        .chatbot-send { background: #02b3e4; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+        #loginError { color: #ef4444; margin-top: 15px; font-size: 0.85rem; min-height: 20px; }
         @media (max-width: 780px) {
-            .sidebar { width: 280px; }
-            .content-area { padding: 20px; }
-            .hero-card { padding: 28px; margin: 40px auto; }
-            .about-card { margin: 12px 16px; }
-            .chatbot-window { width: 300px; height: 400px; }
+            .sidebar { width: 280px; } .content-area { padding: 20px; } .hero-card { padding: 28px; margin: 40px auto; }
             #loginModal > div { width: 90%; padding: 30px 20px; }
         }
     </style>
@@ -149,49 +69,23 @@
 <body>
 <div class="sidebar">
     <div class="brand">
-        <div class="logo">
-            <div class="logo-icon">🛡️</div>
-            <div class="logo-text">
-                <h1>CyberDefend</h1>
-                <span>ACADEMY</span>
-            </div>
-        </div>
+        <div class="logo"><div class="logo-icon">🛡️</div><div class="logo-text"><h1>CyberDefend</h1><span>ACADEMY</span></div></div>
         <div class="tagline">Part of Accenture | Defend · Detect · Respond</div>
     </div>
-
     <div class="about-card">
-        <div class="about-header">
-            <div class="avatar">FA</div>
-            <div class="about-title">
-                Fatma Alzahra AlAgery <span>Cybersecurity Specialist</span>
-            </div>
-        </div>
-        <div class="about-bio">
-            🔐 Security analyst & cyber range instructor. Passionate about SIEM, threat hunting, and digital forensics. 
-            Empowering next-gen defenders through hands-on labs.
-        </div>
-        <a href="https://www.linkedin.com/in/fatmaagery/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-            <span>🔗</span> Connect on LinkedIn
-        </a>
+        <div class="about-header"><div class="avatar">FA</div><div class="about-title">Fatma Alzahra AlAgery <span>Cybersecurity Specialist</span></div></div>
+        <div class="about-bio">🔐 Security analyst & cyber range instructor. Passionate about SIEM, threat hunting, and digital forensics.</div>
+        <a href="https://www.linkedin.com/in/fatmaagery/" target="_blank" class="linkedin-btn"><span>🔗</span> Connect on LinkedIn</a>
     </div>
-
-    <div class="progress-card">
-        <span class="progress-text">📈 Course Progress</span>
-        <span class="progress-number">99%</span>
-    </div>
-
+    <div class="progress-card"><span class="progress-text">📈 Course Progress</span><span class="progress-number">99%</span></div>
     <div class="main-tabs">
         <a href="index.html" class="tab-btn active">📘 COURSES</a>
         <a href="projects.html" class="tab-btn">🚀 PROJECTS</a>
         <a href="media.html" class="tab-btn">🎨 MEDIA & GIFs</a>
     </div>
-
     <a href="comments.html" class="sidebar-announ-btn">📢 Announcements & FAQ</a>
     <a href="https://drive.google.com/drive/folders/10PVVRv2NkD7oRvSrJfzkun0NQ3KYc7wO?usp=sharing" target="_blank" class="sidebar-apk-btn">📱 Download Mobile APP APK</a>
-
-    <div style="margin-top: auto; padding: 20px; font-size: 0.65rem; color: #8ba0b2; border-top: 1px solid #edf2f7;">
-        ⚡ Complete cybersecurity training
-    </div>
+    <div style="margin-top: auto; padding: 20px; font-size: 0.65rem; color: #8ba0b2; border-top: 1px solid #edf2f7;">⚡ Complete cybersecurity training</div>
 </div>
 
 <div class="content-area">
@@ -199,89 +93,49 @@
         <h2>🛡️ Welcome to CyberDefend Academy</h2>
         <p style="margin: 16px 0; color: #5c6f87;">Master Cybersecurity, Networking, and Incident Response with hands-on labs.</p>
         <div class="course-grid">
+            <a href="2026.html" class="course-card"><div class="course-icon">🎬</div><h3>2026 Lectures</h3><p style="font-size:0.8rem; color:#5c6f87;">Recorded Sessions & Videos</p></a>
+            <a href="DPA.html" class="course-card"><div class="course-icon">🔀</div><h3>DPA Summer Training Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Damietta Port Summer Training</p></a>
+            <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p style="font-size:0.8rem; color:#5c6f87;">Foundations & Core Concepts</p></a>
+            <a href="cybersecurity-course.html" class="course-card"><div class="course-icon">🔐</div><h3>2- Cybersecurity Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p></a>
             
-            <!-- 1. MOVED TO TOP: 2026 Lectures -->
-            <a href="2026.html" class="course-card">
-                 <div class="course-icon">🎬</div>
-                <h3>2026 Lectures</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Recorded Sessions & Videos</p>
-            </a>
-
-            <a href="DPA.html" class="course-card">
-                <div class="course-icon">🔀</div>
-                <h3>DPA Summer Training Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Damietta Port Summer Training</p>
-            </a>
-            <a href="level3.html" class="course-card">
-                <div class="course-icon">🔐</div>
-                <h3>1- Introduction to Cybersecurity</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Foundations & Core Concepts</p>
-            </a>
-            <a href="cybersecurity-course.html" class="course-card">
-                <div class="course-icon">🔐</div>
-                <h3>2- Cybersecurity Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p>
-            </a>
-            
-            <!-- 3- Paid Course -->
-            <a href="paid-cybersecurity-course.html" id="cyberCourseBtn" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">PREMIUM</span>
+            <!-- PAID COURSE 3 -->
+            <div id="cyberCourseBtn" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
+                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
                 <h3>3- Cybersecurity Course (Payed Course)</h3>
                 <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
-            </a>
+            </div>
 
-            <!-- 4- Paid Course (NEW) -->
-            <a href="paid-cybersecurity-course.html" id="cyberCourseBtn2" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">PREMIUM</span>
+            <!-- PAID COURSE 4 -->
+            <div id="cyberCourseBtn2" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
+                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
                 <h3>4- Cybersecurity Course (Payed Course)</h3>
                 <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
-            </a>
+            </div>
 
-            <a href="networking.html" class="course-card">
-                <div class="course-icon">🌐</div>
-                <h3>CyberSecurity Reading Slides</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Reading Slides</p>
-            </a>
-            <a href="routing-switching.html" class="course-card">
-                 <div class="course-icon">🛡️</div>
-                <h3>English CyberSecurity Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p>
-            </a>
-            <a href="aws foundation.html" class="course-card">
-                 <div class="course-icon">🤖</div>
-                <h3>aws cloud foundation</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">aws cloud solutions</p>
-            </a>
-            <a href="digital comm.html" class="course-card">
-                 <div class="course-icon">🧠</div>
-                <h3>digital comm</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">digital com</p>
-            </a>
-            <a href="wireless comm.html" class="course-card">
-                 <div class="course-icon">🎯️</div>
-                <h3>wireless comm</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">wireless comm</p>
-            </a>
+            <a href="networking.html" class="course-card"><div class="course-icon">🌐</div><h3>CyberSecurity Reading Slides</h3><p style="font-size:0.8rem; color:#5c6f87;">Reading Slides</p></a>
+            <a href="routing-switching.html" class="course-card"><div class="course-icon">🛡️</div><h3>English CyberSecurity Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p></a>
+            <a href="aws foundation.html" class="course-card"><div class="course-icon">🤖</div><h3>aws cloud foundation</h3><p style="font-size:0.8rem; color:#5c6f87;">aws cloud solutions</p></a>
+            <a href="digital comm.html" class="course-card"><div class="course-icon">🧠</div><h3>digital comm</h3><p style="font-size:0.8rem; color:#5c6f87;">digital com</p></a>
+            <a href="wireless comm.html" class="course-card"><div class="course-icon">🎯️</div><h3>wireless comm</h3><p style="font-size:0.8rem; color:#5c6f87;">wireless comm</p></a>
         </div>
-        
         <a href="cybersecurity-course.html" class="btn-large">Start Cybersecurity Course →</a>
     </div>
     <footer>© CyberDefend Academy · Part of Accenture</footer>
 </div>
 
-<!-- HIDDEN LOGIN POPUP FOR PAID COURSES ONLY -->
+<!-- HIDDEN LOGIN POPUP -->
 <div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
     <div style="background: white; padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         <h3 style="margin-bottom: 10px;">Login Required</h3>
-        <p style="color: #555; margin-bottom: 25px;">You must log in to access this paid course.</p>
+        <p id="modalCourseName" style="color: #555; margin-bottom: 25px;">Verifying access...</p>
         
-        <button id="modalGoogleLoginBtn" style="background-color: #4285f4; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto; font-family: inherit; font-weight: 600; transition: 0.2s;">
-            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#FFFFFF" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#FFFFFF" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FFFFFF" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#FFFFFF" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Sign in with Google
-        </button>
-        <br><br>
+        <!-- The real Google button will render here -->
+        <div id="modalGoogleButton" style="display: flex; justify-content: center; margin-bottom: 15px; min-height: 40px;"></div>
+        
+        <div id="loginError"></div>
+        <br>
         <button id="closeModalBtn" style="background: none; border: none; color: #888; cursor: pointer; text-decoration: underline; font-family: inherit; font-size: 0.9rem;">Cancel</button>
     </div>
 </div>
@@ -289,13 +143,8 @@
 <!-- CHATBOT HTML -->
 <button class="chatbot-toggle" id="chatbot-toggle">💬</button>
 <div class="chatbot-window" id="chatbot-window">
-    <div class="chatbot-header">
-        <span>🛡️</span>
-        <div>CyberDefend Assistant<br><small style="font-size:0.7rem; font-weight:400;">Typically replies instantly</small></div>
-    </div>
-    <div class="chatbot-body" id="chatbot-body">
-        <div class="chat-msg bot-msg">Hello! Welcome to CyberDefend Academy. How can I help you today?</div>
-    </div>
+    <div class="chatbot-header"><span>🛡️</span><div>CyberDefend Assistant<br><small style="font-size:0.7rem; font-weight:400;">Typically replies instantly</small></div></div>
+    <div class="chatbot-body" id="chatbot-body"><div class="chat-msg bot-msg">Hello! Welcome to CyberDefend Academy. How can I help you today?</div></div>
     <div class="chatbot-input-area">
         <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Type your message...">
         <button class="chatbot-send" id="chatbot-send">➤</button>
@@ -303,105 +152,141 @@
 </div>
 
 <script>
-    // CHATBOT LOGIC
+    // =====================================================================
+    // YOUR LINKS ARE PLUGGED IN HERE
+    // =====================================================================
+    const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
+    
+    // NOTE: I changed your link from /pubhtml to /pub?output=csv so the code can read it!
+    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNwvIEtWzzXZ7_tp8pxiv0YRPQ48cgbLh1iC-bv18oFa2o4S61xw4tHTC8x3SEpc4FqgqjtXxL_5gi/pub?output=csv';
+    // =====================================================================
+
+    let requestedCourseColumn = null;
+
+    // --- CHATBOT LOGIC ---
     const toggleBtn = document.getElementById('chatbot-toggle');
     const chatWindow = document.getElementById('chatbot-window');
-    
-    toggleBtn.addEventListener('click', () => {
-        chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
-    });
-
+    toggleBtn.addEventListener('click', () => { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; });
     const sendBtn = document.getElementById('chatbot-send');
     const inputField = document.getElementById('chatbot-input');
     const chatBody = document.getElementById('chatbot-body');
-
     async function sendMessage() {
-        const text = inputField.value.trim();
-        if (text === '') return;
+        const text = inputField.value.trim(); if (!text) return;
+        const userMsg = document.createElement('div'); userMsg.classList.add('chat-msg', 'user-msg'); userMsg.innerText = text; chatBody.appendChild(userMsg); inputField.value = ''; chatBody.scrollTop = chatBody.scrollHeight;
+        try { await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec", { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }); } catch (error) { console.error("Error:", error); }
+        setTimeout(() => { const botMsg = document.createElement('div'); botMsg.classList.add('chat-msg', 'bot-msg'); botMsg.innerText = "Thank you! We will get back to you soon."; chatBody.appendChild(botMsg); chatBody.scrollTop = chatBody.scrollHeight; }, 800);
+    }
+    sendBtn.addEventListener('click', sendMessage);
+    inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-        const userMsg = document.createElement('div');
-        userMsg.classList.add('chat-msg', 'user-msg');
-        userMsg.innerText = text;
-        chatBody.appendChild(userMsg);
-
-        inputField.value = '';
-        chatBody.scrollTop = chatBody.scrollHeight;
-
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec";
-        
+    // --- SHEET VERIFICATION LOGIC ---
+    async function checkCourseAccess(email, courseColumn) {
         try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text })
-            });
-        } catch (error) {
-            console.error("Error sending message:", error);
-        }
+            const response = await fetch(PAID_COURSES_SHEET_URL);
+            const csvText = await response.text();
+            const lines = csvText.split('\n');
+            if (lines.length < 2) return false;
 
-        setTimeout(() => {
-            const botMsg = document.createElement('div');
-            botMsg.classList.add('chat-msg', 'bot-msg');
-            botMsg.innerText = "Thank you! Your message has been recorded successfully. We will get back to you soon.";
-            chatBody.appendChild(botMsg);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }, 800);
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            const emailIndex = headers.indexOf('email');
+            const courseIndex = headers.indexOf(courseColumn.toLowerCase());
+
+            if (emailIndex === -1 || courseIndex === -1) {
+                alert("ERROR: Make sure Row 1 of your Google Sheet has exactly these headers: Email, Course_3, Course_4");
+                return false;
+            }
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
+                const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
+
+                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') {
+                    return true; 
+                }
+            }
+            return false; 
+        } catch (error) {
+            console.error("Sheet fetch error:", error);
+            return false;
+        }
     }
 
-    sendBtn.addEventListener('click', sendMessage);
-    inputField.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    // --- GOOGLE LOGIN HANDLER ---
+    async function handlePaidCourseLogin(response) {
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.innerHTML = "⏳ Verifying access in database..."; 
 
-    // =======================================================================
-    // PAID COURSE LOGIN LOGIC (APPLIES TO 3- AND 4- PAID COURSES)
-    // =======================================================================
+        try {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            const userEmail = payload.email;
+            
+            const hasAccess = await checkCourseAccess(userEmail, requestedCourseColumn);
+            
+            if (hasAccess) {
+                localStorage.setItem('googleUserLoggedIn', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                alert("Access Granted! Redirecting to course...");
+                window.location.href = 'paid-cybersecurity-course.html';
+            } else {
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this specific course in the Google Sheet.";
+            }
+        } catch (error) {
+            errorDiv.innerHTML = "❌ Login failed to parse data.";
+        }
+    }
+
+    // --- RENDER GOOGLE BUTTON ---
+    function renderGoogleButton() {
+        const container = document.getElementById('modalGoogleButton');
+        container.innerHTML = ''; // Clear it
+        
+        if (typeof google === 'undefined' || !google.accounts) {
+            document.getElementById('loginError').innerHTML = "Google script is still loading. Please click the course again in 2 seconds.";
+            return;
+        }
+
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handlePaidCourseLogin
+        });
+        
+        google.accounts.id.renderButton(
+            container,
+            { theme: 'outline', size: 'large', width: 300, text: 'signin_with' }
+        );
+    }
+
+    // --- CLICK LISTENERS FOR COURSES ---
     document.addEventListener('click', function(event) {
         const loginModal = document.getElementById('loginModal');
+        const courseNameText = document.getElementById('modalCourseName');
         
-        // 1. Check for 3- Cybersecurity Course
         if (event.target.closest('#cyberCourseBtn')) {
             event.preventDefault(); 
             event.stopPropagation();
-
-            if (localStorage.getItem('googleUserLoggedIn') === 'true') {
-                window.location.href = 'paid-cybersecurity-course.html';
-            } else {
-                loginModal.style.display = 'flex';
-            }
+            requestedCourseColumn = 'Course_3';
+            courseNameText.innerText = "Please log in to verify access for Course 3.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            
+            // Use a tiny timeout to ensure the modal is visible before drawing the Google button
+            setTimeout(renderGoogleButton, 100);
         }
 
-        // 2. Check for 4- Cybersecurity Course (NEW)
         if (event.target.closest('#cyberCourseBtn2')) {
             event.preventDefault(); 
             event.stopPropagation();
-
-            // If course 4 goes to a different link, change it here:
-            if (localStorage.getItem('googleUserLoggedIn') === 'true') {
-                window.location.href = 'paid-cybersecurity-course.html'; 
-            } else {
-                loginModal.style.display = 'flex';
-            }
+            requestedCourseColumn = 'Course_4';
+            courseNameText.innerText = "Please log in to verify access for Course 4.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            
+            setTimeout(renderGoogleButton, 100);
         }
 
-        // 3. Handle popup Mock Google Login click
-        if (event.target.closest('#modalGoogleLoginBtn')) {
-            localStorage.setItem('googleUserLoggedIn', 'true');
-            loginModal.style.display = 'none';
-            alert("Successfully logged in via Google!");
-            window.location.href = 'paid-cybersecurity-course.html'; 
-        }
-
-        // 4. Handle popup Cancel click
-        if (event.target.closest('#closeModalBtn')) {
-            loginModal.style.display = 'none';
-        }
-
-        // 5. Handle clicking outside the popup box to close it
-        if (event.target === loginModal) {
-            loginModal.style.display = 'none';
-        }
+        if (event.target.closest('#closeModalBtn')) { loginModal.style.display = 'none'; }
+        if (event.target === loginModal) { loginModal.style.display = 'none'; }
     });
 </script>
 </body>
