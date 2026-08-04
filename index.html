@@ -130,10 +130,7 @@
     <div style="background: white; padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         <h3 style="margin-bottom: 10px;">Login Required</h3>
         <p id="modalCourseName" style="color: #555; margin-bottom: 25px;">Verifying access...</p>
-        
-        <!-- The real Google button will render here -->
         <div id="modalGoogleButton" style="display: flex; justify-content: center; margin-bottom: 15px; min-height: 40px;"></div>
-        
         <div id="loginError"></div>
         <br>
         <button id="closeModalBtn" style="background: none; border: none; color: #888; cursor: pointer; text-decoration: underline; font-family: inherit; font-size: 0.9rem;">Cancel</button>
@@ -153,12 +150,10 @@
 
 <script>
     // =====================================================================
-    // YOUR LINKS ARE PLUGGED IN HERE
+    // FIXED LINKS - Using direct export URL instead of publish URL
     // =====================================================================
     const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
-    
-    // NOTE: I changed your link from /pubhtml to /pub?output=csv so the code can read it!
-    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNwvIEtWzzXZ7_tp8pxiv0YRPQ48cgbLh1iC-bv18oFa2o4S61xw4tHTC8x3SEpc4FqgqjtXxL_5gi/pub?output=csv';
+    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/2PACX-1vRNwvIEtWzzXZ7_tp8pxiv0YRPQ48cgbLh1iC-bv18oFa2o4S61xw4tHTC8x3SEpc4FqgqjtXxL_5gi/export?format=csv&gid=0';
     // =====================================================================
 
     let requestedCourseColumn = null;
@@ -184,7 +179,11 @@
         try {
             const response = await fetch(PAID_COURSES_SHEET_URL);
             const csvText = await response.text();
-            const lines = csvText.split('\n');
+            
+            // CRITICAL FIX: Remove hidden Windows carriage returns so "email\r" becomes "email"
+            const cleanCsv = csvText.replace(/\r/g, ''); 
+            const lines = cleanCsv.split('\n');
+            
             if (lines.length < 2) return false;
 
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
@@ -192,11 +191,13 @@
             const courseIndex = headers.indexOf(courseColumn.toLowerCase());
 
             if (emailIndex === -1 || courseIndex === -1) {
-                alert("ERROR: Make sure Row 1 of your Google Sheet has exactly these headers: Email, Course_3, Course_4");
+                console.error("Headers not found. Code saw these headers:", headers);
+                alert("ERROR: Could not find columns. Make sure your sheet is shared as 'Anyone with the link'.");
                 return false;
             }
 
             for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue; // Skip empty rows
                 const row = lines[i].split(',');
                 const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
                 const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
@@ -208,6 +209,7 @@
             return false; 
         } catch (error) {
             console.error("Sheet fetch error:", error);
+            alert("Network error: Cannot reach Google Sheet. Make sure it is shared as 'Anyone with the link'.");
             return false;
         }
     }
@@ -229,17 +231,17 @@
                 alert("Access Granted! Redirecting to course...");
                 window.location.href = 'paid-cybersecurity-course.html';
             } else {
-                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this specific course in the Google Sheet.";
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this specific course.";
             }
         } catch (error) {
-            errorDiv.innerHTML = "❌ Login failed to parse data.";
+            errorDiv.innerHTML = "❌ Login failed to read data.";
         }
     }
 
     // --- RENDER GOOGLE BUTTON ---
     function renderGoogleButton() {
         const container = document.getElementById('modalGoogleButton');
-        container.innerHTML = ''; // Clear it
+        container.innerHTML = ''; 
         
         if (typeof google === 'undefined' || !google.accounts) {
             document.getElementById('loginError').innerHTML = "Google script is still loading. Please click the course again in 2 seconds.";
@@ -269,8 +271,6 @@
             courseNameText.innerText = "Please log in to verify access for Course 3.";
             document.getElementById('loginError').innerHTML = "";
             loginModal.style.display = 'flex';
-            
-            // Use a tiny timeout to ensure the modal is visible before drawing the Google button
             setTimeout(renderGoogleButton, 100);
         }
 
@@ -281,7 +281,6 @@
             courseNameText.innerText = "Please log in to verify access for Course 4.";
             document.getElementById('loginError').innerHTML = "";
             loginModal.style.display = 'flex';
-            
             setTimeout(renderGoogleButton, 100);
         }
 
