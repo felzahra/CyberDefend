@@ -97,6 +97,7 @@
             <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p style="font-size:0.8rem; color:#5c6f87;">Foundations & Core Concepts</p></a>
             <a href="cybersecurity-course.html" class="course-card"><div class="course-icon">🔐</div><h3>2- Cybersecurity Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p></a>
             
+            <!-- COURSE 3 -->
             <div id="cyberCourseBtn" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
@@ -104,6 +105,7 @@
                 <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
             </div>
 
+            <!-- COURSE 4 -->
             <div id="cyberCourseBtn2" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
@@ -144,15 +146,12 @@
 </div>
 
 <script>
-    // =====================================================================
-    // UPDATED WITH YOUR EXACT NEW SHEET ID
-    // =====================================================================
     const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
     const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
-    // =====================================================================
 
     let requestedCourseColumn = null;
 
+    // Chatbot Logic (Shortened for space)
     const toggleBtn = document.getElementById('chatbot-toggle');
     const chatWindow = document.getElementById('chatbot-window');
     toggleBtn.addEventListener('click', () => { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; });
@@ -162,89 +161,72 @@
     async function sendMessage() {
         const text = inputField.value.trim(); if (!text) return;
         const userMsg = document.createElement('div'); userMsg.classList.add('chat-msg', 'user-msg'); userMsg.innerText = text; chatBody.appendChild(userMsg); inputField.value = ''; chatBody.scrollTop = chatBody.scrollHeight;
-        try { await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec", { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }); } catch (error) { console.error("Error:", error); }
+        try { await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec", { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }); } catch (error) {}
         setTimeout(() => { const botMsg = document.createElement('div'); botMsg.classList.add('chat-msg', 'bot-msg'); botMsg.innerText = "Thank you! We will get back to you soon."; chatBody.appendChild(botMsg); chatBody.scrollTop = chatBody.scrollHeight; }, 800);
     }
     sendBtn.addEventListener('click', sendMessage);
     inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
+    // Sheet Verification
     async function checkCourseAccess(email, courseColumn) {
         try {
             const response = await fetch(PAID_COURSES_SHEET_URL);
             const csvText = await response.text();
             const cleanCsv = csvText.replace(/\r/g, ''); 
             const lines = cleanCsv.split('\n');
-            
             if (lines.length < 2) return false;
-
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
             const emailIndex = headers.indexOf('email');
             const courseIndex = headers.indexOf(courseColumn.toLowerCase());
-
-            if (emailIndex === -1 || courseIndex === -1) {
-                alert("ERROR: Could not find 'Email', 'Course_3', or 'Course_4' in Row 1.");
-                return false;
-            }
-
+            if (emailIndex === -1 || courseIndex === -1) return false;
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue; 
                 const row = lines[i].split(',');
                 const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
                 const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
-
-                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') {
-                    return true; 
-                }
+                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') return true; 
             }
             return false; 
-        } catch (error) {
-            console.error("Sheet fetch error:", error);
-            alert("Network error: Cannot reach Google Sheet.");
-            return false;
-        }
+        } catch (error) { return false; }
     }
 
+    // Google Login Handler
     async function handlePaidCourseLogin(response) {
         const errorDiv = document.getElementById('loginError');
         errorDiv.innerHTML = "⏳ Verifying access in database..."; 
-
         try {
             const payload = JSON.parse(atob(response.credential.split('.')[1]));
             const userEmail = payload.email;
-            
             const hasAccess = await checkCourseAccess(userEmail, requestedCourseColumn);
             
             if (hasAccess) {
                 localStorage.setItem('googleUserLoggedIn', 'true');
                 document.getElementById('loginModal').style.display = 'none';
-                alert("Access Granted! Redirecting to course...");
-                window.location.href = 'paid-cybersecurity-course.html';
+                
+                // ==========================================
+                // THE FIX: Redirect to the correct file!
+                // ==========================================
+                let redirectLink = 'paid-cybersecurity-course.html'; // Default for Course 3
+                if (requestedCourseColumn === 'Course_4') {
+                    redirectLink = 'paid-cybersecurity-course-2.html'; // Goes to Course 4 file
+                }
+                
+                alert("Access Granted! Redirecting...");
+                window.location.href = redirectLink;
             } else {
-                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this course.";
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not approved for this course in the sheet.";
             }
         } catch (error) {
-            errorDiv.innerHTML = "❌ Login failed to read data.";
+            errorDiv.innerHTML = "❌ Login failed.";
         }
     }
 
     function renderGoogleButton() {
         const container = document.getElementById('modalGoogleButton');
         container.innerHTML = ''; 
-        
-        if (typeof google === 'undefined' || !google.accounts) {
-            document.getElementById('loginError').innerHTML = "Google script is still loading. Please click the course again in 2 seconds.";
-            return;
-        }
-
-        google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handlePaidCourseLogin
-        });
-        
-        google.accounts.id.renderButton(
-            container,
-            { theme: 'outline', size: 'large', width: 300, text: 'signin_with' }
-        );
+        if (typeof google === 'undefined' || !google.accounts) return;
+        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handlePaidCourseLogin });
+        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
     }
 
     document.addEventListener('click', function(event) {
@@ -252,8 +234,7 @@
         const courseNameText = document.getElementById('modalCourseName');
         
         if (event.target.closest('#cyberCourseBtn')) {
-            event.preventDefault(); 
-            event.stopPropagation();
+            event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_3';
             courseNameText.innerText = "Please log in to verify access for Course 3.";
             document.getElementById('loginError').innerHTML = "";
@@ -262,8 +243,7 @@
         }
 
         if (event.target.closest('#cyberCourseBtn2')) {
-            event.preventDefault(); 
-            event.stopPropagation();
+            event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_4';
             courseNameText.innerText = "Please log in to verify access for Course 4.";
             document.getElementById('loginError').innerHTML = "";
