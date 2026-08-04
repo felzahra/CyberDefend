@@ -102,7 +102,7 @@
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
                 <h3>3- Cybersecurity Course (Payed Course)</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
+                <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs</p>
             </div>
 
             <!-- COURSE 4 -->
@@ -110,12 +110,28 @@
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
                 <h3>4- Cybersecurity Course (Payed Course)</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
+                <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs</p>
+            </div>
+
+            <!-- LEVEL 1 AI (NEW) -->
+            <div id="aiCourseBtn1" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
+                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
+                <div class="course-icon">🤖</div>
+                <h3>Level-1 AI</h3>
+                <p style="font-size:0.8rem; color:#5c6f87;">Artificial Intelligence Basics</p>
+            </div>
+
+            <!-- LEVEL 2 AI (NEW) -->
+            <div id="aiCourseBtn2" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
+                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
+                <div class="course-icon">🧠</div>
+                <h3>Level2-AI</h3>
+                <p style="font-size:0.8rem; color:#5c6f87;">Advanced AI Concepts</p>
             </div>
 
             <a href="networking.html" class="course-card"><div class="course-icon">🌐</div><h3>CyberSecurity Reading Slides</h3><p style="font-size:0.8rem; color:#5c6f87;">Reading Slides</p></a>
             <a href="routing-switching.html" class="course-card"><div class="course-icon">🛡️</div><h3>English CyberSecurity Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p></a>
-            <a href="aws foundation.html" class="course-card"><div class="course-icon">🤖</div><h3>aws cloud foundation</h3><p style="font-size:0.8rem; color:#5c6f87;">aws cloud solutions</p></a>
+            <a href="aws foundation.html" class="course-card"><div class="course-icon">☁️</div><h3>aws cloud foundation</h3><p style="font-size:0.8rem; color:#5c6f87;">aws cloud solutions</p></a>
             <a href="digital comm.html" class="course-card"><div class="course-icon">🧠</div><h3>digital comm</h3><p style="font-size:0.8rem; color:#5c6f87;">digital com</p></a>
             <a href="wireless comm.html" class="course-card"><div class="course-icon">🎯️</div><h3>wireless comm</h3><p style="font-size:0.8rem; color:#5c6f87;">wireless comm</p></a>
         </div>
@@ -151,7 +167,7 @@
 
     let requestedCourseColumn = null;
 
-    // Chatbot Logic (Shortened for space)
+    // Chatbot Logic
     const toggleBtn = document.getElementById('chatbot-toggle');
     const chatWindow = document.getElementById('chatbot-window');
     toggleBtn.addEventListener('click', () => { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; });
@@ -203,12 +219,14 @@
                 localStorage.setItem('googleUserLoggedIn', 'true');
                 document.getElementById('loginModal').style.display = 'none';
                 
-                // ==========================================
-                // THE FIX: Redirect to the correct file!
-                // ==========================================
-                let redirectLink = 'paid-cybersecurity-course.html'; // Default for Course 3
+                // Redirect logic for ALL 4 PAID COURSES
+                let redirectLink = 'paid-cybersecurity-course.html'; // Course 3
                 if (requestedCourseColumn === 'Course_4') {
-                    redirectLink = 'paid-cybersecurity-course-2.html'; // Goes to Course 4 file
+                    redirectLink = 'paid-cybersecurity-course-2.html'; // Course 4
+                } else if (requestedCourseColumn === 'Level_1_AI') {
+                    redirectLink = 'Level-1 AI.html'; // AI Level 1
+                } else if (requestedCourseColumn === 'Level_2_AI') {
+                    redirectLink = 'Level2-AI.html'; // AI Level 2
                 }
                 
                 alert("Access Granted! Redirecting...");
@@ -229,10 +247,12 @@
         google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
     }
 
+    // Click Listeners for ALL courses
     document.addEventListener('click', function(event) {
         const loginModal = document.getElementById('loginModal');
         const courseNameText = document.getElementById('modalCourseName');
         
+        // Cyber Course 3
         if (event.target.closest('#cyberCourseBtn')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_3';
@@ -241,11 +261,29 @@
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
         }
-
+        // Cyber Course 4
         if (event.target.closest('#cyberCourseBtn2')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_4';
             courseNameText.innerText = "Please log in to verify access for Course 4.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        // AI Level 1 (NEW)
+        if (event.target.closest('#aiCourseBtn1')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Level_1_AI';
+            courseNameText.innerText = "Please log in to verify access for Level-1 AI.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        // AI Level 2 (NEW)
+        if (event.target.closest('#aiCourseBtn2')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Level_2_AI';
+            courseNameText.innerText = "Please log in to verify access for Level2-AI.";
             document.getElementById('loginError').innerHTML = "";
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
