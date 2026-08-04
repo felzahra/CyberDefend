@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>CyberDefend Academy · Main Dashboard</title>
     
-    <!-- LOAD GOOGLE LOGIN SCRIPT FIRST -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -98,7 +97,6 @@
             <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p style="font-size:0.8rem; color:#5c6f87;">Foundations & Core Concepts</p></a>
             <a href="cybersecurity-course.html" class="course-card"><div class="course-icon">🔐</div><h3>2- Cybersecurity Course</h3><p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p></a>
             
-            <!-- PAID COURSE 3 -->
             <div id="cyberCourseBtn" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
@@ -106,7 +104,6 @@
                 <p style="font-size:0.8rem; color:#5c6f87;">Advanced Hands-on Labs & Exclusive Content</p>
             </div>
 
-            <!-- PAID COURSE 4 -->
             <div id="cyberCourseBtn2" class="course-card" style="position: relative; cursor: pointer; border: 1px solid #ffe6b3;">
                 <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
                 <div class="course-icon">💎</div>
@@ -125,7 +122,6 @@
     <footer>© CyberDefend Academy · Part of Accenture</footer>
 </div>
 
-<!-- HIDDEN LOGIN POPUP -->
 <div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
     <div style="background: white; padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         <h3 style="margin-bottom: 10px;">Login Required</h3>
@@ -137,7 +133,6 @@
     </div>
 </div>
 
-<!-- CHATBOT HTML -->
 <button class="chatbot-toggle" id="chatbot-toggle">💬</button>
 <div class="chatbot-window" id="chatbot-window">
     <div class="chatbot-header"><span>🛡️</span><div>CyberDefend Assistant<br><small style="font-size:0.7rem; font-weight:400;">Typically replies instantly</small></div></div>
@@ -150,15 +145,14 @@
 
 <script>
     // =====================================================================
-    // FIXED LINKS - Using direct export URL instead of publish URL
+    // UPDATED WITH YOUR EXACT NEW SHEET ID
     // =====================================================================
     const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
-    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/2PACX-1vRNwvIEtWzzXZ7_tp8pxiv0YRPQ48cgbLh1iC-bv18oFa2o4S61xw4tHTC8x3SEpc4FqgqjtXxL_5gi/export?format=csv&gid=0';
+    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
     // =====================================================================
 
     let requestedCourseColumn = null;
 
-    // --- CHATBOT LOGIC ---
     const toggleBtn = document.getElementById('chatbot-toggle');
     const chatWindow = document.getElementById('chatbot-window');
     toggleBtn.addEventListener('click', () => { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; });
@@ -174,13 +168,10 @@
     sendBtn.addEventListener('click', sendMessage);
     inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- SHEET VERIFICATION LOGIC ---
     async function checkCourseAccess(email, courseColumn) {
         try {
             const response = await fetch(PAID_COURSES_SHEET_URL);
             const csvText = await response.text();
-            
-            // CRITICAL FIX: Remove hidden Windows carriage returns so "email\r" becomes "email"
             const cleanCsv = csvText.replace(/\r/g, ''); 
             const lines = cleanCsv.split('\n');
             
@@ -191,13 +182,12 @@
             const courseIndex = headers.indexOf(courseColumn.toLowerCase());
 
             if (emailIndex === -1 || courseIndex === -1) {
-                console.error("Headers not found. Code saw these headers:", headers);
-                alert("ERROR: Could not find columns. Make sure your sheet is shared as 'Anyone with the link'.");
+                alert("ERROR: Could not find 'Email', 'Course_3', or 'Course_4' in Row 1.");
                 return false;
             }
 
             for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue; // Skip empty rows
+                if (!lines[i].trim()) continue; 
                 const row = lines[i].split(',');
                 const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
                 const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
@@ -209,12 +199,11 @@
             return false; 
         } catch (error) {
             console.error("Sheet fetch error:", error);
-            alert("Network error: Cannot reach Google Sheet. Make sure it is shared as 'Anyone with the link'.");
+            alert("Network error: Cannot reach Google Sheet.");
             return false;
         }
     }
 
-    // --- GOOGLE LOGIN HANDLER ---
     async function handlePaidCourseLogin(response) {
         const errorDiv = document.getElementById('loginError');
         errorDiv.innerHTML = "⏳ Verifying access in database..."; 
@@ -231,14 +220,13 @@
                 alert("Access Granted! Redirecting to course...");
                 window.location.href = 'paid-cybersecurity-course.html';
             } else {
-                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this specific course.";
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not on the approved list for this course.";
             }
         } catch (error) {
             errorDiv.innerHTML = "❌ Login failed to read data.";
         }
     }
 
-    // --- RENDER GOOGLE BUTTON ---
     function renderGoogleButton() {
         const container = document.getElementById('modalGoogleButton');
         container.innerHTML = ''; 
@@ -259,7 +247,6 @@
         );
     }
 
-    // --- CLICK LISTENERS FOR COURSES ---
     document.addEventListener('click', function(event) {
         const loginModal = document.getElementById('loginModal');
         const courseNameText = document.getElementById('modalCourseName');
