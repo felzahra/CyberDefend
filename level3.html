@@ -22,42 +22,16 @@
         .nav-item:hover, .nav-item.active { background: #e9f4fa; color: #027e9e; font-weight: 600; border-left: 3px solid #02b3e4; }
         .check-icon { font-size: 1.1rem; min-width: 24px; }
         .main-content { flex: 1; overflow-y: auto; padding: 32px 40px; background: #f5f7fc; }
-        .lesson-card { max-width: 1000px; margin: 0 auto 48px; background: white; border-radius: 28px; border: 1px solid #eef2f8; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .lesson-card { max-width: 1000px; margin: 0 auto 28px; background: white; border-radius: 28px; border: 1px solid #eef2f8; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .card-header { padding: 28px 32px 12px; border-bottom: 1px solid #f0f4f9; }
         .lesson-badge { font-size: 0.7rem; font-weight: 600; color: #02b3e4; background: #e2f0f7; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
         .card-header h2 { font-size: 1.6rem; font-weight: 700; color: #0b2b3b; margin: 8px 0 8px 0; }
         .sub { color: #5c6f87; margin-top: 8px; font-size: 0.9rem; }
-        
-        .lesson-tabs {
-            display: flex;
-            border-bottom: 2px solid #eef2f8;
-            margin: 16px 28px 0 28px;
-            gap: 8px;
-        }
-        .tab-btn-lesson {
-            background: transparent;
-            border: none;
-            padding: 10px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #6c7e8f;
-            cursor: pointer;
-            border-radius: 30px 30px 0 0;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-        .tab-btn-lesson.active {
-            color: #02b3e4;
-            background: #f0f9fe;
-            border-bottom: 3px solid #02b3e4;
-        }
-        .tab-content {
-            display: none;
-            padding: 20px 28px 28px 28px;
-        }
-        .tab-content.active {
-            display: block;
-        }
+        .lesson-tabs { display: flex; border-bottom: 2px solid #eef2f8; margin: 16px 28px 0 28px; gap: 8px; }
+        .tab-btn-lesson { background: transparent; border: none; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: #6c7e8f; cursor: pointer; border-radius: 30px 30px 0 0; transition: 0.2s; font-family: inherit; }
+        .tab-btn-lesson.active { color: #02b3e4; background: #f0f9fe; border-bottom: 3px solid #02b3e4; }
+        .tab-content { display: none; padding: 20px 28px 28px 28px; }
+        .tab-content.active { display: block; }
         .video-container { margin: 0 0 16px 0; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
@@ -65,16 +39,88 @@
         .info-grid { background: #f9fbfe; border-radius: 18px; padding: 18px 24px; margin: 20px 0 0; border-left: 4px solid #02b3e4; }
         .btn-youtube { display: inline-flex; align-items: center; gap: 8px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
         .btn-youtube:hover { background: #cc0000; transform: scale(0.98); }
-        
         .downloads-list { display: flex; flex-direction: column; gap: 12px; }
         .download-item { background: #f9fbfe; border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid #eef2f8; }
         .download-info h4 { font-size: 1rem; margin-bottom: 4px; color: #0b2b3b; }
         .download-info p { font-size: 0.75rem; color: #5c6f87; }
         .btn-download { background: #02b3e4; color: white; padding: 8px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: 0.2s; display: inline-block; }
         .btn-download:hover { background: #028cae; }
-        
-        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: #7f8c9a; padding-top: 32px; border-top: 1px solid #e2e8f0; }
-        @media (max-width: 780px) { .sidebar { width: 280px; } .main-content { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } }
+
+        /* ========== PREV / NEXT ========== */
+        .nav-buttons { max-width: 1000px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .nav-btn { padding: 11px 28px; border-radius: 12px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .nav-btn-prev { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .nav-btn-prev:hover:not(:disabled) { background: #e2e8f0; color: #334155; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(71,85,105,0.15); }
+        .nav-btn-next { background: #02b3e4; color: white; border: 1px solid #02b3e4; }
+        .nav-btn-next:hover:not(:disabled) { background: #028cae; border-color: #028cae; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(2,179,228,0.3); }
+
+        /* ========== QUIZ ========== */
+        .quiz-section { max-width: 1000px; margin: 0 auto 28px; background: white; border-radius: 28px; border: 1px solid #eef2f8; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .quiz-header { padding: 20px 28px; border-bottom: 1px solid #f0f4f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .quiz-header h3 { font-size: 1.1rem; font-weight: 700; color: #0b2b3b; display: flex; align-items: center; gap: 8px; }
+        .quiz-required-badge { background: #fee2e2; color: #dc2626; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .quiz-completed-badge { background: #e6f4ea; color: #137333; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: none; }
+        .quiz-body { padding: 24px 28px; }
+        .quiz-question { margin-bottom: 28px; padding: 20px 24px; background: #f9fbfe; border-radius: 18px; border: 2px solid transparent; transition: border-color 0.2s; }
+        .quiz-question.unanswered-highlight { border-color: #fca5a5; background: #fff5f5; }
+        .quiz-question.correct-highlight { border-color: #86efac; background: #f0fdf4; }
+        .quiz-question.wrong-highlight { border-color: #fca5a5; background: #fef2f2; }
+        .quiz-q-num { font-size: 0.7rem; font-weight: 700; color: #02b3e4; margin-bottom: 8px; display: block; }
+        .quiz-q-text { font-size: 0.95rem; font-weight: 600; color: #0b2b3b; margin-bottom: 14px; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #e6edf4; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: #334155; }
+        .quiz-option:hover { border-color: #02b3e4; background: #f0f9fe; }
+        .quiz-option.selected { border-color: #02b3e4; background: #e2f0f7; font-weight: 600; color: #027e9e; }
+        .quiz-option.correct-answer { border-color: #22c55e; background: #dcfce7; color: #137333; font-weight: 600; }
+        .quiz-option.wrong-answer { border-color: #ef4444; background: #fee2e2; color: #dc2626; font-weight: 600; }
+        .quiz-option input[type="radio"] { width: 18px; height: 18px; accent-color: #02b3e4; flex-shrink: 0; }
+        .quiz-footer { padding: 20px 28px; border-top: 1px solid #f0f4f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .quiz-score { font-size: 0.85rem; font-weight: 600; color: #5c6f87; }
+        .quiz-score strong { color: #02b3e4; }
+        .quiz-submit-btn { background: #02b3e4; color: white; border: none; padding: 11px 28px; border-radius: 12px; font-weight: 600; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .quiz-submit-btn:hover { background: #028cae; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(2,179,228,0.3); }
+        .quiz-submit-btn:disabled { background: #b0c4d4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .quiz-error { width: 100%; text-align: center; color: #dc2626; font-size: 0.82rem; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 10px; display: none; }
+        .quiz-no-quiz { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.9rem; }
+        .quiz-no-quiz span { font-size: 2rem; display: block; margin-bottom: 10px; }
+
+        /* ========== FLOATING COMMENTS ========== */
+        .comment-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: #02b3e4; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(2,179,228,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; border: none; z-index: 999; transition: transform 0.3s, box-shadow 0.3s; }
+        .comment-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(2,179,228,0.5); }
+        .comment-fab-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+        .comment-panel { position: fixed; bottom: 100px; right: 28px; width: 380px; height: 500px; background: white; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid #e6edf4; }
+        .comment-panel.open { display: flex; }
+        .comment-panel-header { background: #02b3e4; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .comment-panel-header h4 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .comment-panel-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .comment-panel-close:hover { background: rgba(255,255,255,0.35); }
+        .comment-panel-form { padding: 14px 16px; border-bottom: 1px solid #f0f4f9; background: #fafcff; }
+        .comment-panel-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .comment-panel-name { width: 110px; padding: 8px 12px; border: 1px solid #e6edf4; border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; background: white; flex-shrink: 0; }
+        .comment-panel-name:focus { border-color: #02b3e4; }
+        .comment-panel-msg { flex: 1; padding: 8px 12px; border: 1px solid #e6edf4; border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; resize: none; min-height: 38px; max-height: 80px; background: white; }
+        .comment-panel-msg:focus { border-color: #02b3e4; }
+        .comment-panel-bottom { display: flex; align-items: center; justify-content: flex-end; }
+        .comment-panel-send { background: #02b3e4; color: white; border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .comment-panel-send:hover { background: #028cae; }
+        .comment-panel-send:disabled { background: #b0c4d4; cursor: not-allowed; }
+        .comment-panel-status { text-align: center; font-size: 0.75rem; font-weight: 600; padding: 8px; display: none; margin-top: 8px; border-radius: 8px; }
+        .comment-panel-list { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: #f9fbfe; }
+        .comment-panel-list::-webkit-scrollbar { width: 3px; }
+        .comment-panel-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .cmt-item { display: flex; gap: 10px; }
+        .cmt-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .cmt-body { flex: 1; min-width: 0; }
+        .cmt-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+        .cmt-name { font-weight: 700; font-size: 0.78rem; color: #0b2b3b; }
+        .cmt-time { font-size: 0.62rem; color: #94a3b8; }
+        .cmt-text { font-size: 0.8rem; line-height: 1.5; color: #334155; word-break: break-word; }
+        .cmt-empty { text-align: center; padding: 30px 10px; color: #94a3b8; font-size: 0.82rem; }
+        .cmt-empty span { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+
+        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: #7f8c9a; padding-top: 32px; border-top: 1px solid #e2e8f0; max-width: 1000px; margin-left: auto; margin-right: auto; }
+        @media (max-width: 780px) { .sidebar { width: 280px; } .main-content { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } .nav-buttons { padding: 0 4px; } .quiz-body { padding: 16px 20px; } .quiz-footer { padding: 16px 20px; } .quiz-header { padding: 16px 20px; } .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; } }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #eef2f8; }
         ::-webkit-scrollbar-thumb { background: #bdd3e4; border-radius: 8px; }
@@ -83,13 +129,7 @@
 <body>
 <div class="sidebar">
     <div class="brand">
-        <div class="logo">
-            <div class="logo-icon">🛡️</div>
-            <div class="logo-text">
-                <h1>CyberDefend</h1>
-                <span>ACADEMY</span>
-            </div>
-        </div>
+        <div class="logo"><div class="logo-icon">🛡️</div><div class="logo-text"><h1>CyberDefend</h1><span>ACADEMY</span></div></div>
         <div class="tagline">Part of Accenture | Cybersecurity Course</div>
     </div>
     <a href="index.html" class="back-link">← Back to Dashboard</a>
@@ -114,487 +154,681 @@
         <div class="nav-item" data-lesson="19"><span class="check-icon">📚</span> 17. General Lecture Cybersecurity</div>
         <div class="nav-item" data-lesson="20"><span class="check-icon">🔒</span> 18. Threat Modeling, Security Auditing & Device Protection</div>
     </div>
-    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">
-        ⚡ 18 cybersecurity modules with downloads
-    </div>
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">⚡ 18 cybersecurity modules with quizzes</div>
 </div>
-<div class="main-content">
-    <!-- LESSON 1: Networking Basics -->
+
+<div class="main-content" id="mainContent">
+
+    <!-- LESSON 1 -->
     <div id="lesson-1" class="lesson-card">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 1 / 18</span>
-            <h2>Networking Basics (IP, MAC, OSI, Devices, Cables)</h2>
-            <div class="sub">Networking Basics (IP, MAC, OSI, Devices, Cables)</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video1">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download1">📥 Downloads</button>
-        </div>
-        <div id="video1" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/jA-rEBBCnyU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>IP addresses, MAC addresses, OSI model, networking devices (routers, switches), and cable types.</p><a href="https://www.youtube.com/watch?v=jA-rEBBCnyU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download1" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>📘 Networking Basics Guide</h4><p>PDF with OSI model, IP/MAC, devices explained</p></div><a href="#" class="btn-download" onclick="alert('Networking Basics downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 1 / 18</span><h2>Networking Basics (IP, MAC, OSI, Devices, Cables)</h2><div class="sub">Networking Basics (IP, MAC, OSI, Devices, Cables)</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video1">🎬 Video</button><button class="tab-btn-lesson" data-tab="download1">📥 Downloads</button></div>
+        <div id="video1" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/jA-rEBBCnyU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>IP addresses, MAC addresses, OSI model, networking devices (routers, switches), and cable types.</p><a href="https://www.youtube.com/watch?v=jA-rEBBCnyU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download1" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 Networking Basics Guide</h4><p>PDF with OSI model, IP/MAC, devices explained</p></div><a href="#" class="btn-download" onclick="alert('Networking Basics downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 2: IP Addressing -->
+    <!-- LESSON 2 -->
     <div id="lesson-2" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 2 / 18</span>
-            <h2>IP Addressing</h2>
-            <div class="sub">IP Addressing</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video2">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download2">📥 Downloads</button>
-        </div>
-        <div id="video2" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KKENTRpvoIc?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>IP addressing fundamentals, IPv4 vs IPv6, subnetting, and address classes.</p><a href="https://www.youtube.com/watch?v=KKENTRpvoIc" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download2" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>📘 IP Addressing Guide</h4><p>Subnetting cheat sheet and examples</p></div><a href="#" class="btn-download" onclick="alert('IP Addressing guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 2 / 18</span><h2>IP Addressing</h2><div class="sub">IP Addressing</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video2">🎬 Video</button><button class="tab-btn-lesson" data-tab="download2">📥 Downloads</button></div>
+        <div id="video2" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KKENTRpvoIc?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>IP addressing fundamentals, IPv4 vs IPv6, subnetting, and address classes.</p><a href="https://www.youtube.com/watch?v=KKENTRpvoIc" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download2" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 IP Addressing Guide</h4><p>Subnetting cheat sheet and examples</p></div><a href="#" class="btn-download" onclick="alert('IP Addressing guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 3: CIA Triad, Malware, Threat Actors -->
+    <!-- LESSON 3 -->
     <div id="lesson-3" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 3 / 18</span>
-            <h2>CIA Triad, Malware, Threat Actors</h2>
-            <div class="sub">CIA Triad, Malware, Threat Actors</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video3">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download3">📥 Downloads</button>
-        </div>
-        <div id="video3" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/C7Prb5MUQWA?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Confidentiality, Integrity, Availability (CIA), malware types (virus, worm, ransomware), and threat actors.</p><a href="https://www.youtube.com/watch?v=C7Prb5MUQWA" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download3" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>📘 Cybersecurity Fundamentals Guide</h4><p>CIA triad, malware categories, threat actors</p></div><a href="#" class="btn-download" onclick="alert('Cybersecurity guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 3 / 18</span><h2>CIA Triad, Malware, Threat Actors</h2><div class="sub">CIA Triad, Malware, Threat Actors</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video3">🎬 Video</button><button class="tab-btn-lesson" data-tab="download3">📥 Downloads</button></div>
+        <div id="video3" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/C7Prb5MUQWA?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Confidentiality, Integrity, Availability (CIA), malware types (virus, worm, ransomware), and threat actors.</p><a href="https://www.youtube.com/watch?v=C7Prb5MUQWA" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download3" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 Cybersecurity Fundamentals Guide</h4><p>CIA triad, malware categories, threat actors</p></div><a href="#" class="btn-download" onclick="alert('Cybersecurity guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 4: Firewall Types, Proxy, IPS, IDS, WAF, Email Security, MITM -->
+    <!-- LESSON 4 -->
     <div id="lesson-4" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 4 / 18</span>
-            <h2>Firewall Types, Proxy, IPS, IDS, WAF, Email Security, MITM</h2>
-            <div class="sub">Firewall Types, Proxy, IPS, IDS, WAF, Email Security, MITM</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video4">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download4">📥 Downloads</button>
-        </div>
-        <div id="video4" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/ETNEmND0YKg?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Firewall types (packet filtering, stateful, next-gen), proxy servers, IPS/IDS, WAF, email security, and MITM attacks.</p><a href="https://www.youtube.com/watch?v=ETNEmND0YKg" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download4" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🛡️ Network Security Guide</h4><p>Firewalls, IDS/IPS, WAF explained</p></div><a href="#" class="btn-download" onclick="alert('Network Security guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 4 / 18</span><h2>Firewall Types, Proxy, IPS, IDS, WAF, Email Security, MITM</h2><div class="sub">Firewall Types, Proxy, IPS, IDS, WAF, Email Security, MITM</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video4">🎬 Video</button><button class="tab-btn-lesson" data-tab="download4">📥 Downloads</button></div>
+        <div id="video4" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/ETNEmND0YKg?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Firewall types (packet filtering, stateful, next-gen), proxy servers, IPS/IDS, WAF, email security, and MITM attacks.</p><a href="https://www.youtube.com/watch?v=ETNEmND0YKg" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download4" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Network Security Guide</h4><p>Firewalls, IDS/IPS, WAF explained</p></div><a href="#" class="btn-download" onclick="alert('Network Security guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 5: Privacy (GDPR, Data Protection) -->
+    <!-- LESSON 5 -->
     <div id="lesson-5" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 5 / 18</span>
-            <h2>Privacy (GDPR, Data Protection)</h2>
-            <div class="sub">Data privacy · GDPR · Protection strategies</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video5">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download5">📥 Downloads</button>
-        </div>
-        <div id="video5" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/qnqgaPzxPD0?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Data privacy principles, GDPR compliance, and personal information protection strategies.</p><a href="https://www.youtube.com/watch?v=qnqgaPzxPD0" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download5" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🔐 Privacy & GDPR Guide</h4><p>Data protection best practices</p></div><a href="#" class="btn-download" onclick="alert('Privacy guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 5 / 18</span><h2>Privacy (GDPR, Data Protection)</h2><div class="sub">Data privacy · GDPR · Protection strategies</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video5">🎬 Video</button><button class="tab-btn-lesson" data-tab="download5">📥 Downloads</button></div>
+        <div id="video5" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/qnqgaPzxPD0?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Data privacy principles, GDPR compliance, and personal information protection strategies.</p><a href="https://www.youtube.com/watch?v=qnqgaPzxPD0" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download5" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔐 Privacy & GDPR Guide</h4><p>Data protection best practices</p></div><a href="#" class="btn-download" onclick="alert('Privacy guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 6: Layered Security -->
+    <!-- LESSON 6 -->
     <div id="lesson-6" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 6 / 18</span>
-            <h2>Layered Security</h2>
-            <div class="sub">Defense in Depth · Multiple Layers · Security Architecture</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video6">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download6">📥 Downloads</button>
-        </div>
-        <div id="video6" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/jD_fjWUdRXw?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Defense in Depth: layered security architecture, multiple security controls, and comprehensive protection strategies.</p><a href="https://www.youtube.com/watch?v=jD_fjWUdRXw" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download6" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🔐 Layered Security Guide</h4><p>Defense in Depth best practices</p></div><a href="#" class="btn-download" onclick="alert('Layered Security guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 6 / 18</span><h2>Layered Security</h2><div class="sub">Defense in Depth · Multiple Layers · Security Architecture</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video6">🎬 Video</button><button class="tab-btn-lesson" data-tab="download6">📥 Downloads</button></div>
+        <div id="video6" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/jD_fjWUdRXw?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Defense in Depth: layered security architecture, multiple security controls, and comprehensive protection strategies.</p><a href="https://www.youtube.com/watch?v=jD_fjWUdRXw" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download6" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔐 Layered Security Guide</h4><p>Defense in Depth best practices</p></div><a href="#" class="btn-download" onclick="alert('Layered Security guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 7: Ethical Hacking -->
+    <!-- LESSON 7 -->
     <div id="lesson-7" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 7 / 18</span>
-            <h2>Ethical Hacking</h2>
-            <div class="sub">Penetration Testing · White Hat · Vulnerability Assessment</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video7">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download7">📥 Downloads</button>
-        </div>
-        <div id="video7" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/T2SQILnRCfo?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Ethical hacking fundamentals, penetration testing methodology, white hat techniques, and vulnerability assessment.</p><a href="https://www.youtube.com/watch?v=T2SQILnRCfo" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download7" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🖥️ Ethical Hacking Guide</h4><p>Penetration testing methodology</p></div><a href="#" class="btn-download" onclick="alert('Ethical Hacking guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 7 / 18</span><h2>Ethical Hacking</h2><div class="sub">Penetration Testing · White Hat · Vulnerability Assessment</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video7">🎬 Video</button><button class="tab-btn-lesson" data-tab="download7">📥 Downloads</button></div>
+        <div id="video7" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/T2SQILnRCfo?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Ethical hacking fundamentals, penetration testing methodology, white hat techniques, and vulnerability assessment.</p><a href="https://www.youtube.com/watch?v=T2SQILnRCfo" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download7" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🖥️ Ethical Hacking Guide</h4><p>Penetration testing methodology</p></div><a href="#" class="btn-download" onclick="alert('Ethical Hacking guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 8: Social Engineering -->
+    <!-- LESSON 8 -->
     <div id="lesson-8" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 8 / 18</span>
-            <h2>Social Engineering</h2>
-            <div class="sub">Phishing · Pretexting · Baiting · Human Hacking</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video8">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download8">📥 Downloads</button>
-        </div>
-        <div id="video8" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/UtQCyNmTdsU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Social engineering attacks: phishing, pretexting, baiting, tailgating, and human hacking techniques.</p><a href="https://www.youtube.com/watch?v=UtQCyNmTdsU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download8" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🎣 Social Engineering Guide</h4><p>Attack techniques and prevention</p></div><a href="#" class="btn-download" onclick="alert('Social Engineering guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 8 / 18</span><h2>Social Engineering</h2><div class="sub">Phishing · Pretexting · Baiting · Human Hacking</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video8">🎬 Video</button><button class="tab-btn-lesson" data-tab="download8">📥 Downloads</button></div>
+        <div id="video8" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/UtQCyNmTdsU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Social engineering attacks: phishing, pretexting, baiting, tailgating, and human hacking techniques.</p><a href="https://www.youtube.com/watch?v=UtQCyNmTdsU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download8" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🎣 Social Engineering Guide</h4><p>Attack techniques and prevention</p></div><a href="#" class="btn-download" onclick="alert('Social Engineering guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 9: Cybersecurity General Lecture -->
+    <!-- LESSON 9 -->
     <div id="lesson-9" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 9 / 18</span>
-            <h2>Cybersecurity General Lecture</h2>
-            <div class="sub">General · Fundamentals · Overview</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video9">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download9">📥 Downloads</button>
-        </div>
-        <div id="video9" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/sopv4UA0GHQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>General cybersecurity fundamentals overview.</p><a href="https://www.youtube.com/watch?v=sopv4UA0GHQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download9" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>📘 Cybersecurity General Guide</h4><p>Fundamentals overview PDF</p></div><a href="#" class="btn-download" onclick="alert('Cybersecurity General guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 9 / 18</span><h2>Cybersecurity General Lecture</h2><div class="sub">General · Fundamentals · Overview</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video9">🎬 Video</button><button class="tab-btn-lesson" data-tab="download9">📥 Downloads</button></div>
+        <div id="video9" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/sopv4UA0GHQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>General cybersecurity fundamentals overview.</p><a href="https://www.youtube.com/watch?v=sopv4UA0GHQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download9" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 Cybersecurity General Guide</h4><p>Fundamentals overview PDF</p></div><a href="#" class="btn-download" onclick="alert('Cybersecurity General guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 10: Vulnerability Management & Scanning -->
+    <!-- LESSON 10 -->
     <div id="lesson-10" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 10 / 18</span>
-            <h2>Vulnerability Management & Scanning</h2>
-            <div class="sub">Vulnerability Management · Scanning · Assessment</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video10">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download10">📥 Downloads</button>
-        </div>
-        <div id="video10" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/nXyBPY7LO2o?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Vulnerability management lifecycle, scanning techniques, assessment, and remediation strategies.</p><a href="https://www.youtube.com/watch?v=nXyBPY7LO2o" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download10" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🔎 Vulnerability Management Guide</h4><p>Scanning and assessment best practices</p></div><a href="#" class="btn-download" onclick="alert('Vulnerability Management guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 10 / 18</span><h2>Vulnerability Management & Scanning</h2><div class="sub">Vulnerability Management · Scanning · Assessment</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video10">🎬 Video</button><button class="tab-btn-lesson" data-tab="download10">📥 Downloads</button></div>
+        <div id="video10" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/nXyBPY7LO2o?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Vulnerability management lifecycle, scanning techniques, assessment, and remediation strategies.</p><a href="https://www.youtube.com/watch?v=nXyBPY7LO2o" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download10" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔎 Vulnerability Management Guide</h4><p>Scanning and assessment best practices</p></div><a href="#" class="btn-download" onclick="alert('Vulnerability Management guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 11: Network Defense with Firewalls, IDS, and IPS -->
+    <!-- LESSON 11 -->
     <div id="lesson-11" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 11 / 18</span>
-            <h2>Network Defense with Firewalls, IDS, and IPS</h2>
-            <div class="sub">Network Defense · Firewalls · IDS · IPS</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video11">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download11">📥 Downloads</button>
-        </div>
-        <div id="video11" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KVkK9JdVG70?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Network defense mechanisms including firewalls, Intrusion Detection Systems (IDS), and Intrusion Prevention Systems (IPS).</p><a href="https://www.youtube.com/watch?v=KVkK9JdVG70" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download11" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🛡️ Network Defense Guide</h4><p>Firewalls, IDS, and IPS explained</p></div><a href="#" class="btn-download" onclick="alert('Network Defense guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 11 / 18</span><h2>Network Defense with Firewalls, IDS, and IPS</h2><div class="sub">Network Defense · Firewalls · IDS · IPS</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video11">🎬 Video</button><button class="tab-btn-lesson" data-tab="download11">📥 Downloads</button></div>
+        <div id="video11" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KVkK9JdVG70?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Network defense mechanisms including firewalls, Intrusion Detection Systems (IDS), and Intrusion Prevention Systems (IPS).</p><a href="https://www.youtube.com/watch?v=KVkK9JdVG70" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download11" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Network Defense Guide</h4><p>Firewalls, IDS, and IPS explained</p></div><a href="#" class="btn-download" onclick="alert('Network Defense guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 12: Cryptography -->
+    <!-- LESSON 12 -->
     <div id="lesson-12" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 12 / 18</span>
-            <h2>Cryptography</h2>
-            <div class="sub">Cryptography · Encryption · Security</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video12">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download12">📥 Downloads</button>
-        </div>
-        <div id="video12" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/3GR8kFqalRQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Cryptography fundamentals, encryption algorithms, and security applications.</p><a href="https://www.youtube.com/watch?v=3GR8kFqalRQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download12" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🔐 Cryptography Guide</h4><p>Encryption and security fundamentals</p></div><a href="#" class="btn-download" onclick="alert('Cryptography guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 12 / 18</span><h2>Cryptography</h2><div class="sub">Cryptography · Encryption · Security</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video12">🎬 Video</button><button class="tab-btn-lesson" data-tab="download12">📥 Downloads</button></div>
+        <div id="video12" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/3GR8kFqalRQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Cryptography fundamentals, encryption algorithms, and security applications.</p><a href="https://www.youtube.com/watch?v=3GR8kFqalRQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download12" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔐 Cryptography Guide</h4><p>Encryption and security fundamentals</p></div><a href="#" class="btn-download" onclick="alert('Cryptography guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 15: Basic Web Application Security -->
+    <!-- LESSON 15 -->
     <div id="lesson-15" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 13 / 18</span>
-            <h2>Basic Web Application Security</h2>
-            <div class="sub">Web App Security · OWASP · Vulnerabilities · Protection</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video15">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download15">📥 Downloads</button>
-        </div>
-        <div id="video15" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Wj9-4GQwask?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Basic web application security concepts including OWASP Top 10, common web vulnerabilities (XSS, SQL Injection, CSRF), and protection strategies for web applications.</p><a href="https://www.youtube.com/watch?v=Wj9-4GQwask" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download15" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 13 / 18</span><h2>Basic Web Application Security</h2><div class="sub">Web App Security · OWASP · Vulnerabilities · Protection</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video15">🎬 Video</button><button class="tab-btn-lesson" data-tab="download15">📥 Downloads</button></div>
+        <div id="video15" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Wj9-4GQwask?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Basic web application security concepts including OWASP Top 10, common web vulnerabilities (XSS, SQL Injection, CSRF), and protection strategies.</p><a href="https://www.youtube.com/watch?v=Wj9-4GQwask" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download15" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 16: Identity and Access Management IAM -->
+    <!-- LESSON 16 -->
     <div id="lesson-16" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 14 / 18</span>
-            <h2>Identity and Access Management (IAM)</h2>
-            <div class="sub">IAM · Authentication · Authorization · Access Control</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video16">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download16">📥 Downloads</button>
-        </div>
-        <div id="video16" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/vpAgsWZ6aGQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Identity and Access Management fundamentals including authentication methods, authorization models (RBAC, ABAC), MFA, SSO, and access control best practices.</p><a href="https://www.youtube.com/watch?v=vpAgsWZ6aGQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download16" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 14 / 18</span><h2>Identity and Access Management (IAM)</h2><div class="sub">IAM · Authentication · Authorization · Access Control</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video16">🎬 Video</button><button class="tab-btn-lesson" data-tab="download16">📥 Downloads</button></div>
+        <div id="video16" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/vpAgsWZ6aGQ?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Identity and Access Management fundamentals including authentication methods, authorization models (RBAC, ABAC), MFA, SSO, and access control best practices.</p><a href="https://www.youtube.com/watch?v=vpAgsWZ6aGQ" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download16" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 17: Cloud Computing and Security Fundamentals -->
+    <!-- LESSON 17 -->
     <div id="lesson-17" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 15 / 18</span>
-            <h2>Cloud Computing and Security Fundamentals</h2>
-            <div class="sub">Cloud Security · IaaS PaaS SaaS · Shared Responsibility</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video17">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download17">📥 Downloads</button>
-        </div>
-        <div id="video17" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/QVv4e-BcUgU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text"><p>Cloud computing fundamentals including service models (IaaS, PaaS, SaaS), deployment models, shared responsibility model, and cloud security best practices.</p><a href="https://www.youtube.com/watch?v=QVv4e-BcUgU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div>
-        </div>
-        <div id="download17" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 15 / 18</span><h2>Cloud Computing and Security Fundamentals</h2><div class="sub">Cloud Security · IaaS PaaS SaaS · Shared Responsibility</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video17">🎬 Video</button><button class="tab-btn-lesson" data-tab="download17">📥 Downloads</button></div>
+        <div id="video17" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/QVv4e-BcUgU?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Cloud computing fundamentals including service models (IaaS, PaaS, SaaS), deployment models, shared responsibility model, and cloud security best practices.</p><a href="https://www.youtube.com/watch?v=QVv4e-BcUgU" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download17" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 18: WiFi, Smartphone & Bluetooth Security -->
+    <!-- LESSON 18 -->
     <div id="lesson-18" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 16 / 18</span>
-            <h2>WiFi, Smartphone & Bluetooth Security</h2>
-            <div class="sub">Wireless Security · WiFi Threats · Bluetooth Attacks · Smartphone Safety</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video18">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download18">📥 Downloads</button>
-        </div>
-        <div id="video18" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/mZp8bNrmR0U?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text">
-                <p>Wireless security fundamentals covering WiFi vulnerabilities (evil twin, KRACK, rogue APs), Bluetooth security risks (BlueBorne, Bluesnarfing), and smartphone security best practices to protect mobile devices from threats.</p>
-                <a href="https://www.youtube.com/watch?v=mZp8bNrmR0U" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
-            </div>
-        </div>
-        <div id="download18" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 16 / 18</span><h2>WiFi, Smartphone & Bluetooth Security</h2><div class="sub">Wireless Security · WiFi Threats · Bluetooth Attacks · Smartphone Safety</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video18">🎬 Video</button><button class="tab-btn-lesson" data-tab="download18">📥 Downloads</button></div>
+        <div id="video18" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/mZp8bNrmR0U?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Wireless security fundamentals covering WiFi vulnerabilities (evil twin, KRACK, rogue APs), Bluetooth security risks (BlueBorne, Bluesnarfing), and smartphone security best practices.</p><a href="https://www.youtube.com/watch?v=mZp8bNrmR0U" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download18" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 19: General Lecture Cybersecurity -->
+    <!-- LESSON 19 -->
     <div id="lesson-19" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 17 / 18</span>
-            <h2>General Lecture Cybersecurity</h2>
-            <div class="sub">General · Fundamentals · Overview · Key Concepts</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video19">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download19">📥 Downloads</button>
-        </div>
-        <div id="video19" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/FQrHVa_gho0?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text">
-                <p>General cybersecurity lecture covering key concepts, real-world attack scenarios, defense strategies, and a comprehensive overview of the cybersecurity landscape.</p>
-                <a href="https://www.youtube.com/watch?v=FQrHVa_gho0" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
-            </div>
-        </div>
-        <div id="download19" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 17 / 18</span><h2>General Lecture Cybersecurity</h2><div class="sub">General · Fundamentals · Overview · Key Concepts</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video19">🎬 Video</button><button class="tab-btn-lesson" data-tab="download19">📥 Downloads</button></div>
+        <div id="video19" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/FQrHVa_gho0?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>General cybersecurity lecture covering key concepts, real-world attack scenarios, defense strategies, and a comprehensive overview of the cybersecurity landscape.</p><a href="https://www.youtube.com/watch?v=FQrHVa_gho0" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download19" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⏳ Coming Soon</h4><p>Materials will be available soon</p></div><a href="#" class="btn-download" onclick="alert('Coming soon!'); return false;">Download</a></div></div></div>
     </div>
 
-    <!-- LESSON 20: Threat Modeling, Security Auditing & Device Protection -->
+    <!-- LESSON 20 -->
     <div id="lesson-20" class="lesson-card" style="display:none;">
-        <div class="card-header">
-            <span class="lesson-badge">📺 VIDEO 18 / 18</span>
-            <h2>Threat Modeling, Security Auditing & Device Protection</h2>
-            <div class="sub">Week 19 · Threat Modeling · Security Auditing · Device Protection</div>
-        </div>
-        <div class="lesson-tabs">
-            <button class="tab-btn-lesson active" data-tab="video20">🎬 Video</button>
-            <button class="tab-btn-lesson" data-tab="download20">📥 Downloads</button>
-        </div>
-        <div id="video20" class="tab-content active">
-            <div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/bvh1QV2bNZE?rel=0&modestbranding=1" allowfullscreen></iframe></div></div>
-            <div class="description-text">
-                <p>Comprehensive coverage of threat modeling methodologies (STRIDE, PASTA, DREAD), security auditing processes and frameworks, and device protection strategies including endpoint security, mobile device management, and hardware-based security controls.</p>
-                <a href="https://www.youtube.com/watch?v=bvh1QV2bNZE" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
-            </div>
-        </div>
-        <div id="download20" class="tab-content">
-            <div class="downloads-list">
-                <div class="download-item"><div class="download-info"><h4>🔒 Threat Modeling & Auditing Guide</h4><p>STRIDE framework, audit checklists, device protection best practices</p></div><a href="#" class="btn-download" onclick="alert('Threat Modeling guide downloaded'); return false;">Download</a></div>
-            </div>
-        </div>
+        <div class="card-header"><span class="lesson-badge">📺 VIDEO 18 / 18</span><h2>Threat Modeling, Security Auditing & Device Protection</h2><div class="sub">Threat Modeling · Security Auditing · Device Protection</div></div>
+        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video20">🎬 Video</button><button class="tab-btn-lesson" data-tab="download20">📥 Downloads</button></div>
+        <div id="video20" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/bvh1QV2bNZE?rel=0&modestbranding=1" allowfullscreen></iframe></div></div><div class="description-text"><p>Comprehensive coverage of threat modeling methodologies (STRIDE, PASTA, DREAD), security auditing processes and frameworks, and device protection strategies including endpoint security, mobile device management, and hardware-based security controls.</p><a href="https://www.youtube.com/watch?v=bvh1QV2bNZE" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+        <div id="download20" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔒 Threat Modeling & Auditing Guide</h4><p>STRIDE framework, audit checklists, device protection best practices</p></div><a href="#" class="btn-download" onclick="alert('Threat Modeling guide downloaded'); return false;">Download</a></div></div></div>
     </div>
 
-    <footer>🧠 CyberDefend Academy — Complete Cybersecurity Course (18 modules with downloads)</footer>
+    <!-- NAV BUTTONS -->
+    <div class="nav-buttons" id="navButtons">
+        <button class="nav-btn nav-btn-prev" id="btnPrev" disabled>← Previous</button>
+        <button class="nav-btn nav-btn-next" id="btnNext">Next →</button>
+    </div>
+
+    <footer>🧠 CyberDefend Academy — Complete Cybersecurity Course (18 modules with quizzes)</footer>
+</div>
+
+<!-- COMMENTS FAB -->
+<button class="comment-fab" id="commentFab">💬<span class="comment-fab-badge" id="commentBadge">0</span></button>
+
+<!-- COMMENTS PANEL -->
+<div class="comment-panel" id="commentPanel">
+    <div class="comment-panel-header">
+        <h4>💬 Comments</h4>
+        <button class="comment-panel-close" id="commentClose">✕</button>
+    </div>
+    <div class="comment-panel-form">
+        <div class="comment-panel-row">
+            <input type="text" class="comment-panel-name" id="cmtName" placeholder="Your name" maxlength="30">
+            <textarea class="comment-panel-msg" id="cmtMsg" placeholder="Write a comment..." rows="1"></textarea>
+        </div>
+        <div class="comment-panel-bottom">
+            <div class="comment-panel-status" id="cmtStatus"></div>
+            <button class="comment-panel-send" id="cmtSend" disabled>Send</button>
+        </div>
+    </div>
+    <div class="comment-panel-list" id="cmtList"></div>
 </div>
 
 <script>
-    function initAllTabs() {
-        document.querySelectorAll('.lesson-card').forEach(card => {
-            const btns = card.querySelectorAll('.tab-btn-lesson');
-            btns.forEach(btn => {
-                btn.removeEventListener('click', (e) => {});
-                btn.addEventListener('click', (e) => {
-                    const parentCard = btn.closest('.lesson-card');
-                    const targetTabId = btn.getAttribute('data-tab');
-                    parentCard.querySelectorAll('.tab-btn-lesson').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    parentCard.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    const targetContent = parentCard.querySelector(`#${targetTabId}`);
-                    if (targetContent) targetContent.classList.add('active');
+// ══════════════════════════════════════
+// 🔧 REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+// ══════════════════════════════════════
+var SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+// ── Lesson ordering ──
+var lessonOrder = [1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20];
+var currentLesson = 1;
+
+// ── Tabs ──
+document.querySelectorAll('.lesson-card').forEach(function(card) {
+    card.querySelectorAll('.tab-btn-lesson').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var parentCard = btn.closest('.lesson-card');
+            var tid = btn.getAttribute('data-tab');
+            parentCard.querySelectorAll('.tab-btn-lesson').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            parentCard.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+            var t = parentCard.querySelector('#' + tid);
+            if (t) t.classList.add('active');
+        });
+    });
+});
+
+// ── Stop videos ──
+function stopAllVideos() {
+    document.querySelectorAll('.lesson-card iframe').forEach(function(iframe) {
+        var s = iframe.src; iframe.src = ''; iframe.src = s;
+    });
+}
+
+// ── Activate lesson ──
+var navItems = document.querySelectorAll('.nav-item');
+function activateLesson(id) {
+    stopAllVideos();
+    lessonOrder.forEach(function(lid) {
+        var el = document.getElementById('lesson-' + lid);
+        if (el) el.style.display = 'none';
+        var qz = document.getElementById('quiz-section-' + lid);
+        if (qz) qz.style.display = 'none';
+    });
+    var target = document.getElementById('lesson-' + id);
+    if (target) target.style.display = 'block';
+    var qzTarget = document.getElementById('quiz-section-' + id);
+    if (qzTarget) qzTarget.style.display = 'block';
+    navItems.forEach(function(item) { item.classList.remove('active'); });
+    var activeItem = document.querySelector('.nav-item[data-lesson="' + id + '"]');
+    if (activeItem) activeItem.classList.add('active');
+    currentLesson = id;
+    updateNavButtons();
+    document.getElementById('mainContent').scrollTop = 0;
+    // Reset tabs to video
+    var card = document.getElementById('lesson-' + id);
+    if (card) {
+        card.querySelectorAll('.tab-btn-lesson').forEach(function(b) { b.classList.remove('active'); });
+        card.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+        var fb = card.querySelector('.tab-btn-lesson');
+        var ft = card.querySelector('.tab-content');
+        if (fb) fb.classList.add('active');
+        if (ft) ft.classList.add('active');
+    }
+    // Load comments for this lesson
+    loadComments('lesson-' + id);
+}
+
+// ── Nav buttons ──
+function updateNavButtons() {
+    var idx = lessonOrder.indexOf(currentLesson);
+    document.getElementById('btnPrev').disabled = (idx <= 0);
+    document.getElementById('btnNext').disabled = (idx >= lessonOrder.length - 1);
+}
+document.getElementById('btnPrev').addEventListener('click', function() {
+    var idx = lessonOrder.indexOf(currentLesson);
+    if (idx > 0) { activateLesson(lessonOrder[idx - 1]); window.location.hash = 'lesson-' + lessonOrder[idx - 1]; }
+});
+document.getElementById('btnNext').addEventListener('click', function() {
+    var idx = lessonOrder.indexOf(currentLesson);
+    if (idx < lessonOrder.length - 1) { activateLesson(lessonOrder[idx + 1]); window.location.hash = 'lesson-' + lessonOrder[idx + 1]; }
+});
+
+navItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+        var id = parseInt(item.getAttribute('data-lesson'));
+        if (!isNaN(id)) { activateLesson(id); window.location.hash = 'lesson-' + id; }
+    });
+});
+
+var hash = window.location.hash.substring(1);
+if (hash.startsWith('lesson-')) {
+    var num = parseInt(hash.split('-')[1]);
+    if (lessonOrder.indexOf(num) > -1) activateLesson(num); else activateLesson(1);
+} else activateLesson(1);
+
+window.addEventListener('hashchange', function() {
+    var h = window.location.hash.substring(1);
+    if (h.startsWith('lesson-')) {
+        var n = parseInt(h.split('-')[1]);
+        if (lessonOrder.indexOf(n) > -1) activateLesson(n);
+    }
+});
+
+// ══════════════════════════════════════
+// ── QUIZ DATA ──
+// ══════════════════════════════════════
+var quizData = {
+    1: [
+        {q:"How many layers does the OSI model have?", opts:["4","5","7","6"], ans:2},
+        {q:"What does MAC stand for?", opts:["Media Access Control","Machine Access Code","Multiple Address Control","Managed Access Channel"], ans:0},
+        {q:"Which device operates at Layer 3 of the OSI model?", opts:["Switch","Hub","Router","Repeater"], ans:2},
+        {q:"What type of cable is most commonly used in modern Ethernet networks?", opts:["Coaxial","Fiber optic only","Twisted pair (UTP/STP)","Serial cable"], ans:2},
+        {q:"Which OSI layer is responsible for data encryption and formatting?", opts:["Layer 2 - Data Link","Layer 4 - Transport","Layer 6 - Presentation","Layer 7 - Application"], ans:2}
+    ],
+    2: [
+        {q:"How many bits are in an IPv4 address?", opts:["16","32","64","128"], ans:1},
+        {q:"What is the loopback address in IPv4?", opts:["127.0.0.1","192.168.0.1","10.0.0.1","0.0.0.0"], ans:0},
+        {q:"IPv6 uses how many bits for addressing?", opts:["32","64","128","256"], ans:2},
+        {q:"Which class of IP address supports up to 254 hosts?", opts:["Class A","Class B","Class C","Class D"], ans:2},
+        {q:"What is the primary purpose of subnetting?", opts:["To increase IP address speed","To divide a network into smaller sub-networks","To encrypt IP traffic","To replace NAT"], ans:1}
+    ],
+    3: [
+        {q:"What does the 'C' in the CIA triad stand for?", opts:["Compliance","Confidentiality","Consistency","Continuity"], ans:1},
+        {q:"Which malware type encrypts files and demands payment?", opts:["Virus","Worm","Ransomware","Trojan"], ans:2},
+        {q:"What is the key difference between a virus and a worm?", opts:["Viruses are faster","Worms can self-replicate without a host file","Viruses spread via email only","Worms require user interaction"], ans:1},
+        {q:"Which threat actor is typically motivated by financial gain?", opts:["Nation-state","Hacktivist","Cybercriminal","Insider threat"], ans:2},
+        {q:"What does the 'A' in CIA triad represent?", opts:["Authentication","Availability","Assurance","Authorization"], ans:1}
+    ],
+    4: [
+        {q:"Which firewall type inspects packet headers based on rules?", opts:["Stateful firewall","Packet filtering firewall","Next-gen firewall","Application firewall"], ans:1},
+        {q:"What is the main difference between IDS and IPS?", opts:["IDS prevents attacks, IPS detects them","IPS prevents attacks, IDS only detects them","IDS is faster than IPS","There is no difference"], ans:1},
+        {q:"What does WAF stand for?", opts:["Wide Area Firewall","Web Application Firewall","Wireless Access Filter","Web Authentication Framework"], ans:1},
+        {q:"What is a Man-in-the-Middle (MITM) attack?", opts:["Attacker intercepts communication between two parties","Attacker overloads a server with traffic","Attacker steals physical documents","Attacker replaces firewall rules"], ans:0},
+        {q:"A proxy server primarily acts as what?", opts:["An antivirus","An intermediary between clients and servers","A database","A programming language"], ans:1}
+    ],
+    5: [
+        {q:"What does GDPR stand for?", opts:["General Data Protection Regulation","Global Digital Privacy Rule","Government Data Processing Requirement","General Digital Privacy Regulation"], ans:0},
+        {q:"Which right under GDPR allows requesting deletion of personal data?", opts:["Right to access","Right to be forgotten","Right to portability","Right to object"], ans:1},
+        {q:"What is the maximum GDPR fine for severe violations?", opts:["€10 million or 2% of revenue","€20 million or 4% of global revenue","€50 million","€5 million or 1% of revenue"], ans:1},
+        {q:"Which principle states data should be collected for specified purposes only?", opts:["Accuracy","Storage limitation","Purpose limitation","Data minimization"], ans:2},
+        {q:"A DPO is mandatory under GDPR for organizations that:", opts:["Have more than 10 employees","Process large-scale sensitive data systematically","Are based in the US","Only process public data"], ans:1}
+    ],
+    6: [
+        {q:"What is 'Defense in Depth' also known as?", opts:["Perimeter security","Layered security","Single point of failure","Zero trust"], ans:1},
+        {q:"How many layers of security does Defense in Depth typically use?", opts:["Only 1","2-3","Multiple (physical, technical, administrative)","Exactly 5"], ans:2},
+        {q:"Which is an example of a physical security layer?", opts:["Firewall","Encryption","Security guards and locks","Antivirus"], ans:2},
+        {q:"What is the main advantage of layered security?", opts:["It is cheaper","If one layer fails, others still provide protection","It eliminates all threats","It replaces firewalls"], ans:1},
+        {q:"Which of these is NOT a typical security layer?", opts:["Physical","Technical","Administrative","Social media"], ans:3}
+    ],
+    7: [
+        {q:"What is a 'white hat' hacker?", opts:["A malicious hacker","An ethical hacker with permission","A government-only hacker","A beginner hacker"], ans:1},
+        {q:"Which phase involves gathering information about the target?", opts:["Exploitation","Reconnaissance","Reporting","Privilege escalation"], ans:1},
+        {q:"What is the difference between vulnerability assessment and pen testing?", opts:["They are the same","Assessment identifies weaknesses; pen testing exploits them","Pen testing is passive; assessment is active","Assessment is illegal"], ans:1},
+        {q:"Which tool is commonly used for network scanning?", opts:["Photoshop","Nmap","Excel","PowerPoint"], ans:1},
+        {q:"What must an ethical hacker always have before testing?", opts:["Unlimited budget","Written authorization","A guarantee of findings","A police escort"], ans:1}
+    ],
+    8: [
+        {q:"What is phishing?", opts:["A network attack","A social engineering attack using fraudulent communications","A type of malware","A password cracking technique"], ans:1},
+        {q:"Which technique creates a fabricated scenario to gain trust?", opts:["Baiting","Pretexting","Tailgating","Dumpster diving"], ans:1},
+        {q:"What is tailgating?", opts:["Sending fake emails","Following an authorized person through a secure entrance","Leaving infected USB drives","Impersonating a CEO"], ans:1},
+        {q:"Which attack offers a free item to lure victims?", opts:["Pretexting","Phishing","Baiting","Vishing"], ans:2},
+        {q:"What is the most effective defense against social engineering?", opts:["Expensive firewalls","Security awareness training","More passwords","Faster internet"], ans:1}
+    ],
+    9: [
+        {q:"What is the primary goal of cybersecurity?", opts:["Make systems faster","Protect systems, networks, and data from attacks","Replace all passwords","Block all internet"], ans:1},
+        {q:"Which is a common cyber threat?", opts:["Power outages","Ransomware","Printer jams","Low battery"], ans:1},
+        {q:"What is a zero-day vulnerability?", opts:["A vulnerability with no impact","A vulnerability unknown to the vendor with no patch","A vulnerability exactly 0 days old","A fixed vulnerability"], ans:1},
+        {q:"Which principle states security should be designed from the ground up?", opts:["Security through obscurity","Security by design","Security after the fact","Security by luck"], ans:1},
+        {q:"What is the role of a SOC?", opts:["Software development","Monitoring and responding to security incidents","Physical building security","HR management"], ans:1}
+    ],
+    10: [
+        {q:"What is the first step in vulnerability management?", opts:["Remediation","Discovery/Identification","Reporting","Verification"], ans:1},
+        {q:"What does CVSS stand for?", opts:["Common Vulnerability Scoring System","Central Virus Security Standard","Computer Vulnerability Severity Scale","Common Virus Scoring System"], ans:0},
+        {q:"Which tool is commonly used for vulnerability scanning?", opts:["Nessus","Photoshop","Word","Chrome"], ans:0},
+        {q:"What is the difference between scanning and pen testing?", opts:["Identical","Scanning identifies issues; pen testing actively exploits them","Pen testing is automated only","Scanning is illegal"], ans:1},
+        {q:"What is remediation in vulnerability management?", opts:["Ignoring the vulnerability","Fixing or patching the vulnerability","Reporting it","Scanning again"], ans:1}
+    ],
+    11: [
+        {q:"What is the primary function of a network firewall?", opts:["Speed up traffic","Filter traffic based on security rules","Generate passwords","Compress data"], ans:1},
+        {q:"A stateful firewall tracks what?", opts:["Only packet headers","The state of active connections","Only MAC addresses","User passwords"], ans:1},
+        {q:"Which system alerts but does not block suspicious activity?", opts:["IPS","IDS","Firewall","WAF"], ans:1},
+        {q:"What is a signature-based IDS limitation?", opts:["Too fast","Cannot detect unknown attacks without updated signatures","Blocks all traffic","Only works on wireless"], ans:1},
+        {q:"Where is a WAF typically deployed?", opts:["On end-user laptops","In front of web applications","Inside database servers","On USB drives"], ans:1}
+    ],
+    12: [
+        {q:"What is the difference between symmetric and asymmetric encryption?", opts:["Same thing","Symmetric uses one key; asymmetric uses a key pair","Symmetric is slower","Asymmetric uses one key"], ans:1},
+        {q:"Which algorithm is an example of asymmetric encryption?", opts:["AES","DES","RSA","3DES"], ans:2},
+        {q:"What does AES stand for?", opts:["Advanced Encryption Standard","Automated Encryption System","Advanced Electronic Security","Asymmetric Encryption Standard"], ans:0},
+        {q:"What is a hash function used for?", opts:["Encryption","Creating fixed-size output for integrity verification","Generating passwords","Speeding up networks"], ans:1},
+        {q:"Which is NOT a property of a good hash function?", opts:["Deterministic","Easy to reverse","Fixed output size","Avalanche effect"], ans:1}
+    ],
+    15: [
+        {q:"What does OWASP stand for?", opts:["Open Web Application Security Project","Online Web Attack Prevention System","Open Wireless Application Security Protocol","Online Web Assessment Security Platform"], ans:0},
+        {q:"What is Cross-Site Scripting (XSS)?", opts:["A database attack","Injecting malicious scripts into web pages","A network layer attack","A physical attack"], ans:1},
+        {q:"Which OWASP vulnerability involves injecting SQL commands?", opts:["XSS","SQL Injection","CSRF","Broken Authentication"], ans:1},
+        {q:"What is CSRF?", opts:["Cross-Site Request Forgery","Cross-Server Rendering Failure","Client-Side Resource Fetch","Cryptographic Session Reset"], ans:0},
+        {q:"Which defense helps prevent SQL injection?", opts:["Faster servers","Parameterized queries","Longer passwords","Disabling JavaScript"], ans:1}
+    ],
+    16: [
+        {q:"What does IAM stand for?", opts:["Internet Access Management","Identity and Access Management","Information Assurance Method","Integrated Authentication Model"], ans:1},
+        {q:"What is the difference between authentication and authorization?", opts:["Same thing","Authentication verifies identity; authorization determines permissions","Authorization verifies identity","Neither is important"], ans:1},
+        {q:"What does MFA stand for?", opts:["Multiple Factor Authentication","Multi-Factor Authentication","Main Frame Access","Managed File Authentication"], ans:1},
+        {q:"Which access control model assigns permissions based on role?", opts:["MAC","DAC","RBAC","ABAC"], ans:2},
+        {q:"What is SSO?", opts:["Secure Socket Overlay","Single Sign-On","System Security Objective","Server Side Operation"], ans:1}
+    ],
+    17: [
+        {q:"What does IaaS stand for?", opts:["Internet as a Service","Infrastructure as a Service","Integration as a Service","Information as a Service"], ans:1},
+        {q:"Which cloud model provides apps over the internet (e.g., Gmail)?", opts:["IaaS","PaaS","SaaS","DaaS"], ans:2},
+        {q:"What is the Shared Responsibility Model?", opts:["Provider handles everything","Both provider and customer have security responsibilities","Customer handles everything","Only governments are responsible"], ans:1},
+        {q:"Which is a private cloud characteristic?", opts:["Public access","Dedicated to a single organization","Always free","Only for individuals"], ans:1},
+        {q:"Which concern is unique to cloud computing?", opts:["Physical theft of servers","Data breaches from misconfigured resources","Power outages","Printer jams"], ans:1}
+    ],
+    18: [
+        {q:"What is an 'evil twin' attack?", opts:["A rogue AP mimicking a legitimate one","A virus that clones files","A Bluetooth attack","A type of firewall"], ans:0},
+        {q:"Which protocol should be used for secure WiFi?", opts:["WEP","WPA3","Open","WPS"], ans:1},
+        {q:"What is the KRACK attack?", opts:["Physical attack on routers","A key reinstallation attack against WPA2","A type of ransomware","A social engineering technique"], ans:1},
+        {q:"Which is a smartphone security best practice?", opts:["Jailbreaking","Installing from any source","Keeping OS and apps updated","Disabling screen lock"], ans:2},
+        {q:"What is BlueBorne?", opts:["A WiFi protocol","A Bluetooth-based attack spreading without pairing","A type of antivirus","A cloud service"], ans:1}
+    ],
+    19: [
+        {q:"What is a common motivation for cyber attacks?", opts:["Financial gain","Political reasons","Personal grudges","All of the above"], ans:3},
+        {q:"Which strategy assumes no user should be automatically trusted?", opts:["Defense in Depth","Zero Trust","Perimeter security","Security through obscurity"], ans:1},
+        {q:"What is incident response?", opts:["Preventing all incidents","An organized approach to managing a security breach","Ignoring incidents","Only calling police"], ans:1},
+        {q:"Which is part of a good security policy?", opts:["Acceptable use policy","Data classification","Incident response procedures","All of the above"], ans:3},
+        {q:"Why is security awareness training important?", opts:["Humans are often the weakest link","It replaces all technical controls","Only required by law","Not important"], ans:0}
+    ],
+    20: [
+        {q:"What does STRIDE stand for?", opts:["Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege","Security, Threat, Risk, Identity, Data, Encryption","System, Testing, Risk, Incident, Detection, Evaluation","None of the above"], ans:0},
+        {q:"What is the primary goal of a security audit?", opts:["Fire employees","Systematically evaluate security controls and compliance","Install new software","Speed up networks"], ans:1},
+        {q:"Which threat modeling approach is risk-centric?", opts:["STRIDE","PASTA","Both A and C","Neither"], ans:1},
+        {q:"What is endpoint protection?", opts:["Protecting physical doors","Securing individual devices from threats","Protecting only cloud servers","Only using antivirus"], ans:1},
+        {q:"What is MDM in device protection?", opts:["Master Data Management","Mobile Device Management","Multiple Device Monitoring","Main Display Manager"], ans:1}
+    ]
+};
+
+// ── Quiz states ──
+var quizStates = {};
+lessonOrder.forEach(function(id) { quizStates[id] = { submitted: false, score: 0, total: 0, answers: {} }; });
+
+// ── Build quiz sections dynamically ──
+function buildQuizSections() {
+    lessonOrder.forEach(function(lid) {
+        var data = quizData[lid];
+        if (!data) return;
+        var section = document.createElement('div');
+        section.className = 'quiz-section';
+        section.id = 'quiz-section-' + lid;
+        section.style.display = 'none';
+        var html = '<div class="quiz-header"><h3>📝 Lesson Quiz</h3><span class="quiz-required-badge" id="quizBadge_' + lid + '">REQUIRED</span><span class="quiz-completed-badge" id="quizComp_' + lid + '">✓ COMPLETED</span></div>';
+        html += '<div class="quiz-body">';
+        data.forEach(function(q, qi) {
+            html += '<div class="quiz-question" id="qq_' + lid + '_' + qi + '">';
+            html += '<span class="quiz-q-num">QUESTION ' + (qi + 1) + ' OF ' + data.length + '</span>';
+            html += '<div class="quiz-q-text">' + q.q + '</div>';
+            html += '<div class="quiz-options">';
+            q.opts.forEach(function(opt, oi) {
+                html += '<label class="quiz-option" id="qopt_' + lid + '_' + qi + '_' + oi + '">';
+                html += '<input type="radio" name="quiz_' + lid + '_q' + qi + '" value="' + oi + '">';
+                html += '<span>' + opt + '</span></label>';
+            });
+            html += '</div></div>';
+        });
+        html += '</div>';
+        html += '<div class="quiz-footer"><div class="quiz-score" id="quizScore_' + lid + '">Score: <strong>0/' + data.length + '</strong></div><div class="quiz-error" id="quizErr_' + lid + '">⚠️ Please answer all questions before submitting.</div><button class="quiz-submit-btn" id="quizBtn_' + lid + '">Submit Answers</button></div>';
+        section.innerHTML = html;
+        document.getElementById('mainContent').appendChild(section);
+
+        // Option click handlers
+        section.querySelectorAll('.quiz-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                if (quizStates[lid].submitted) return;
+                var radio = opt.querySelector('input[type="radio"]');
+                radio.checked = true;
+                // Remove selected from siblings
+                var name = radio.name;
+                section.querySelectorAll('input[name="' + name + '"]').forEach(function(r) {
+                    r.closest('.quiz-option').classList.remove('selected');
                 });
+                opt.classList.add('selected');
+                // Clear error
+                document.getElementById('quizErr_' + lid).style.display = 'none';
             });
         });
-    }
-    initAllTabs();
 
-    function stopAllVideos() {
-        document.querySelectorAll('iframe').forEach(iframe => {
-            const src = iframe.src;
-            iframe.src = '';
-            iframe.src = src;
-        });
-    }
+        // Submit handler
+        document.getElementById('quizBtn_' + lid).addEventListener('click', function() { submitQuiz(lid); });
+    });
+}
+buildQuizSections();
 
-    const navItems = document.querySelectorAll('.nav-item');
-    const totalLessons = 20;
-    
-    function activateLesson(id) {
-        stopAllVideos();
-        for (let i = 1; i <= totalLessons; i++) {
-            const el = document.getElementById(`lesson-${i}`);
-            if (el) el.style.display = 'none';
-        }
-        const target = document.getElementById(`lesson-${id}`);
-        if (target) target.style.display = 'block';
-        navItems.forEach(item => item.classList.remove('active'));
-        const activeItem = document.querySelector(`.nav-item[data-lesson="${id}"]`);
-        if (activeItem) activeItem.classList.add('active');
-    }
-    
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const id = parseInt(item.getAttribute('data-lesson'));
-            if (!isNaN(id)) { 
-                activateLesson(id); 
-                window.location.hash = `lesson-${id}`; 
+function submitQuiz(lid) {
+    var data = quizData[lid];
+    var state = quizStates[lid];
+    if (state.submitted) return;
+    var score = 0;
+    var allAnswered = true;
+
+    data.forEach(function(q, qi) {
+        var selected = document.querySelector('input[name="quiz_' + lid + '_q' + qi + '"]:checked');
+        var qEl = document.getElementById('qq_' + lid + '_' + qi);
+        qEl.classList.remove('unanswered-highlight', 'correct-highlight', 'wrong-highlight');
+
+        if (!selected) {
+            allAnswered = false;
+            qEl.classList.add('unanswered-highlight');
+        } else {
+            var val = parseInt(selected.value);
+            state.answers[qi] = val;
+            // Clear previous
+            data[qi].opts.forEach(function(o, oi) {
+                document.getElementById('qopt_' + lid + '_' + qi + '_' + oi).classList.remove('correct-answer', 'wrong-answer');
+            });
+            if (val === q.ans) {
+                score++;
+                qEl.classList.add('correct-highlight');
+                document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('correct-answer');
+            } else {
+                qEl.classList.add('wrong-highlight');
+                document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('wrong-answer');
+                document.getElementById('qopt_' + lid + '_' + qi + '_' + q.ans).classList.add('correct-answer');
             }
-        });
-    });
-    
-    const hash = window.location.hash.substring(1);
-    if (hash.startsWith('lesson-')) {
-        const num = parseInt(hash.split('-')[1]);
-        if (num >= 1 && num <= totalLessons) activateLesson(num);
-        else activateLesson(1);
-    } else activateLesson(1);
-    
-    window.addEventListener('hashchange', () => {
-        const h = window.location.hash.substring(1);
-        if (h.startsWith('lesson-')) {
-            const n = parseInt(h.split('-')[1]);
-            if (n >= 1 && num <= totalLessons) activateLesson(n);
         }
     });
+
+    if (!allAnswered) {
+        document.getElementById('quizErr_' + lid).style.display = 'block';
+        return;
+    }
+
+    state.submitted = true;
+    state.score = score;
+    state.total = data.length;
+
+    document.getElementById('quizScore_' + lid).innerHTML = 'Score: <strong>' + score + '/' + data.length + '</strong>';
+    document.getElementById('quizBadge_' + lid).style.display = 'none';
+    document.getElementById('quizComp_' + lid).style.display = 'inline-block';
+    document.getElementById('quizBtn_' + lid).disabled = true;
+    document.getElementById('quizBtn_' + lid).textContent = 'Submitted';
+
+    // Disable all radios
+    var section = document.getElementById('quiz-section-' + lid);
+    section.querySelectorAll('input[type="radio"]').forEach(function(r) { r.disabled = true; });
+    section.querySelectorAll('.quiz-option').forEach(function(o) { o.style.cursor = 'default'; });
+}
+
+// ══════════════════════════════════════
+// ── COMMENTS SYSTEM (Google Sheets) ──
+// ══════════════════════════════════════
+var avatarColors = ['#02b3e4','#8b5cf6','#f59e0b','#ef4444','#22c55e','#ec4899','#6366f1','#14b8a6','#f97316','#06b6d4'];
+
+function getInitials(name) {
+    return name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().substring(0, 2);
+}
+
+function getColorForName(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return avatarColors[Math.abs(hash) % avatarColors.length];
+}
+
+function formatTime(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    var now = new Date();
+    var diff = Math.floor((now - d) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+    return d.toLocaleDateString();
+}
+
+function showStatus(msg, type) {
+    var el = document.getElementById('cmtStatus');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.style.background = type === 'ok' ? '#e6f4ea' : '#fee2e2';
+    el.style.color = type === 'ok' ? '#137333' : '#dc2626';
+    setTimeout(function() { el.style.display = 'none'; }, 3000);
+}
+
+function renderComments(comments) {
+    var list = document.getElementById('cmtList');
+    var badge = document.getElementById('commentBadge');
+    badge.textContent = comments.length;
+    if (comments.length === 0) {
+        list.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet. Be the first!</div>';
+        return;
+    }
+    list.innerHTML = comments.map(function(c) {
+        var color = getColorForName(c.name || 'Anonymous');
+        return '<div class="cmt-item">' +
+            '<div class="cmt-avatar" style="background:' + color + '">' + getInitials(c.name || 'A') + '</div>' +
+            '<div class="cmt-body">' +
+                '<div class="cmt-meta"><span class="cmt-name">' + (c.name || 'Anonymous') + '</span><span class="cmt-time">' + formatTime(c.timestamp) + '</span></div>' +
+                '<div class="cmt-text">' + (c.message || c.text || '') + '</div>' +
+            '</div></div>';
+    }).join('');
+}
+
+function loadComments(slideId) {
+    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+        renderComments([]);
+        return;
+    }
+    var url = SCRIPT_URL + '?type=comments&slideId=' + encodeURIComponent(slideId);
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var comments = data.comments || [];
+            comments.reverse();
+            renderComments(comments);
+        })
+        .catch(function(err) {
+            console.log('Comment load error:', err);
+            renderComments([]);
+        });
+}
+
+function sendComment() {
+    var name = document.getElementById('cmtName').value.trim();
+    var msg = document.getElementById('cmtMsg').value.trim();
+    if (!name || !msg) { showStatus('Please enter your name and message.', 'err'); return; }
+    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+        showStatus('Script URL not configured.', 'err');
+        return;
+    }
+
+    var sendBtn = document.getElementById('cmtSend');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+
+    var payload = {
+        slideId: 'lesson-' + currentLesson,
+        name: name,
+        message: msg,
+        timestamp: new Date().toISOString()
+    };
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'success') {
+            document.getElementById('cmtMsg').value = '';
+            showStatus('Comment sent!', 'ok');
+            loadComments('lesson-' + currentLesson);
+        } else {
+            showStatus('Failed to send comment.', 'err');
+        }
+    })
+    .catch(function(err) {
+        console.log('Comment send error:', err);
+        showStatus('Network error. Please try again.', 'err');
+    })
+    .finally(function() {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+        updateSendBtn();
+    });
+}
+
+function updateSendBtn() {
+    var n = document.getElementById('cmtName').value.trim();
+    var m = document.getElementById('cmtMsg').value.trim();
+    document.getElementById('cmtSend').disabled = (!n || !m);
+}
+
+document.getElementById('cmtSend').addEventListener('click', sendComment);
+document.getElementById('cmtName').addEventListener('input', updateSendBtn);
+document.getElementById('cmtMsg').addEventListener('input', function() {
+    updateSendBtn();
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+});
+document.getElementById('cmtMsg').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); }
+});
+
+// Toggle panel
+document.getElementById('commentFab').addEventListener('click', function() {
+    document.getElementById('commentPanel').classList.toggle('open');
+});
+document.getElementById('commentClose').addEventListener('click', function() {
+    document.getElementById('commentPanel').classList.remove('open');
+});
+
+// Load saved name
+var savedName = localStorage.getItem('cmtUserName');
+if (savedName) document.getElementById('cmtName').value = savedName;
+document.getElementById('cmtName').addEventListener('blur', function() {
+    if (this.value.trim()) localStorage.setItem('cmtUserName', this.value.trim());
+});
 </script>
 </body>
 </html>
