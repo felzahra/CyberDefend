@@ -333,346 +333,154 @@
     </div>
     <div class="comment-panel-list" id="cmtList"></div>
 </div>
-
 <script>
 // ══════════════════════════════════════
-// 🔧 REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+// 🔧 YOUR CORRECT GOOGLE APPS SCRIPT URL
 // ══════════════════════════════════════
-var SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+var COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec';
 
-// ── Lesson ordering ──
-var lessonOrder = [1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20];
+var lessonOrder = [];
+for (var i = 1; i <= 49; i++) lessonOrder.push(i);
 var currentLesson = 1;
 
 // ── Tabs ──
 document.querySelectorAll('.lesson-card').forEach(function(card) {
     card.querySelectorAll('.tab-btn-lesson').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            var parentCard = btn.closest('.lesson-card');
-            var tid = btn.getAttribute('data-tab');
-            parentCard.querySelectorAll('.tab-btn-lesson').forEach(function(b) { b.classList.remove('active'); });
+            var pc = btn.closest('.lesson-card'), tid = btn.getAttribute('data-tab');
+            pc.querySelectorAll('.tab-btn-lesson').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
-            parentCard.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-            var t = parentCard.querySelector('#' + tid);
-            if (t) t.classList.add('active');
+            pc.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+            var t = pc.querySelector('#' + tid); if (t) t.classList.add('active');
         });
     });
 });
 
-// ── Stop videos ──
 function stopAllVideos() {
-    document.querySelectorAll('.lesson-card iframe').forEach(function(iframe) {
-        var s = iframe.src; iframe.src = ''; iframe.src = s;
-    });
+    document.querySelectorAll('.lesson-card iframe').forEach(function(f) { var s = f.src; f.src = ''; f.src = s; });
 }
 
-// ── Activate lesson ──
 var navItems = document.querySelectorAll('.nav-item');
 function activateLesson(id) {
     stopAllVideos();
     lessonOrder.forEach(function(lid) {
-        var el = document.getElementById('lesson-' + lid);
-        if (el) el.style.display = 'none';
-        var qz = document.getElementById('quiz-section-' + lid);
-        if (qz) qz.style.display = 'none';
+        var el = document.getElementById('lesson-' + lid); if (el) el.style.display = 'none';
+        var qz = document.getElementById('quiz-section-' + lid); if (qz) qz.style.display = 'none';
     });
-    var target = document.getElementById('lesson-' + id);
-    if (target) target.style.display = 'block';
-    var qzTarget = document.getElementById('quiz-section-' + id);
-    if (qzTarget) qzTarget.style.display = 'block';
+    var target = document.getElementById('lesson-' + id); if (target) target.style.display = 'block';
+    var qzTarget = document.getElementById('quiz-section-' + id); if (qzTarget) qzTarget.style.display = 'block';
     navItems.forEach(function(item) { item.classList.remove('active'); });
-    var activeItem = document.querySelector('.nav-item[data-lesson="' + id + '"]');
-    if (activeItem) activeItem.classList.add('active');
-    currentLesson = id;
-    updateNavButtons();
+    var ai = document.querySelector('.nav-item[data-lesson="' + id + '"]'); if (ai) ai.classList.add('active');
+    currentLesson = id; updateNavButtons();
     document.getElementById('mainContent').scrollTop = 0;
-    // Reset tabs to video
     var card = document.getElementById('lesson-' + id);
     if (card) {
         card.querySelectorAll('.tab-btn-lesson').forEach(function(b) { b.classList.remove('active'); });
         card.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-        var fb = card.querySelector('.tab-btn-lesson');
-        var ft = card.querySelector('.tab-content');
-        if (fb) fb.classList.add('active');
-        if (ft) ft.classList.add('active');
+        var fb = card.querySelector('.tab-btn-lesson'), ft = card.querySelector('.tab-content');
+        if (fb) fb.classList.add('active'); if (ft) ft.classList.add('active');
     }
-    // Load comments for this lesson
     loadComments('lesson-' + id);
 }
 
-// ── Nav buttons ──
 function updateNavButtons() {
     var idx = lessonOrder.indexOf(currentLesson);
     document.getElementById('btnPrev').disabled = (idx <= 0);
     document.getElementById('btnNext').disabled = (idx >= lessonOrder.length - 1);
 }
-document.getElementById('btnPrev').addEventListener('click', function() {
-    var idx = lessonOrder.indexOf(currentLesson);
-    if (idx > 0) { activateLesson(lessonOrder[idx - 1]); window.location.hash = 'lesson-' + lessonOrder[idx - 1]; }
-});
-document.getElementById('btnNext').addEventListener('click', function() {
-    var idx = lessonOrder.indexOf(currentLesson);
-    if (idx < lessonOrder.length - 1) { activateLesson(lessonOrder[idx + 1]); window.location.hash = 'lesson-' + lessonOrder[idx + 1]; }
-});
-
-navItems.forEach(function(item) {
-    item.addEventListener('click', function() {
-        var id = parseInt(item.getAttribute('data-lesson'));
-        if (!isNaN(id)) { activateLesson(id); window.location.hash = 'lesson-' + id; }
-    });
-});
-
+document.getElementById('btnPrev').addEventListener('click', function() { var idx = lessonOrder.indexOf(currentLesson); if (idx > 0) { activateLesson(lessonOrder[idx - 1]); window.location.hash = 'lesson-' + lessonOrder[idx - 1]; } });
+document.getElementById('btnNext').addEventListener('click', function() { var idx = lessonOrder.indexOf(currentLesson); if (idx < lessonOrder.length - 1) { activateLesson(lessonOrder[idx + 1]); window.location.hash = 'lesson-' + lessonOrder[idx + 1]; } });
+navItems.forEach(function(item) { item.addEventListener('click', function() { var id = parseInt(item.getAttribute('data-lesson')); if (!isNaN(id)) { activateLesson(id); window.location.hash = 'lesson-' + id; } }); });
 var hash = window.location.hash.substring(1);
-if (hash.startsWith('lesson-')) {
-    var num = parseInt(hash.split('-')[1]);
-    if (lessonOrder.indexOf(num) > -1) activateLesson(num); else activateLesson(1);
-} else activateLesson(1);
-
-window.addEventListener('hashchange', function() {
-    var h = window.location.hash.substring(1);
-    if (h.startsWith('lesson-')) {
-        var n = parseInt(h.split('-')[1]);
-        if (lessonOrder.indexOf(n) > -1) activateLesson(n);
-    }
-});
+if (hash.startsWith('lesson-')) { var num = parseInt(hash.split('-')[1]); if (lessonOrder.indexOf(num) > -1) activateLesson(num); else activateLesson(1); } else activateLesson(1);
+window.addEventListener('hashchange', function() { var h = window.location.hash.substring(1); if (h.startsWith('lesson-')) { var n = parseInt(h.split('-')[1]); if (lessonOrder.indexOf(n) > -1) activateLesson(n); } });
 
 // ══════════════════════════════════════
 // ── QUIZ DATA ──
 // ══════════════════════════════════════
 var quizData = {
-    1: [
-        {q:"How many layers does the OSI model have?", opts:["4","5","7","6"], ans:2},
-        {q:"What does MAC stand for?", opts:["Media Access Control","Machine Access Code","Multiple Address Control","Managed Access Channel"], ans:0},
-        {q:"Which device operates at Layer 3 of the OSI model?", opts:["Switch","Hub","Router","Repeater"], ans:2},
-        {q:"What type of cable is most commonly used in modern Ethernet networks?", opts:["Coaxial","Fiber optic only","Twisted pair (UTP/STP)","Serial cable"], ans:2},
-        {q:"Which OSI layer is responsible for data encryption and formatting?", opts:["Layer 2 - Data Link","Layer 4 - Transport","Layer 6 - Presentation","Layer 7 - Application"], ans:2}
-    ],
-    2: [
-        {q:"How many bits are in an IPv4 address?", opts:["16","32","64","128"], ans:1},
-        {q:"What is the loopback address in IPv4?", opts:["127.0.0.1","192.168.0.1","10.0.0.1","0.0.0.0"], ans:0},
-        {q:"IPv6 uses how many bits for addressing?", opts:["32","64","128","256"], ans:2},
-        {q:"Which class of IP address supports up to 254 hosts?", opts:["Class A","Class B","Class C","Class D"], ans:2},
-        {q:"What is the primary purpose of subnetting?", opts:["To increase IP address speed","To divide a network into smaller sub-networks","To encrypt IP traffic","To replace NAT"], ans:1}
-    ],
-    3: [
-        {q:"What does the 'C' in the CIA triad stand for?", opts:["Compliance","Confidentiality","Consistency","Continuity"], ans:1},
-        {q:"Which malware type encrypts files and demands payment?", opts:["Virus","Worm","Ransomware","Trojan"], ans:2},
-        {q:"What is the key difference between a virus and a worm?", opts:["Viruses are faster","Worms can self-replicate without a host file","Viruses spread via email only","Worms require user interaction"], ans:1},
-        {q:"Which threat actor is typically motivated by financial gain?", opts:["Nation-state","Hacktivist","Cybercriminal","Insider threat"], ans:2},
-        {q:"What does the 'A' in CIA triad represent?", opts:["Authentication","Availability","Assurance","Authorization"], ans:1}
-    ],
-    4: [
-        {q:"Which firewall type inspects packet headers based on rules?", opts:["Stateful firewall","Packet filtering firewall","Next-gen firewall","Application firewall"], ans:1},
-        {q:"What is the main difference between IDS and IPS?", opts:["IDS prevents attacks, IPS detects them","IPS prevents attacks, IDS only detects them","IDS is faster than IPS","There is no difference"], ans:1},
-        {q:"What does WAF stand for?", opts:["Wide Area Firewall","Web Application Firewall","Wireless Access Filter","Web Authentication Framework"], ans:1},
-        {q:"What is a Man-in-the-Middle (MITM) attack?", opts:["Attacker intercepts communication between two parties","Attacker overloads a server with traffic","Attacker steals physical documents","Attacker replaces firewall rules"], ans:0},
-        {q:"A proxy server primarily acts as what?", opts:["An antivirus","An intermediary between clients and servers","A database","A programming language"], ans:1}
-    ],
-    5: [
-        {q:"What does GDPR stand for?", opts:["General Data Protection Regulation","Global Digital Privacy Rule","Government Data Processing Requirement","General Digital Privacy Regulation"], ans:0},
-        {q:"Which right under GDPR allows requesting deletion of personal data?", opts:["Right to access","Right to be forgotten","Right to portability","Right to object"], ans:1},
-        {q:"What is the maximum GDPR fine for severe violations?", opts:["€10 million or 2% of revenue","€20 million or 4% of global revenue","€50 million","€5 million or 1% of revenue"], ans:1},
-        {q:"Which principle states data should be collected for specified purposes only?", opts:["Accuracy","Storage limitation","Purpose limitation","Data minimization"], ans:2},
-        {q:"A DPO is mandatory under GDPR for organizations that:", opts:["Have more than 10 employees","Process large-scale sensitive data systematically","Are based in the US","Only process public data"], ans:1}
-    ],
-    6: [
-        {q:"What is 'Defense in Depth' also known as?", opts:["Perimeter security","Layered security","Single point of failure","Zero trust"], ans:1},
-        {q:"How many layers of security does Defense in Depth typically use?", opts:["Only 1","2-3","Multiple (physical, technical, administrative)","Exactly 5"], ans:2},
-        {q:"Which is an example of a physical security layer?", opts:["Firewall","Encryption","Security guards and locks","Antivirus"], ans:2},
-        {q:"What is the main advantage of layered security?", opts:["It is cheaper","If one layer fails, others still provide protection","It eliminates all threats","It replaces firewalls"], ans:1},
-        {q:"Which of these is NOT a typical security layer?", opts:["Physical","Technical","Administrative","Social media"], ans:3}
-    ],
-    7: [
-        {q:"What is a 'white hat' hacker?", opts:["A malicious hacker","An ethical hacker with permission","A government-only hacker","A beginner hacker"], ans:1},
-        {q:"Which phase involves gathering information about the target?", opts:["Exploitation","Reconnaissance","Reporting","Privilege escalation"], ans:1},
-        {q:"What is the difference between vulnerability assessment and pen testing?", opts:["They are the same","Assessment identifies weaknesses; pen testing exploits them","Pen testing is passive; assessment is active","Assessment is illegal"], ans:1},
-        {q:"Which tool is commonly used for network scanning?", opts:["Photoshop","Nmap","Excel","PowerPoint"], ans:1},
-        {q:"What must an ethical hacker always have before testing?", opts:["Unlimited budget","Written authorization","A guarantee of findings","A police escort"], ans:1}
-    ],
-    8: [
-        {q:"What is phishing?", opts:["A network attack","A social engineering attack using fraudulent communications","A type of malware","A password cracking technique"], ans:1},
-        {q:"Which technique creates a fabricated scenario to gain trust?", opts:["Baiting","Pretexting","Tailgating","Dumpster diving"], ans:1},
-        {q:"What is tailgating?", opts:["Sending fake emails","Following an authorized person through a secure entrance","Leaving infected USB drives","Impersonating a CEO"], ans:1},
-        {q:"Which attack offers a free item to lure victims?", opts:["Pretexting","Phishing","Baiting","Vishing"], ans:2},
-        {q:"What is the most effective defense against social engineering?", opts:["Expensive firewalls","Security awareness training","More passwords","Faster internet"], ans:1}
-    ],
-    9: [
-        {q:"What is the primary goal of cybersecurity?", opts:["Make systems faster","Protect systems, networks, and data from attacks","Replace all passwords","Block all internet"], ans:1},
-        {q:"Which is a common cyber threat?", opts:["Power outages","Ransomware","Printer jams","Low battery"], ans:1},
-        {q:"What is a zero-day vulnerability?", opts:["A vulnerability with no impact","A vulnerability unknown to the vendor with no patch","A vulnerability exactly 0 days old","A fixed vulnerability"], ans:1},
-        {q:"Which principle states security should be designed from the ground up?", opts:["Security through obscurity","Security by design","Security after the fact","Security by luck"], ans:1},
-        {q:"What is the role of a SOC?", opts:["Software development","Monitoring and responding to security incidents","Physical building security","HR management"], ans:1}
-    ],
-    10: [
-        {q:"What is the first step in vulnerability management?", opts:["Remediation","Discovery/Identification","Reporting","Verification"], ans:1},
-        {q:"What does CVSS stand for?", opts:["Common Vulnerability Scoring System","Central Virus Security Standard","Computer Vulnerability Severity Scale","Common Virus Scoring System"], ans:0},
-        {q:"Which tool is commonly used for vulnerability scanning?", opts:["Nessus","Photoshop","Word","Chrome"], ans:0},
-        {q:"What is the difference between scanning and pen testing?", opts:["Identical","Scanning identifies issues; pen testing actively exploits them","Pen testing is automated only","Scanning is illegal"], ans:1},
-        {q:"What is remediation in vulnerability management?", opts:["Ignoring the vulnerability","Fixing or patching the vulnerability","Reporting it","Scanning again"], ans:1}
-    ],
-    11: [
-        {q:"What is the primary function of a network firewall?", opts:["Speed up traffic","Filter traffic based on security rules","Generate passwords","Compress data"], ans:1},
-        {q:"A stateful firewall tracks what?", opts:["Only packet headers","The state of active connections","Only MAC addresses","User passwords"], ans:1},
-        {q:"Which system alerts but does not block suspicious activity?", opts:["IPS","IDS","Firewall","WAF"], ans:1},
-        {q:"What is a signature-based IDS limitation?", opts:["Too fast","Cannot detect unknown attacks without updated signatures","Blocks all traffic","Only works on wireless"], ans:1},
-        {q:"Where is a WAF typically deployed?", opts:["On end-user laptops","In front of web applications","Inside database servers","On USB drives"], ans:1}
-    ],
-    12: [
-        {q:"What is the difference between symmetric and asymmetric encryption?", opts:["Same thing","Symmetric uses one key; asymmetric uses a key pair","Symmetric is slower","Asymmetric uses one key"], ans:1},
-        {q:"Which algorithm is an example of asymmetric encryption?", opts:["AES","DES","RSA","3DES"], ans:2},
-        {q:"What does AES stand for?", opts:["Advanced Encryption Standard","Automated Encryption System","Advanced Electronic Security","Asymmetric Encryption Standard"], ans:0},
-        {q:"What is a hash function used for?", opts:["Encryption","Creating fixed-size output for integrity verification","Generating passwords","Speeding up networks"], ans:1},
-        {q:"Which is NOT a property of a good hash function?", opts:["Deterministic","Easy to reverse","Fixed output size","Avalanche effect"], ans:1}
-    ],
-    15: [
-        {q:"What does OWASP stand for?", opts:["Open Web Application Security Project","Online Web Attack Prevention System","Open Wireless Application Security Protocol","Online Web Assessment Security Platform"], ans:0},
-        {q:"What is Cross-Site Scripting (XSS)?", opts:["A database attack","Injecting malicious scripts into web pages","A network layer attack","A physical attack"], ans:1},
-        {q:"Which OWASP vulnerability involves injecting SQL commands?", opts:["XSS","SQL Injection","CSRF","Broken Authentication"], ans:1},
-        {q:"What is CSRF?", opts:["Cross-Site Request Forgery","Cross-Server Rendering Failure","Client-Side Resource Fetch","Cryptographic Session Reset"], ans:0},
-        {q:"Which defense helps prevent SQL injection?", opts:["Faster servers","Parameterized queries","Longer passwords","Disabling JavaScript"], ans:1}
-    ],
-    16: [
-        {q:"What does IAM stand for?", opts:["Internet Access Management","Identity and Access Management","Information Assurance Method","Integrated Authentication Model"], ans:1},
-        {q:"What is the difference between authentication and authorization?", opts:["Same thing","Authentication verifies identity; authorization determines permissions","Authorization verifies identity","Neither is important"], ans:1},
-        {q:"What does MFA stand for?", opts:["Multiple Factor Authentication","Multi-Factor Authentication","Main Frame Access","Managed File Authentication"], ans:1},
-        {q:"Which access control model assigns permissions based on role?", opts:["MAC","DAC","RBAC","ABAC"], ans:2},
-        {q:"What is SSO?", opts:["Secure Socket Overlay","Single Sign-On","System Security Objective","Server Side Operation"], ans:1}
-    ],
-    17: [
-        {q:"What does IaaS stand for?", opts:["Internet as a Service","Infrastructure as a Service","Integration as a Service","Information as a Service"], ans:1},
-        {q:"Which cloud model provides apps over the internet (e.g., Gmail)?", opts:["IaaS","PaaS","SaaS","DaaS"], ans:2},
-        {q:"What is the Shared Responsibility Model?", opts:["Provider handles everything","Both provider and customer have security responsibilities","Customer handles everything","Only governments are responsible"], ans:1},
-        {q:"Which is a private cloud characteristic?", opts:["Public access","Dedicated to a single organization","Always free","Only for individuals"], ans:1},
-        {q:"Which concern is unique to cloud computing?", opts:["Physical theft of servers","Data breaches from misconfigured resources","Power outages","Printer jams"], ans:1}
-    ],
-    18: [
-        {q:"What is an 'evil twin' attack?", opts:["A rogue AP mimicking a legitimate one","A virus that clones files","A Bluetooth attack","A type of firewall"], ans:0},
-        {q:"Which protocol should be used for secure WiFi?", opts:["WEP","WPA3","Open","WPS"], ans:1},
-        {q:"What is the KRACK attack?", opts:["Physical attack on routers","A key reinstallation attack against WPA2","A type of ransomware","A social engineering technique"], ans:1},
-        {q:"Which is a smartphone security best practice?", opts:["Jailbreaking","Installing from any source","Keeping OS and apps updated","Disabling screen lock"], ans:2},
-        {q:"What is BlueBorne?", opts:["A WiFi protocol","A Bluetooth-based attack spreading without pairing","A type of antivirus","A cloud service"], ans:1}
-    ],
-    19: [
-        {q:"What is a common motivation for cyber attacks?", opts:["Financial gain","Political reasons","Personal grudges","All of the above"], ans:3},
-        {q:"Which strategy assumes no user should be automatically trusted?", opts:["Defense in Depth","Zero Trust","Perimeter security","Security through obscurity"], ans:1},
-        {q:"What is incident response?", opts:["Preventing all incidents","An organized approach to managing a security breach","Ignoring incidents","Only calling police"], ans:1},
-        {q:"Which is part of a good security policy?", opts:["Acceptable use policy","Data classification","Incident response procedures","All of the above"], ans:3},
-        {q:"Why is security awareness training important?", opts:["Humans are often the weakest link","It replaces all technical controls","Only required by law","Not important"], ans:0}
-    ],
-    20: [
-        {q:"What does STRIDE stand for?", opts:["Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege","Security, Threat, Risk, Identity, Data, Encryption","System, Testing, Risk, Incident, Detection, Evaluation","None of the above"], ans:0},
-        {q:"What is the primary goal of a security audit?", opts:["Fire employees","Systematically evaluate security controls and compliance","Install new software","Speed up networks"], ans:1},
-        {q:"Which threat modeling approach is risk-centric?", opts:["STRIDE","PASTA","Both A and C","Neither"], ans:1},
-        {q:"What is endpoint protection?", opts:["Protecting physical doors","Securing individual devices from threats","Protecting only cloud servers","Only using antivirus"], ans:1},
-        {q:"What is MDM in device protection?", opts:["Master Data Management","Mobile Device Management","Multiple Device Monitoring","Main Display Manager"], ans:1}
-    ]
+    1:[{q:"What does SIEM stand for?",opts:["Security Information and Event Management","System Integrity and Error Monitoring","Secure Infrastructure and Endpoint Management","Security Identity and Encryption Model"],ans:0},{q:"Which Windows Event ID indicates a successful logon?",opts:["4624","4625","4634","4648"],ans:0},{q:"What is the primary purpose of log forwarding?",opts:["Delete old logs","Centralize logs for analysis","Speed up the computer","Reduce storage"],ans:1},{q:"Which protocol is commonly used for log forwarding in Linux?",opts:["FTP","Syslog","SMTP","DNS"],ans:1},{q:"What is the benefit of SIEM correlation rules?",opts:["They delete logs","They detect complex attack patterns","They speed up logging","They reduce storage needs"],ans:1}],
+    2:[{q:"What does AAA stand for?",opts:["Authentication, Authorization, Accounting","Access, Audit, Analysis","Authentication, Access, Approval","Authorization, Authentication, Auditing"],ans:0},{q:"Which is a symmetric encryption algorithm?",opts:["RSA","AES","ECDSA","Diffie-Hellman"],ans:1},{q:"What protocol is commonly used for AAA?",opts:["HTTP","RADIUS","FTP","DNS"],ans:1},{q:"What is the main difference between RADIUS and TACACS+?",opts:["RADIUS encrypts entire packet, TACACS+ only password","TACACS+ encrypts entire packet, RADIUS only password","No difference","RADIUS is faster"],ans:1},{q:"What does MFA stand for?",opts:["Multi-Factor Authentication","Multiple Failure Analysis","Main Frame Access","Managed File Authentication"],ans:0}],
+    3:[{q:"What is Nessus primarily used for?",opts:["Password cracking","Vulnerability scanning","Network monitoring","Log analysis"],ans:1},{q:"What does CVSS stand for?",opts:["Common Vulnerability Scoring System","Central Vulnerability Severity Scale","Common Virus Scoring System","Computer Vulnerability Security Standard"],ans:0},{q:"What is OpenVAS?",opts:["A firewall","An open-source vulnerability scanner","A password cracker","A network monitor"],ans:1},{q:"What does a CVSS score of 9.0+ indicate?",opts:["Low severity","Medium severity","High severity","Critical severity"],ans:3},{q:"Which is a commercial vulnerability scanner?",opts:["OpenVAS","Nessus","Nmap","Wireshark"],ans:1}],
+    4:[{q:"What is Zeek (formerly Bro)?",opts:["A firewall","A network security monitor","A vulnerability scanner","A password cracker"],ans:1},{q:"What is the difference between IDS and IPS?",opts:["IDS prevents, IPS detects","IPS prevents, IDS only detects","No difference","IDS is faster"],ans:1},{q:"Which tool is used for packet analysis?",opts:["Nessus","Wireshark","Nmap","ClamAV"],ans:1},{q:"What is a port scan?",opts:["Scanning documents","Checking open ports on a system","Scanning for viruses","Scanning emails"],ans:1},{q:"What is ARP spoofing?",opts:["A legitimate network function","A MAC address spoofing attack","A DNS attack","A password attack"],ans:1}],
+    5:[{q:"What does CVE stand for?",opts:["Common Vulnerabilities and Exposures","Central Vulnerability Engine","Common Virus Encyclopedia","Computer Vulnerability Evaluation"],ans:0},{q:"What is MITRE ATT&CK?",opts:["A vulnerability scanner","A framework of adversary tactics and techniques","A firewall","An encryption standard"],ans:1},{q:"What does CWE stand for?",opts:["Common Weakness Enumeration","Central Web Exploitation","Common Worm Evaluation","Computer Weakness Engine"],ans:0},{q:"What is OWASP?",opts:["Open Web Application Security Project","Online Web Attack Prevention System","Open Wireless Application Protocol","Operational Web Application Security"],ans:0},{q:"What is CVSS used for?",opts:["Encrypting data","Scoring vulnerability severity","Managing passwords","Scanning networks"],ans:1}],
+    6:[{q:"What is phishing?",opts:["A network attack","Social engineering via fraudulent communications","A type of malware","A password attack"],ans:1},{q:"What is BEC?",opts:["Business Email Compromise","Binary Execution Code","Browser Exploit Code","Backend Error Control"],ans:0},{q:"What is Gophish?",opts:["A malware","A phishing simulation tool","A firewall","An antivirus"],ans:1},{q:"What is credential harvesting?",opts:["Storing passwords securely","Stealing login credentials through fake pages","Creating strong passwords","Resetting passwords"],ans:1},{q:"Which is NOT a phishing technique?",opts:["Spear phishing","Whaling","Vishing","Firewalling"],ans:3}],
+    7:[{q:"What is the purpose of phishing simulations?",opts:["To attack real users","To test and train user awareness","To steal credentials","To send spam"],ans:1},{q:"What does SMTP stand for?",opts:["Simple Mail Transfer Protocol","Secure Mail Transmission Protocol","System Mail Tracking Protocol","Simple Message Transfer Protocol"],ans:0},{q:"What metric is important in phishing campaigns?",opts:["Click rate","Open rate","Credential submission rate","All of the above"],ans:3},{q:"What is a landing page in phishing?",opts:["The company homepage","A fake page that captures credentials","A secure login page","An error page"],ans:1},{q:"What should be included in phishing reports?",opts:["Campaign metrics","User behavior analysis","Remediation recommendations","All of the above"],ans:3}],
+    8:[{q:"What is SIEM data normalization?",opts:["Deleting duplicate data","Converting logs to a standard format","Encrypting logs","Compressing logs"],ans:1},{q:"What is a correlation rule in SIEM?",opts:["A rule to delete logs","Logic that relates multiple events to detect threats","A firewall rule","A password policy"],ans:1},{q:"What is alert fatigue?",opts:["Being tired from alerts","Too many alerts causing important ones to be missed","Alerts that are too loud","Alert system failure"],ans:1},{q:"What is the purpose of alert tuning?",opts:["Making alerts louder","Reducing false positives","Deleting alerts","Creating more alerts"],ans:1},{q:"Which is a SIEM product?",opts:["Nessus","Splunk","Nmap","Wireshark"],ans:1}],
+    9:[{q:"What is threat hunting?",opts:["Waiting for alerts","Proactively searching for hidden threats","Running vulnerability scans","Monitoring logs passively"],ans:1},{q:"What is KQL?",opts:["Kubernetes Query Language","Kusto Query Language","Key Query Language","Kernel Query Language"],ans:1},{q:"What is adversary emulation?",opts:["Copying an adversary's logo","Mimicking adversary techniques to test defenses","Hiring adversaries","Ignoring adversaries"],ans:1},{q:"What is persistence in cyber attacks?",opts:["Being persistent in attacks","Maintaining access to a compromised system","Persistent logging","Persistent passwords"],ans:1},{q:"What is a hunting hypothesis?",opts:["A random guess","An educated assumption about potential threats","A firewall rule","A SIEM query"],ans:1}],
+    10:[{q:"What is DNS tunneling?",opts:["A legitimate DNS feature","Using DNS protocol to exfiltrate data","A DNS attack","A DNS optimization"],ans:1},{q:"What are LOLBins?",opts:["Funny binaries","Living Off the Land Binaries - legitimate tools abused by attackers","Log analysis binaries","Low-level operation binaries"],ans:1},{q:"What is C2 in cyber attacks?",opts:["Command and Control","Central Computer","Cloud Computing","Cyber Crime"],ans:0},{q:"What is zero trust security?",opts:["Trusting no one by default","Having no security","Trusting everyone","Only trusting internal networks"],ans:0},{q:"What is micro-segmentation?",opts:["Large network segments","Dividing network into small secure zones","No segmentation","Segmenting by geography"],ans:1}],
+    11:[{q:"What is authentication?",opts:["Giving permissions","Verifying identity","Encrypting data","Deleting accounts"],ans:1},{q:"Which is NOT an authentication factor?",opts:["Something you know","Something you have","Something you are","Something you want"],ans:3},{q:"What is a strong password policy?",opts:["Short simple passwords","Long complex passwords with multiple character types","No password required","Same password everywhere"],ans:1},{q:"What is biometric authentication?",opts:["Using passwords","Using physical characteristics like fingerprints","Using tokens","Using PINs"],ans:1},{q:"What is the risk of single-factor authentication?",opts:["Too secure","Vulnerable if that factor is compromised","Too expensive","Too complex"],ans:1}],
+    12:[{q:"What is authorization?",opts:["Verifying identity","Determining what actions a user can perform","Encrypting data","Creating accounts"],ans:1},{q:"What is RBAC?",opts:["Random Based Access Control","Role-Based Access Control","Rule-Based Access Control","Required Based Access Control"],ans:1},{q:"What is the principle of least privilege?",opts:["Give maximum permissions","Give only necessary permissions","Give no permissions","Give admin rights to all"],ans:1},{q:"What is a permission matrix?",opts:["A math problem","A document mapping roles to permissions","A type of firewall","A password list"],ans:1},{q:"What is separation of duties?",opts:["One person does everything","Splitting critical tasks among multiple people","Having no duties","Duty rotation only"],ans:1}],
+    13:[{q:"What is DAC?",opts:["Digital Access Control","Discretionary Access Control","Dynamic Access Control","Default Access Control"],ans:1},{q:"What is MAC?",opts:["Media Access Control","Mandatory Access Control","Multiple Access Control","Managed Access Control"],ans:1},{q:"What is SELinux?",opts:["A Linux distribution","Security-Enhanced Linux","A firewall","An antivirus"],ans:1},{q:"What is AppArmor?",opts:["An application","A Linux security module","A password manager","A web browser"],ans:1},{q:"What is the key difference between DAC and MAC?",opts:["No difference","DAC allows owner discretion, MAC enforces system-wide policies","MAC is simpler","DAC is more secure"],ans:1}],
+    14:[{q:"What is sandboxing?",opts:["Playing in sand","Running code in an isolated environment","A type of firewall","A network protocol"],ans:1},{q:"What is container security?",opts:["Physical container security","Securing containerized applications like Docker","Shipping container security","Database security"],ans:1},{q:"What is process isolation?",opts:["Isolating processes from each other for security","Running one process","Stopping processes","Killing processes"],ans:0},{q:"What is a hypervisor?",opts:["A type of malware","Software that creates and manages virtual machines","A password manager","A web server"],ans:1},{q:"What is chroot?",opts:["A Linux command to change root directory for isolation","A file system","A password","A network tool"],ans:0}],
+    15:[{q:"What is a buffer overflow?",opts:["When buffer is empty","Writing data beyond buffer boundaries","A type of virus","A network attack"],ans:1},{q:"What is ASLR?",opts:["A programming language","Address Space Layout Randomization","A firewall","An antivirus"],ans:1},{q:"What is DEP?",opts:["Data Execution Prevention","Data Encryption Protocol","Digital Endpoint Protection","Dynamic Execution Policy"],ans:0},{q:"What is a stack canary?",opts:["A bird","A security value placed to detect stack overflows","A type of buffer","A password"],ans:1},{q:"What is heap spraying?",opts:["Gardening technique","Filling heap memory for exploitation","Memory cleanup","Memory optimization"],ans:1}]
 };
 
-// ── Quiz states ──
+for (var gl = 16; gl <= 49; gl++) {
+    var topic = document.querySelector('.nav-item[data-lesson="' + gl + '"]');
+    var topicName = topic ? topic.textContent.trim() : 'Lesson ' + gl;
+    quizData[gl] = [
+        {q:"What is the main focus of " + topicName + "?",opts:["Security fundamentals","Advanced exploitation","The specific topic covered in this lesson","None of the above"],ans:2},
+        {q:"Why is this topic important in cybersecurity?",opts:["It's not important","It addresses specific security challenges","Only for beginners","Only for experts"],ans:1},
+        {q:"What is a best practice related to this topic?",opts:["Ignore it","Follow industry standards and guidelines","Only use free tools","Disable security features"],ans:1},
+        {q:"What tool is commonly associated with this topic?",opts:["Microsoft Word","Topic-specific security tools","Calculator","Notepad"],ans:1},
+        {q:"How does this topic relate to defense in depth?",opts:["No relation","It adds another layer of security","It replaces all other security","It weakens security"],ans:1}
+    ];
+}
+
 var quizStates = {};
 lessonOrder.forEach(function(id) { quizStates[id] = { submitted: false, score: 0, total: 0, answers: {} }; });
 
-// ── Build quiz sections dynamically ──
 function buildQuizSections() {
     lessonOrder.forEach(function(lid) {
-        var data = quizData[lid];
-        if (!data) return;
+        var data = quizData[lid]; if (!data) return;
         var section = document.createElement('div');
-        section.className = 'quiz-section';
-        section.id = 'quiz-section-' + lid;
-        section.style.display = 'none';
-        var html = '<div class="quiz-header"><h3>📝 Lesson Quiz</h3><span class="quiz-required-badge" id="quizBadge_' + lid + '">REQUIRED</span><span class="quiz-completed-badge" id="quizComp_' + lid + '">✓ COMPLETED</span></div>';
-        html += '<div class="quiz-body">';
+        section.className = 'quiz-section'; section.id = 'quiz-section-' + lid; section.style.display = 'none';
+        var html = '<div class="quiz-header"><h3>📝 Lesson Quiz</h3><span class="quiz-required-badge" id="quizBadge_' + lid + '">REQUIRED</span><span class="quiz-completed-badge" id="quizComp_' + lid + '">✓ COMPLETED</span></div><div class="quiz-body">';
         data.forEach(function(q, qi) {
-            html += '<div class="quiz-question" id="qq_' + lid + '_' + qi + '">';
-            html += '<span class="quiz-q-num">QUESTION ' + (qi + 1) + ' OF ' + data.length + '</span>';
-            html += '<div class="quiz-q-text">' + q.q + '</div>';
-            html += '<div class="quiz-options">';
-            q.opts.forEach(function(opt, oi) {
-                html += '<label class="quiz-option" id="qopt_' + lid + '_' + qi + '_' + oi + '">';
-                html += '<input type="radio" name="quiz_' + lid + '_q' + qi + '" value="' + oi + '">';
-                html += '<span>' + opt + '</span></label>';
-            });
+            html += '<div class="quiz-question" id="qq_' + lid + '_' + qi + '"><span class="quiz-q-num">QUESTION ' + (qi+1) + ' OF ' + data.length + '</span><div class="quiz-q-text">' + q.q + '</div><div class="quiz-options">';
+            q.opts.forEach(function(opt, oi) { html += '<label class="quiz-option" id="qopt_' + lid + '_' + qi + '_' + oi + '"><input type="radio" name="quiz_' + lid + '_q' + qi + '" value="' + oi + '"><span>' + opt + '</span></label>'; });
             html += '</div></div>';
         });
-        html += '</div>';
-        html += '<div class="quiz-footer"><div class="quiz-score" id="quizScore_' + lid + '">Score: <strong>0/' + data.length + '</strong></div><div class="quiz-error" id="quizErr_' + lid + '">⚠️ Please answer all questions before submitting.</div><button class="quiz-submit-btn" id="quizBtn_' + lid + '">Submit Answers</button></div>';
+        html += '</div><div class="quiz-footer"><div class="quiz-score" id="quizScore_' + lid + '">Score: <strong>0/' + data.length + '</strong></div><div class="quiz-error" id="quizErr_' + lid + '">⚠️ Please answer all questions before submitting.</div><button class="quiz-submit-btn" id="quizBtn_' + lid + '">Submit Answers</button></div>';
         section.innerHTML = html;
         document.getElementById('mainContent').appendChild(section);
-
-        // Option click handlers
         section.querySelectorAll('.quiz-option').forEach(function(opt) {
             opt.addEventListener('click', function() {
                 if (quizStates[lid].submitted) return;
-                var radio = opt.querySelector('input[type="radio"]');
-                radio.checked = true;
-                // Remove selected from siblings
+                var radio = opt.querySelector('input[type="radio"]'); radio.checked = true;
                 var name = radio.name;
-                section.querySelectorAll('input[name="' + name + '"]').forEach(function(r) {
-                    r.closest('.quiz-option').classList.remove('selected');
-                });
+                section.querySelectorAll('input[name="' + name + '"]').forEach(function(r) { r.closest('.quiz-option').classList.remove('selected'); });
                 opt.classList.add('selected');
-                // Clear error
                 document.getElementById('quizErr_' + lid).style.display = 'none';
             });
         });
-
-        // Submit handler
         document.getElementById('quizBtn_' + lid).addEventListener('click', function() { submitQuiz(lid); });
     });
 }
 buildQuizSections();
 
 function submitQuiz(lid) {
-    var data = quizData[lid];
-    var state = quizStates[lid];
-    if (state.submitted) return;
-    var score = 0;
-    var allAnswered = true;
-
+    var data = quizData[lid], state = quizStates[lid]; if (state.submitted) return;
+    var score = 0, allAnswered = true;
     data.forEach(function(q, qi) {
         var selected = document.querySelector('input[name="quiz_' + lid + '_q' + qi + '"]:checked');
         var qEl = document.getElementById('qq_' + lid + '_' + qi);
         qEl.classList.remove('unanswered-highlight', 'correct-highlight', 'wrong-highlight');
-
-        if (!selected) {
-            allAnswered = false;
-            qEl.classList.add('unanswered-highlight');
-        } else {
-            var val = parseInt(selected.value);
-            state.answers[qi] = val;
-            // Clear previous
-            data[qi].opts.forEach(function(o, oi) {
-                document.getElementById('qopt_' + lid + '_' + qi + '_' + oi).classList.remove('correct-answer', 'wrong-answer');
-            });
-            if (val === q.ans) {
-                score++;
-                qEl.classList.add('correct-highlight');
-                document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('correct-answer');
-            } else {
-                qEl.classList.add('wrong-highlight');
-                document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('wrong-answer');
-                document.getElementById('qopt_' + lid + '_' + qi + '_' + q.ans).classList.add('correct-answer');
-            }
+        if (!selected) { allAnswered = false; qEl.classList.add('unanswered-highlight'); }
+        else {
+            var val = parseInt(selected.value); state.answers[qi] = val;
+            data[qi].opts.forEach(function(o, oi) { document.getElementById('qopt_' + lid + '_' + qi + '_' + oi).classList.remove('correct-answer', 'wrong-answer'); });
+            if (val === q.ans) { score++; qEl.classList.add('correct-highlight'); document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('correct-answer'); }
+            else { qEl.classList.add('wrong-highlight'); document.getElementById('qopt_' + lid + '_' + qi + '_' + val).classList.add('wrong-answer'); document.getElementById('qopt_' + lid + '_' + qi + '_' + q.ans).classList.add('correct-answer'); }
         }
     });
-
-    if (!allAnswered) {
-        document.getElementById('quizErr_' + lid).style.display = 'block';
-        return;
-    }
-
-    state.submitted = true;
-    state.score = score;
-    state.total = data.length;
-
+    if (!allAnswered) { document.getElementById('quizErr_' + lid).style.display = 'block'; return; }
+    state.submitted = true; state.score = score; state.total = data.length;
     document.getElementById('quizScore_' + lid).innerHTML = 'Score: <strong>' + score + '/' + data.length + '</strong>';
     document.getElementById('quizBadge_' + lid).style.display = 'none';
     document.getElementById('quizComp_' + lid).style.display = 'inline-block';
-    document.getElementById('quizBtn_' + lid).disabled = true;
-    document.getElementById('quizBtn_' + lid).textContent = 'Submitted';
-
-    // Disable all radios
+    document.getElementById('quizBtn_' + lid).disabled = true; document.getElementById('quizBtn_' + lid).textContent = 'Submitted';
     var section = document.getElementById('quiz-section-' + lid);
     section.querySelectorAll('input[type="radio"]').forEach(function(r) { r.disabled = true; });
     section.querySelectorAll('.quiz-option').forEach(function(o) { o.style.cursor = 'default'; });
@@ -681,153 +489,105 @@ function submitQuiz(lid) {
 // ══════════════════════════════════════
 // ── COMMENTS SYSTEM (Google Sheets) ──
 // ══════════════════════════════════════
-var avatarColors = ['#02b3e4','#8b5cf6','#f59e0b','#ef4444','#22c55e','#ec4899','#6366f1','#14b8a6','#f97316','#06b6d4'];
+var commentFab = document.getElementById('commentFab');
+var commentPanel = document.getElementById('commentPanel');
+var cmtName = document.getElementById('cmtName');
+var cmtMsg = document.getElementById('cmtMsg');
+var cmtSendBtn = document.getElementById('cmtSend');
+var cmtList = document.getElementById('cmtList');
+var cmtStatus = document.getElementById('cmtStatus');
+var cmtFabBadge = document.getElementById('commentBadge');
 
-function getInitials(name) {
-    return name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().substring(0, 2);
+var savedCmtName = localStorage.getItem('cd_comment_name');
+if (savedCmtName) cmtName.value = savedCmtName;
+
+var avatarColors = ['#02b3e4','#673ab7','#e91e63','#ff5722','#4caf50','#009688','#795548','#607d8b','#f44336','#3f51b5','#00bcd4','#8bc34a'];
+function getAvatarColor(n) { var h=0; for(var i=0;i<n.length;i++) h=n.charCodeAt(i)+((h<<5)-h); return avatarColors[Math.abs(h)%avatarColors.length]; }
+function getInitials(n) { var p=n.trim().split(/\s+/); return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():n.substring(0,2).toUpperCase(); }
+function timeAgo(d) { var n=new Date(),t=new Date(d),s=Math.floor((n-t)/1000); if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return t.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function escapeHtml(t) { var d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+
+function renderCmtItem(c) {
+    return '<div class="cmt-item"><div class="cmt-avatar" style="background:' + getAvatarColor(c.name) + '">' + getInitials(c.name) + '</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">' + escapeHtml(c.name) + '</span><span class="cmt-time">' + timeAgo(c.timestamp) + '</span></div><div class="cmt-text">' + escapeHtml(c.message) + '</div></div></div>';
 }
 
-function getColorForName(name) {
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    return avatarColors[Math.abs(hash) % avatarColors.length];
-}
+commentFab.addEventListener('click', function() { commentPanel.classList.toggle('open'); });
+document.getElementById('commentClose').addEventListener('click', function() { commentPanel.classList.remove('open'); });
 
-function formatTime(ts) {
-    if (!ts) return '';
-    var d = new Date(ts);
-    var now = new Date();
-    var diff = Math.floor((now - d) / 1000);
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-    if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
-    return d.toLocaleDateString();
-}
+function updateCmtForm() { cmtSendBtn.disabled = !(cmtName.value.trim() && cmtMsg.value.trim()); }
+cmtName.addEventListener('input', updateCmtForm);
+cmtMsg.addEventListener('input', function() { updateCmtForm(); this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
+cmtMsg.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); } });
 
-function showStatus(msg, type) {
-    var el = document.getElementById('cmtStatus');
-    el.textContent = msg;
-    el.style.display = 'block';
-    el.style.background = type === 'ok' ? '#e6f4ea' : '#fee2e2';
-    el.style.color = type === 'ok' ? '#137333' : '#dc2626';
-    setTimeout(function() { el.style.display = 'none'; }, 3000);
-}
-
-function renderComments(comments) {
-    var list = document.getElementById('cmtList');
-    var badge = document.getElementById('commentBadge');
-    badge.textContent = comments.length;
-    if (comments.length === 0) {
-        list.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet. Be the first!</div>';
-        return;
-    }
-    list.innerHTML = comments.map(function(c) {
-        var color = getColorForName(c.name || 'Anonymous');
-        return '<div class="cmt-item">' +
-            '<div class="cmt-avatar" style="background:' + color + '">' + getInitials(c.name || 'A') + '</div>' +
-            '<div class="cmt-body">' +
-                '<div class="cmt-meta"><span class="cmt-name">' + (c.name || 'Anonymous') + '</span><span class="cmt-time">' + formatTime(c.timestamp) + '</span></div>' +
-                '<div class="cmt-text">' + (c.message || c.text || '') + '</div>' +
-            '</div></div>';
-    }).join('');
-}
-
-function loadComments(slideId) {
-    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-        renderComments([]);
-        return;
-    }
-    var url = SCRIPT_URL + '?type=comments&slideId=' + encodeURIComponent(slideId);
-    fetch(url)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            var comments = data.comments || [];
-            comments.reverse();
-            renderComments(comments);
-        })
-        .catch(function(err) {
-            console.log('Comment load error:', err);
-            renderComments([]);
-        });
-}
-
-function sendComment() {
-    var name = document.getElementById('cmtName').value.trim();
-    var msg = document.getElementById('cmtMsg').value.trim();
-    if (!name || !msg) { showStatus('Please enter your name and message.', 'err'); return; }
-    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-        showStatus('Script URL not configured.', 'err');
-        return;
-    }
-
-    var sendBtn = document.getElementById('cmtSend');
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'Sending...';
-
-    var payload = {
-        slideId: 'lesson-' + currentLesson,
-        name: name,
-        message: msg,
-        timestamp: new Date().toISOString()
-    };
-
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        if (data.status === 'success') {
-            document.getElementById('cmtMsg').value = '';
-            showStatus('Comment sent!', 'ok');
-            loadComments('lesson-' + currentLesson);
+async function loadComments(slideId) {
+    try {
+        var res = await fetch(COMMENTS_SCRIPT_URL + '?type=comments&slideId=' + encodeURIComponent(slideId));
+        var data = await res.json();
+        var comments = data.comments || [];
+        cmtList.innerHTML = '';
+        cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
+        cmtFabBadge.textContent = comments.length;
+        if (comments.length === 0) {
+            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet. Be the first!</div>';
         } else {
-            showStatus('Failed to send comment.', 'err');
+            comments.reverse().forEach(function(c) { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
         }
-    })
-    .catch(function(err) {
-        console.log('Comment send error:', err);
-        showStatus('Network error. Please try again.', 'err');
-    })
-    .finally(function() {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send';
-        updateSendBtn();
-    });
+    } catch (e) {
+        var cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
+        var comments = (cached[slideId] || []).reverse();
+        cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
+        cmtFabBadge.textContent = comments.length;
+        if (comments.length === 0) {
+            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>';
+        } else {
+            comments.forEach(function(c) { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
+        }
+    }
 }
 
-function updateSendBtn() {
-    var n = document.getElementById('cmtName').value.trim();
-    var m = document.getElementById('cmtMsg').value.trim();
-    document.getElementById('cmtSend').disabled = (!n || !m);
-}
+cmtSendBtn.addEventListener('click', async function() {
+    var name = cmtName.value.trim();
+    var message = cmtMsg.value.trim();
+    if (!name || !message) return;
 
-document.getElementById('cmtSend').addEventListener('click', sendComment);
-document.getElementById('cmtName').addEventListener('input', updateSendBtn);
-document.getElementById('cmtMsg').addEventListener('input', function() {
-    updateSendBtn();
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-});
-document.getElementById('cmtMsg').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); }
-});
+    cmtSendBtn.disabled = true;
+    cmtSendBtn.textContent = 'Sending...';
 
-// Toggle panel
-document.getElementById('commentFab').addEventListener('click', function() {
-    document.getElementById('commentPanel').classList.toggle('open');
-});
-document.getElementById('commentClose').addEventListener('click', function() {
-    document.getElementById('commentPanel').classList.remove('open');
-});
+    var commentData = { slideId: 'lesson-' + currentLesson, name: name, message: message, timestamp: new Date().toISOString() };
 
-// Load saved name
-var savedName = localStorage.getItem('cmtUserName');
-if (savedName) document.getElementById('cmtName').value = savedName;
-document.getElementById('cmtName').addEventListener('blur', function() {
-    if (this.value.trim()) localStorage.setItem('cmtUserName', this.value.trim());
+    try {
+        await fetch(COMMENTS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentData) });
+
+        localStorage.setItem('cd_comment_name', name);
+        cmtList.insertAdjacentHTML('afterbegin', renderCmtItem(commentData));
+        var count = parseInt(cmtFabBadge.textContent || '0') + 1;
+        cmtFabBadge.textContent = count;
+        cmtFabBadge.style.display = 'flex';
+
+        var cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
+        if (!cached['lesson-' + currentLesson]) cached['lesson-' + currentLesson] = [];
+        cached['lesson-' + currentLesson].push(commentData);
+        localStorage.setItem('cd_comments_cache', JSON.stringify(cached));
+
+        cmtMsg.value = '';
+        cmtMsg.style.height = 'auto';
+        updateCmtForm();
+        cmtStatus.textContent = '✓ Posted!';
+        cmtStatus.style.display = 'block';
+        cmtStatus.style.color = '#137333';
+        cmtStatus.style.background = '#e6f44ea';
+        setTimeout(function() { cmtStatus.style.display = 'none'; }, 2500);
+    } catch (e) {
+        cmtStatus.textContent = '✕ Failed. Try again.';
+        cmtStatus.style.display = 'block';
+        cmtStatus.style.color = '#dc2626';
+        cmtStatus.style.background = '#fee2e2';
+        setTimeout(function() { cmtStatus.style.display = 'none'; }, 2500);
+    }
+
+    cmtSendBtn.disabled = false;
+    cmtSendBtn.textContent = 'Send';
+    updateCmtForm();
 });
 </script>
 </body>
