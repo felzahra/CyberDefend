@@ -2,217 +2,217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nessus Vulnerability Assessment - Complete Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Nessus Vulnerability Assessment</title>
+    
+    <!-- Bootstrap & Fonts & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
         :root {
-            --primary-color: #0066cc;
-            --secondary-color: #00a3e0;
-            --accent-color: #ff6b6b;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f7fa;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 4rem 0;
-            margin-bottom: 2rem;
-        }
-        
-        .section-title {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-bottom: 0.5rem;
-            color: var(--dark-color);
-            font-weight: 700;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background-color: var(--primary-color);
-            border-radius: 2px;
-        }
-        
-        .step-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            height: 100%;
-            border: none;
-        }
-        
-        .step-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        }
-        
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: bold;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .figure {
-            margin: 2rem 0;
-            display: block;
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
         }
 
-        .figure-img {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 5px;
-            background-color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            width: 100%;
-            height: auto;
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
         
-        .figure-caption {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 0.75rem;
-            text-align: center;
-            font-style: italic;
-        }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
         
-        .code-block {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--primary-color);
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 4px;
-            font-family: monospace;
-            overflow-x: auto;
-            background-color: #212529;
-            color: #d4d4d4;
-        }
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
         
-        .cvss-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* ========== NESSUS CONTENT STYLES ========== */
+        .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
         
+        /* Bootstrap Overrides for Dark Mode */
+        .card { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 10px; color: var(--body-fg); }
+        .card-title { color: var(--body-loud-color); font-weight: 600; }
+        .card-text { color: var(--body-quiet-color); font-size: 0.9rem; }
+        .text-primary { color: var(--primary) !important; }
+        .text-danger { color: #ff5252 !important; }
+        .text-warning { color: #ffca28 !important; }
+        .text-success { color: #69f0ae !important; }
+        
+        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary); color: var(--primary-fg); font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
+        
+        .figure { margin: 2rem 0; display: block; }
+        .figure-img { border: 1px solid var(--hairline-color); border-radius: 8px; padding: 5px; background-color: var(--darkened-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; height: auto; }
+        .figure-caption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 0.75rem; text-align: center; font-style: italic; }
+        
+        .code-block { background-color: var(--input-bg); border-left: 4px solid var(--primary); padding: 1rem; margin: 1.5rem 0; border-radius: 4px; font-family: monospace; overflow-x: auto; color: var(--body-fg); }
+        
+        .cvss-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; color: white; font-weight: bold; font-size: 0.9rem; }
         .cvss-critical { background-color: #dc3545; }
         .cvss-high { background-color: #fd7e14; }
         .cvss-medium { background-color: #ffc107; color: #212529; }
         .cvss-low { background-color: #20c997; }
-        .cvss-info { background-color: #6c757d; }
         
-        .table-responsive {
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin: 2rem 0;
-        }
+        .table-responsive { border-radius: 8px; overflow: hidden; border: 1px solid var(--hairline-color); margin: 2rem 0; }
+        .table { width: 100%; margin-bottom: 0; border-collapse: collapse; color: var(--body-fg); }
+        .table thead { background-color: var(--selected-bg); color: var(--body-loud-color); }
+        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
+        .table-hover tbody tr:hover { background-color: var(--body-bg); }
         
-        .table {
-            margin-bottom: 0;
-        }
+        .list-group-item { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); color: var(--body-fg); display: flex; justify-content: space-between; align-items: center; }
+
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 4px; margin: 1.5rem 0; color: var(--body-fg); }
+        .alert-info-custom h5 { color: var(--body-loud-color); margin-bottom: 0.5rem; }
+        .alert-info-custom ul { color: var(--body-quiet-color); padding-left: 20px; margin-top: 10px; }
         
-        .table thead {
-            background-color: var(--dark-color);
-            color: white;
-        }
-        
-        .table-hover tbody tr:hover {
-            background-color: rgba(0, 102, 204, 0.05);
-        }
-        
-        .alert-info-custom {
-            background-color: #e8f4fd;
-            border-left: 4px solid var(--primary-color);
-            padding: 1rem;
-            border-radius: 4px;
-            margin: 1.5rem 0;
-        }
-        
-        .toc {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .toc ul {
-            padding-left: 1.5rem;
-            margin-bottom: 0;
-        }
-        
-        .toc a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .toc a:hover {
-            text-decoration: underline;
-        }
-        
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 3rem 0 2rem;
-            margin-top: 3rem;
-        }
-        
-        footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        
-        footer a:hover {
-            text-decoration: underline;
+        .toc { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 20px; margin-bottom: 2rem; }
+        .toc h3 { color: var(--body-loud-color); margin-bottom: 15px; font-size: 1.2rem; }
+        .toc ul { padding-left: 20px; color: var(--body-quiet-color); }
+        .toc a { color: var(--primary); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* ========== LESSON NAVIGATION BUTTONS (BACK / NEXT) ========== */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            .lesson-nav { flex-direction: column; gap: 15px; }
+            
+            /* Sidebar becomes horizontal/full width on mobile */
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <header class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold">Nessus Vulnerability Assessment</h1>
-                    <p class="lead">A comprehensive guide to vulnerability scanning, CVE identification, and CVSS score interpretation</p>
-                </div>
-                <div class="col-lg-4 text-center">
-                    <i class="fas fa-shield-alt fa-6x opacity-75"></i>
-                </div>
-            </div>
-        </div>
-    </header>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
 
-    <div class="container">
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <a href="labs.html" class="active">Labs</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER (Flexbox Row) -->
+<div class="main-content">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="labs.html">1. Networking Labs Overview</a></li>
+                <li><a href="nessus.html" class="active">2. Nessus Vulnerability Assessment</a></li>
+                <li><a href="lesson-3.html">3. Lesson Three Title</a></li>
+                <li><a href="lesson-4.html">4. Lesson Four Title</a></li>
+                <li><a href="lesson-5.html">5. Lesson Five Title</a></li>
+                <li><a href="lesson-6.html">6. Lesson Six Title</a></li>
+                <li><a href="lesson-7.html">7. Lesson Seven Title</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Nessus Vulnerability Assessment</h1>
+            <p>A comprehensive guide to vulnerability scanning, CVE identification, and CVSS score interpretation</p>
+        </div>
+
         <!-- Table of Contents -->
         <div class="toc">
-            <h3 class="mb-3">Table of Contents</h3>
+            <h3>Table of Contents</h3>
             <div class="row">
                 <div class="col-md-6">
                     <ul>
@@ -242,7 +242,7 @@
             
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-bug text-danger me-2"></i>Vulnerabilities</h5>
                             <p class="card-text">Software flaws that could be exploited by attackers to compromise systems.</p>
@@ -250,7 +250,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-sliders text-warning me-2"></i>Misconfigurations</h5>
                             <p class="card-text">Improper settings that could expose systems to unnecessary risk.</p>
@@ -258,7 +258,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-shield-virus text-success me-2"></i>Malware</h5>
                             <p class="card-text">Detection of known malware on systems and networks.</p>
@@ -352,7 +352,8 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                 <h4 class="mb-0">Access Scans Menu</h4>
             </div>
             <p>From the main dashboard, click on "Scans" in the top navigation menu, then click "New Scan" to create a new scan configuration.</p>
-            <figure class="figure"><img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QzhysYBT0hudUmBu8WopFg.png" class="figure-img img-fluid rounded" alt="New Scan Button">
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QzhysYBT0hudUmBu8WopFg.png" class="figure-img img-fluid rounded" alt="New Scan Button">
                 <figcaption class="figure-caption">Figure 5: Creating a New Scan - Scans menu with "New Scan" button highlighted.</figcaption>
             </figure>
             
@@ -544,7 +545,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                 <span class="step-number">1</span>
                 <h4 class="mb-0">Access MITRE CVE Database</h4>
             </div>
-            <p>Go to the MITRE CVE database at <a href="https://cve.mitre.org" target="_blank">https://cve.mitre.org</a> or the NVD at <a href="https://nvd.nist.gov" target="_blank">https://nvd.nist.gov</a>.</p>
+            <p>Go to the MITRE CVE database at <a href="https://cve.mitre.org" target="_blank" style="color: var(--primary);">https://cve.mitre.org</a> or the NVD at <a href="https://nvd.nist.gov" target="_blank" style="color: var(--primary);">https://nvd.nist.gov</a>.</p>
             <figure class="figure">
                 <img src="https://industrialcyber.co/wp-content/uploads/2025/04/2025.04.23-MITRE-ATTCK-v17-offers-broader-platform-coverage-enhanced-defensive-guidance-threat-intelligence-tracking.webp" class="figure-img img-fluid rounded" alt="MITRE Homepage">
                 <figcaption class="figure-caption">Figure 17: MITRE CVE Database Homepage - Homepage with search box highlighted.</figcaption>
@@ -556,7 +557,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
             </div>
             <p>Enter the CVE ID (e.g., CVE-2021-44228) extracted from Nessus into the search box and submit the search.</p>
             <figure class="figure">
-                <img src="https://cdn.prod.website-files.com/62aa011c5ccb574e8fd82c77/62b9b47dbb097b7d6fdd928b_cve-2021-44228.jpeg" class="figure-img img-fluid rounded" alt="CVE Search">
+                <img src="https://cdn.prod.website-fields.com/62aa011c5ccb574e8fd82c77/62b9b47dbb097b7d6fdd928b_cve-2021-44228.jpeg" class="figure-img img-fluid rounded" alt="CVE Search">
                 <figcaption class="figure-caption">Figure 18: Searching for a Specific CVE - Search box with a CVE ID entered.</figcaption>
             </figure>
             
@@ -587,7 +588,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
             
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-shield-alt text-primary me-2"></i>Patch Management</h5>
                             <p class="card-text">Apply security patches released by vendors to address identified vulnerabilities. Prioritize based on severity and system criticality.</p>
@@ -595,7 +596,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                     </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-sliders text-success me-2"></i>Configuration Changes</h5>
                             <p class="card-text">Modify system configurations to reduce exposure, such as disabling unnecessary services, restricting access, or hardening settings.</p>
@@ -603,7 +604,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                     </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-network-wired text-warning me-2"></i>Network Segmentation</h5>
                             <p class="card-text">Isolate critical systems or vulnerable services using network segmentation to limit potential attack paths.</p>
@@ -611,7 +612,7 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                     </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <div class="card step-card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-tasks text-danger me-2"></i>Virtual Patching</h5>
                             <p class="card-text">Implement temporary security controls through WAF rules, IPS signatures, or other security tools while permanent fixes are developed.</p>
@@ -675,44 +676,47 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                 </div>
             </div>
         </section>
-    </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Nessus Vulnerability Assessment Guide</h5>
-                    <p>A comprehensive resource for security professionals using Nessus for vulnerability management.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#intro">Introduction</a></li>
-                        <li><a href="#installation">Installation</a></li>
-                        <li><a href="#configuration">Scan Configuration</a></li>
-                        <li><a href="#results">Analyzing Results</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Resources</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="https://www.tenable.com/products/nessus" target="_blank">Tenable Nessus</a></li>
-                        <li><a href="https://cve.mitre.org" target="_blank">MITRE CVE</a></li>
-                        <li><a href="https://nvd.nist.gov" target="_blank">NIST NVD</a></li>
-                        <li><a href="https://www.first.org/cvss" target="_blank">CVSS</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="mt-4 mb-4" style="background-color: rgba(255,255,255,0.2);">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p class="mb-0">&copy; 2023 Nessus Vulnerability Assessment Guide. Educational purposes only.</p>
-                </div>
-            </div>
+        <!-- LESSON NAVIGATION BUTTONS (PREV / NEXT) -->
+        <div class="lesson-nav">
+            <a href="labs.html" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Return Back
+            </a>
+            <a href="lesson-3.html" class="nav-btn next">
+                Next Lesson <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+                <li><a href="messages.html">Tasks & Submissions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
