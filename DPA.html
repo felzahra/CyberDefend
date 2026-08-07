@@ -3,140 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend · Networking & Security Labs Course</title>
+    <title>CyberDefend · DPA Summer Training Course</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --selected-row: #242424;
+            --message-warning-bg: #2a251a;
+            --header-bg: #1a1a1a;
+            --link-fg: #00e676;
+            --error-fg: #e35f5f;
+            --message-error-bg: #570808;
+            --message-success-bg: #006b1b;
+            --close-button-hover-bg: #666666;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --selected-row: #f9fbfe;
+            --message-warning-bg: #fef9e6;
+            --header-bg: #ffffff;
+            --link-fg: #027e9e;
+            --error-fg: #dc2626;
+            --message-error-bg: #fee2e2;
+            --message-success-bg: #e6f4ea;
+            --close-button-hover-bg: #cbd5e1;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f7fc; color: #1a2c3e; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 320px; background: #fff; border-right: 1px solid #e6edf4; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-        .brand { padding: 24px; border-bottom: 1px solid #eef2f8; background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%); }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        
+        /* ========== SIDEBAR ========== */
+        .sidebar { width: 320px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
+        .brand { padding: 24px; border-bottom: 1px solid var(--hairline-color); background: linear-gradient(135deg, var(--darkened-bg) 0%, var(--body-bg) 100%); }
         .logo { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { background: #02b3e4; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(2,179,228,0.2); }
-        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: #0b2b3b; }
-        .logo-text span { font-size: 0.65rem; color: #02b3e4; font-weight: 600; letter-spacing: 1px; }
-        .tagline { font-size: 0.7rem; color: #5c6f87; margin-top: 8px; border-left: 3px solid #02b3e4; padding-left: 10px; }
-        .back-link { padding: 16px 20px; display: block; color: #02b3e4; text-decoration: none; font-size: 0.8rem; font-weight: 500; }
-        .back-link:hover { background: #f0f9fe; }
+        .logo-icon { background: var(--primary); color: var(--primary-fg); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(0,230,118,0.2); }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud-color); }
+        .logo-text span { font-size: 0.65rem; color: var(--primary); font-weight: 600; letter-spacing: 1px; }
+        .tagline { font-size: 0.7rem; color: var(--body-quiet-color); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .back-link { padding: 16px 20px; display: block; color: var(--link-fg); text-decoration: none; font-size: 0.8rem; font-weight: 500; border-bottom: 1px solid var(--hairline-color); }
+        .back-link:hover { background: var(--selected-bg); }
+
+        .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 16px 20px; border-radius: 10px; width: calc(100% - 40px); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+        .course-title-sidebar { padding: 0 20px 16px; margin-top: 10px; border-bottom: 1px solid var(--hairline-color); }
+        .course-title-sidebar h2 { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+
         .nav-list { padding: 16px 0; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 12px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #e9f4fa; color: #027e9e; font-weight: 600; border-left: 3px solid #02b3e4; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 12px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; color: var(--body-fg); }
+        .nav-item:hover, .nav-item.active { background: var(--selected-bg); color: var(--link-fg); font-weight: 600; border-left: 3px solid var(--primary); }
         .check-icon { font-size: 1.1rem; min-width: 24px; }
-        .main-content { flex: 1; overflow-y: auto; padding: 32px 40px; background: #f5f7fc; }
-        .lesson-card { max-width: 1000px; margin: 0 auto 48px; background: white; border-radius: 28px; border: 1px solid #eef2f8; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .card-header { padding: 28px 32px 12px; border-bottom: 1px solid #f0f4f9; }
-        .lesson-badge { font-size: 0.7rem; font-weight: 600; color: #02b3e4; background: #e2f0f7; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
-        .card-header h2 { font-size: 1.6rem; font-weight: 700; color: #0b2b3b; margin: 8px 0 8px 0; }
-        .sub { color: #5c6f87; margin-top: 8px; font-size: 0.9rem; }
-        .lesson-tabs { display: flex; border-bottom: 2px solid #eef2f8; margin: 16px 28px 0 28px; gap: 8px; }
-        .tab-btn-lesson { background: transparent; border: none; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: #6c7e8f; cursor: pointer; border-radius: 30px 30px 0 0; transition: 0.2s; font-family: inherit; }
-        .tab-btn-lesson.active { color: #02b3e4; background: #f0f9fe; border-bottom: 3px solid #02b3e4; }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content { flex: 1; overflow-y: auto; padding: 0; background: var(--body-bg); display: flex; flex-direction: column; transition: background 0.3s; }
+        
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: flex-end; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; pointer-events: auto; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+        .top-nav-links a.login-btn:hover { opacity: 0.9; }
+
+        .content-wrapper { padding: 32px 40px; flex: 1; }
+        .lesson-header { margin-bottom: 20px; }
+        .lesson-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 5px; }
+        .lesson-header p { color: var(--body-quiet-color); font-size: 0.95rem; }
+
+        .lesson-card { max-width: 1000px; margin: 0 auto 48px; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--hairline-color); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: background 0.3s, border-color 0.3s; }
+        .card-header { padding: 28px 32px 12px; border-bottom: 1px solid var(--hairline-color); }
+        .lesson-badge { font-size: 0.7rem; font-weight: 600; color: var(--primary); background: var(--selected-bg); display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 700; color: var(--body-loud-color); margin: 8px 0 8px 0; }
+        .sub { color: var(--body-quiet-color); margin-top: 8px; font-size: 0.9rem; }
+        .lesson-tabs { display: flex; border-bottom: 2px solid var(--hairline-color); margin: 16px 28px 0 28px; gap: 8px; }
+        .tab-btn-lesson { background: transparent; border: none; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--body-quiet-color); cursor: pointer; border-radius: 30px 30px 0 0; transition: 0.2s; font-family: inherit; }
+        .tab-btn-lesson.active { color: var(--primary); background: var(--selected-bg); border-bottom: 3px solid var(--primary); }
         .tab-content { display: none; padding: 20px 28px 28px 28px; }
         .tab-content.active { display: block; }
         .video-container { margin: 0 0 16px 0; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .description-text { line-height: 1.65; color: #2c3e50; font-size: 0.95rem; }
-        .info-grid { background: #f9fbfe; border-radius: 18px; padding: 18px 24px; margin: 20px 0 0; border-left: 4px solid #02b3e4; }
+        .description-text { line-height: 1.65; color: var(--body-fg); font-size: 0.95rem; }
+        .info-grid { background: var(--selected-row); border-radius: 18px; padding: 18px 24px; margin: 20px 0 0; border-left: 4px solid var(--primary); }
         .btn-youtube { display: inline-flex; align-items: center; gap: 8px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
         .btn-youtube:hover { background: #cc0000; transform: scale(0.98); }
         .btn-drive { background: #4285f4; }
         .btn-drive:hover { background: #3367d6; }
         .downloads-list { display: flex; flex-direction: column; gap: 12px; }
-        .download-item { background: #f9fbfe; border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid #eef2f8; }
-        .download-info h4 { font-size: 1rem; margin-bottom: 4px; color: #0b2b3b; }
-        .download-info p { font-size: 0.75rem; color: #5c6f87; }
-        .btn-download { background: #02b3e4; color: white; padding: 8px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: 0.2s; display: inline-block; }
-        .btn-download:hover { background: #028cae; }
-        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: #7f8c9a; padding-top: 32px; border-top: 1px solid #e2e8f0; }
+        .download-item { background: var(--selected-row); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--hairline-color); }
+        .download-info h4 { font-size: 1rem; margin-bottom: 4px; color: var(--body-loud-color); }
+        .download-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
+        .btn-download { background: var(--primary); color: var(--primary-fg); padding: 8px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: 0.2s; display: inline-block; }
+        .btn-download:hover { background: var(--link-fg); }
+        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: var(--body-quiet-color); padding-top: 32px; border-top: 1px solid var(--hairline-color); }
 
         /* ========== PREV / NEXT ========== */
-        .nav-buttons { max-width: 1000px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-        .nav-btn { padding: 11px 28px; border-radius: 12px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-buttons { max-width: 1000px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; position: relative; z-index: 10; }
+        .nav-btn { padding: 11px 28px; border-radius: 12px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; pointer-events: auto; }
         .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-        .nav-btn-prev { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-        .nav-btn-prev:hover:not(:disabled) { background: #e2e8f0; color: #334155; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(71,85,105,0.15); }
-        .nav-btn-next { background: #02b3e4; color: white; border: 1px solid #02b3e4; }
-        .nav-btn-next:hover:not(:disabled) { background: #028cae; border-color: #028cae; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(2,179,228,0.3); }
+        .nav-btn-prev { background: var(--selected-bg); color: var(--body-quiet-color); border: 1px solid var(--hairline-color); }
+        .nav-btn-prev:hover:not(:disabled) { background: var(--close-button-hover-bg); color: var(--body-fg); transform: translateY(-1px); }
+        .nav-btn-next { background: var(--primary); color: var(--primary-fg); border: 1px solid var(--primary); }
+        .nav-btn-next:hover:not(:disabled) { background: var(--link-fg); border-color: var(--link-fg); transform: translateY(-1px); }
 
         /* ========== QUIZ ========== */
-        .quiz-section { max-width: 1000px; margin: 0 auto 28px; background: white; border-radius: 28px; border: 1px solid #eef2f8; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .quiz-header { padding: 20px 28px; border-bottom: 1px solid #f0f4f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-        .quiz-header h3 { font-size: 1.1rem; font-weight: 700; color: #0b2b3b; display: flex; align-items: center; gap: 8px; }
-        .quiz-required-badge { background: #fee2e2; color: #dc2626; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-        .quiz-completed-badge { background: #e6f4ea; color: #137333; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: none; }
+        .quiz-section { max-width: 1000px; margin: 0 auto 28px; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--hairline-color); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .quiz-header { padding: 20px 28px; border-bottom: 1px solid var(--hairline-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .quiz-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--body-loud-color); display: flex; align-items: center; gap: 8px; }
+        .quiz-required-badge { background: var(--message-error-bg); color: var(--error-fg); font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .quiz-completed-badge { background: var(--message-success-bg); color: var(--primary); font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: none; }
         .quiz-body { padding: 24px 28px; }
-        .quiz-question { margin-bottom: 28px; padding: 20px 24px; background: #f9fbfe; border-radius: 18px; border: 2px solid transparent; transition: border-color 0.2s; }
-        .quiz-question.unanswered-highlight { border-color: #fca5a5; background: #fff5f5; }
-        .quiz-question.correct-highlight { border-color: #86efac; background: #f0fdf4; }
-        .quiz-question.wrong-highlight { border-color: #fca5a5; background: #fef2f2; }
-        .quiz-q-num { font-size: 0.7rem; font-weight: 700; color: #02b3e4; margin-bottom: 8px; display: block; }
-        .quiz-q-text { font-size: 0.95rem; font-weight: 600; color: #0b2b3b; margin-bottom: 14px; line-height: 1.5; }
+        .quiz-question { margin-bottom: 28px; padding: 20px 24px; background: var(--selected-row); border-radius: 18px; border: 2px solid transparent; transition: border-color 0.2s; }
+        .quiz-question.unanswered-highlight { border-color: #fca5a5; background: var(--message-error-bg); }
+        .quiz-q-num { font-size: 0.7rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: block; }
+        .quiz-q-text { font-size: 0.95rem; font-weight: 600; color: var(--body-loud-color); margin-bottom: 14px; line-height: 1.5; }
         .quiz-options { display: flex; flex-direction: column; gap: 8px; }
-        .quiz-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #e6edf4; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: #334155; }
-        .quiz-option:hover { border-color: #02b3e4; background: #f0f9fe; }
-        .quiz-option.selected { border-color: #02b3e4; background: #e2f0f7; font-weight: 600; color: #027e9e; }
-        .quiz-option.correct-answer { border-color: #22c55e; background: #dcfce7; color: #137333; font-weight: 600; }
-        .quiz-option.wrong-answer { border-color: #ef4444; background: #fee2e2; color: #dc2626; font-weight: 600; }
-        .quiz-option input[type="radio"] { width: 18px; height: 18px; accent-color: #02b3e4; flex-shrink: 0; }
-        .quiz-footer { padding: 20px 28px; border-top: 1px solid #f0f4f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        .quiz-score { font-size: 0.85rem; font-weight: 600; color: #5c6f87; }
-        .quiz-score strong { color: #02b3e4; }
-        .quiz-submit-btn { background: #02b3e4; color: white; border: none; padding: 11px 28px; border-radius: 12px; font-weight: 600; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-        .quiz-submit-btn:hover { background: #028cae; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(2,179,228,0.3); }
-        .quiz-submit-btn:disabled { background: #b0c4d4; cursor: not-allowed; transform: none; box-shadow: none; }
-        .quiz-error { width: 100%; text-align: center; color: #dc2626; font-size: 0.82rem; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 10px; display: none; }
-        .quiz-no-quiz { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.9rem; }
-        .quiz-no-quiz span { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .quiz-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1.5px solid var(--hairline-color); cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: var(--body-fg); }
+        .quiz-option:hover { border-color: var(--primary); background: var(--selected-bg); }
+        .quiz-option.selected { border-color: var(--primary); background: var(--selected-bg); font-weight: 600; color: var(--link-fg); }
+        .quiz-option.correct-answer { border-color: #22c55e; background: var(--message-success-bg); color: var(--primary); font-weight: 600; }
+        .quiz-option.wrong-answer { border-color: #ef4444; background: var(--message-error-bg); color: var(--error-fg); font-weight: 600; }
+        .quiz-option input[type="radio"] { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+        .quiz-footer { padding: 20px 28px; border-top: 1px solid var(--hairline-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .quiz-score { font-size: 0.85rem; font-weight: 600; color: var(--body-quiet-color); }
+        .quiz-score strong { color: var(--primary); }
+        .quiz-submit-btn { background: var(--primary); color: var(--primary-fg); border: none; padding: 11px 28px; border-radius: 12px; font-weight: 600; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .quiz-submit-btn:hover { background: var(--link-fg); transform: translateY(-1px); }
+        .quiz-submit-btn:disabled { background: var(--close-button-hover-bg); cursor: not-allowed; transform: none; }
+        .quiz-error { width: 100%; text-align: center; color: var(--error-fg); font-size: 0.82rem; font-weight: 600; background: var(--message-error-bg); padding: 10px; border-radius: 10px; display: none; }
+        .quiz-no-quiz { text-align: center; padding: 40px 20px; color: var(--body-quiet-color); font-size: 0.9rem; }
 
         /* ========== FLOATING COMMENTS ========== */
-        .comment-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: #02b3e4; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(2,179,228,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; border: none; z-index: 999; transition: transform 0.3s, box-shadow 0.3s; }
-        .comment-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(2,179,228,0.5); }
-        .comment-fab-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
-        .comment-panel { position: fixed; bottom: 100px; right: 28px; width: 380px; height: 500px; background: white; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid #e6edf4; }
+        .comment-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: var(--primary); color: var(--primary-fg); border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(0,230,118,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: none; z-index: 999; transition: transform 0.3s, box-shadow 0.3s; }
+        .comment-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,230,118,0.5); }
+        .comment-fab-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--darkened-bg); }
+        .comment-panel { position: fixed; bottom: 100px; right: 28px; width: 380px; height: 500px; background: var(--darkened-bg); border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid var(--hairline-color); }
         .comment-panel.open { display: flex; }
-        .comment-panel-header { background: #02b3e4; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .comment-panel-header { background: var(--primary); color: var(--primary-fg); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
         .comment-panel-header h4 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .comment-panel-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .comment-panel-close { background: rgba(255,255,255,0.2); border: none; color: var(--primary-fg); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
         .comment-panel-close:hover { background: rgba(255,255,255,0.35); }
-        .comment-panel-form { padding: 14px 16px; border-bottom: 1px solid #f0f4f9; background: #fafcff; }
+        .comment-panel-form { padding: 14px 16px; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
         .comment-panel-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .comment-panel-name { width: 110px; padding: 8px 12px; border: 1px solid #e6edf4; border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; background: white; flex-shrink: 0; }
-        .comment-panel-name:focus { border-color: #02b3e4; }
-        .comment-panel-msg { flex: 1; padding: 8px 12px; border: 1px solid #e6edf4; border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; resize: none; min-height: 38px; max-height: 80px; background: white; }
-        .comment-panel-msg:focus { border-color: #02b3e4; }
+        .comment-panel-name { width: 110px; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; background: var(--darkened-bg); color: var(--body-fg); flex-shrink: 0; }
+        .comment-panel-name:focus { border-color: var(--primary); }
+        .comment-panel-msg { flex: 1; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; resize: none; min-height: 38px; max-height: 80px; background: var(--darkened-bg); color: var(--body-fg); }
+        .comment-panel-msg:focus { border-color: var(--primary); }
         .comment-panel-bottom { display: flex; align-items: center; justify-content: flex-end; }
-        .comment-panel-send { background: #02b3e4; color: white; border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        .comment-panel-send:hover { background: #028cae; }
-        .comment-panel-send:disabled { background: #b0c4d4; cursor: not-allowed; }
+        .comment-panel-send { background: var(--primary); color: var(--primary-fg); border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .comment-panel-send:hover { background: var(--link-fg); }
+        .comment-panel-send:disabled { background: var(--close-button-hover-bg); cursor: not-allowed; }
         .comment-panel-status { text-align: center; font-size: 0.75rem; font-weight: 600; padding: 8px; display: none; margin-top: 8px; border-radius: 8px; }
-        .comment-panel-list { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: #f9fbfe; }
+        .comment-panel-list { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--body-bg); }
         .comment-panel-list::-webkit-scrollbar { width: 3px; }
-        .comment-panel-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .comment-panel-list::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
         .cmt-item { display: flex; gap: 10px; }
         .cmt-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0; }
         .cmt-body { flex: 1; min-width: 0; }
         .cmt-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
-        .cmt-name { font-weight: 700; font-size: 0.78rem; color: #0b2b3b; }
-        .cmt-time { font-size: 0.62rem; color: #94a3b8; }
-        .cmt-text { font-size: 0.8rem; line-height: 1.5; color: #334155; word-break: break-word; }
-        .cmt-empty { text-align: center; padding: 30px 10px; color: #94a3b8; font-size: 0.82rem; }
+        .cmt-name { font-weight: 700; font-size: 0.78rem; color: var(--body-loud-color); }
+        .cmt-time { font-size: 0.62rem; color: var(--body-quiet-color); }
+        .cmt-text { font-size: 0.8rem; line-height: 1.5; color: var(--body-fg); word-break: break-word; }
+        .cmt-empty { text-align: center; padding: 30px 10px; color: var(--body-quiet-color); font-size: 0.82rem; }
         .cmt-empty span { font-size: 1.6rem; display: block; margin-bottom: 6px; }
 
-        @media (max-width: 780px) { .sidebar { width: 280px; } .main-content { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } .nav-buttons { padding: 0 4px; } .quiz-body { padding: 16px 20px; } .quiz-footer { padding: 16px 20px; } .quiz-header { padding: 16px 20px; } .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; } }
+        @media (max-width: 780px) { .sidebar { width: 280px; } .content-wrapper { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } .nav-buttons { padding: 0 4px; } .quiz-body { padding: 16px 20px; } .quiz-footer { padding: 16px 20px; } .quiz-header { padding: 16px 20px; } .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; } }
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #eef2f8; }
-        ::-webkit-scrollbar-thumb { background: #bdd3e4; border-radius: 8px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 8px; }
     </style>
 </head>
 <body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
 <div class="sidebar">
     <div class="brand">
         <div class="logo"><div class="logo-icon">🌐</div><div class="logo-text"><h1>CyberDefend</h1><span>NETWORKING LABS</span></div></div>
         <div class="tagline">Part of Accenture | Hands-on Networking & Security Labs</div>
     </div>
     <a href="index.html" class="back-link">← Back to Dashboard</a>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeLabel">Switch to Light Mode</span>
+    </button>
+
+    <div class="course-title-sidebar">
+        <h2>DPA Summer Training Course</h2>
+    </div>
+
     <div class="nav-list">
-        <div style="padding: 8px 20px 4px; font-size:0.7rem; color:#02b3e4; font-weight:600;">🌐 NETWORKING & SECURITY LABS (25 VIDEOS)</div>
+        <div style="padding: 8px 20px 4px; font-size:0.7rem; color:var(--primary); font-weight:600;">🌐 NETWORKING & SECURITY LABS (25 VIDEOS)</div>
         <div class="nav-item active" data-lesson="1"><span class="check-icon">🌐</span> Lec 0 General Networking Concepts</div>
         <div class="nav-item" data-lesson="2"><span class="check-icon">🔀</span> Lec 2 Inter-Vlan Routing LAB</div>
         <div class="nav-item" data-lesson="3"><span class="check-icon">🏢</span> DPA- Datacenter -v</div>
@@ -163,209 +247,226 @@
         <div class="nav-item" data-lesson="24"><span class="check-icon">🏢</span> DPA Datacenter</div>
         <div class="nav-item" data-lesson="25"><span class="check-icon">🎬</span> Course Introduction (Bonus)</div>
     </div>
-    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: #8ba0b2; border-top: 1px solid #edf2f7; text-align: center;">⚡ Networking & Security Labs - 25 Modules</div>
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ Networking & Security Labs - 25 Modules</div>
 </div>
 
 <div class="main-content">
-    <div id="lesson-1" class="lesson-card">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 1 / 25</span><h2>Lec 0 General Networking Concepts</h2><div class="sub">OSI Model · TCP/IP · Subnetting · Routing Basics</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video1">🎬 Video</button><button class="tab-btn-lesson" data-tab="download1">📥 Downloads</button></div>
-        <div id="video1" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/xI591wVgKCU?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>General networking concepts: OSI model, TCP/IP protocol suite, subnetting, and routing fundamentals.</p><div class="info-grid"><p>🌐 Topics: Network layers, IP addressing, routing protocols, and network topologies.</p></div><a href="https://youtu.be/xI591wVgKCU?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download1" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🌐 Networking Basics</h4><p>OSI & TCP/IP guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+    <!-- TOP NAVIGATION TABS -->
+    <nav class="top-nav">
+        <div class="top-nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="courses.html">Courses</a>
+            <a href="messages.html">📝 Tasks & Submissions</a>
+            <a href="login.html" class="login-btn">Login</a>
+        </div>
+    </nav>
 
-    <div id="lesson-2" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 2 / 25</span><h2>Lec 2 Inter-Vlan Routing LAB packet tracer</h2><div class="sub">VLAN Configuration · Inter-VLAN Routing · Packet Tracer Lab</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video2">🎬 Video</button><button class="tab-btn-lesson" data-tab="download2">📥 Downloads</button></div>
-        <div id="video2" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/BKZ2P9tP2YQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Inter-VLAN routing LAB using Cisco Packet Tracer: VLAN configuration and routing between VLANs.</p><div class="info-grid"><p>🔀 Topics: VLAN creation, trunk ports, router-on-a-stick, and multilayer switching.</p></div><a href="https://youtu.be/BKZ2P9tP2YQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download2" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔀 VLAN Routing Lab</h4><p>Packet Tracer configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+    <div class="content-wrapper">
+        <div class="lesson-header">
+            <h2>DPA Summer Training Course</h2>
+            <p>Master networking fundamentals, security labs, and infrastructure management.</p>
+        </div>
 
-    <div id="lesson-3" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 3 / 25</span><h2>DPA- Datacenter -v</h2><div class="sub">Datacenter Design · Infrastructure · Best Practices</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video3">🎬 Video</button><button class="tab-btn-lesson" data-tab="download3">📥 Downloads</button></div>
-        <div id="video3" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/ttidro_uNhQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Datacenter design and infrastructure: physical layout, cooling, power, and network architecture.</p><div class="info-grid"><p>🏢 Topics: Tier standards, cabling, redundancy, and datacenter security.</p></div><a href="https://youtu.be/ttidro_uNhQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download3" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏢 Datacenter Guide</h4><p>Infrastructure best practices</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-1" class="lesson-card">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 1 / 25</span><h2>Lec 0 General Networking Concepts</h2><div class="sub">OSI Model · TCP/IP · Subnetting · Routing Basics</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video1">🎬 Video</button><button class="tab-btn-lesson" data-tab="download1">📥 Downloads</button></div>
+            <div id="video1" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/xI591wVgKCU?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>General networking concepts: OSI model, TCP/IP protocol suite, subnetting, and routing fundamentals.</p><div class="info-grid"><p>🌐 Topics: Network layers, IP addressing, routing protocols, and network topologies.</p></div><a href="https://youtu.be/xI591wVgKCU?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download1" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🌐 Networking Basics</h4><p>OSI & TCP/IP guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-4" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 4 / 25</span><h2>Lec 2-1 Task-1 switch simulation</h2><div class="sub">Switch Simulation · Basic Configuration</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video4">🎬 Video</button><button class="tab-btn-lesson" data-tab="download4">📥 Downloads</button></div>
-        <div id="video4" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/HZekrF1tlEM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Switch simulation task: basic switch configuration, port security, and VLAN setup.</p><div class="info-grid"><p>🖥️ Topics: Switch CLI, interface configuration, and basic troubleshooting.</p></div><a href="https://youtu.be/HZekrF1tlEM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download4" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🖥️ Switch Simulation</h4><p>Basic config guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-2" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 2 / 25</span><h2>Lec 2 Inter-Vlan Routing LAB packet tracer</h2><div class="sub">VLAN Configuration · Inter-VLAN Routing · Packet Tracer Lab</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video2">🎬 Video</button><button class="tab-btn-lesson" data-tab="download2">📥 Downloads</button></div>
+            <div id="video2" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/BKZ2P9tP2YQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Inter-VLAN routing LAB using Cisco Packet Tracer: VLAN configuration and routing between VLANs.</p><div class="info-grid"><p>🔀 Topics: VLAN creation, trunk ports, router-on-a-stick, and multilayer switching.</p></div><a href="https://youtu.be/BKZ2P9tP2YQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download2" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔀 VLAN Routing Lab</h4><p>Packet Tracer configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-5" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 5 / 25</span><h2>Lec 2-2 HP Simulator (switch config)</h2><div class="sub">HP Switch Simulator · Configuration Lab</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video5">🎬 Video</button><button class="tab-btn-lesson" data-tab="download5">📥 Downloads</button></div>
-        <div id="video5" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/zFKUsJmqJ8Y?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>HP Simulator for switch configuration: HP switch CLI and basic setup.</p><div class="info-grid"><p>⚙️ Topics: HP switch commands, VLAN configuration, and port settings.</p></div><a href="https://youtu.be/zFKUsJmqJ8Y?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download5" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⚙️ HP Switch Guide</h4><p>HP Simulator lab</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-3" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 3 / 25</span><h2>DPA- Datacenter -v</h2><div class="sub">Datacenter Design · Infrastructure · Best Practices</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video3">🎬 Video</button><button class="tab-btn-lesson" data-tab="download3">📥 Downloads</button></div>
+            <div id="video3" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/ttidro_uNhQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Datacenter design and infrastructure: physical layout, cooling, power, and network architecture.</p><div class="info-grid"><p>🏢 Topics: Tier standards, cabling, redundancy, and datacenter security.</p></div><a href="https://youtu.be/ttidro_uNhQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download3" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏢 Datacenter Guide</h4><p>Infrastructure best practices</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-6" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 6 / 25</span><h2>Lec 2-3 HP LAB 1- Switch Configuration using HP Simulator</h2><div class="sub">HP Simulator LAB · Advanced Configuration</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video6">🎬 Video</button><button class="tab-btn-lesson" data-tab="download6">📥 Downloads</button></div>
-        <div id="video6" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/PXfhfuVKm1U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>HP LAB 1: comprehensive switch configuration using HP Simulator with practical exercises.</p><div class="info-grid"><p>🔧 Topics: Advanced VLANs, trunking, STP, and switch security.</p></div><a href="https://youtu.be/PXfhfuVKm1U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download6" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔧 HP Lab Guide</h4><p>Advanced config exercises</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-4" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 4 / 25</span><h2>Lec 2-1 Task-1 switch simulation</h2><div class="sub">Switch Simulation · Basic Configuration</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video4">🎬 Video</button><button class="tab-btn-lesson" data-tab="download4">📥 Downloads</button></div>
+            <div id="video4" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/HZekrF1tlEM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Switch simulation task: basic switch configuration, port security, and VLAN setup.</p><div class="info-grid"><p>🖥️ Topics: Switch CLI, interface configuration, and basic troubleshooting.</p></div><a href="https://youtu.be/HZekrF1tlEM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download4" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🖥️ Switch Simulation</h4><p>Basic config guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-7" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 7 / 25</span><h2>Lec 2-4 ARUBA Switches VSX configuration</h2><div class="sub">Aruba VSX · Virtual Switching Extension · High Availability</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video7">🎬 Video</button><button class="tab-btn-lesson" data-tab="download7">📥 Downloads</button></div>
-        <div id="video7" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KW5pli68H2k?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Aruba switches VSX (Virtual Switching Extension) configuration for high availability.</p><div class="info-grid"><p>🔌 Topics: VSX concepts, multi-chassis link aggregation, and redundancy.</p></div><a href="https://youtu.be/KW5pli68H2k?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download7" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔌 Aruba VSX Guide</h4><p>High availability config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-5" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 5 / 25</span><h2>Lec 2-2 HP Simulator (switch config)</h2><div class="sub">HP Switch Simulator · Configuration Lab</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video5">🎬 Video</button><button class="tab-btn-lesson" data-tab="download5">📥 Downloads</button></div>
+            <div id="video5" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/zFKUsJmqJ8Y?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>HP Simulator for switch configuration: HP switch CLI and basic setup.</p><div class="info-grid"><p>⚙️ Topics: HP switch commands, VLAN configuration, and port settings.</p></div><a href="https://youtu.be/zFKUsJmqJ8Y?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download5" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⚙️ HP Switch Guide</h4><p>HP Simulator lab</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-8" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 8 / 25</span><h2>Lec 2-5 ENSP LAB Huawei</h2><div class="sub">Huawei eNSP Simulator · Huawei Switch Configuration</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video8">🎬 Video</button><button class="tab-btn-lesson" data-tab="download8">📥 Downloads</button></div>
-        <div id="video8" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/2LAzRH6L0cY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Huawei eNSP LAB: switch and router configuration using Huawei simulator.</p><div class="info-grid"><p>📡 Topics: Huawei CLI, VLAN, routing, and network simulation.</p></div><a href="https://youtu.be/2LAzRH6L0cY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download8" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Huawei eNSP Guide</h4><p>Switch & router lab</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-6" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 6 / 25</span><h2>Lec 2-3 HP LAB 1- Switch Configuration using HP Simulator</h2><div class="sub">HP Simulator LAB · Advanced Configuration</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video6">🎬 Video</button><button class="tab-btn-lesson" data-tab="download6">📥 Downloads</button></div>
+            <div id="video6" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/PXfhfuVKm1U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>HP LAB 1: comprehensive switch configuration using HP Simulator with practical exercises.</p><div class="info-grid"><p>🔧 Topics: Advanced VLANs, trunking, STP, and switch security.</p></div><a href="https://youtu.be/PXfhfuVKm1U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download6" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔧 HP Lab Guide</h4><p>Advanced config exercises</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-9" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 9 / 25</span><h2>Lec 3 Wireless LAB & DHCP config packet tracer</h2><div class="sub">Wireless Configuration · DHCP Server · Packet Tracer</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video9">🎬 Video</button><button class="tab-btn-lesson" data-tab="download9">📥 Downloads</button></div>
-        <div id="video9" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/EEfC5yq_2eM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Wireless LAB and DHCP configuration using Cisco Packet Tracer.</p><div class="info-grid"><p>📶 Topics: Wireless access points, SSID, security, and DHCP server setup.</p></div><a href="https://youtu.be/EEfC5yq_2eM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download9" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📶 Wireless & DHCP Lab</h4><p>Packet Tracer config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-7" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 7 / 25</span><h2>Lec 2-4 ARUBA Switches VSX configuration</h2><div class="sub">Aruba VSX · Virtual Switching Extension · High Availability</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video7">🎬 Video</button><button class="tab-btn-lesson" data-tab="download7">📥 Downloads</button></div>
+            <div id="video7" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KW5pli68H2k?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Aruba switches VSX (Virtual Switching Extension) configuration for high availability.</p><div class="info-grid"><p>🔌 Topics: VSX concepts, multi-chassis link aggregation, and redundancy.</p></div><a href="https://youtu.be/KW5pli68H2k?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download7" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔌 Aruba VSX Guide</h4><p>High availability config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-10" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 10 / 25</span><h2>Lec 3-1 Wireless Solutions (RFID & 3G technology)</h2><div class="sub">RFID · 3G Technology · Wireless Solutions</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video10">🎬 Video</button><button class="tab-btn-lesson" data-tab="download10">📥 Downloads</button></div>
-        <div id="video10" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/wvu3Gr8SbtQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Wireless solutions: RFID technology and 3G cellular networks.</p><div class="info-grid"><p>📡 Topics: RFID applications, 3G architecture, and wireless standards.</p></div><a href="https://youtu.be/wvu3Gr8SbtQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download10" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Wireless Solutions</h4><p>RFID & 3G guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-8" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 8 / 25</span><h2>Lec 2-5 ENSP LAB Huawei</h2><div class="sub">Huawei eNSP Simulator · Huawei Switch Configuration</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video8">🎬 Video</button><button class="tab-btn-lesson" data-tab="download8">📥 Downloads</button></div>
+            <div id="video8" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/2LAzRH6L0cY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Huawei eNSP LAB: switch and router configuration using Huawei simulator.</p><div class="info-grid"><p>📡 Topics: Huawei CLI, VLAN, routing, and network simulation.</p></div><a href="https://youtu.be/2LAzRH6L0cY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download8" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Huawei eNSP Guide</h4><p>Switch & router lab</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-11" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 11 / 25</span><h2>Lec 4 VOIP LAB packet tracer</h2><div class="sub">VOIP Configuration · IP Telephony · Packet Tracer</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video11">🎬 Video</button><button class="tab-btn-lesson" data-tab="download11">📥 Downloads</button></div>
-        <div id="video11" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/OivjiAyvi0U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>VOIP LAB using Cisco Packet Tracer: IP telephony configuration and call setup.</p><div class="info-grid"><p>📞 Topics: Call Manager Express, IP phones, dial peers, and voice VLANs.</p></div><a href="https://youtu.be/OivjiAyvi0U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download11" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 VOIP Lab Guide</h4><p>IP telephony config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-9" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 9 / 25</span><h2>Lec 3 Wireless LAB & DHCP config packet tracer</h2><div class="sub">Wireless Configuration · DHCP Server · Packet Tracer</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video9">🎬 Video</button><button class="tab-btn-lesson" data-tab="download9">📥 Downloads</button></div>
+            <div id="video9" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/EEfC5yq_2eM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Wireless LAB and DHCP configuration using Cisco Packet Tracer.</p><div class="info-grid"><p>📶 Topics: Wireless access points, SSID, security, and DHCP server setup.</p></div><a href="https://youtu.be/EEfC5yq_2eM?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download9" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📶 Wireless & DHCP Lab</h4><p>Packet Tracer config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-12" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 12 / 25</span><h2>Lec 4-1 Cisco VOIP task</h2><div class="sub">Cisco VOIP Configuration · Advanced Tasks</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video12">🎬 Video</button><button class="tab-btn-lesson" data-tab="download12">📥 Downloads</button></div>
-        <div id="video12" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/6ryXKvwzYlk?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Cisco VOIP advanced tasks and configuration exercises.</p><div class="info-grid"><p>📞 Topics: Advanced call routing, voice quality, and troubleshooting.</p></div><a href="https://youtu.be/6ryXKvwzYlk?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download12" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 Cisco VOIP Task</h4><p>Advanced configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-10" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 10 / 25</span><h2>Lec 3-1 Wireless Solutions (RFID & 3G technology)</h2><div class="sub">RFID · 3G Technology · Wireless Solutions</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video10">🎬 Video</button><button class="tab-btn-lesson" data-tab="download10">📥 Downloads</button></div>
+            <div id="video10" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/wvu3Gr8SbtQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Wireless solutions: RFID technology and 3G cellular networks.</p><div class="info-grid"><p>📡 Topics: RFID applications, 3G architecture, and wireless standards.</p></div><a href="https://youtu.be/wvu3Gr8SbtQ?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download10" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Wireless Solutions</h4><p>RFID & 3G guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-13" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 13 / 25</span><h2>Lec 4-2 AVAYA Training (Call Center)</h2><div class="sub">AVAYA · Call Center Solutions · VoIP</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video13">🎬 Video</button><button class="tab-btn-lesson" data-tab="download13">📥 Downloads</button></div>
-        <div id="video13" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Oc2IXa-ZkjY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>AVAYA training for call center solutions and VoIP systems.</p><div class="info-grid"><p>📞 Topics: Call center architecture, AVAYA configuration, and queue management.</p></div><a href="https://youtu.be/Oc2IXa-ZkjY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download13" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 AVAYA Training</h4><p>Call center guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-11" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 11 / 25</span><h2>Lec 4 VOIP LAB packet tracer</h2><div class="sub">VOIP Configuration · IP Telephony · Packet Tracer</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video11">🎬 Video</button><button class="tab-btn-lesson" data-tab="download11">📥 Downloads</button></div>
+            <div id="video11" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/OivjiAyvi0U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>VOIP LAB using Cisco Packet Tracer: IP telephony configuration and call setup.</p><div class="info-grid"><p>📞 Topics: Call Manager Express, IP phones, dial peers, and voice VLANs.</p></div><a href="https://youtu.be/OivjiAyvi0U?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download11" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 VOIP Lab Guide</h4><p>IP telephony config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-14" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 14 / 25</span><h2>Lec 5 ACL (Access Control List) LAB packet tracer</h2><div class="sub">Access Control Lists · Standard · Extended · Packet Tracer</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video14">🎬 Video</button><button class="tab-btn-lesson" data-tab="download14">📥 Downloads</button></div>
-        <div id="video14" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KvvdnYyaLO4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>ACL LAB: Standard and Extended Access Control Lists configuration using Packet Tracer.</p><div class="info-grid"><p>🛡️ Topics: ACL rules, wildcard masks, and traffic filtering.</p></div><a href="https://youtu.be/KvvdnYyaLO4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download14" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ ACL Lab Guide</h4><p>Standard & extended ACLs</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-12" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 12 / 25</span><h2>Lec 4-1 Cisco VOIP task</h2><div class="sub">Cisco VOIP Configuration · Advanced Tasks</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video12">🎬 Video</button><button class="tab-btn-lesson" data-tab="download12">📥 Downloads</button></div>
+            <div id="video12" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/6ryXKvwzYlk?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Cisco VOIP advanced tasks and configuration exercises.</p><div class="info-grid"><p>📞 Topics: Advanced call routing, voice quality, and troubleshooting.</p></div><a href="https://youtu.be/6ryXKvwzYlk?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download12" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 Cisco VOIP Task</h4><p>Advanced configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-15" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 15 / 25</span><h2>Lec 5-1 Switch ios & configuration file backup – restore</h2><div class="sub">IOS Backup · Configuration Backup · Restore Procedures</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video15">🎬 Video</button><button class="tab-btn-lesson" data-tab="download15">📥 Downloads</button></div>
-        <div id="video15" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/38yGRmilOF0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Switch IOS and configuration file backup and restore procedures.</p><div class="info-grid"><p>💾 Topics: TFTP backup, IOS upgrade, config recovery, and disaster recovery.</p></div><a href="https://youtu.be/38yGRmilOF0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download15" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>💾 Backup & Restore</h4><p>IOS and config recovery</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-13" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 13 / 25</span><h2>Lec 4-2 AVAYA Training (Call Center)</h2><div class="sub">AVAYA · Call Center Solutions · VoIP</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video13">🎬 Video</button><button class="tab-btn-lesson" data-tab="download13">📥 Downloads</button></div>
+            <div id="video13" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Oc2IXa-ZkjY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>AVAYA training for call center solutions and VoIP systems.</p><div class="info-grid"><p>📞 Topics: Call center architecture, AVAYA configuration, and queue management.</p></div><a href="https://youtu.be/Oc2IXa-ZkjY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download13" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📞 AVAYA Training</h4><p>Call center guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-16" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 16 / 25</span><h2>Lec 6 ASA Cisco Firewall LAB packet tracer</h2><div class="sub">Cisco ASA Firewall · Security Policies · Packet Tracer</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video16">🎬 Video</button><button class="tab-btn-lesson" data-tab="download16">📥 Downloads</button></div>
-        <div id="video16" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Lcd7T_kyKpY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Cisco ASA Firewall LAB using Packet Tracer: security policies, NAT, and access rules.</p><div class="info-grid"><p>🔥 Topics: ASA configuration, security levels, and threat protection.</p></div><a href="https://youtu.be/Lcd7T_kyKpY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download16" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔥 Cisco ASA Lab</h4><p>Firewall configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-14" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 14 / 25</span><h2>Lec 5 ACL (Access Control List) LAB packet tracer</h2><div class="sub">Access Control Lists · Standard · Extended · Packet Tracer</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video14">🎬 Video</button><button class="tab-btn-lesson" data-tab="download14">📥 Downloads</button></div>
+            <div id="video14" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/KvvdnYyaLO4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>ACL LAB: Standard and Extended Access Control Lists configuration using Packet Tracer.</p><div class="info-grid"><p>🛡️ Topics: ACL rules, wildcard masks, and traffic filtering.</p></div><a href="https://youtu.be/KvvdnYyaLO4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download14" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ ACL Lab Guide</h4><p>Standard & extended ACLs</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-17" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 17 / 25</span><h2>Lec 6-1 Fortinet Task (Lab 1)</h2><div class="sub">Fortinet Firewall · Lab 1 · Basic Configuration</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video17">🎬 Video</button><button class="tab-btn-lesson" data-tab="download17">📥 Downloads</button></div>
-        <div id="video17" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/MmKkbURJQl4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Fortinet Task Lab 1: basic FortiGate firewall configuration and policies.</p><div class="info-grid"><p>🛡️ Topics: FortiGate setup, firewall rules, and security profiles.</p></div><a href="https://youtu.be/MmKkbURJQl4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download17" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Fortinet Lab 1</h4><p>Basic firewall config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-15" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 15 / 25</span><h2>Lec 5-1 Switch ios & configuration file backup – restore</h2><div class="sub">IOS Backup · Configuration Backup · Restore Procedures</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video15">🎬 Video</button><button class="tab-btn-lesson" data-tab="download15">📥 Downloads</button></div>
+            <div id="video15" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/38yGRmilOF0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Switch IOS and configuration file backup and restore procedures.</p><div class="info-grid"><p>💾 Topics: TFTP backup, IOS upgrade, config recovery, and disaster recovery.</p></div><a href="https://youtu.be/38yGRmilOF0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download15" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>💾 Backup & Restore</h4><p>IOS and config recovery</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-18" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 18 / 25</span><h2>Lec 6-2 Fortinet Task (Lab 2)</h2><div class="sub">Fortinet Firewall · Lab 2 · Advanced Configuration</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video18">🎬 Video</button><button class="tab-btn-lesson" data-tab="download18">📥 Downloads</button></div>
-        <div id="video18" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/M0yjiY5YF9o?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Fortinet Task Lab 2: advanced FortiGate configuration and security features.</p><div class="info-grid"><p>🛡️ Topics: VPN, intrusion prevention, and advanced policies.</p></div><a href="https://youtu.be/M0yjiY5YF9o?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download18" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Fortinet Lab 2</h4><p>Advanced firewall config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-16" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 16 / 25</span><h2>Lec 6 ASA Cisco Firewall LAB packet tracer</h2><div class="sub">Cisco ASA Firewall · Security Policies · Packet Tracer</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video16">🎬 Video</button><button class="tab-btn-lesson" data-tab="download16">📥 Downloads</button></div>
+            <div id="video16" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/Lcd7T_kyKpY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Cisco ASA Firewall LAB using Packet Tracer: security policies, NAT, and access rules.</p><div class="info-grid"><p>🔥 Topics: ASA configuration, security levels, and threat protection.</p></div><a href="https://youtu.be/Lcd7T_kyKpY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download16" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔥 Cisco ASA Lab</h4><p>Firewall configuration</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-19" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 19 / 25</span><h2>Lec 6-3 LAB pre-requisite (Install GNS3 Simulator & Add Fortinet, Routers IOS images)</h2><div class="sub">GNS3 Installation · Fortinet Images · Router IOS</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video19">🎬 Video</button><button class="tab-btn-lesson" data-tab="download19">📥 Downloads</button></div>
-        <div id="video19" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/r9eQ7QHERr0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>LAB prerequisites: Installing GNS3 simulator and adding Fortinet firewall and router IOS images.</p><div class="info-grid"><p>⚙️ Topics: GNS3 setup, image import, and lab environment preparation.</p></div><a href="https://youtu.be/r9eQ7QHERr0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download19" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⚙️ GNS3 Setup Guide</h4><p>Installation & image import</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-17" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 17 / 25</span><h2>Lec 6-1 Fortinet Task (Lab 1)</h2><div class="sub">Fortinet Firewall · Lab 1 · Basic Configuration</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video17">🎬 Video</button><button class="tab-btn-lesson" data-tab="download17">📥 Downloads</button></div>
+            <div id="video17" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/MmKkbURJQl4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Fortinet Task Lab 1: basic FortiGate firewall configuration and policies.</p><div class="info-grid"><p>🛡️ Topics: FortiGate setup, firewall rules, and security profiles.</p></div><a href="https://youtu.be/MmKkbURJQl4?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download17" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Fortinet Lab 1</h4><p>Basic firewall config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-20" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 20 / 25</span><h2>Lec 7-1 Part 1 Ethical Hacking (DHCP, ARP, DNS, Metasploit) Spoofing Attacks</h2><div class="sub">Spoofing Attacks · DHCP · ARP · DNS · Metasploit</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video20">🎬 Video</button><button class="tab-btn-lesson" data-tab="download20">📥 Downloads</button></div>
-        <div id="video20" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/_LmD5Gcnglw?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Ethical hacking part 1: DHCP spoofing, ARP poisoning, DNS spoofing, and Metasploit framework.</p><div class="info-grid"><p>🔓 Topics: Spoofing attacks, penetration testing, and exploitation techniques.</p></div><a href="https://youtu.be/_LmD5Gcnglw?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download20" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔓 Ethical Hacking Pt1</h4><p>Spoofing attacks guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-18" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 18 / 25</span><h2>Lec 6-2 Fortinet Task (Lab 2)</h2><div class="sub">Fortinet Firewall · Lab 2 · Advanced Configuration</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video18">🎬 Video</button><button class="tab-btn-lesson" data-tab="download18">📥 Downloads</button></div>
+            <div id="video18" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/M0yjiY5YF9o?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Fortinet Task Lab 2: advanced FortiGate configuration and security features.</p><div class="info-grid"><p>🛡️ Topics: VPN, intrusion prevention, and advanced policies.</p></div><a href="https://youtu.be/M0yjiY5YF9o?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download18" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🛡️ Fortinet Lab 2</h4><p>Advanced firewall config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-21" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 21 / 25</span><h2>Lec 7-2 Part 2 Ethical Hacking - Wireless Network Attacks</h2><div class="sub">Wireless Attacks · WEP/WPA Cracking · Deauthentication</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video21">🎬 Video</button><button class="tab-btn-lesson" data-tab="download21">📥 Downloads</button></div>
-        <div id="video21" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/q3GXvCwnP8M?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Ethical hacking part 2: wireless network attacks, WEP/WPA cracking, and deauthentication attacks.</p><div class="info-grid"><p>📡 Topics: Wireless security, penetration testing, and countermeasures.</p></div><a href="https://youtu.be/q3GXvCwnP8M?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download21" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Wireless Attacks</h4><p>WEP/WPA cracking guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-19" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 19 / 25</span><h2>Lec 6-3 LAB pre-requisite (Install GNS3 Simulator & Add Fortinet, Routers IOS images)</h2><div class="sub">GNS3 Installation · Fortinet Images · Router IOS</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video19">🎬 Video</button><button class="tab-btn-lesson" data-tab="download19">📥 Downloads</button></div>
+            <div id="video19" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/r9eQ7QHERr0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>LAB prerequisites: Installing GNS3 simulator and adding Fortinet firewall and router IOS images.</p><div class="info-grid"><p>⚙️ Topics: GNS3 setup, image import, and lab environment preparation.</p></div><a href="https://youtu.be/r9eQ7QHERr0?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download19" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>⚙️ GNS3 Setup Guide</h4><p>Installation & image import</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-22" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 22 / 25</span><h2>Lec 8-1 Hierarchical Network LAB - Distribution & Access switches</h2><div class="sub">Hierarchical Network · Distribution Layer · Access Layer</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video22">🎬 Video</button><button class="tab-btn-lesson" data-tab="download22">📥 Downloads</button></div>
-        <div id="video22" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/4pK35IHVb7g?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Hierarchical network LAB: distribution and access layer switches configuration using Packet Tracer.</p><div class="info-grid"><p>🏗️ Topics: Three-tier architecture, spanning tree, and VLAN distribution.</p></div><a href="https://youtu.be/4pK35IHVb7g?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download22" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏗️ Hierarchical Network Pt1</h4><p>Distribution & access config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-20" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 20 / 25</span><h2>Lec 7-1 Part 1 Ethical Hacking (DHCP, ARP, DNS, Metasploit) Spoofing Attacks</h2><div class="sub">Spoofing Attacks · DHCP · ARP · DNS · Metasploit</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video20">🎬 Video</button><button class="tab-btn-lesson" data-tab="download20">📥 Downloads</button></div>
+            <div id="video20" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/_LmD5Gcnglw?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Ethical hacking part 1: DHCP spoofing, ARP poisoning, DNS spoofing, and Metasploit framework.</p><div class="info-grid"><p>🔓 Topics: Spoofing attacks, penetration testing, and exploitation techniques.</p></div><a href="https://youtu.be/_LmD5Gcnglw?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download20" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🔓 Ethical Hacking Pt1</h4><p>Spoofing attacks guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-23" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 23 / 25</span><h2>Lec 8-2 Hierarchical Network LAB - Core & Distribution & Access switches</h2><div class="sub">Full Hierarchical Network · Core Layer · Complete Setup</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video23">🎬 Video</button><button class="tab-btn-lesson" data-tab="download23">📥 Downloads</button></div>
-        <div id="video23" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/B2Kwr32uZLY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Complete hierarchical network LAB: core, distribution, and access layer switches configuration.</p><div class="info-grid"><p>🏗️ Topics: Core routing, redundancy, and end-to-end network design.</p></div><a href="https://youtu.be/B2Kwr32uZLY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download23" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏗️ Hierarchical Network Pt2</h4><p>Full network setup</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-21" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 21 / 25</span><h2>Lec 7-2 Part 2 Ethical Hacking - Wireless Network Attacks</h2><div class="sub">Wireless Attacks · WEP/WPA Cracking · Deauthentication</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video21">🎬 Video</button><button class="tab-btn-lesson" data-tab="download21">📥 Downloads</button></div>
+            <div id="video21" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/q3GXvCwnP8M?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Ethical hacking part 2: wireless network attacks, WEP/WPA cracking, and deauthentication attacks.</p><div class="info-grid"><p>📡 Topics: Wireless security, penetration testing, and countermeasures.</p></div><a href="https://youtu.be/q3GXvCwnP8M?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download21" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📡 Wireless Attacks</h4><p>WEP/WPA cracking guide</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-24" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 24 / 25</span><h2>DPA Datacenter</h2><div class="sub">Datacenter Operations · Management · Best Practices</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video24">🎬 Video</button><button class="tab-btn-lesson" data-tab="download24">📥 Downloads</button></div>
-        <div id="video24" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dExK85zP47I?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>DPA Datacenter: operations, management, monitoring, and best practices.</p><div class="info-grid"><p>🏢 Topics: Datacenter management, monitoring tools, and operational procedures.</p></div><a href="https://youtu.be/dExK85zP47I?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
-        <div id="download24" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏢 Datacenter Ops</h4><p>Management best practices</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-22" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 22 / 25</span><h2>Lec 8-1 Hierarchical Network LAB - Distribution & Access switches</h2><div class="sub">Hierarchical Network · Distribution Layer · Access Layer</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video22">🎬 Video</button><button class="tab-btn-lesson" data-tab="download22">📥 Downloads</button></div>
+            <div id="video22" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/4pK35IHVb7g?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Hierarchical network LAB: distribution and access layer switches configuration using Packet Tracer.</p><div class="info-grid"><p>🏗️ Topics: Three-tier architecture, spanning tree, and VLAN distribution.</p></div><a href="https://youtu.be/4pK35IHVb7g?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download22" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏗️ Hierarchical Network Pt1</h4><p>Distribution & access config</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <div id="lesson-25" class="lesson-card" style="display:none;">
-        <div class="card-header"><span class="lesson-badge">📺 VIDEO 25 / 25</span><h2>Course Introduction & Overview (Bonus)</h2><div class="sub">Welcome · Course Roadmap · What You'll Learn</div></div>
-        <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video25">🎬 Video</button><button class="tab-btn-lesson" data-tab="download25">📥 Downloads</button></div>
-        <div id="video25" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1wu9J4AOFN8scYklVfhh3MjlBSINoyYLT/preview" allowfullscreen></iframe></div></div><div class="description-text"><p>Course introduction and overview: Welcome to the Networking & Security Labs course.</p><div class="info-grid"><p>🎬 Topics: Course structure, lab environments, prerequisites, and learning objectives.</p></div><a href="https://drive.google.com/file/d/1wu9J4AOFN8scYklVfhh3MjlBSINoyYLT/view?usp=sharing" target="_blank" class="btn-youtube btn-drive">📁 Open in Google Drive</a></div></div>
-        <div id="download25" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🎬 Course Intro Slides</h4><p>Course overview PDF</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
-    </div>
+        <div id="lesson-23" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 23 / 25</span><h2>Lec 8-2 Hierarchical Network LAB - Core & Distribution & Access switches</h2><div class="sub">Full Hierarchical Network · Core Layer · Complete Setup</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video23">🎬 Video</button><button class="tab-btn-lesson" data-tab="download23">📥 Downloads</button></div>
+            <div id="video23" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/B2Kwr32uZLY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>Complete hierarchical network LAB: core, distribution, and access layer switches configuration.</p><div class="info-grid"><p>🏗️ Topics: Core routing, redundancy, and end-to-end network design.</p></div><a href="https://youtu.be/B2Kwr32uZLY?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download23" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏗️ Hierarchical Network Pt2</h4><p>Full network setup</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <!-- PREV / NEXT -->
-    <div class="nav-buttons">
-        <button class="nav-btn nav-btn-prev" id="prevBtn" disabled>← Previous</button>
-        <button class="nav-btn nav-btn-next" id="nextBtn">Next →</button>
-    </div>
+        <div id="lesson-24" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 24 / 25</span><h2>DPA Datacenter</h2><div class="sub">Datacenter Operations · Management · Best Practices</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video24">🎬 Video</button><button class="tab-btn-lesson" data-tab="download24">📥 Downloads</button></div>
+            <div id="video24" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dExK85zP47I?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS&rel=0" allowfullscreen></iframe></div></div><div class="description-text"><p>DPA Datacenter: operations, management, monitoring, and best practices.</p><div class="info-grid"><p>🏢 Topics: Datacenter management, monitoring tools, and operational procedures.</p></div><a href="https://youtu.be/dExK85zP47I?list=PL8yj0vXkratrJgGajsQmX-IkAGDHPnhVS" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div></div>
+            <div id="download24" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🏢 Datacenter Ops</h4><p>Management best practices</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
 
-    <!-- QUIZ -->
-    <div class="quiz-section" id="quizSection">
-        <div class="quiz-header">
-            <h3>📝 Quiz</h3>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <span class="quiz-required-badge">REQUIRED</span>
-                <span class="quiz-completed-badge" id="quizCompletedBadge">✓ Completed</span>
+        <div id="lesson-25" class="lesson-card" style="display:none;">
+            <div class="card-header"><span class="lesson-badge">📺 VIDEO 25 / 25</span><h2>Course Introduction & Overview (Bonus)</h2><div class="sub">Welcome · Course Roadmap · What You'll Learn</div></div>
+            <div class="lesson-tabs"><button class="tab-btn-lesson active" data-tab="video25">🎬 Video</button><button class="tab-btn-lesson" data-tab="download25">📥 Downloads</button></div>
+            <div id="video25" class="tab-content active"><div class="video-container"><div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1wu9J4AOFN8scYklVfhh3MjlBSINoyYLT/preview" allowfullscreen></iframe></div></div><div class="description-text"><p>Course introduction and overview: Welcome to the Networking & Security Labs course.</p><div class="info-grid"><p>🎬 Topics: Course structure, lab environments, prerequisites, and learning objectives.</p></div><a href="https://drive.google.com/file/d/1wu9J4AOFN8scYklVfhh3MjlBSINoyYLT/view?usp=sharing" target="_blank" class="btn-youtube btn-drive">📁 Open in Google Drive</a></div></div>
+            <div id="download25" class="tab-content"><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>🎬 Course Intro Slides</h4><p>Course overview PDF</p></div><a href="#" class="btn-download" onclick="alert('Downloaded'); return false;">Download</a></div></div></div>
+        </div>
+
+        <!-- PREV / NEXT -->
+        <div class="nav-buttons">
+            <button class="nav-btn nav-btn-prev" id="prevBtn" disabled>← Previous</button>
+            <button class="nav-btn nav-btn-next" id="nextBtn">Next →</button>
+        </div>
+
+        <!-- QUIZ -->
+        <div class="quiz-section" id="quizSection">
+            <div class="quiz-header">
+                <h3>📝 Quiz</h3>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="quiz-required-badge">REQUIRED</span>
+                    <span class="quiz-completed-badge" id="quizCompletedBadge">✓ Completed</span>
+                </div>
             </div>
+            <div id="quizBody"></div>
+            <div class="quiz-footer" id="quizFooter" style="display:none;">
+                <div class="quiz-score" id="quizScore"></div>
+                <button class="quiz-submit-btn" id="quizSubmitBtn">Submit Quiz</button>
+            </div>
+            <div class="quiz-error" id="quizError">⚠️ Please answer all questions before submitting.</div>
         </div>
-        <div id="quizBody"></div>
-        <div class="quiz-footer" id="quizFooter" style="display:none;">
-            <div class="quiz-score" id="quizScore"></div>
-            <button class="quiz-submit-btn" id="quizSubmitBtn">Submit Quiz</button>
-        </div>
-        <div class="quiz-error" id="quizError">⚠️ Please answer all questions before submitting.</div>
-    </div>
 
-    <footer>🌐 CyberDefend Academy — Networking & Security Labs Course (25 modules) | Part of Accenture</footer>
+        <footer>🌐 CyberDefend Academy — DPA Summer Training Course | Part of Accenture</footer>
+    </div>
 </div>
 
 <!-- FLOATING COMMENT -->
@@ -388,6 +489,19 @@ const COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCk
 const totalLessons = 25;
 let currentLesson = 1;
 
+// THEME TOGGLE LOGIC
+function toggleTheme() {
+    let currentTheme = document.documentElement.getAttribute('data-theme');
+    let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('cd_theme', newTheme);
+    document.getElementById('themeLabel').textContent = newTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+}
+window.onload = function() {
+    const currentTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.getElementById('themeLabel').textContent = currentTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+};
+
 /* ========== QUIZ DATA — Add questions per lesson ========== */
 const quizzes = {
     1: [
@@ -401,7 +515,6 @@ const quizzes = {
         { question: "What does ACL stand for?", options: ["Access Control List", "Advanced Configuration Layer", "Automatic Call Logic", "Assigned Control Location"], correct: 0 },
         { question: "Which ACL type filters based on source IP only?", options: ["Extended", "Standard", "Named", "Dynamic"], correct: 1 }
     ]
-    // Add more lesson IDs as needed, e.g. 16: [{...}], 20: [{...}]
 };
 
 const quizCompleted = {};
@@ -437,8 +550,19 @@ function updateNav() {
     nextBtn.disabled = currentLesson >= totalLessons;
 }
 
-prevBtn.addEventListener('click', () => { if (currentLesson > 1) { activateLesson(currentLesson - 1); document.querySelector('.main-content').scrollTo({top:0,behavior:'smooth'}); }});
-nextBtn.addEventListener('click', () => { if (currentLesson < totalLessons) { activateLesson(currentLesson + 1); document.querySelector('.main-content').scrollTo({top:0,behavior:'smooth'}); }});
+prevBtn.addEventListener('click', function() {
+    if (currentLesson > 1) {
+        activateLesson(currentLesson - 1);
+        document.querySelector('.main-content').scrollTo({top:0, behavior:'smooth'});
+    }
+});
+
+nextBtn.addEventListener('click', function() {
+    if (currentLesson < totalLessons) {
+        activateLesson(currentLesson + 1);
+        document.querySelector('.main-content').scrollTo({top:0, behavior:'smooth'});
+    }
+});
 
 document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -462,7 +586,13 @@ function activateLesson(id) {
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => { const id = parseInt(item.getAttribute('data-lesson')); if (!isNaN(id)) { activateLesson(id); window.location.hash = 'lesson-' + id; } });
+    item.addEventListener('click', function() {
+        const id = parseInt(this.getAttribute('data-lesson'));
+        if (!isNaN(id)) {
+            activateLesson(id);
+            window.location.hash = 'lesson-' + id;
+        }
+    });
 });
 
 const hash = window.location.hash.substring(1);
