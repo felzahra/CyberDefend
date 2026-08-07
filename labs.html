@@ -55,8 +55,20 @@
         .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
 
-        /* ========== MAIN CONTENT ========== */
-        .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
         .page-header { text-align: center; margin-bottom: 40px; }
         .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
         .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
@@ -88,7 +100,7 @@
         .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
         .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
 
-        @media (max-width: 780px) {
+        @media (max-width: 900px) {
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
             .top-nav-links a { font-size: 0.8rem; }
@@ -96,6 +108,10 @@
             .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
             .footer-col h3 { justify-content: center; }
             .footer-col ul { padding: 0; }
+            
+            /* Sidebar becomes horizontal/full width on mobile */
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -124,76 +140,99 @@
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN CONTENT WRAPPER (Flexbox Row) -->
 <div class="main-content">
-    <div class="page-header">
-        <h1>Networking Labs & Topologies</h1>
-        <p>Explore hands-on networking labs, topologies, and configurations built with Cisco Packet Tracer, EVE-NG, and Palo Alto.</p>
-    </div>
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <!-- Update href links as you create the pages -->
+                <li><a href="labs.html" class="active">1. Networking Labs Overview</a></li>
+                <li><a href="nessus.html">2. Nessus Vulnerability Assessment</a></li>
+                <li><a href="lesson-3.html">3. Lesson Three Title</a></li>
+                <li><a href="lesson-4.html">4. Lesson Four Title</a></li>
+                <li><a href="lesson-5.html">5. Lesson Five Title</a></li>
+                <li><a href="lesson-6.html">6. Lesson Six Title</a></li>
+                <li><a href="lesson-7.html">7. Lesson Seven Title</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-    <!-- LABS GRID -->
-    <div class="labs-grid">
-        
-        <!-- LAB 1 -->
-        <div class="lab-card">
-            <div class="lab-image-wrapper">
-                <img src="https://z-cdn-media.chatglm.cn/files/d5dd1944-2d02-4aea-9c20-017b84380c8b.png?auth_key=1886092929-dc4c0bb6bcb2406580ea1b45e5b9cf59-0-c99d7e1e23d0584b8e2bfe242e5edb38" alt="3-Tier Hierarchical Switches Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=3-Tier+Architecture';">
-            </div>
-            <div class="lab-content">
-                <h3>3-Site Hierarchical 3-Tier Switches</h3>
-                <p>Packet Tracer lab demonstrating a hierarchical 3-tier network architecture (Core, Distribution, Access) connecting three different sites with proper IP addressing and routing.</p>
-                <a href="https://github.com/felzahra/packet-tracer-3-sites-Hierarchal-3-tier-switches-" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
-            </div>
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Networking Labs & Topologies</h1>
+            <p>Explore hands-on networking labs, topologies, and configurations built with Cisco Packet Tracer, EVE-NG, and Palo Alto.</p>
         </div>
 
-        <!-- LAB 2 -->
-        <div class="lab-card">
-            <div class="lab-image-wrapper">
-                <img src="https://z-cdn-media.chatglm.cn/files/fd9d0981-f78e-484c-b777-e985eaf55b0d.png?auth_key=1886092929-9b3c7d1dc009459c930c4c701cbfa2de-0-e1723e660775992157e1f7e4d0bdf7e4" alt="OSPF Complex Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=OSPF+Complex';">
+        <!-- LABS GRID -->
+        <div class="labs-grid">
+            
+            <!-- LAB 1 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/d5dd1944-2d02-4aea-9c20-017b84380c8b.png?auth_key=1886092929-dc4c0bb6bcb2406580ea1b45e5b9cf59-0-c99d7e1e23d0584b8e2bfe242e5edb38" alt="3-Tier Hierarchical Switches Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=3-Tier+Architecture';">
+                </div>
+                <div class="lab-content">
+                    <h3>3-Site Hierarchical 3-Tier Switches</h3>
+                    <p>Packet Tracer lab demonstrating a hierarchical 3-tier network architecture (Core, Distribution, Access) connecting three different sites with proper IP addressing and routing.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-3-sites-Hierarchal-3-tier-switches-" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
             </div>
-            <div class="lab-content">
-                <h3>Complex OSPF Multi-Area</h3>
-                <p>An advanced OSPF topology featuring multiple areas (0, 47, 48, 49, 50) with loopback interfaces, LAN connections, and specific bandwidth configurations.</p>
-                <a href="https://github.com/felzahra/ospf-complex" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
-            </div>
-        </div>
 
-        <!-- LAB 3 -->
-        <div class="lab-card">
-            <div class="lab-image-wrapper">
-                <img src="https://z-cdn-media.chatglm.cn/files/e5cd17f3-6803-4d1a-ae6d-500e98b25c38.png?auth_key=1886092929-89dee3c59c764f2e9cf0e90c7b9fb56a-0-72fe777302f7f714c8f88a2a9c3dc00b" alt="Palo Alto HA Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=Palo+Alto+HA';">
+            <!-- LAB 2 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/fd9d0981-f78e-484c-b777-e985eaf55b0d.png?auth_key=1886092929-9b3c7d1dc009459c930c4c701cbfa2de-0-e1723e660775992157e1f7e4d0bdf7e4" alt="OSPF Complex Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=OSPF+Complex';">
+                </div>
+                <div class="lab-content">
+                    <h3>Complex OSPF Multi-Area</h3>
+                    <p>An advanced OSPF topology featuring multiple areas (0, 47, 48, 49, 50) with loopback interfaces, LAN connections, and specific bandwidth configurations.</p>
+                    <a href="https://github.com/felzahra/ospf-complex" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
             </div>
-            <div class="lab-content">
-                <h3>Palo Alto High Availability (EVE-NG)</h3>
-                <p>Palo Alto firewalls configured in High Availability (HA1/HA2) mode within an EVE-NG environment. Includes DMZ, Inside, Outside, and Management zones with Windows Server AD.</p>
-                <a href="https://github.com/felzahra/Palot-Alto-High-Availability-in-eve-ng" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
-            </div>
-        </div>
 
-        <!-- LAB 4 -->
-        <div class="lab-card">
-            <div class="lab-image-wrapper">
-                <img src="https://z-cdn-media.chatglm.cn/files/d7a49b4e-2150-4fd7-a3e7-aae978bd5826.png?auth_key=1886092929-5082edd5e97546cfae4d462d791bdc0e-0-71cfc57f6526f05884fdff9fe0b80ca2" alt="MPLS VRF Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=MPLS+VRF';">
+            <!-- LAB 3 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/e5cd17f3-6803-4d1a-ae6d-500e98b25c38.png?auth_key=1886092929-89dee3c59c764f2e9cf0e90c7b9fb56a-0-72fe777302f7f714c8f88a2a9c3dc00b" alt="Palo Alto HA Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=Palo+Alto+HA';">
+                </div>
+                <div class="lab-content">
+                    <h3>Palo Alto High Availability (EVE-NG)</h3>
+                    <p>Palo Alto firewalls configured in High Availability (HA1/HA2) mode within an EVE-NG environment. Includes DMZ, Inside, Outside, and Management zones with Windows Server AD.</p>
+                    <a href="https://github.com/felzahra/Palot-Alto-High-Availability-in-eve-ng" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
             </div>
-            <div class="lab-content">
-                <h3>EVE-NG MPLS Lab (VPNv4/v6 & Inter-VRF)</h3>
-                <p>Advanced EVE-NG MPLS lab covering IPv4/IPv6, VPNv4/VPNv6, Xconnect, and inter-VRF routing with BGP and OSPF core protocols.</p>
-                <a href="https://github.com/felzahra/eve-ng-MPLS-LAB-with-IPv6_IPv4-VPNv6_VPNv4-Xconnect-inter-VRF-routing" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
-            </div>
-        </div>
 
-        <!-- LAB 5 (More Repositories) -->
-        <div class="lab-card">
-            <div class="lab-image-wrapper">
-                <img src="https://z-cdn-media.chatglm.cn/files/965bf6ac-1282-495d-b4df-14fc84aa9cc7.png?auth_key=1886092929-19df017e85dc4b88a8de103e934a7295-0-0457b61ef87798c25a10055124a363cf" alt="More Labs Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=More+Labs';">
+            <!-- LAB 4 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/d7a49b4e-2150-4fd7-a3e7-aae978bd5826.png?auth_key=1886092929-5082edd5e97546cfae4d462d791bdc0e-0-71cfc57f6526f05884fdff9fe0b80ca2" alt="MPLS VRF Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <h3>EVE-NG MPLS Lab (VPNv4/v6 & Inter-VRF)</h3>
+                    <p>Advanced EVE-NG MPLS lab covering IPv4/IPv6, VPNv4/VPNv6, Xconnect, and inter-VRF routing with BGP and OSPF core protocols.</p>
+                    <a href="https://github.com/felzahra/eve-ng-MPLS-LAB-with-IPv6_IPv4-VPNv6_VPNv4-Xconnect-inter-VRF-routing" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
             </div>
-            <div class="lab-content">
-                <h3>More Labs & Solutions</h3>
-                <p>Explore more networking labs, scripts, and solutions. Visit the GitHub profile to access all repositories and network topologies.</p>
-                <a href="https://github.com/felzahra?tab=repositories" target="_blank" class="lab-btn">🚀 Explore All Repositories</a>
-            </div>
-        </div>
 
+            <!-- LAB 5 (More Repositories) -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/965bf6ac-1282-495d-b4df-14fc84aa9cc7.png?auth_key=1886092929-19df017e85dc4b88a8de103e934a7295-0-0457b61ef87798c25a10055124a363cf" alt="More Labs Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=More+Labs';">
+                </div>
+                <div class="lab-content">
+                    <h3>More Labs & Solutions</h3>
+                    <p>Explore more networking labs, scripts, and solutions. Visit the GitHub profile to access all repositories and network topologies.</p>
+                    <a href="https://github.com/felzahra?tab=repositories" target="_blank" class="lab-btn">🚀 Explore All Repositories</a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
