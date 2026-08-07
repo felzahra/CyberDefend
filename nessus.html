@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nessus Vulnerability Assessment - Complete Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #00a3e0;
+            --accent-color: #ff6b6b;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .step-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            border: none;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .figure {
+            margin: 2rem 0;
+            display: block;
+        }
+
+        .figure-img {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            width: 100%;
+            height: auto;
+        }
+        
+        .figure-caption {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.75rem;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+            background-color: #212529;
+            color: #d4d4d4;
+        }
+        
+        .cvss-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .cvss-critical { background-color: #dc3545; }
+        .cvss-high { background-color: #fd7e14; }
+        .cvss-medium { background-color: #ffc107; color: #212529; }
+        .cvss-low { background-color: #20c997; }
+        .cvss-info { background-color: #6c757d; }
+        
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin: 2rem 0;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead {
+            background-color: var(--dark-color);
+            color: white;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 102, 204, 0.05);
+        }
+        
+        .alert-info-custom {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+        
+        .toc {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .toc ul {
+            padding-left: 1.5rem;
+            margin-bottom: 0;
+        }
+        
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold">Nessus Vulnerability Assessment</h1>
+                    <p class="lead">A comprehensive guide to vulnerability scanning, CVE identification, and CVSS score interpretation</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-shield-alt fa-6x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3 class="mb-3">Table of Contents</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul>
+                        <li><a href="#intro">1. Introduction to Nessus</a></li>
+                        <li><a href="#installation">2. Installation & Setup</a></li>
+                        <li><a href="#configuration">3. Scan Configuration</a></li>
+                        <li><a href="#launching">4. Launching a Scan</a></li>
+                        <li><a href="#results">5. Analyzing Results</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul>
+                        <li><a href="#cve-extraction">6. Extracting CVEs</a></li>
+                        <li><a href="#cvss">7. Understanding CVSS Scores</a></li>
+                        <li><a href="#mitre">8. Searching CVE Details in MITRE</a></li>
+                        <li><a href="#remediation">9. Remediation Strategies</a></li>
+                        <li><a href="#best-practices">10. Best Practices</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">1. Introduction to Nessus</h2>
+            <p>Nessus is a widely-used vulnerability scanner developed by Tenable Network Security. It helps security professionals identify vulnerabilities, misconfigurations, and security issues in their IT infrastructure. Nessus scans for:</p>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-bug text-danger me-2"></i>Vulnerabilities</h5>
+                            <p class="card-text">Software flaws that could be exploited by attackers to compromise systems.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-sliders text-warning me-2"></i>Misconfigurations</h5>
+                            <p class="card-text">Improper settings that could expose systems to unnecessary risk.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-shield-virus text-success me-2"></i>Malware</h5>
+                            <p class="card-text">Detection of known malware on systems and networks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <figure class="figure">
+                <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/cve_analysis_screenshot_rev.png" class="figure-img img-fluid rounded" alt="Nessus Dashboard">
+                <figcaption class="figure-caption">Figure 1: Nessus Dashboard Overview - Main interface showing scan summary, vulnerabilities by severity, and recent activity.</figcaption>
+            </figure>
+            
+            <div class="alert alert-info-custom">
+                <h5><i class="fas fa-info-circle me-2"></i>Key Features</h5>
+                <ul>
+                    <li>Comprehensive plugin-based scanning with frequent updates</li>
+                    <li>Detailed vulnerability reports with remediation guidance</li>
+                    <li>Customizable scan policies and templates</li>
+                    <li>Support for network, cloud, and container environments</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Installation -->
+        <section id="installation" class="mb-5">
+            <h2 class="section-title">2. Installation & Setup</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="step-number">1</span>
+                        <h4 class="mb-0">Download Nessus</h4>
+                    </div>
+                    <p>Visit the Tenable website and download the appropriate Nessus version for your operating system.</p>
+                    <figure class="figure">
+                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/download-nessus-for-kali.png" class="figure-img img-fluid rounded" alt="Nessus Download Page">
+                        <figcaption class="figure-caption">Figure 2: Nessus Download Page - Shows different versions available for various OS.</figcaption>
+                    </figure>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="step-number">2</span>
+                        <h4 class="mb-0">Install Nessus</h4>
+                    </div>
+                    <p>Run the installer and follow the installation wizard. For Windows, run the executable; for Linux, use your package manager.</p>
+                    <div class="code-block">
+# For Debian/Ubuntu
+sudo dpkg -i Nessus-x.x.x-debian6_amd64.deb
+
+# For RHEL/CentOS
+sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="step-number">3</span>
+                        <h4 class="mb-0">Activate Nessus</h4>
+                    </div>
+                    <p>Navigate to https://localhost:8834 to access the Nessus web interface. You'll need to create an admin account and activate using your activation code.</p>
+                    <figure class="figure">
+                        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20230118124830/Picture11.png" class="figure-img img-fluid rounded" alt="Nessus Activation">
+                        <figcaption class="figure-caption">Figure 3: Nessus Activation Screen - Web interface showing initial setup wizard.</figcaption>
+                    </figure>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="step-number">4</span>
+                        <h4 class="mb-0">Initialize Plugins</h4>
+                    </div>
+                    <p>Nessus will download and compile plugins. This process may take several minutes depending on your system and network speed.</p>
+                    <figure class="figure">
+                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/nessus-plugin-download-kali.png" class="figure-img img-fluid rounded" alt="Plugin Initialization">
+                        <figcaption class="figure-caption">Figure 4: Nessus Plugin Initialization - Progress bar showing plugin download.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Scan Configuration -->
+        <section id="configuration" class="mb-5">
+            <h2 class="section-title">3. Scan Configuration</h2>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">1</span>
+                <h4 class="mb-0">Access Scans Menu</h4>
+            </div>
+            <p>From the main dashboard, click on "Scans" in the top navigation menu, then click "New Scan" to create a new scan configuration.</p>
+            <figure class="figure"><img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QzhysYBT0hudUmBu8WopFg.png" class="figure-img img-fluid rounded" alt="New Scan Button">
+                <figcaption class="figure-caption">Figure 5: Creating a New Scan - Scans menu with "New Scan" button highlighted.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">2</span>
+                <h4 class="mb-0">Select Scan Template</h4>
+            </div>
+            <p>Choose a scan template based on your assessment goals. Common templates include:</p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Template</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Network Scan</td>
+                            <td>Standard vulnerability scan</td>
+                            <td>General vulnerability assessment</td>
+                        </tr>
+                        <tr>
+                            <td>Advanced Scan</td>
+                            <td>Highly configurable scan</td>
+                            <td>Custom vulnerability assessments</td>
+                        </tr>
+                        <tr>
+                            <td>Credentialed Patch Audit</td>
+                            <td>Checks for missing patches</td>
+                            <td>Patch management verification</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <figure class="figure">
+                <img src="https://www.tenable.com/sites/drupal.dmz.tenablesecurity.com/files/images/blog/How%20To-%20Run%20Your%20First%20Vulnerability%20Scan%20with%20Nessus_1.png" class="figure-img img-fluid rounded" alt="Scan Templates">
+                <figcaption class="figure-caption">Figure 6: Selecting a Scan Template - Gallery of available scan templates.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">3</span>
+                <h4 class="mb-0">Configure Scan Settings</h4>
+            </div>
+            <p>Enter scan details and target information (Name, Description, Targets: IP addresses, hostnames, or CIDR ranges).</p>
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*dy2WVvLOhinj7zIZUQj3Jw.png" class="figure-img img-fluid rounded" alt="Scan Configuration">
+                <figcaption class="figure-caption">Figure 7: Configuring Scan Settings - Form showing scan name, description, and target fields.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 4: Launching a Scan -->
+        <section id="launching" class="mb-5">
+            <h2 class="section-title">4. Launching a Scan</h2>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">1</span>
+                <h4 class="mb-0">Save and Launch</h4>
+            </div>
+            <p>After configuring your scan, click "Save" and then "Launch" to start the scan.</p>
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QYDfNmOQ6jo9MWMqK7IEfw.png" class="figure-img img-fluid rounded" alt="Launch Scan">
+                <figcaption class="figure-caption">Figure 8: Launching a Scan - Save and Launch buttons highlighted.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">2</span>
+                <h4 class="mb-0">Monitor Scan Progress</h4>
+            </div>
+            <p>Monitor the scan progress from the Scans page. You can see the status, completion percentage, and time remaining.</p>
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1200/1*noT7wO57AWNtFvSqh1aC_Q.jpeg" class="figure-img img-fluid rounded" alt="Scan Progress">
+                <figcaption class="figure-caption">Figure 9: Monitoring Scan Progress - Shows status with progress bar and estimated time.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 5: Analyzing Results -->
+        <section id="results" class="mb-5">
+            <h2 class="section-title">5. Analyzing Results</h2>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">1</span>
+                <h4 class="mb-0">View Scan Results</h4>
+            </div>
+            <p>Once the scan completes, click on the scan name to view detailed results. The results dashboard provides an overview of vulnerabilities by severity.</p>
+            <figure class="figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlJFkAgfCo-xVkeLuBHlWXNDO8fmWZs8pPB0riQaSu87P2b1IzWBbGkabY&s=10" class="figure-img img-fluid rounded" alt="Results Dashboard">
+                <figcaption class="figure-caption">Figure 10: Scan Results Dashboard - Vulnerability counts by severity (Critical, High, Medium, Low, Info).</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">2</span>
+                <h4 class="mb-0">Examine Individual Vulnerabilities</h4>
+            </div>
+            <p>Click on a vulnerability to view detailed information including description, CVSS score, affected hosts, and solution.</p>
+            <figure class="figure">
+                <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/CVSS%20Exploitability%20%28E%29%20and%20Remediation%20Level%20%28RL%29%20Risk%20Matrices_rev.png" class="figure-img img-fluid rounded" alt="Vulnerability Details">
+                <figcaption class="figure-caption">Figure 11: Examining Vulnerability Details - Detailed view showing description, CVSS, and solution.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 6: Extracting CVEs -->
+        <section id="cve-extraction" class="mb-5">
+            <h2 class="section-title">6. Extracting CVEs from Scan Results</h2>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">1</span>
+                <h4 class="mb-0">Identify CVE References</h4>
+            </div>
+            <p>Within each vulnerability detail page, look for the "References" section which contains links to CVEs and other security advisories.</p>
+            <figure class="figure">
+                <img src="https://docs.tenable.com/cyber-exposure-studies/nis-2-directive/Content/Resources/Images/nis-2-assets/TenableOTVulnerabilities.png" class="figure-img img-fluid rounded" alt="CVE References">
+                <figcaption class="figure-caption">Figure 12: Identifying CVE References - Shows the References section with CVE links highlighted.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">2</span>
+                <h4 class="mb-0">Export Results</h4>
+            </div>
+            <p>To extract all CVEs at once, export the scan results in CSV or PDF format by clicking "Export" at the top of the results page.</p>
+            <figure class="figure">
+                <img src="https://www.infosecmatter.com/wp-content/uploads/2020/03/00-export-nessus-csv.jpg" class="figure-img img-fluid rounded" alt="Export Results">
+                <figcaption class="figure-caption">Figure 13: Exporting Scan Results - Shows export options with CSV and PDF formats.</figcaption>
+            </figure>
+
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">3</span>
+                <h4 class="mb-0">Extract CVEs from CSV</h4>
+            </div>
+            <p>If you exported as CSV, open the file in Excel and look for the "CVE" column. You can filter this column to get a list of all unique CVEs.</p>
+            <figure class="figure">
+                <img src="https://docs.tenable.com/vulnerability-management/Content/Resources/Local/Images/VM/software-export.png" class="figure-img img-fluid rounded" alt="CSV Extract">
+                <figcaption class="figure-caption">Figure 14: Extracting CVEs from CSV - CSV file in Excel with the CVE column highlighted.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 7: CVSS Scores -->
+        <section id="cvss" class="mb-5">
+            <h2 class="section-title">7. Understanding CVSS Scores</h2>
+            
+            <p>The Common Vulnerability Scoring System (CVSS) provides a standardized way to assess the severity of security vulnerabilities. Nessus displays CVSS scores for each vulnerability it identifies.</p>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h4>CVSS Severity Ratings</h4>
+                    <p>CVSS scores range from 0 to 10, with higher scores indicating more severe vulnerabilities:</p>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="cvss-badge cvss-critical">Critical</span>
+                            <span>9.0 - 10.0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="cvss-badge cvss-high">High</span>
+                            <span>7.0 - 8.9</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="cvss-badge cvss-medium">Medium</span>
+                            <span>4.0 - 6.9</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="cvss-badge cvss-low">Low</span>
+                            <span>0.1 - 3.9</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <figure class="figure">
+                        <img src="https://www.hackingloops.com/wp-content/uploads/2019/10/nessus-reports.png" class="figure-img img-fluid rounded" alt="CVSS Score">
+                        <figcaption class="figure-caption">Figure 15: CVSS Score in Nessus - Shows a vulnerability with CVSS score highlighted.</figcaption>
+                    </figure>
+                </div>
+            </div>
+            
+            <h4>CVSS Vector Components</h4>
+            <p>The CVSS vector string provides additional details about how the score was calculated. It includes metrics for Attack Vector (AV), Attack Complexity (AC), Privileges Required (PR), User Interaction (UI), Scope (S), Confidentiality (C), Integrity (I), and Availability (A).</p>
+            
+            <figure class="figure">
+                <img src="https://chandanbn.github.io/cvss/cvss-calculator-screenshot.png" class="figure-img img-fluid rounded" alt="CVSS Vector">
+                <figcaption class="figure-caption">Figure 16: CVSS Vector String - Shows the CVSS vector string with each component labeled.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 8: MITRE CVE Search -->
+        <section id="mitre" class="mb-5">
+            <h2 class="section-title">8. Searching CVE Details in MITRE</h2>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">1</span>
+                <h4 class="mb-0">Access MITRE CVE Database</h4>
+            </div>
+            <p>Go to the MITRE CVE database at <a href="https://cve.mitre.org" target="_blank">https://cve.mitre.org</a> or the NVD at <a href="https://nvd.nist.gov" target="_blank">https://nvd.nist.gov</a>.</p>
+            <figure class="figure">
+                <img src="https://industrialcyber.co/wp-content/uploads/2025/04/2025.04.23-MITRE-ATTCK-v17-offers-broader-platform-coverage-enhanced-defensive-guidance-threat-intelligence-tracking.webp" class="figure-img img-fluid rounded" alt="MITRE Homepage">
+                <figcaption class="figure-caption">Figure 17: MITRE CVE Database Homepage - Homepage with search box highlighted.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">2</span>
+                <h4 class="mb-0">Search for Specific CVE</h4>
+            </div>
+            <p>Enter the CVE ID (e.g., CVE-2021-44228) extracted from Nessus into the search box and submit the search.</p>
+            <figure class="figure">
+                <img src="https://cdn.prod.website-files.com/62aa011c5ccb574e8fd82c77/62b9b47dbb097b7d6fdd928b_cve-2021-44228.jpeg" class="figure-img img-fluid rounded" alt="CVE Search">
+                <figcaption class="figure-caption">Figure 18: Searching for a Specific CVE - Search box with a CVE ID entered.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">3</span>
+                <h4 class="mb-0">Review CVE Details</h4>
+            </div>
+            <p>The CVE entry will display detailed information including description, affected products, references, and CVSS score.</p>
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*mNBX6FqR0I3taTsZ2_FJPg.png" class="figure-img img-fluid rounded" alt="CVE Details">
+                <figcaption class="figure-caption">Figure 19: CVE Details Page - Shows detailed information about the CVE including description and references.</figcaption>
+            </figure>
+            
+            <div class="d-flex align-items-center mb-3">
+                <span class="step-number">4</span>
+                <h4 class="mb-0">Cross-Reference with NVD</h4>
+            </div>
+            <p>For additional details, especially CVSS score breakdowns, cross-reference the CVE with the NVD (National Vulnerability Database).</p>
+            <figure class="figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*9K7ZVsd6Yk6Y8t_cD1XOQQ.png" class="figure-img img-fluid rounded" alt="NVD Entry">
+                <figcaption class="figure-caption">Figure 20: NVD CVE Entry - Shows the same CVE in NVD with detailed CVSS score breakdown.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 9: Remediation -->
+        <section id="remediation" class="mb-5">
+            <h2 class="section-title">9. Remediation Strategies</h2>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-shield-alt text-primary me-2"></i>Patch Management</h5>
+                            <p class="card-text">Apply security patches released by vendors to address identified vulnerabilities. Prioritize based on severity and system criticality.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-sliders text-success me-2"></i>Configuration Changes</h5>
+                            <p class="card-text">Modify system configurations to reduce exposure, such as disabling unnecessary services, restricting access, or hardening settings.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-network-wired text-warning me-2"></i>Network Segmentation</h5>
+                            <p class="card-text">Isolate critical systems or vulnerable services using network segmentation to limit potential attack paths.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card step-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-tasks text-danger me-2"></i>Virtual Patching</h5>
+                            <p class="card-text">Implement temporary security controls through WAF rules, IPS signatures, or other security tools while permanent fixes are developed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <figure class="figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4s5Ppnah-2oAWczpXrLCcFIgpcOkDZ_-vAfx2QeEm4MD7JJ93CMzk3Cs&s=10" class="figure-img img-fluid rounded" alt="Remediation Workflow">
+                <figcaption class="figure-caption">Figure 21: Remediation Workflow - Flowchart from vulnerability discovery to remediation and verification.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 10: Best Practices -->
+        <section id="best-practices" class="mb-5">
+            <h2 class="section-title">10. Best Practices</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-calendar-check text-primary me-2"></i>Regular Scanning Schedule</h5>
+                            <p class="card-text">Establish a regular scanning cadence based on risk:</p>
+                            <ul>
+                                <li>External-facing systems: Weekly</li>
+                                <li>Critical internal systems: Bi-weekly</li>
+                                <li>Standard internal systems: Monthly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-key text-success me-2"></i>Credentialed Scanning</h5>
+                            <p class="card-text">Enable authenticated scans for more comprehensive results:</p>
+                            <ul>
+                                <li>Local credentials for systems</li>
+                                <li>Domain credentials for Windows environments</li>
+                                <li>SSH keys for Linux/Unix systems</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <figure class="figure">
+                <img src="https://www.tenable.com/sites/drupal.dmz.tenablesecurity.com/files/images/blog/VulnMgmt-MAIN.png" class="figure-img img-fluid rounded" alt="Management Dashboard">
+                <figcaption class="figure-caption">Figure 22: Vulnerability Management Dashboard - Shows trend charts and metrics for vulnerability management.</figcaption>
+            </figure>
+        </section>
+        
+        <!-- Conclusion -->
+        <section class="mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Conclusion</h2>
+                    <p class="card-text">Nessus provides a powerful platform for identifying and managing vulnerabilities in your environment. By following this guide, you can effectively scan for vulnerabilities, extract CVE information, understand CVSS scores, and research detailed vulnerability information in the MITRE CVE database.</p>
+                    <p class="card-text">Remember that vulnerability scanning is just one component of a comprehensive security program. Combine regular scanning with patch management, configuration hardening, and security awareness to build a robust defense against evolving threats.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Nessus Vulnerability Assessment Guide</h5>
+                    <p>A comprehensive resource for security professionals using Nessus for vulnerability management.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#intro">Introduction</a></li>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#configuration">Scan Configuration</a></li>
+                        <li><a href="#results">Analyzing Results</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.tenable.com/products/nessus" target="_blank">Tenable Nessus</a></li>
+                        <li><a href="https://cve.mitre.org" target="_blank">MITRE CVE</a></li>
+                        <li><a href="https://nvd.nist.gov" target="_blank">NIST NVD</a></li>
+                        <li><a href="https://www.first.org/cvss" target="_blank">CVSS</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4" style="background-color: rgba(255,255,255,0.2);">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p class="mb-0">&copy; 2023 Nessus Vulnerability Assessment Guide. Educational purposes only.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
