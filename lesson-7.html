@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend Academy · Firewalls & Packet Filtering</title>
+    <title>CyberDefend Academy · Firewalls & Network Security</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -189,10 +189,9 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <!-- It is best practice to remove spaces in HTML filenames -->
                 <li><a href="network-roadmap.html">Network Roadmap</a></li>
                 <li><a href="security-roadmap.html">Security Roadmap</a></li>
-                <li><a href="firewalls.html" class="active">Firewalls & Packet Filtering</a></li>
+                <li><a href="firewalls.html" class="active">Firewalls & Network Security</a></li>
                 <li><a href="labs.html">Networking Labs Overview</a></li>
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
                 <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
@@ -205,8 +204,8 @@
     <!-- RIGHT CONTENT AREA -->
     <div class="content-area">
         <div class="page-header">
-            <h1>Network Security: Firewalls & Packet Filtering</h1>
-            <p>Understanding how firewalls protect network perimeters by inspecting, allowing, and blocking traffic based on port and IP policies.</p>
+            <h1>Network Security: Firewalls & Defense in Depth</h1>
+            <p>Understanding how firewalls protect network perimeters, applying layered security, and mitigating application and network-level attacks.</p>
         </div>
 
         <!-- Section 1: Introduction to Firewalls -->
@@ -313,6 +312,88 @@
             <div class="alert-info-custom">
                 <h4><i class="fas fa-shield-alt"></i> Key Takeaway</h4>
                 <p>When configuring firewall rules, order matters. The firewall evaluates packets sequentially. A common best practice is to place the most specific "Deny" rules at the top, followed by "Allow" rules, and end with a default "Deny All" rule to ensure no unauthorized traffic slips through.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Defense in Depth -->
+        <section id="defense-in-depth">
+            <h2 class="section-title">Applying Layered Security (Defense in Depth)</h2>
+            <p class="text-block"><strong>Defense in Depth</strong> is a cybersecurity strategy that uses multiple security measures to protect the integrity of information. If one line of defense is compromised, additional layers exist as a backup. This approach acknowledges that no single security mechanism is perfect.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/448ae800-2a78-473d-9514-34ebe1ca61a4.png?auth_key=1886127156-4f24a1b72a06427289d686fdcbe41d2b-0-d5705a263263d219a843cc8caf2cedce" alt="Applying Layered Security Diagram">
+                <figcaption>Figure 5: Layered Security Model. Security controls are applied at multiple levels: Policy, Physical, Perimeter, Network, Host, Application, and Data.</figcaption>
+            </figure>
+
+            <p class="text-block">As shown in the diagram, a robust security posture requires controls at every layer:</p>
+            <ul>
+                <li><strong>Physical:</strong> Locks, biometric access, security cameras to protect hardware.</li>
+                <li><strong>Perimeter:</strong> Border routers, external firewalls, DMZs to protect the network edge.</li>
+                <li><strong>Network:</strong> Internal firewalls, Network Access Control (NAC), network segmentation.</li>
+                <li><strong>Host:</strong> Antivirus, Endpoint Detection and Response (EDR), OS patching.</li>
+                <li><strong>Application:</strong> Web Application Firewalls (WAF), secure coding practices, input validation.</li>
+                <li><strong>Data:</strong> Encryption at rest and in transit, Data Loss Prevention (DLP) tools.</li>
+                <li><strong>Policies:</strong> Security awareness training, Acceptable Use Policies (AUP), incident response plans.</li>
+            </ul>
+        </section>
+
+        <!-- Section 5: Application Attacks -->
+        <section id="application-attacks">
+            <h2 class="section-title">Application Attacks</h2>
+            <p class="text-block">Application layer attacks target software vulnerabilities to gain unauthorized access, steal data, or disrupt services. Attackers exploit weak input validation, misconfigured servers, or unpatched software. Because these attacks occur at Layer 7 of the OSI model, they can easily bypass traditional packet-filtering firewalls.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/3894eb26-fc34-4075-8fd3-ba5ee52079aa.png?auth_key=1886127156-39a85ccd419343a89b030073e8743fdb-0-24363d909ff84794e17b2b1b8a73459f" alt="Application Attacks Diagram">
+                <figcaption>Figure 6: Common attack vectors targeting the application stack, from the user's workstation down to the database.</figcaption>
+            </figure>
+
+            <h3 class="tool-title">Common Application Attack Vectors:</h3>
+            <ul>
+                <li><strong>Hijack Token / Session ID:</strong> Stealing a user's session cookie to impersonate them on a web application.</li>
+                <li><strong>Unpatched OS / Service Misconfiguration:</strong> Exploiting known vulnerabilities in the operating system (like IIS or Apache) or taking advantage of default credentials and open ports.</li>
+                <li><strong>Bad Input Checking:</strong> Failing to sanitize user input, which can lead to Cross-Site Scripting (XSS) or buffer overflows.</li>
+                <li><strong>SQL Injection (SQLi):strong> Inserting malicious SQL queries into input fields to dump, modify, or delete the backend database.</li>
+            </ul>
+        </section>
+
+        <!-- Section 6: Network Attacks -->
+        <section id="network-attacks">
+            <h2 class="section-title">Network Attacks</h2>
+            <p class="text-block">Network attacks occur at various layers of the network stack (from the Physical layer up to the Application layer). Understanding where these attacks happen is critical for deploying the correct defensive controls.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/402f6ac2-afff-4e04-a89d-89f46b9ad996.png?auth_key=1886127156-28be9ace78fb465d997e7fd020dbbde9-0-995d5a4d0ef72ae2d2eadf1a42785fc3" alt="Network Attacks Diagram">
+                <figcaption>Figure 7: Network attack scenarios mapped to the OSI/TCP-IP model, from endpoint compromise to transport-layer disruption.</figcaption>
+            </figure>
+
+            <h3 class="tool-title">Common Network Attack Types:</h3>
+            <ul>
+                <li><strong>Phishing Attachments / Malicious Code:</strong> Delivered via email or malicious websites to compromise the client workstation.</li>
+                <li><strong>Zero-Day Exploit:</strong> Attacking a previously unknown software vulnerability before the vendor releases a patch.</li>
+                <li><strong>Distributed Denial of Service (DDoS):</strong> Overwhelming a target service with traffic from multiple sources, rendering it unavailable to legitimate users.</li>
+                <li><strong>Man-in-the-Middle (MITM) / Spoofing / Sniffing:</strong> Intercepting network communications to steal credentials or alter data in transit.</li>
+            </ul>
+        </section>
+
+        <!-- Section 7: Authentication Factors -->
+        <section id="authentication-mfa">
+            <h2 class="section-title">Authentication Factors (MFA)</h2>
+            <p class="text-block">Authentication is the process of verifying a user's identity. The strength of authentication depends on the number and type of factors used. Implementing Multi-Factor Authentication (MFA) is one of the most effective ways to prevent unauthorized access, even if passwords are compromised.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/e62b8059-7073-40e2-ad84-7e5fa149a7ae.png?auth_key=1886127156-83b3bb61fabf43e8867312ed46de9582-0-767c6cdb695648c75a571303689ddcd1" alt="Authentication Factors SFA DFA MFA">
+                <figcaption>Figure 8: Progression from Single-Factor Authentication (SFA) to Dual-Factor (DFA) and Multi-Factor Authentication (MFA).</figcaption>
+            </figure>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-key"></i> The Three Factors of Authentication</h4>
+                <p>MFA requires the user to present two or more of the following independent credentials:</p>
+                <ul>
+                    <li><strong>Something you know (Knowledge factor):</strong> A password, PIN, or security question.</li>
+                    <li><strong>Something you have (Possession factor):</strong> A smartphone (to receive an SMS code or authenticator app prompt), a smart card, or a hardware token.</li>
+                    <li><strong>Something you are (Inherence factor):</strong> Biometrics, such as a fingerprint, facial recognition, or retina scan.</li>
+                </ul>
+                <p><strong>Single-Factor Authentication (SFA)</strong> relies only on "something you know" (a password), making it highly vulnerable to credential theft. <strong>Multi-Factor Authentication (MFA)</strong> combines factors, so even if an attacker steals your password, they still cannot access the account without your phone or biometric data.</p>
             </div>
         </section>
 
