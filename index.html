@@ -72,6 +72,11 @@
         .linkedin-btn { display: inline-flex; align-items: center; gap: 8px; background: #0077b5; color: white; text-decoration: none; font-size: 0.7rem; font-weight: 500; padding: 6px 14px; border-radius: 30px; transition: 0.2s; width: fit-content; }
         .linkedin-btn:hover { background: #005e8c; }
         
+        /* MAIN TABS (PROJECTS / MEDIA) */
+        .main-tabs { display: flex; border-bottom: 1px solid var(--hairline-color); background: var(--darkened-bg); padding: 0 12px; gap: 4px; margin-top: 8px; }
+        .tab-btn { flex: 1; background: transparent; border: none; padding: 12px 0; font-weight: 600; font-size: 0.8rem; color: var(--body-quiet-color); cursor: pointer; font-family: inherit; border-radius: 12px 12px 0 0; transition: 0.2s; text-decoration: none; text-align: center; display: inline-block; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--selected-bg); }
+
         .sidebar-announ-btn { display: block; margin: 16px 20px; padding: 12px 16px; background: var(--primary); color: var(--primary-fg); text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.85rem; text-align: center; transition: 0.2s; }
         .sidebar-apk-btn { display: block; margin: 0 20px 16px 20px; padding: 12px 16px; background: #333; color: #fff; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 0.85rem; text-align: center; transition: 0.2s; border: 1px solid var(--hairline-color); }
         .sidebar-apk-btn:hover { background: #444; }
@@ -143,6 +148,13 @@
         <a href="https://www.linkedin.com/in/fatmaagery/" target="_blank" class="linkedin-btn"><span>🔗</span> Connect on LinkedIn</a>
     </div>
     <div class="progress-card"><span class="progress-text">📈 Course Progress</span><span class="progress-number">99%</span></div>
+
+    <!-- MAIN TABS (RESTORED) -->
+    <div class="main-tabs">
+        <a href="index.html" class="tab-btn active">📘 COURSES</a>
+        <a href="projects.html" class="tab-btn">🚀 PROJECTS</a>
+        <a href="media.html" class="tab-btn">🎨 MEDIA & GIFs</a>
+    </div>
     
     <a href="comments.html" class="sidebar-announ-btn">📢 Announcements & FAQ</a>
     <a href="https://drive.google.com/drive/folders/10PVVRv2NkD7oRvSrJfzkun0NQ3KYc7wO?usp=sharing" target="_blank" class="sidebar-apk-btn">📱 Download Mobile APP APK</a>
