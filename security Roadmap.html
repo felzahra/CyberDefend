@@ -91,6 +91,11 @@
         ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
         li { margin-bottom: 8px; }
 
+        /* Code Blocks */
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
+        pre code { color: var(--primary); }
+        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
+
         /* Custom Tables */
         .custom-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; background: var(--darkened-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline-color); }
         .custom-table th, .custom-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
@@ -104,14 +109,6 @@
         .term-card:hover { border-color: var(--primary); }
         .term-card h4 { color: var(--primary); margin-bottom: 5px; font-size: 0.95rem; }
         .term-card p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.4; margin: 0; }
-
-        /* Image Grid & Figures */
-        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 2rem 0; }
-        .figure { margin: 0; display: flex; flex-direction: column; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
-        .figure:hover { transform: translateY(-3px); border-color: var(--primary); }
-        .figure-body { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .figure-caption { font-size: 0.85rem; color: var(--body-quiet-color); margin-bottom: 0; font-style: italic; }
-        .figure-icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
 
         /* Large Stacked Figures */
         .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
@@ -302,30 +299,28 @@
                 <figcaption>Figure 2: A visual guide to the top 10 websites every cybersecurity learner should know.</figcaption>
             </figure>
 
-            <div class="table-responsive">
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Website</th>
-                            <th>Description</th>
-                            <th>Key Tag</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>01</td><td><strong>TryHackMe</strong></td><td>Beginner-friendly hands-on labs and learning paths covering a wide range of cybersecurity topics.</td><td>Great for Beginners</td></tr>
-                        <tr><td>02</td><td><strong>Hack The Box</strong></td><td>Advanced penetration testing labs and real-world machines for hands-on hackers.</td><td>Level Up Your Hacking</td></tr>
-                        <tr><td>03</td><td><strong>PortSwigger Web Security Academy</strong></td><td>Official training from the makers of Burp Suite. Learn web security from basics to advanced.</td><td>Best for Web Security</td></tr>
-                        <tr><td>04</td><td><strong>OWASP</strong></td><td>Top-notch resources on web application security, projects, tools, and cheat guides.</td><td>Secure the Web</td></tr>
-                        <tr><td>05</td><td><strong>Blue Team Labs Online</strong></td><td>Hands-on blue team training to learn defensive skills, SIEM, and incident response.</td><td>Defend & Protect</td></tr>
-                        <tr><td>06</td><td><strong>OverTheWire</strong></td><td>Wargames that help you improve your Linux and security skills step by step.</td><td>Linux & Security Practice</td></tr>
-                        <tr><td>07</td><td><strong>PicoCTF</strong></td><td>Capture The Flag (CTF) challenges for all skill levels. Perfect for problem solvers.</td><td>Practice & Compete</td></tr>
-                        <tr><td>08</td><td><strong>VulnHub</strong></td><td>Download vulnerable machines and build your penetration testing skills in your lab.</td><td>Practice Offline</td></tr>
-                        <tr><td>09</td><td><strong>NIST</strong></td><td>Cybersecurity frameworks, guidelines, and best practices used worldwide.</td><td>Standards & Guidelines</td></tr>
-                        <tr><td>10</td><td><strong>MITRE ATT&CK</strong></td><td>Knowledge base of adversary tactics and techniques used in real-world attacks.</td><td>Know Your Enemy</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Website</th>
+                        <th>Description</th>
+                        <th>Key Tag</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>01</td><td><strong>TryHackMe</strong></td><td>Beginner-friendly hands-on labs and learning paths covering a wide range of cybersecurity topics.</td><td>Great for Beginners</td></tr>
+                    <tr><td>02</td><td><strong>Hack The Box</strong></td><td>Advanced penetration testing labs and real-world machines for hands-on hackers.</td><td>Level Up Your Hacking</td></tr>
+                    <tr><td>03</td><td><strong>PortSwigger Web Security Academy</strong></td><td>Official training from the makers of Burp Suite. Learn web security from basics to advanced.</td><td>Best for Web Security</td></tr>
+                    <tr><td>04</td><td><strong>OWASP</strong></td><td>Top-notch resources on web application security, projects, tools, and cheat guides.</td><td>Secure the Web</td></tr>
+                    <tr><td>05</td><td><strong>Blue Team Labs Online</strong></td><td>Hands-on blue team training to learn defensive skills, SIEM, and incident response.</td><td>Defend & Protect</td></tr>
+                    <tr><td>06</td><td><strong>OverTheWire</strong></td><td>Wargames that help you improve your Linux and security skills step by step.</td><td>Linux & Security Practice</td></tr>
+                    <tr><td>07</td><td><strong>PicoCTF</strong></td><td>Capture The Flag (CTF) challenges for all skill levels. Perfect for problem solvers.</td><td>Practice & Compete</td></tr>
+                    <tr><td>08</td><td><strong>VulnHub</strong></td><td>Download vulnerable machines and build your penetration testing skills in your lab.</td><td>Practice Offline</td></tr>
+                    <tr><td>09</td><td><strong>NIST</strong></td><td>Cybersecurity frameworks, guidelines, and best practices used worldwide.</td><td>Standards & Guidelines</td></tr>
+                    <tr><td>10</td><td><strong>MITRE ATT&CK</strong></td><td>Knowledge base of adversary tactics and techniques used in real-world attacks.</td><td>Know Your Enemy</td></tr>
+                </tbody>
+            </table>
 
             <div class="alert-info-custom">
                 <h4><i class="fas fa-lightbulb"></i> Conclusion</h4>
@@ -379,6 +374,113 @@
             </ul>
         </section>
 
+        <!-- Section: Top Bug Bounty Tools -->
+        <section id="bug-bounty-tools">
+            <h2 class="section-title">Top Bug Bounty Tools Kali Cheatsheet</h2>
+            <p class="text-block">A quick reference guide for the 8 essential tools used in bug bounty hunting and web application penetration testing.</p>
+            
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/7e3f2431-3e47-457d-b790-12ca1cecad53.png?auth_key=1886125110-2d4b39fbd5544e06a4909e1276eb6aa5-0-ded5a3b3d6714a23ade0cfa729976f37" alt="Bug Bounty Tools Cheatsheet Part 1">
+                <figcaption>Figure 6: Cheatsheet for Burp Suite, Nuclei, Subfinder, and FFUF.</figcaption>
+            </figure>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/45d581c3-cf7b-4304-8072-c7e1d52d290e.png?auth_key=1886125110-a047b6c3cc834d1995c07f156b1171aa-0-f1d9ffa91d4f07e91fd0dbf76b129baf" alt="Bug Bounty Tools Cheatsheet Part 2">
+                <figcaption>Figure 7: Cheatsheet for SQLMap, OWASP Amass, HTTPX, and Katana.</figcaption>
+            </figure>
+
+            <h3 class="tool-title"><i class="fas fa-spider"></i> 1. BURP SUITE</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ burpsuite</span> — Launch Burp Suite GUI.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ burpsuite --help
+ $ burpsuite --version
+ $ burpsuite --project-file <file>
+ $ burpsuite --config-file <file>
+ $ burpsuite --install-cert</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-atom"></i> 2. NUCLEI</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ nuclei -u <url></span> — Scan a single target.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ nuclei -l list.txt
+ $ nuclei -t <template-path>
+ $ nuclei -tags <tag1,tag2>
+ $ nuclei -severity low,medium,high,critical
+ $ nuclei -rate-limit <r/s>
+ $ nuclei -o output.txt</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-search"></i> 3. SUBFINDER</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ subfinder -d example.com</span> — Enumerate subdomains.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ subfinder -dL domains.txt
+ $ subfinder -silent
+ $ subfinder -all
+ $ subfinder -recursive
+ $ subfinder -sources crtsh,shodan
+ $ subfinder -oJ</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-layer-group"></i> 4. FFUF</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ ffuf -u https://target/FUZZ -w wordlist.txt</span> — Basic fuzzing.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ ffuf -X <method>
+ $ ffuf -mc <code>
+ $ ffuf -fc <code>
+ $ ffuf -fs <size>
+ $ ffuf -t <threads>
+ $ ffuf -e .php,.bak</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-database"></i> 5. SQLMAP</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ sqlmap -u "https://target.tld/page.php?id=1" --batch</span> — Non-interactive test.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ sqlmap -r request.txt
+ $ sqlmap --dbs
+ $ sqlmap -D appdb --tables
+ $ sqlmap -D appdb -T users --columns
+ $ sqlmap --forms
+ $ sqlmap --threads=5</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-project-diagram"></i> 6. OWASP AMASS</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ amass enum -d example.com</span> — Enumerate subdomains.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ amass enum -passive -d example.com
+ $ amass enum -src -d example.com
+ $ amass enum -brute -w wordlist.txt -d example.com
+ $ amass enum -ip -d example.com
+ $ amass enum -o results.txt -d example.com
+ $ amass intel -d example.com</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-globe"></i> 7. HTTPX</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ cat hosts.txt | httpx</span> — Probe hosts.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ httpx -l hosts.txt -status-code -title -ip
+ $ httpx -u <url>
+ $ httpx -silent
+ $ httpx -tech-detect
+ $ httpx -follow-redirects
+ $ httpx -threads <n></code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-wind"></i> 8. KATANA</h3>
+            <p class="text-block"><strong>Basic:</strong> <span class="inline-code">$ katana -u https://example.com</span> — Crawl target.</p>
+            <p class="text-block"><strong>Key Commands:</strong></p>
+            <pre><code>$ katana -list targets.txt
+ $ katana -d 2
+ $ katana -jc
+ $ katana -kf all
+ $ katana -proxy http://127.0.0.1:8080
+ $ katana -o results.txt</code></pre>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Additional Notes & Info</h4>
+                <p><strong>Quick Notes:</strong></p>
+                <ul>
+                    <li>Always get written permission before scanning.</li>
+                    <li>Respect rate limits and <code>robots.txt</code>.</li>
+                    <li>Use proxies and OPSEC best practices.</li>
+                </ul>
+                <p><strong>Common Output Formats:</strong> <code>.txt</code>, <code>.json</code>, <code>.jsonl</code>, <code>.csv</code>, <code>.xml</code></p>
+                <p><strong>Pro Tip:</strong> Combine tools: discover with Amass/Subfinder, probe with httpx, find vulns with Nuclei, and validate with Burp Suite & SQLmap.</p>
+            </div>
+        </section>
+
         <!-- Section 4: 20 Essential SOC Tools -->
         <section id="soc-tools">
             <h2 class="section-title">20 Essential SOC Tools for Every SOC Analyst</h2>
@@ -423,11 +525,6 @@
         <section id="malware-types">
             <h2 class="section-title">Types of Malware</h2>
             <p class="text-block"><strong>Definition:</strong> Malware stands for <strong>MALicious softWARE</strong>. These threats can harm systems, steal data, or disrupt operations.</p>
-            
-            <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/ddfbb858-270d-40fe-8073-4934202a5b6b.png?auth_key=1886124651-25aeb66a9f6e4fc0a78987f137da3ba0-0-2e7f4dc46db9fd433b0336fd2ede759f" alt="Types of Malware Infographic">
-                <figcaption>Figure 6: Detailed infographic of malware types including Virus, Worm, Trojan, Ransomware, Spyware, Rootkit, Keylogger, and Botnet.</figcaption>
-            </figure>
 
             <ol>
                 <li><strong>Virus:</strong> Attaches to clean files and spreads when the infected file is executed. It requires user action to spread. <em>(Examples: Melissa, CIH)</em></li>
