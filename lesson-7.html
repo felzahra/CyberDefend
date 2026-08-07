@@ -396,7 +396,139 @@
                 <p><strong>Single-Factor Authentication (SFA)</strong> relies only on "something you know" (a password), making it highly vulnerable to credential theft. <strong>Multi-Factor Authentication (MFA)</strong> combines factors, so even if an attacker steals your password, they still cannot access the account without your phone or biometric data.</p>
             </div>
         </section>
+<!-- Section 1: IDS vs IPS -->
+        <section id="ids-ips">
+            <h2 class="section-title">Intrusion Detection (IDS) vs Prevention (IPS)</h2>
+            <p class="text-block"><strong>Intrusion Detection Systems (IDS)</strong> and <strong>Intrusion Prevention Systems (IPS)</strong> are security technologies designed to inspect network traffic for malicious activity. An IDS is configured in a <strong>Promiscuous mode</strong> (connected to a span/mirror port); it passively monitors traffic and raises alerts but cannot block attacks. An IPS is deployed <strong>Inline</strong> (directly in the traffic path); it actively drops malicious packets and blocks attacks in real-time.</p>
 
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/717462e5-8380-422d-a093-fce6deb23a71.png?auth_key=1886127424-6dc74f62e8df4f72a8ad3871c79e3314-0-2da0fe707649e02938d7e388e4c2a5d3" alt="IDS/IPS Network Topology">
+                <figcaption>Figure 1: Network topology showing Network-Based IPS deployed in Inline mode and Promiscuous mode across Internal Networks and Core Business Units.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 2: IDS/IPS Tuning & Confusion Matrix -->
+        <section id="tuning-matrix">
+            <h2 class="section-title">IDS/IPS Tuning & The Confusion Matrix</h2>
+            <p class="text-block">Configuring an IDS/IPS is a balancing act. If the system is too sensitive, it generates <strong>False Positives</strong> (blocking legitimate traffic). If it is too loose, it generates <strong>False Negatives</strong> (missing actual attacks). Security engineers use a classification model called the Confusion Matrix to tune their sensors.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/b8dfac8b-6148-4eb3-88a5-a1fc4eca7241.png?auth_key=1886127424-d5e8d3c6f38b49c28d95f24d6e51da37-0-8eddf7c0a8c84e22b0b62c60c4c10f9f" alt="Confusion Matrix">
+                <figcaption>Figure 2: The Confusion Matrix evaluating model predictions: True Positive, False Positive, False Negative, and True Negative.</figcaption>
+            </figure>
+
+            <ul>
+                <li><strong>True Positive (TP):</strong> The system correctly detects a malicious packet and blocks/alerts it.</li>
+                <li><strong>False Positive (FP):</strong> The system flags legitimate traffic as malicious (a false alarm). High FP rates cause alert fatigue.</li>
+                <li><strong>False Negative (FN):</strong> The system fails to detect an actual attack (Type II error). This is the most dangerous outcome.</li>
+                <li><strong>True Negative (TN):</strong> The system correctly ignores benign traffic.</li>
+            </ul>
+        </section>
+
+        <!-- Section 3: Snort & Suricata -->
+        <section id="snort-suricata">
+            <h2 class="section-title">Open-Source IDS/IPS Tools: Snort & Suricata</h2>
+            <p class="text-block"><strong>Snort</strong> and <strong>Suricata</strong> are the industry standard open-source network intrusion detection/prevention systems. They use rule-based signatures to detect and block malicious network traffic.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/080affb3-53bd-4f78-a805-44a51535a0c1.png?auth_key=1886127424-b8f1a86f1dca4740b0f68a313b3fc37e-0-9e2ac711d06e49f9b15ef3ee7b2c62d2" alt="Snort Rule Format">
+                <figcaption>Figure 3: Anatomy of a Snort rule, breaking down Action, Protocol, Source/Destination IPs, Ports, and Rule Options.</figcaption>
+            </figure>
+
+            <p class="text-block">A standard Snort rule consists of a rule header and rule options. For example: <span class="inline-code">alert ip any any -> any any (msg: "IP Packet detected";)</span></p>
+            <ul>
+                <li><strong>Action:</strong> What to do (alert, log, pass, drop, reject).</li>
+                <li><strong>Protocol:</strong> tcp, udp, icmp, ip.</li>
+                <li><strong>Source/Destination:</strong> IP addresses and port numbers.</li>
+                <li><strong>Rule Options:</strong> The message (msg), detection signatures (content), and metadata (sid, rev).</li>
+            </ul>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/c35490a0-828e-44a7-97eb-cc87f949ae7e.png?auth_key=1886127424-e3c26cd36e834d899f95c75fc42ba863-0-46e65d5a39d848b3a1e2a77a1de9f21e" alt="Suricata vs Snort Comparison">
+                <figcaption>Figure 4: Feature and performance comparison between Suricata and Snort.</figcaption>
+            </figure>
+
+            <p class="text-block">While Snort is older and widely adopted, Suricata offers multi-threading capabilities, allowing it to process traffic faster on modern multi-core CPUs. Both can be integrated into SIEMs for centralized alerting.</p>
+
+            <h3 class="tool-title">Example IDS Alerts Table</h3>
+            <p class="text-block">When an IDS detects suspicious activity, it generates an alert log. Analysts review these logs to determine if an incident requires escalation.</p>
+
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Timestamp</th>
+                        <th>Source IP</th>
+                        <th>Destination</th>
+                        <th>Alert Type</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>10:05:22</td><td>192.168.1.15</td><td>10.0.0.5</td><td>Port Scan Detected</td><td class="severity-low">Low</td></tr>
+                    <tr><td>2</td><td>10:15:40</td><td>41.22.10.8</td><td>10.0.0.8</td><td>Large Data Transfer</td><td class="severity-med">Medium</td></tr>
+                    <tr><td>3</td><td>10:32:11</td><td>192.168.1.20</td><td>10.0.0.2</td><td>Multiple Failed Logins</td><td class="severity-high">High</td></tr>
+                    <tr><td>4</td><td>11:04:05</td><td>88.14.55.2</td><td>10.0.0.4</td><td>SQL Injection Attempt</td><td class="severity-crit">Critical</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 4: Demilitarized Zone (DMZ) -->
+        <section id="dmz">
+            <h2 class="section-title">Demilitarized Zone (DMZ)</h2>
+            <p class="text-block">A <strong>DMZ</strong> is a subnetwork that exposes an organization's external-facing services (like web, email, and DNS servers) to the internet while isolating the internal network. It acts as a buffer zone. If an attacker compromises a server in the DMZ, they still face a firewall blocking them from reaching the trusted internal corporate network.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/ea3cc213-d8eb-4172-bdb7-3655b0c6f315.png?auth_key=1886127424-1b0f7d5744284644b4d9d3ab690fe09b-0-1f034a70a04944599f3df0a2a3ec3064" alt="Cisco ASA DMZ Topology">
+                <figcaption>Figure 5: Cisco ASA firewall topology configuring security levels for OUTSIDE, INSIDE, and DMZ zones to control traffic flow.</figcaption>
+            </figure>
+
+            <p class="text-block">Firewalls assign security levels to interfaces. By default, traffic flows from higher security levels (e.g., INSIDE=100) to lower security levels (e.g., DMZ=50, OUTSIDE=0). Traffic from a lower level to a higher level requires an explicit Access Control List (ACL).</p>
+            <ul>
+                <li><strong>INSIDE to DMZ:</strong> Allowed (Administrators managing servers).</li>
+                <li><strong>INSIDE to OUTSIDE:</strong> Allowed (Users browsing the internet).</li>
+                <li><strong>OUTSIDE to DMZ:</strong> Allowed via ACL (Internet users accessing the Web Server on port 80/443).</li>
+                <li><strong>OUTSIDE to INSIDE:</strong> Denied by default (Protecting the corporate LAN).</li>
+            </ul>
+        </section>
+
+        <!-- Section 5: Network Address Translation (NAT) -->
+        <section id="nat">
+            <h2 class="section-title">Network Address Translation (NAT)</h2>
+            <p class="text-block"><strong>NAT</strong> is a method used by routers and firewalls to map private IP addresses used inside a local network to a public IP address used on the internet. This conserves the limited IPv4 address space and adds a layer of security by hiding internal network topology from the outside world.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/e9163d07-0614-4621-bdfb-a272b0d34725.png?auth_key=1886127424-4a06bb5b56054d56b64a7088aeb3678c-0-c2850a73b6484aa88686479438f871ac" alt="NAT Public vs Private IP">
+                <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
+            </figure>
+
+            <p class="text-block">There are two main types of IPv4 addresses: <strong>Public</strong> (routable on the internet, e.g., <span class="inline-code">66.94.234.13</span>) and <strong>Private</strong> (used internally, e.g., <span class="inline-code">192.168.1.0/24</span>, <span class="inline-code">10.0.0.0/8</span>). When an internal device requests a webpage, the NAT router intercepts the packet, swaps the private source IP with its own public IP, records the translation in a table, and forwards it.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/1e34dc70-d7a2-4799-80d5-51265d8d07d4.png?auth_key=1886127424-0f0f80593d8a4be1b249ae8d5e2a3c54-0-ee17ad7de81c46c08478cda0ad57ee44" alt="NAT Translation Table">
+                <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
+            </figure>
+
+            <p class="text-block">In the diagram above, a packet originating from <span class="inline-code">192.168.1.3</span> is translated by the router to the public IP <span class="inline-code">12.13.14.15</span> using port <span class="inline-code">24604</span>. The web server replies to this public IP and port, allowing the NAT router to reverse the translation and deliver the webpage back to the internal laptop.</p>
+        </section>
+
+        <!-- Section 6: Virtual Private Networks (VPN) -->
+        <section id="vpn">
+            <h2 class="section-title">Virtual Private Networks (VPN)</h2>
+            <p class="text-block">A <strong>VPN</strong> extends a private network across a public network (the internet). It enables users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network. VPNs use encryption and tunneling protocols to ensure confidentiality and security.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/74cb0eda-508a-47c7-bfdc-042827ae84ba.png?auth_key=1886127424-d3c96c8f6e5f4d6e8cc6a4f74e23465d-0-4c6d6f3c1d2f4d3d8f3a3e5b9f2d5c8a" alt="VPN Hiding IP Address">
+                <figcaption>Figure 8: Without a VPN, your real IP address is visible to the ISP and internet services. A VPN disguises your identity by hiding your IP address.</figcaption>
+            </figure>
+
+            <p class="text-block">When you connect to a VPN server, your internet traffic is routed through an encrypted tunnel to that server. To the outside world, your traffic appears to originate from the VPN server's IP address, not your actual location. This protects your privacy and secures your data from eavesdropping on untrusted networks (like public Wi-Fi).</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/e1d94a97-efb3-4fb0-a408-1530128cbbbf.png?auth_key=1886127424-ea3a6f03b4ad42a5b32c8a4a9e0e5b6d-0-9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d" alt="VPN Server Routing">
+                <figcaption>Figure 9: Network flow showing traffic securely tunneled from a client workstation to a VPN Server, masking the original IP address.</figcaption>
+            </figure>
+        </section>
         <!-- LESSON NAVIGATION BUTTONS -->
         <div class="lesson-nav">
             <a href="security-roadmap.html" class="nav-btn prev">
