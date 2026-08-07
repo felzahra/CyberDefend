@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Submit Task</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content { max-width: 800px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+        .page-header { text-align: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 2rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; }
+
+        /* Status Check Card */
+        .status-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 24px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .status-info { flex: 1; min-width: 200px; }
+        .status-info h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .status-info p { font-size: 0.85rem; color: var(--body-quiet-color); }
+        .status-btn { background: var(--primary); color: var(--primary-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; }
+        .status-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Form Container */
+        .form-container { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 10px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); overflow: hidden; }
+        .iframe-wrapper { position: relative; width: 100%; height: 900px; overflow: hidden; border-radius: 12px; background: var(--body-bg); }
+        .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 780px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .iframe-wrapper { height: 1200px; }
+        }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html" class="active">Messages</a>
+        <a href="profile.html">Profile</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="page-header">
+        <h1>📝 Tasks & Submissions</h1>
+        <p>Submit your assignments and track your admission progress easily.</p>
+    </div>
+
+    <!-- CHECK STATUS CARD -->
+    <div class="status-card">
+        <div class="status-info">
+            <h3>📊 Check Admission Progress</h3>
+            <p>Click the button to view the tracking sheet and verify if your task has been submitted and graded.</p>
+        </div>
+        <a href="https://docs.google.com/spreadsheets/d/1WhE84NDLELNA1kg8RXs8Hg3BF1vB7Oc4hKbY8l1EMsw/edit?usp=sharing" target="_blank" class="status-btn">View Progress Sheet</a>
+    </div>
+
+    <!-- GOOGLE FORM EMBED -->
+    <div class="form-container">
+        <div class="iframe-wrapper">
+            <!-- Google Form embedded directly -->
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM_bxIUo7HoLJZSpQn44fkDktSo4eT27HXbwydYNjbGoa1qw/viewform?embedded=true" style="width: 100%; height: 100%; border: none;">Loading…</iframe>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+</body>
+</html>
