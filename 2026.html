@@ -2,452 +2,696 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend Academy · Main Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>CyberDefend · Lectures & Slides Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ========== THEME VARIABLES (LIGHT MODE) ========== */
+        :root {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --breadcrumbs-link-fg: #5c6f87;
+            --breadcrumbs-bg: var(--primary);
+            --link-fg: #02b3e4;
+            --link-hover-color: #028cae;
+            --link-selected-fg: #027e9e;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --error-fg: #dc2626;
+            --message-success-bg: #e6f4ea;
+            --message-warning-bg: #fff6e0;
+            --message-error-bg: #fee2e2;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --selected-row: #f9fbfe;
+            --close-button-bg: #e6edf4;
+            --close-button-hover-bg: #cbd5e1;
+            --header-bg: #ffffff;
+            --header-link-color: #02b3e4;
         }
 
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: #f5f7fc;
-            color: #1a2c3e;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+        /* ========== DARK MODE (APPLIES BY DEFAULT OR WHEN SELECTED) ========== */
+        html[data-theme="dark"] {
+            --primary: #264b5d;
+            --primary-fg: #f7f7f7;
+            --body-fg: #eeeeee;
+            --body-bg: #121212; /* الأسود الأساسي */
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --breadcrumbs-link-fg: #e0e0e0;
+            --breadcrumbs-bg: var(--primary);
+            --link-fg: #81d4fa;
+            --link-hover-color: #4ac1f7;
+            --link-selected-fg: #6f94c6;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --error-fg: #e35f5f;
+            --message-success-bg: #006b1b;
+            --message-warning-bg: #583305;
+            --message-error-bg: #570808;
+            --darkened-bg: #212121; /* خلفية الكروت */
+            --selected-bg: #1b1b1b;
+            --selected-row: #1e2a35;
+            --close-button-bg: #333333;
+            --close-button-hover-bg: #666666;
+            --header-bg: #212121;
+            --header-link-color: #81d4fa;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 320px;
-            background: #ffffff;
-            border-right: 1px solid #e6edf4;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        /* Custom scrollbar for sidebar */
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: #f0f2f5;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+        /* THEME SWITCH BUTTON */
+        .theme-toggle {
+            cursor: pointer;
+            border: 1px solid var(--hairline-color);
+            padding: 8px 12px;
+            background: var(--darkened-bg);
+            vertical-align: middle;
+            margin: 16px 20px 0;
             border-radius: 10px;
-        }
-
-        .brand {
-            padding: 24px 24px 16px 24px;
-            border-bottom: 1px solid #eef2f8;
-            background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .logo-icon {
-            background: #02b3e4;
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: calc(100% - 40px);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 6px 12px rgba(2, 179, 228, 0.2);
-        }
-
-        .logo-text h1 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            color: #0b2b3b;
-            line-height: 1.2;
-        }
-
-        .logo-text span {
-            font-size: 0.65rem;
-            color: #02b3e4;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .tagline {
-            font-size: 0.7rem;
-            color: #5c6f87;
-            margin-top: 8px;
-            border-left: 3px solid #02b3e4;
-            padding-left: 10px;
-        }
-
-        .progress-card {
-            background: #f0f9fe;
-            margin: 16px 20px;
-            padding: 12px 16px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .progress-text {
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .progress-number {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #02b3e4;
-        }
-
-        /* About Me Card (left sidebar) */
-        .about-card {
-            background: #fef9e6;
-            margin: 16px 20px 8px 20px;
-            padding: 16px;
-            border-radius: 24px;
-            border: 1px solid #ffe6b3;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .about-card:hover {
-            background: #fff6e0;
-            border-color: #ffd966;
-        }
-        .about-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .avatar {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(145deg, #02b3e4, #0284a5);
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: white;
-            box-shadow: 0 4px 8px rgba(2,179,228,0.2);
-        }
-        .about-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #1e293b;
-            letter-spacing: -0.2px;
-        }
-        .about-title span {
-            font-size: 0.7rem;
-            font-weight: 400;
-            color: #5f6c84;
-            display: block;
-            margin-top: 2px;
-        }
-        .about-bio {
-            font-size: 0.7rem;
-            line-height: 1.4;
-            color: #2d3a4b;
-            margin-bottom: 12px;
-            padding-right: 4px;
-        }
-        .linkedin-btn {
-            display: inline-flex;
-            align-items: center;
             gap: 8px;
-            background: #0077b5;
-            color: white;
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 6px 14px;
-            border-radius: 30px;
-            transition: 0.2s;
-            width: fit-content;
-        }
-        .linkedin-btn:hover {
-            background: #005e8c;
-            transform: scale(0.97);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .linkedin-btn i {
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .main-tabs {
-            display: flex;
-            border-bottom: 1px solid #eef2f8;
-            background: #fff;
-            padding: 0 12px;
-            gap: 4px;
-            margin-top: 8px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 12px 0;
+            font-family: inherit;
             font-weight: 600;
             font-size: 0.8rem;
-            color: #5f7f9c;
-            cursor: pointer;
-            font-family: inherit;
-            border-radius: 12px 12px 0 0;
+            color: var(--body-fg);
             transition: 0.2s;
-            text-decoration: none;
-            text-align: center;
-            display: inline-block;
+        }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+        .theme-toggle svg {
+            vertical-align: middle;
+            height: 1.2rem;
+            width: 1.2rem;
+            fill: var(--header-link-color);
+            color: var(--header-bg);
         }
 
-        .tab-btn.active {
-            color: #02b3e4;
-            border-bottom: 3px solid #02b3e4;
-            background: #f9fbfe;
-        }
+        /* ========== MAIN STYLES ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        .sidebar { width: 340px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
+        .brand { padding: 24px; border-bottom: 1px solid var(--border-color); background: linear-gradient(135deg, var(--darkened-bg) 0%, var(--body-bg) 100%); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: var(--primary); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(2,179,228,0.2); }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud-color); }
+        .logo-text span { font-size: 0.65rem; color: var(--primary); font-weight: 600; letter-spacing: 1px; }
+        .tagline { font-size: 0.7rem; color: var(--body-quiet-color); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .back-link { padding: 16px 20px; display: block; color: var(--link-fg); text-decoration: none; font-size: 0.8rem; font-weight: 500; border-bottom: 1px solid var(--border-color); }
+        .back-link:hover { background: var(--selected-bg); }
+        .back-link::before { content: "← "; font-size: 1rem; }
+        .nav-list { padding: 8px 0 20px 0; }
+        .section-title { padding: 12px 20px 4px; font-size: 0.7rem; color: var(--primary); font-weight: 600; letter-spacing: 0.5px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; margin: 1px 12px; border-radius: 10px; cursor: pointer; font-size: 0.78rem; transition: all 0.2s; color: var(--body-fg); }
+        .nav-item:hover, .nav-item.active { background: var(--selected-bg); color: var(--link-selected-fg); font-weight: 600; border-left: 3px solid var(--primary); }
+        .check-icon { font-size: 1rem; min-width: 22px; }
+        .main-content { flex: 1; overflow-y: auto; padding: 28px 36px; background: var(--body-bg); transition: background 0.3s; }
+        .slides-card { max-width: 1200px; margin: 0 auto; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
+        .card-header { padding: 24px 28px 16px 28px; border-bottom: 1px solid var(--hairline-color); }
+        .lesson-badge { font-size: 0.7rem; font-weight: 600; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
+        .badge-video { color: var(--error-fg); background: var(--message-error-bg); }
+        .badge-slides { color: var(--primary); background: var(--selected-bg); }
+        .card-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--body-loud-color); margin: 8px 0 8px 0; }
+        .sub { color: var(--body-quiet-color); font-size: 0.85rem; }
+        .content-area { padding: 24px 28px 28px 28px; }
+        .side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .side-col h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .side-col.video-col h3 { color: var(--error-fg); }
+        .side-col.slides-col h3 { color: var(--primary); }
+        .video-container { border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .slides-container { border-radius: 16px; overflow: hidden; background: var(--body-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .slides-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+        .slides-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .single-video { max-width: 800px; margin: 0 auto 20px; }
+        .single-slides { max-width: 800px; margin: 0 auto 20px; }
+        .info-grid { background: var(--selected-row); border-radius: 18px; padding: 18px 24px; margin: 16px 0 0; border-left: 4px solid var(--primary); }
+        .btn-youtube { display: inline-flex; align-items: center; gap: 8px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
+        .btn-youtube:hover { background: #cc0000; transform: scale(0.98); }
+        .description-text { line-height: 1.65; color: var(--body-fg); font-size: 0.95rem; }
+        .downloads-section { margin-top: 8px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .downloads-section h3 { font-size: 0.85rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+        .downloads-list { display: flex; flex-direction: column; gap: 12px; }
+        .download-item { background: var(--selected-row); border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border-color); }
+        .download-info h4 { font-size: 0.95rem; margin-bottom: 3px; color: var(--body-loud-color); }
+        .download-info p { font-size: 0.72rem; color: var(--body-quiet-color); }
+        .btn-download { background: var(--primary); color: var(--primary-fg); padding: 7px 18px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.72rem; transition: 0.2s; display: inline-block; }
+        .btn-download:hover { background: var(--link-hover-color); }
+        .no-material { text-align: center; padding: 40px 20px; color: var(--body-quiet-color); font-size: 0.9rem; }
+        .slide-hint { background: var(--selected-bg); border-radius: 12px; padding: 10px 16px; margin-top: 10px; font-size: 0.75rem; color: var(--body-quiet-color); }
 
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px;
-            text-align: center;
-        }
+        /* ========== PREV / NEXT BUTTONS ========== */
+        .nav-buttons { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 28px 24px 28px; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { padding: 11px 28px; border-radius: 12px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .nav-btn-prev { background: var(--selected-bg); color: var(--body-quiet-color); border: 1px solid var(--hairline-color); }
+        .nav-btn-prev:hover:not(:disabled) { background: var(--close-button-hover-bg); color: var(--body-fg); transform: translateY(-1px); }
+        .nav-btn-next { background: var(--primary); color: var(--primary-fg); border: 1px solid var(--primary); }
+        .nav-btn-next:hover:not(:disabled) { background: var(--link-hover-color); border-color: var(--link-hover-color); transform: translateY(-1px); }
 
-        .hero-card {
-            max-width: 700px;
-            margin: 80px auto;
-            background: white;
-            border-radius: 32px;
-            padding: 48px;
-            border: 1px solid #eef2f8;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
-        }
+        /* ========== QUIZ SECTION ========== */
+        .quiz-section { max-width: 1200px; margin: 28px auto 0; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background 0.3s, border-color 0.3s; }
+        .quiz-header { padding: 20px 28px; border-bottom: 1px solid var(--hairline-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .quiz-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--body-loud-color); display: flex; align-items: center; gap: 8px; }
+        .quiz-required-badge { background: var(--message-error-bg); color: var(--error-fg); font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .quiz-completed-badge { background: var(--message-success-bg); color: #137333; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: none; }
+        .quiz-body { padding: 24px 28px; }
+        .quiz-question { margin-bottom: 28px; padding: 20px 24px; background: var(--selected-row); border-radius: 18px; border: 2px solid transparent; }
+        .quiz-question.unanswered-highlight { border-color: #fca5a5; background: var(--message-error-bg); }
+        .quiz-question.correct-highlight { border-color: #86efac; background: var(--message-success-bg); }
+        .quiz-question.wrong-highlight { border-color: #fca5a5; background: var(--message-error-bg); }
+        .quiz-q-num { font-size: 0.7rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: block; }
+        .quiz-q-text { font-size: 0.95rem; font-weight: 600; color: var(--body-loud-color); margin-bottom: 14px; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1.5px solid var(--hairline-color); cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: var(--body-fg); }
+        .quiz-option:hover { border-color: var(--primary); background: var(--selected-bg); }
+        .quiz-option.selected { border-color: var(--primary); background: var(--selected-bg); font-weight: 600; color: var(--link-selected-fg); }
+        .quiz-option.correct-answer { border-color: #22c55e; background: var(--message-success-bg); color: #137333; font-weight: 600; }
+        .quiz-option.wrong-answer { border-color: #ef4444; background: var(--message-error-bg); color: var(--error-fg); font-weight: 600; }
+        .quiz-option input[type="radio"] { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+        .quiz-footer { padding: 20px 28px; border-top: 1px solid var(--hairline-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .quiz-score { font-size: 0.85rem; font-weight: 600; color: var(--body-quiet-color); }
+        .quiz-score strong { color: var(--primary); }
+        .quiz-submit-btn { background: var(--primary); color: var(--primary-fg); border: none; padding: 11px 28px; border-radius: 12px; font-weight: 600; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .quiz-submit-btn:hover { background: var(--link-hover-color); transform: translateY(-1px); }
+        .quiz-submit-btn:disabled { background: var(--close-button-hover-bg); cursor: not-allowed; transform: none; box-shadow: none; }
+        .quiz-error { width: 100%; text-align: center; color: var(--error-fg); font-size: 0.82rem; font-weight: 600; background: var(--message-error-bg); padding: 10px; border-radius: 10px; display: none; }
+        .quiz-no-quiz { text-align: center; padding: 40px 20px; color: var(--body-quiet-color); font-size: 0.9rem; }
 
-        .hero-card h2 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            color: #0b2b3b;
-        }
+        /* ========== FLOATING COMMENTS WIDGET ========== */
+        .comment-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: var(--primary); border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(2,179,228,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary-fg); border: none; z-index: 999; transition: transform 0.3s, box-shadow 0.3s; }
+        .comment-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(2,179,228,0.5); }
+        .comment-fab-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--darkened-bg); }
+        .comment-panel { position: fixed; bottom: 100px; right: 28px; width: 380px; height: 500px; background: var(--darkened-bg); border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid var(--hairline-color); }
+        .comment-panel.open { display: flex; }
+        .comment-panel-header { background: var(--primary); color: var(--primary-fg); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .comment-panel-header h4 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .comment-panel-close { background: rgba(255,255,255,0.2); border: none; color: var(--primary-fg); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        .comment-panel-form { padding: 14px 16px; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
+        .comment-panel-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .comment-panel-name { width: 110px; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; background: var(--darkened-bg); color: var(--body-fg); flex-shrink: 0; }
+        .comment-panel-name:focus { border-color: var(--primary); }
+        .comment-panel-msg { flex: 1; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; resize: none; min-height: 38px; max-height: 80px; background: var(--darkened-bg); color: var(--body-fg); }
+        .comment-panel-msg:focus { border-color: var(--primary); }
+        .comment-panel-bottom { display: flex; align-items: center; justify-content: flex-end; }
+        .comment-panel-send { background: var(--primary); color: var(--primary-fg); border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; }
+        .comment-panel-send:hover { background: var(--link-hover-color); }
+        .comment-panel-send:disabled { background: var(--close-button-hover-bg); cursor: not-allowed; }
+        .comment-panel-list { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--body-bg); }
+        .cmt-item { display: flex; gap: 10px; }
+        .cmt-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .cmt-body { flex: 1; min-width: 0; }
+        .cmt-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+        .cmt-name { font-weight: 700; font-size: 0.78rem; color: var(--body-loud-color); }
+        .cmt-time { font-size: 0.62rem; color: var(--body-quiet-color); }
+        .cmt-text { font-size: 0.8rem; line-height: 1.5; color: var(--body-fg); word-break: break-word; }
+        .cmt-empty { text-align: center; padding: 30px 10px; color: var(--body-quiet-color); font-size: 0.82rem; }
 
-        .btn-large {
-            display: inline-block;
-            margin-top: 24px;
-            padding: 12px 28px;
-            background: #02b3e4;
-            color: white;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-large:hover {
-            background: #0284a5;
-            transform: translateY(-2px);
-        }
+        footer { text-align: center; margin-top: 40px; font-size: 0.75rem; color: var(--body-quiet-color); padding-top: 28px; border-top: 1px solid var(--hairline-color); }
 
-        .course-grid {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .course-card {
-            background: white;
-            border-radius: 24px;
-            padding: 28px;
-            width: 260px;
-            border: 1px solid #eef2f8;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: block;
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .course-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        .course-card h3 {
-            margin-bottom: 8px;
-        }
-
-        footer {
-            margin-top: 60px;
-            font-size: 0.7rem;
-            color: #8a9cb0;
-        }
-
-        /* Remove duplicate logo inside .course-grid (cleanup) */
-        .course-grid .logo {
-            display: none;
-        }
-
-        /* Responsive */
+        @media (max-width: 1000px) { .side-by-side { grid-template-columns: 1fr; } }
         @media (max-width: 780px) {
-            .sidebar {
-                width: 280px;
-            }
-            .content-area {
-                padding: 20px;
-            }
-            .hero-card {
-                padding: 28px;
-                margin: 40px auto;
-            }
-            .about-card {
-                margin: 12px 16px;
-            }
+            .sidebar { width: 280px; }
+            .main-content { padding: 16px; }
+            .card-header h2 { font-size: 1.2rem; }
+            .content-area { padding: 16px; }
+            .nav-buttons { padding: 16px 20px 20px; }
+            .quiz-body { padding: 16px 20px; }
+            .quiz-footer { padding: 16px 20px; }
+            .quiz-header { padding: 16px 20px; }
+            .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; }
         }
-
-        /* tiny adjustments */
-        .spacer {
-            flex: 1;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 8px; }
     </style>
 </head>
 <body>
 <div class="sidebar">
     <div class="brand">
         <div class="logo">
-            <div class="logo-icon">🛡️</div>
+            <div class="logo-icon">📊</div>
             <div class="logo-text">
                 <h1>CyberDefend</h1>
-                <span>ACADEMY</span>
+                <span>2026 LECTURES</span>
             </div>
         </div>
-        <div class="tagline">Part of Accenture | Defend · Detect · Respond</div>
+        <div class="tagline">Part of Accenture | Recorded Sessions & Reading Material</div>
     </div>
+    <a href="index.html" class="back-link">Back to Dashboard</a>
+    
+    <!-- THEME TOGGLE BUTTON -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="theme-icon-when-light" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM12 0l-2 2h4l-2-2zm0 24l2-2h-4l2 2zM0 12l2 2v-4l-2 2zm24 0l-2-2v4l2-2zM5 5l1.5-1.5L4 2 2 4l3 1zm14 14l-1.5 1.5L20 22l2-2-3-1zM5 19l-1.5 1.5L2 19l2-2 1 2zm14-14l1.5-1.5L22 4l-2 2-1-1z"/></svg>
+        <svg class="theme-icon-when-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+        <span id="themeLabel">Dark Mode</span>
+    </button>
 
-    <!-- NEW: About Me section placed right below the brand / progress area (left corner) -->
-    <div class="about-card">
-        <div class="about-header">
-            <div class="avatar">FA</div>
-            <div class="about-title">
-                Fatma Alzahra AlAgery <span>Cybersecurity Specialist</span>
-            </div>
-        </div>
-        <div class="about-bio">
-            🔐 Security analyst & cyber range instructor. Passionate about SIEM, threat hunting, and digital forensics. 
-            Empowering next-gen defenders through hands-on labs.
-        </div>
-        <a href="https://www.linkedin.com/in/fatmaagery/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-            <span>🔗</span> Connect on LinkedIn
-        </a>
+    <div class="nav-list">
+        <div class="section-title">📺 2026 SUMMER LECTURES & SLIDES</div>
+        <div class="nav-item active" data-slide="v1"><span class="check-icon">📅</span> 15 july 2026 summer</div>
+        <div class="nav-item" data-slide="v2"><span class="check-icon">📅</span> 19-7-2026 summer</div>
+        <div class="nav-item" data-slide="v3"><span class="check-icon">📅</span> 22-7-2026 summer</div>
+        <div class="nav-item" data-slide="v3b"><span class="check-icon">📅</span> CyberSecurity General Lec</div>
+        <div class="nav-item" data-slide="v4"><span class="check-icon">📅</span> 2025 Session 1</div>
+        <div class="nav-item" data-slide="v5"><span class="check-icon">📅</span> 2025 Session 2</div>
+        <div class="section-title">📊 READING MATERIAL</div>
+        <div class="nav-item" data-slide="s1"><span class="check-icon">📊</span> Summer 2025 Training</div>
+        <div class="nav-item" data-slide="s2"><span class="check-icon">🔐</span> Cybersecurity Course (Part 1)</div>
+        <div class="nav-item" data-slide="s3"><span class="check-icon">🔐</span> Cybersecurity Course (Part 2)</div>
+        <div class="nav-item" data-slide="s4"><span class="check-icon">🔐</span> Cybersecurity Course (Part 3)</div>
+        <div class="nav-item" data-slide="s5"><span class="check-icon">📄</span> DPA Summer Training - Session 1</div>
+        <div class="nav-item" data-slide="s6"><span class="check-icon">📄</span> DPA Summer Training - Session 2</div>
     </div>
-
-    <div class="progress-card">
-        <span class="progress-text">📈 Course Progress</span>
-        <span class="progress-number">99%</span>
-    </div>
-
-    <div class="main-tabs">
-        <a href="index.html" class="tab-btn active">📘 COURSES</a>
-        <a href="projects.html" class="tab-btn">🚀 PROJECTS</a>
-        <a href="media.html" class="tab-btn">🎨 MEDIA & GIFs</a>
-    </div>
-
-    <div style="margin-top: auto; padding: 20px; font-size: 0.65rem; color: #8ba0b2; border-top: 1px solid #edf2f7;">
-        ⚡ Complete cybersecurity training
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--border-color); text-align: center;">
+        ⚡ DPA Summer Training Program | 25+ Modules
     </div>
 </div>
 
-<div class="content-area">
-    <div class="hero-card">
-        <h2>🛡️ Welcome to CyberDefend Academy</h2>
-        <p style="margin: 16px 0; color: #5c6f87;">Master Cybersecurity, Networking, and Incident Response with hands-on labs.</p>
-        <div class="course-grid">
-         <a href="DPA.html" class="course-card">
-                <div class="course-icon">🔀</div>
-                <h3>DPA Summer Training Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Damietta Port Summer Training</p>
-            </a>
-            <a href="cybersecurity-course.html" class="course-card">
-                <div class="course-icon">🔐</div>
-                <h3>Cybersecurity Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p>
-            </a>
-            <a href="networking.html" class="course-card">
-                <div class="course-icon">🌐</div>
-                <h3>CyberSecurity Reading Slides</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Reading Slides</p>
-            </a>
-            <a href="routing-switching.html" class="course-card">
-                 <div class="course-icon">🛡️</div>
-                <h3>English CyberSecurity Course</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Attack Types · SIEM · Threat Hunting</p>
-            </a>
-            
-            <!-- ================= NEW TAB FOR 2026 LECTURES ================= -->
-            <a href="2026.html" class="course-card">
-                 <div class="course-icon">🎬</div>
-                <h3>2026 Lectures</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">Recorded Sessions & Videos</p>
-            </a>
-            <!-- =============================================================== -->
-
-            <a href="aws foundation.html" class="course-card">
-                 <div class="course-icon">🤖</div>
-                <h3>aws cloud foundation</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">aws cloud solutions</p>
-            </a>
-            <a href="digital comm.html" class="course-card">
-                 <div class="course-icon">🧠</div>
-                <h3>digital comm</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">digital com</p>
-            </a>
-                <a href="wireless comm.html" class="course-card">
-                 <div class="course-icon">🎯️</div>
-                <h3>wireless comm</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">wireless comm</p>
-            </a>
-    <a href="aws readding materials.html" class="course-card">
-                 <div class="course-icon">🎯️</div>
-                <h3>aws readding materials</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">aws readding materials</p>
-            </a>
-                <a href="digital comm readding materials.html" class="course-card">
-                 <div class="course-icon">🎯️</div>
-                <h3>digital comm readding materials</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">digital comm readding materials</p>
-            </a>
-                <a href="wireless comm readding materials.html" class="course-card">
-                 <div class="course-icon">🎯️</div>
-                <h3>wireless comm  readding materials</h3>
-                <p style="font-size:0.8rem; color:#5c6f87;">wireless comm  readding materials</p>
-            </a>
-            
-            <!-- removed the duplicate logo that was misplaced inside grid -->
+<div class="main-content">
+    <div class="slides-card">
+        <div class="card-header">
+            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 6</span>
+            <h2 id="slide-title">15 july 2026 summer</h2>
+            <div class="sub" id="slide-sub">Session 1 · Summer Training</div>
         </div>
-        <a href="cybersecurity-course.html" class="btn-large">Start Cybersecurity Course →</a>
+        <div class="content-area" id="content-area"></div>
+
+        <!-- PREV / NEXT -->
+        <div class="nav-buttons">
+            <button class="nav-btn nav-btn-prev" id="prevBtn" disabled>← Previous</button>
+            <button class="nav-btn nav-btn-next" id="nextBtn">Next →</button>
+        </div>
     </div>
-    <footer>© CyberDefend Academy · Part of Accenture</footer>
+
+    <!-- QUIZ SECTION -->
+    <div class="quiz-section" id="quizSection">
+        <div class="quiz-header">
+            <h3>📝 Quiz</h3>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <span class="quiz-required-badge">REQUIRED</span>
+                <span class="quiz-completed-badge" id="quizCompletedBadge">✓ Completed</span>
+            </div>
+        </div>
+        <div id="quizBody"></div>
+        <div class="quiz-footer" id="quizFooter" style="display:none;">
+            <div class="quiz-score" id="quizScore"></div>
+            <button class="quiz-submit-btn" id="quizSubmitBtn">Submit Quiz</button>
+        </div>
+        <div class="quiz-error" id="quizError">⚠️ Please answer all questions before submitting.</div>
+    </div>
+
+    <footer>🎬 CyberDefend Academy — DPA Summer Training | Part of Accenture</footer>
 </div>
+
+<!-- FLOATING COMMENT BUTTON -->
+<button class="comment-fab" id="commentFab">
+    💬
+    <span class="comment-fab-badge" id="commentFabBadge" style="display:none;">0</span>
+</button>
+
+<!-- COMMENT PANEL -->
+<div class="comment-panel" id="commentPanel">
+    <div class="comment-panel-header">
+        <h4>💬 Comments</h4>
+        <button class="comment-panel-close" id="commentPanelClose">✕</button>
+    </div>
+    <div class="comment-panel-form">
+        <div class="comment-panel-row">
+            <input type="text" class="comment-panel-name" id="cmtName" placeholder="Name" maxlength="30">
+            <textarea class="comment-panel-msg" id="cmtMsg" placeholder="Write a comment..." maxlength="400" rows="1"></textarea>
+        </div>
+        <div class="comment-panel-bottom">
+            <button class="comment-panel-send" id="cmtSendBtn" disabled>Send ➤</button>
+        </div>
+        <div class="comment-panel-status" id="cmtStatus"></div>
+    </div>
+    <div class="comment-panel-list" id="cmtList">
+        <div class="cmt-empty" id="cmtEmpty"><span>💬</span>No comments yet.</div>
+    </div>
+</div>
+
+<script>
+// THEME TOGGLE LOGIC - DEFAULTS TO DARK MODE
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+const savedTheme = localStorage.getItem('cd_theme') || 'dark'; // يبدأ بالوضع الليلي افتراضياً
+document.documentElement.setAttribute('data-theme', savedTheme);
+
+function updateThemeLabel() {
+    let currentTheme = document.documentElement.getAttribute('data-theme');
+    themeLabel.textContent = currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1) + ' Mode';
+    
+    // إظهار الأيقونة الصحيحة
+    document.querySelectorAll('.theme-toggle svg').forEach(svg => svg.style.display = 'none');
+    if (currentTheme === 'light') {
+        document.querySelector('.theme-icon-when-light').style.display = 'block';
+    } else if (currentTheme === 'dark') {
+        document.querySelector('.theme-icon-when-dark').style.display = 'block';
+    } else {
+        document.querySelector('.theme-icon-when-dark').style.display = 'block';
+    }
+}
+updateThemeLabel();
+
+themeToggle.addEventListener('click', () => {
+    let currentTheme = document.documentElement.getAttribute('data-theme');
+    let nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('cd_theme', nextTheme);
+    updateThemeLabel();
+});
+
+const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true';
+const COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec';
+
+const slideOrder = ['v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
+
+const items = {
+    v1: { title: '15 july 2026 summer', sub: 'Session 1 · Summer Training', badge: 'VIDEO 1 / 6', badgeClass: 'badge-video', videoId: 'Cu2lvvfuOug', slideEmbed: 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/embed?start=false&loop=false&delayms=3000', slideEditId: '16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R', desc: 'Recorded session for 15 july 2026 summer training.', topics: '📅 Topics: Summer training introductory concepts and lab overviews.', type: 'side-by-side' },
+    v2: { title: '19-7-2026 summer', sub: 'Session 2 · Summer Training', badge: 'VIDEO 2 / 6', badgeClass: 'badge-video', videoId: 'SuGy_q0HCnQ', slideEmbed: 'https://docs.google.com/presentation/d/1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er/embed?start=false&loop=false&delayms=3000', slideEditId: '1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er', desc: 'Recorded session for 19-7-2026 summer training.', topics: '📅 Topics: Advanced networking and security concepts.', type: 'side-by-side' },
+    v3: { title: '22-7-2026 summer', sub: 'Session 3 · Summer Training', badge: 'VIDEO 3 / 6', badgeClass: 'badge-video', videoId: 'N8oFOsIPOz0', slideEmbed: 'https://docs.google.com/presentation/d/1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo/embed?start=false&loop=false&delayms=3000', slideEditId: '1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo', desc: 'Recorded session for 22-7-2026 summer training.', topics: '📅 Topics: Cybersecurity tools and threat hunting basics.', type: 'side-by-side' },
+    v3b: { title: 'CyberSecurity General Lec', sub: 'General Lecture · Cybersecurity', badge: 'VIDEO 4 / 6', badgeClass: 'badge-video', videoId: 'sopv4UA0GHQ', slideEmbed: null, slideEditId: null, desc: 'CyberSecurity General Lecture covering fundamental cybersecurity concepts.', topics: '📅 Topics: General cybersecurity fundamentals and overview.', type: 'video-only' },
+    v4: { title: '2025 Session 1', sub: 'Summer Training · 2025', badge: 'VIDEO 5 / 6', badgeClass: 'badge-video', videoId: 'a5ifbdJSrvQ', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 1.', topics: '📅 Topics: Summer training introductory concepts.', type: 'video-only' },
+    v5: { title: '2025 Session 2', sub: 'Summer Training · 2025', badge: 'VIDEO 6 / 6', badgeClass: 'badge-video', videoId: 'IFKd4MR4nBg', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 2.', topics: '📅 Topics: Advanced training concepts and hands-on labs.', type: 'video-only' },
+    s1: { title: 'Summer 2025 Training', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000&slide=id.p369', slideEditId: '1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A', type: 'slides-only' },
+    s2: { title: 'Cybersecurity Course (Part 1)', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/embed?start=false&loop=false&delayms=3000&slide=id.p1', slideEditId: '19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe', type: 'slides-only' },
+    s3: { title: 'Cybersecurity Course (Part 2)', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/embed?start=false&loop=false&delayms=3000&slide=id.p1', slideEditId: '1bpruoSya8s3yshmLkUVxBzAsoes_fHEb', type: 'slides-only' },
+    s4: { title: 'Cybersecurity Course (Part 3)', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY/embed?start=false&loop=false&delayms=3000&slide=id.p1', slideEditId: '1OhzsvTqFhG5zYCVyouvxYCp54l6iXZBY', type: 'slides-only' },
+    s5: { title: 'DPA Summer Training - Session 1', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt/embed?start=false&loop=false&delayms=3000&slide=id.p275', slideEditId: '199mEm7M5-4lA9NfwOJftUnpcXtn-BpDt', type: 'slides-only' },
+    s6: { title: 'DPA Summer Training - Session 2', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc/embed?start=false&loop=false&delayms=3000&slide=id.p172', slideEditId: '1uaJj0Cmjc8v_VEeZ7kRiBkFcBnEeDQJc', type: 'slides-only' }
+};
+
+const quizzes = {
+    v1: [
+        { question: "What does the OSI model stand for?", options: ["Open Systems Interconnection", "Open Source Interconnection", "Operating System Interface", "Online Security Integration"], correct: 0 },
+        { question: "How many layers are in the OSI model?", options: ["4", "5", "7", "6"], correct: 2 },
+        { question: "Which layer handles IP addressing?", options: ["Data Link", "Network", "Transport", "Application"], correct: 1 }
+    ],
+    v2: [
+        { question: "What is the default subnet mask for a Class C IP?", options: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255"], correct: 2 },
+        { question: "IPv6 uses how many bits for addressing?", options: ["32", "64", "128", "256"], correct: 2 }
+    ],
+    v3: [
+        { question: "What is threat hunting?", options: ["A type of firewall", "Proactive search for hidden threats", "A virus removal tool", "A network protocol"], correct: 1 }
+    ]
+};
+
+const quizCompleted = {};
+
+function renderSideBySide(d) {
+    return `<div class="side-by-side"><div class="side-col video-col"><h3>🎬 Video</h3><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe></div></div><a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div><div class="side-col slides-col"><h3>📊 Reading Material</h3><div class="slides-container"><div class="slides-wrapper"><iframe src="${d.slideEmbed}" allowfullscreen></iframe></div></div><div class="slide-hint">📌 Use <strong>arrow buttons</strong> to navigate. Click <strong>Fullscreen</strong> for best view.</div></div></div><div class="description-text"><p>${d.desc}</p><div class="info-grid"><p>${d.topics}</p></div></div><div class="downloads-section"><h3>📥 Downloads</h3><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 ${d.title} - Lecture Slides</h4><p>Open in Google Slides (new tab)</p></div><a href="${EDIT_BASE.replace('ID', d.slideEditId)}" target="_blank" class="btn-download">Open in new tab ↗</a></div></div></div>`;
+}
+function renderVideoOnly(d) {
+    return `<div class="single-video"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe></div></div><a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div><div class="description-text"><p>${d.desc}</p><div class="info-grid"><p>${d.topics}</p></div></div><div class="downloads-section"><h3>📥 Downloads</h3><div class="no-material">📝 No reading material available for this session.</div></div>`;
+}
+function renderSlidesOnly(d) {
+    return `<div class="single-slides"><div class="slides-container"><div class="slides-wrapper"><iframe src="${d.slideEmbed}" allowfullscreen></iframe></div></div><div class="slide-hint">📌 Use <strong>arrow buttons</strong> to navigate. Click <strong>Fullscreen</strong> for best view.</div></div><div class="downloads-section"><h3>📥 Downloads</h3><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 ${d.title} - Lecture Slides</h4><p>Open in Google Slides (new tab)</p></div><a href="${EDIT_BASE.replace('ID', d.slideEditId)}" target="_blank" class="btn-download">Open in new tab ↗</a></div></div></div>`;
+}
+
+function renderQuiz(slideId) {
+    const body = document.getElementById('quizBody');
+    const footer = document.getElementById('quizFooter');
+    const errorEl = document.getElementById('quizError');
+    const completedBadge = document.getElementById('quizCompletedBadge');
+    const submitBtn = document.getElementById('quizSubmitBtn');
+    const scoreEl = document.getElementById('quizScore');
+
+    errorEl.style.display = 'none';
+    completedBadge.style.display = 'none';
+
+    const qData = quizzes[slideId];
+
+    if (!qData || qData.length === 0) {
+        body.innerHTML = '<div class="quiz-no-quiz"><span>📝</span>No quiz available for this lecture yet.</div>';
+        footer.style.display = 'none';
+        return;
+    }
+
+    let html = '';
+    qData.forEach((q, qi) => {
+        html += `<div class="quiz-question" id="qq_${qi}"><span class="quiz-q-num">QUESTION ${qi + 1} OF ${qData.length}</span><div class="quiz-q-text">${escapeHtml(q.question)}</div><div class="quiz-options">`;
+        q.options.forEach((opt, oi) => {
+            html += `<label class="quiz-option" id="qopt_${qi}_${oi}" onclick="selectOption(${qi}, ${oi})"><input type="radio" name="quiz_q${qi}" value="${oi}">${escapeHtml(opt)}</label>`;
+        });
+        html += '</div></div>';
+    });
+    body.innerHTML = html;
+    footer.style.display = 'flex';
+    scoreEl.innerHTML = '';
+    submitBtn.textContent = 'Submit Quiz';
+    submitBtn.disabled = false;
+
+    if (quizCompleted[slideId]) {
+        completedBadge.style.display = 'inline-block';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitted ✓';
+        scoreEl.innerHTML = `Score: <strong>${quizCompleted[slideId].score}/${qData.length}</strong>`;
+        quizCompleted[slideId].answers.forEach((ans, qi) => {
+            const q = qData[qi];
+            document.getElementById(`qopt_${qi}_${ans.selected}`).classList.add(ans.selected === q.correct ? 'correct-answer' : 'wrong-answer');
+            if (ans.selected !== q.correct) {
+                document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
+            }
+            document.querySelectorAll(`#qq_${qi} .quiz-option`).forEach(el => el.style.pointerEvents = 'none');
+            document.getElementById(`qq_${qi}`).querySelector('input[type="radio"]').checked = false;
+        });
+    }
+}
+
+function selectOption(qi, oi) {
+    const slideId = currentSlideId;
+    if (quizCompleted[slideId]) return;
+    const qData = quizzes[slideId];
+    qData[qi].options.forEach((_, i) => {
+        document.getElementById(`qopt_${qi}_${i}`).classList.remove('selected');
+    });
+    document.getElementById(`qopt_${qi}_${oi}`).classList.add('selected');
+    document.getElementById(`qopt_${qi}_${oi}`).querySelector('input').checked = true;
+    document.getElementById(`qq_${qi}`).classList.remove('unanswered-highlight');
+}
+
+document.getElementById('quizSubmitBtn').addEventListener('click', function() {
+    const slideId = currentSlideId;
+    const qData = quizzes[slideId];
+    if (!qData) return;
+
+    const errorEl = document.getElementById('quizError');
+    let allAnswered = true;
+    const answers = [];
+
+    qData.forEach((q, qi) => {
+        const selected = document.querySelector(`input[name="quiz_q${qi}"]:checked`);
+        if (!selected) {
+            allAnswered = false;
+            document.getElementById(`qq_${qi}`).classList.add('unanswered-highlight');
+        } else {
+            answers.push({ selected: parseInt(selected.value) });
+            document.getElementById(`qq_${qi}`).classList.remove('unanswered-highlight');
+        }
+    });
+
+    if (!allAnswered) {
+        errorEl.style.display = 'block';
+        return;
+    }
+    errorEl.style.display = 'none';
+
+    let score = 0;
+    answers.forEach((ans, qi) => {
+        const q = qData[qi];
+        const isCorrect = ans.selected === q.correct;
+        if (isCorrect) score++;
+
+        document.getElementById(`qopt_${qi}_${ans.selected}`).classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
+        if (!isCorrect) {
+            document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
+        }
+        document.querySelectorAll(`#qq_${qi} .quiz-option`).forEach(el => el.style.pointerEvents = 'none');
+    });
+
+    quizCompleted[slideId] = { score, answers };
+
+    document.getElementById('quizSubmitBtn').disabled = true;
+    document.getElementById('quizSubmitBtn').textContent = 'Submitted ✓';
+    document.getElementById('quizScore').innerHTML = `Score: <strong>${score}/${qData.length}</strong>`;
+    document.getElementById('quizCompletedBadge').style.display = 'inline-block';
+});
+
+let currentSlideId = 'v1';
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function updateNavButtons(slideId) {
+    const idx = slideOrder.indexOf(slideId);
+    prevBtn.disabled = idx <= 0;
+    nextBtn.disabled = idx >= slideOrder.length - 1;
+}
+
+prevBtn.addEventListener('click', function() {
+    const idx = slideOrder.indexOf(currentSlideId);
+    if (idx > 0) { activate(slideOrder[idx - 1]); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+nextBtn.addEventListener('click', function() {
+    const idx = slideOrder.indexOf(currentSlideId);
+    if (idx < slideOrder.length - 1) { activate(slideOrder[idx + 1]); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const idx = slideOrder.indexOf(currentSlideId);
+    if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); activate(slideOrder[idx - 1]); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (e.key === 'ArrowRight' && idx < slideOrder.length - 1) { e.preventDefault(); activate(slideOrder[idx + 1]); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+function activate(slideId) {
+    currentSlideId = slideId;
+    const area = document.getElementById('content-area');
+    const badge = document.getElementById('slide-badge');
+    const titleEl = document.getElementById('slide-title');
+    const subEl = document.getElementById('slide-sub');
+    const d = items[slideId];
+    if (!d) return;
+
+    badge.textContent = d.badge;
+    badge.className = 'lesson-badge ' + d.badgeClass;
+    titleEl.textContent = d.title;
+    subEl.textContent = d.sub;
+    if (d.type === 'side-by-side') area.innerHTML = renderSideBySide(d);
+    else if (d.type === 'video-only') area.innerHTML = renderVideoOnly(d);
+    else area.innerHTML = renderSlidesOnly(d);
+
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const active = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
+    if (active) active.classList.add('active');
+
+    updateNavButtons(slideId);
+    renderQuiz(slideId);
+    loadComments(slideId);
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => { const id = item.getAttribute('data-slide'); if (id) activate(id); });
+});
+
+const commentFab = document.getElementById('commentFab');
+const commentPanel = document.getElementById('commentPanel');
+const cmtName = document.getElementById('cmtName');
+const cmtMsg = document.getElementById('cmtMsg');
+const cmtSendBtn = document.getElementById('cmtSendBtn');
+const cmtList = document.getElementById('cmtList');
+const cmtEmpty = document.getElementById('cmtEmpty');
+const cmtStatus = document.getElementById('cmtStatus');
+const cmtFabBadge = document.getElementById('commentFabBadge');
+
+const savedCmtName = localStorage.getItem('cd_comment_name');
+if (savedCmtName) cmtName.value = savedCmtName;
+
+commentFab.addEventListener('click', () => {
+    commentPanel.classList.toggle('open');
+});
+document.getElementById('commentPanelClose').addEventListener('click', () => {
+    commentPanel.classList.remove('open');
+});
+
+function updateCmtForm() {
+    cmtSendBtn.disabled = !(cmtName.value.trim() && cmtMsg.value.trim());
+}
+cmtName.addEventListener('input', updateCmtForm);
+cmtMsg.addEventListener('input', updateCmtForm);
+cmtMsg.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
+
+const avatarColors = ['#02b3e4','#673ab7','#e91e63','#ff5722','#4caf50','#009688','#795548','#607d8b','#f44336','#3f51b5','#00bcd4','#8bc34a'];
+function getAvatarColor(n) { let h=0; for(let i=0;i<n.length;i++) h=n.charCodeAt(i)+((h<<5)-h); return avatarColors[Math.abs(h)%avatarColors.length]; }
+function getInitials(n) { const p=n.trim().split(/\s+/); return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():n.substring(0,2).toUpperCase(); }
+function timeAgo(d) { const n=new Date(),t=new Date(d),s=Math.floor((n-t)/1000); if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return t.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function escapeHtml(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+
+function renderCmtItem(c) {
+    return `<div class="cmt-item"><div class="cmt-avatar" style="background:${getAvatarColor(c.name)}">${getInitials(c.name)}</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">${escapeHtml(c.name)}</span><span class="cmt-time">${timeAgo(c.timestamp)}</span></div><div class="cmt-text">${escapeHtml(c.message)}</div></div></div>`;
+}
+
+async function loadComments(slideId) {
+    try {
+        const res = await fetch(COMMENTS_SCRIPT_URL + '?type=comments&slideId=' + encodeURIComponent(slideId));
+        const data = await res.json();
+        const comments = data.comments || [];
+        cmtList.innerHTML = '';
+        cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
+        cmtFabBadge.textContent = comments.length;
+        if (comments.length === 0) {
+            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>';
+        } else {
+            comments.reverse().forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
+        }
+    } catch (e) {
+        const cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
+        const comments = (cached[slideId] || []).reverse();
+        cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
+        cmtFabBadge.textContent = comments.length;
+        if (comments.length === 0) {
+            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>';
+        } else {
+            comments.forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
+        }
+    }
+}
+
+cmtSendBtn.addEventListener('click', async function() {
+    const name = cmtName.value.trim();
+    const message = cmtMsg.value.trim();
+    if (!name || !message) return;
+
+    cmtSendBtn.disabled = true;
+    cmtSendBtn.textContent = 'Sending...';
+
+    const commentData = { slideId: currentSlideId, name, message, timestamp: new Date().toISOString() };
+
+    try {
+        await fetch(COMMENTS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentData) });
+
+        localStorage.setItem('cd_comment_name', name);
+        cmtEmpty.style.display = 'none';
+        cmtList.insertAdjacentHTML('afterbegin', renderCmtItem(commentData));
+        const count = parseInt(cmtFabBadge.textContent || '0') + 1;
+        cmtFabBadge.textContent = count;
+        cmtFabBadge.style.display = 'flex';
+
+        const cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
+        if (!cached[currentSlideId]) cached[currentSlideId] = [];
+        cached[currentSlideId].push(commentData);
+        localStorage.setItem('cd_comments_cache', JSON.stringify(cached));
+
+        cmtMsg.value = '';
+        cmtMsg.style.height = 'auto';
+        updateCmtForm();
+        cmtStatus.textContent = '✓ Posted!';
+        cmtStatus.style.display = 'block';
+        cmtStatus.style.color = '#137333';
+        cmtStatus.style.background = 'var(--message-success-bg)';
+        setTimeout(() => { cmtStatus.style.display = 'none'; }, 2500);
+    } catch (e) {
+        cmtStatus.textContent = '✕ Failed. Try again.';
+        cmtStatus.style.display = 'block';
+        cmtStatus.style.color = 'var(--error-fg)';
+        cmtStatus.style.background = 'var(--message-error-bg)';
+        setTimeout(() => { cmtStatus.style.display = 'none'; }, 2500);
+    }
+
+    cmtSendBtn.disabled = false;
+    cmtSendBtn.textContent = 'Send ➤';
+    updateCmtForm();
+});
+
+// Init
+activate('v1');
+</script>
 </body>
 </html>
