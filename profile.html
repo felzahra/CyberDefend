@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Profile</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; height: 100vh; overflow-y: auto; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content { max-width: 1000px; margin: 40px auto; padding: 0 20px; width: 100%; }
+        .page-header { margin-bottom: 30px; }
+        .page-header h1 { font-size: 2rem; color: var(--body-loud-color); margin-bottom: 8px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 0.95rem; }
+
+        .profile-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .profile-info { display: flex; align-items: center; gap: 20px; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(145deg, var(--primary), #03a9f4); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary-fg); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .profile-details h2 { font-size: 1.4rem; color: var(--body-loud-color); margin-bottom: 8px; }
+        .profile-details p { font-size: 0.9rem; color: var(--body-quiet-color); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .profile-actions { display: flex; flex-direction: column; gap: 10px; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--body-fg); padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .achievement-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 10px; background: var(--input-bg); border-radius: 10px; }
+        .badge-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(0, 230, 118, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .achievement-text h4 { font-size: 0.9rem; color: var(--body-fg); }
+        .achievement-text p { font-size: 0.75rem; color: var(--body-quiet-color); }
+
+        .cert-item { margin-bottom: 15px; padding: 15px; background: var(--input-bg); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .cert-info h4 { font-size: 0.9rem; color: var(--body-fg); margin-bottom: 5px; }
+        .cert-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
+        .cert-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(0, 230, 118, 0.1); color: var(--primary); }
+        .cert-status.progress { background: rgba(250, 176, 5, 0.1); color: #fab005; }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 780px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .grid-2-col { grid-template-columns: 1fr; }
+            .profile-card { flex-direction: column; text-align: center; }
+            .profile-info { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="library.html">Library</a>
+        <a href="messages.html">Messages</a>
+        <a href="profile.html" class="active">Profile</a>
+        <a href="settings.html">Settings</a>
+        <a href="admin.html">Admin</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="page-header">
+        <h1>My Profile</h1>
+        <p>Manage your account details, achievements, and certificate progress.</p>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-info">
+            <div class="profile-avatar">FA</div>
+            <div class="profile-details">
+                <h2>Fatma Alzahra AlAgery</h2>
+                <p>📧 fatmaagery@example.com</p>
+                <p>📍 Damietta, Egypt</p>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <button class="btn-outline">Edit Profile</button>
+            <button class="btn-outline">Change Password</button>
+        </div>
+    </div>
+
+    <div class="grid-2-col">
+        <div class="card">
+            <h3>🏆 Achievements</h3>
+            
+            <div class="achievement-item">
+                <div class="badge-icon">🥇</div>
+                <div class="achievement-text">
+                    <h4>Cybersecurity Champion</h4>
+                    <p>Completed Introduction to Cybersecurity</p>
+                </div>
+            </div>
+
+            <div class="achievement-item">
+                <div class="badge-icon">⚡</div>
+                <div class="achievement-text">
+                    <h4>Fast Learner</h4>
+                    <p>Finished 3 modules in one day</p>
+                </div>
+            </div>
+
+            <div class="achievement-item">
+                <div class="badge-icon">🛡️</div>
+                <div class="achievement-text">
+                    <h4>Threat Hunter</h4>
+                    <p>Passed SIEM & Threat Hunting Lab</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🎓 Certificates</h3>
+            
+            <div class="cert-item">
+                <div class="cert-info">
+                    <h4>AWS Cloud Foundation</h4>
+                    <p>Completed • Aug 2026</p>
+                </div>
+                <div class="cert-status">Download</div>
+            </div>
+
+            <div class="cert-item">
+                <div class="cert-info">
+                    <h4>DPA Summer Training</h4>
+                    <p>Completed • Jul 2026</p>
+                </div>
+                <div class="cert-status">Download</div>
+            </div>
+
+            <div class="cert-item">
+                <div class="cert-info">
+                    <h4>Advanced Cybersecurity</h4>
+                    <p>In Progress • 75%</p>
+                </div>
+                <div class="cert-status progress">Pending</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+</body>
+</html>
