@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend Academy · Profile</title>
+    <title>CyberDefend Academy · Submit Task</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
@@ -18,7 +18,6 @@
             --hairline-color: #272727;
             --border-color: #353535;
             --darkened-bg: #1e1e1e;
-            --selected-bg: #2a2a2a;
             --header-bg: #1a1a1a;
             --input-bg: #242424;
         }
@@ -34,13 +33,12 @@
             --hairline-color: #e6edf4;
             --border-color: #eef2f8;
             --darkened-bg: #ffffff;
-            --selected-bg: #e9f4fa;
             --header-bg: #ffffff;
             --input-bg: #f9fbfe;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; height: 100vh; overflow-y: auto; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
         /* ========== TOP NAVIGATION BAR ========== */
         .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
@@ -56,33 +54,23 @@
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
 
         /* ========== MAIN CONTENT ========== */
-        .main-content { max-width: 1000px; margin: 40px auto; padding: 0 20px; width: 100%; }
-        .page-header { margin-bottom: 30px; }
-        .page-header h1 { font-size: 2rem; color: var(--body-loud-color); margin-bottom: 8px; }
-        .page-header p { color: var(--body-quiet-color); font-size: 0.95rem; }
+        .main-content { max-width: 800px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+        .page-header { text-align: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 2rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; }
 
-        .profile-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .profile-info { display: flex; align-items: center; gap: 20px; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(145deg, var(--primary), #03a9f4); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary-fg); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .profile-details h2 { font-size: 1.4rem; color: var(--body-loud-color); margin-bottom: 8px; }
-        .profile-details p { font-size: 0.9rem; color: var(--body-quiet-color); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-        .profile-actions { display: flex; flex-direction: column; gap: 10px; }
-        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--body-fg); padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        /* Status Check Card */
+        .status-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 24px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .status-info { flex: 1; min-width: 200px; }
+        .status-info h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .status-info p { font-size: 0.85rem; color: var(--body-quiet-color); }
+        .status-btn { background: var(--primary); color: var(--primary-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; }
+        .status-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
-        .card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .card h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
-        .achievement-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 10px; background: var(--input-bg); border-radius: 10px; }
-        .badge-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(0, 230, 118, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .achievement-text h4 { font-size: 0.9rem; color: var(--body-fg); }
-        .achievement-text p { font-size: 0.75rem; color: var(--body-quiet-color); }
-
-        .cert-item { margin-bottom: 15px; padding: 15px; background: var(--input-bg); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .cert-info h4 { font-size: 0.9rem; color: var(--body-fg); margin-bottom: 5px; }
-        .cert-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
-        .cert-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(0, 230, 118, 0.1); color: var(--primary); }
-        .cert-status.progress { background: rgba(250, 176, 5, 0.1); color: #fab005; }
+        /* Form Container */
+        .form-container { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 10px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); overflow: hidden; }
+        .iframe-wrapper { position: relative; width: 100%; height: 900px; overflow: hidden; border-radius: 12px; background: var(--body-bg); }
+        .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
 
         /* ========== FOOTER ========== */
         footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
@@ -99,13 +87,9 @@
         @media (max-width: 780px) {
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
-            .top-nav-links a { font-size: 0.8rem; }
-            .grid-2-col { grid-template-columns: 1fr; }
-            .profile-card { flex-direction: column; text-align: center; }
-            .profile-info { flex-direction: column; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
             .footer-col h3 { justify-content: center; }
-            .footer-col ul { padding: 0; }
+            .iframe-wrapper { height: 1200px; }
         }
     </style>
 </head>
@@ -128,11 +112,8 @@
     <div class="top-nav-links">
         <a href="index.html">Dashboard</a>
         <a href="courses.html">Courses</a>
-        <a href="library.html">Library</a>
-        <a href="messages.html">Messages</a>
-        <a href="profile.html" class="active">Profile</a>
-        <a href="settings.html">Settings</a>
-        <a href="admin.html">Admin</a>
+        <a href="messages.html" class="active">Messages</a>
+        <a href="profile.html">Profile</a>
         <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
@@ -140,80 +121,24 @@
 <!-- MAIN CONTENT -->
 <div class="main-content">
     <div class="page-header">
-        <h1>My Profile</h1>
-        <p>Manage your account details, achievements, and certificate progress.</p>
+        <h1>📝 Tasks & Submissions</h1>
+        <p>Submit your assignments and track your admission progress easily.</p>
     </div>
 
-    <div class="profile-card">
-        <div class="profile-info">
-            <div class="profile-avatar">FA</div>
-            <div class="profile-details">
-                <h2>Fatma Alzahra AlAgery</h2>
-                <p>📧 fatmaagery@example.com</p>
-                <p>📍 Damietta, Egypt</p>
-            </div>
+    <!-- CHECK STATUS CARD -->
+    <div class="status-card">
+        <div class="status-info">
+            <h3>📊 Check Admission Progress</h3>
+            <p>Click the button to view the tracking sheet and verify if your task has been submitted and graded.</p>
         </div>
-        <div class="profile-actions">
-            <button class="btn-outline">Edit Profile</button>
-            <button class="btn-outline">Change Password</button>
-        </div>
+        <a href="https://docs.google.com/spreadsheets/d/1WhE84NDLELNA1kg8RXs8Hg3BF1vB7Oc4hKbY8l1EMsw/edit?usp=sharing" target="_blank" class="status-btn">View Progress Sheet</a>
     </div>
 
-    <div class="grid-2-col">
-        <div class="card">
-            <h3>🏆 Achievements</h3>
-            
-            <div class="achievement-item">
-                <div class="badge-icon">🥇</div>
-                <div class="achievement-text">
-                    <h4>Cybersecurity Champion</h4>
-                    <p>Completed Introduction to Cybersecurity</p>
-                </div>
-            </div>
-
-            <div class="achievement-item">
-                <div class="badge-icon">⚡</div>
-                <div class="achievement-text">
-                    <h4>Fast Learner</h4>
-                    <p>Finished 3 modules in one day</p>
-                </div>
-            </div>
-
-            <div class="achievement-item">
-                <div class="badge-icon">🛡️</div>
-                <div class="achievement-text">
-                    <h4>Threat Hunter</h4>
-                    <p>Passed SIEM & Threat Hunting Lab</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>🎓 Certificates</h3>
-            
-            <div class="cert-item">
-                <div class="cert-info">
-                    <h4>AWS Cloud Foundation</h4>
-                    <p>Completed • Aug 2026</p>
-                </div>
-                <div class="cert-status">Download</div>
-            </div>
-
-            <div class="cert-item">
-                <div class="cert-info">
-                    <h4>DPA Summer Training</h4>
-                    <p>Completed • Jul 2026</p>
-                </div>
-                <div class="cert-status">Download</div>
-            </div>
-
-            <div class="cert-item">
-                <div class="cert-info">
-                    <h4>Advanced Cybersecurity</h4>
-                    <p>In Progress • 75%</p>
-                </div>
-                <div class="cert-status progress">Pending</div>
-            </div>
+    <!-- GOOGLE FORM EMBED -->
+    <div class="form-container">
+        <div class="iframe-wrapper">
+            <!-- Google Form embedded directly -->
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM_bxIUo7HoLJZSpQn44fkDktSo4eT27HXbwydYNjbGoa1qw/viewform?embedded=true" style="width: 100%; height: 100%; border: none;">Loading…</iframe>
         </div>
     </div>
 </div>
@@ -230,7 +155,7 @@
             <ul>
                 <li><a href="index.html">Dashboard</a></li>
                 <li><a href="courses.html">Courses</a></li>
-                <li><a href="library.html">Library</a></li>
+                <li><a href="messages.html">Messages</a></li>
                 <li><a href="profile.html">Profile</a></li>
             </ul>
         </div>
