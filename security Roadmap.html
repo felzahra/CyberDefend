@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend Academy · Damietta Port Authority</title>
+    <title>CyberDefend Academy · Cybersecurity Roadmap</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -91,12 +91,8 @@
         /* Large Stacked Figures */
         .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
         .large-figure:hover { border-color: var(--primary); }
-        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 450px; background: var(--body-bg); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 800px; background: var(--body-bg); }
         .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
-
-        .center-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem 0; }
-        .center-figure img { max-width: 100%; border-radius: 10px; border: 1px solid var(--hairline-color); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .center-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 0.75rem; text-align: center; font-style: italic; }
 
         /* Custom Alert Box */
         .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
@@ -132,8 +128,6 @@
             .footer-col h3 { justify-content: center; }
             .footer-col ul { padding: 0; }
             .lesson-nav { flex-direction: column; gap: 15px; }
-            
-            /* Sidebar becomes horizontal/full width on mobile */
             .main-content { flex-direction: column; }
             .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
         }
@@ -159,7 +153,7 @@
         <a href="index.html">Dashboard</a>
         <a href="courses.html">Courses</a>
         <a href="messages.html">📝 Tasks & Submissions</a>
-        <a href="labs.html" class="active">Labs</a>
+        <a href="labs.html">Labs</a>
         <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
@@ -174,12 +168,12 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="network Roadmap.html">Network Roadmap</a></li>
-                <li><a href="security Roadmap.html">Security Roadmap</a></li>
+                <li><a href="network-roadmap.html">Network Roadmap</a></li>
+                <li><a href="security-roadmap.html" class="active">Security Roadmap</a></li>
                 <li><a href="labs.html">1. Networking Labs Overview</a></li>
                 <li><a href="nessus.html">2. Nessus Vulnerability Assessment</a></li>
                 <li><a href="damietta-port.html">3. Damietta Port Authority</a></li>
-                <li><a href="lesson-4.html">4. Lesson Four Title</a></li>
+                <li><a href="kali-tools.html">4. Top 50 Kali Linux Tools</a></li>
                 <li><a href="lesson-5.html">5. Lesson Five Title</a></li>
             </ul>
         </nav>
@@ -188,273 +182,145 @@
     <!-- RIGHT CONTENT AREA -->
     <div class="content-area">
         <div class="page-header">
-            <h1>Damietta Port Authority</h1>
-            <p>Implementing a robust routing and switching infrastructure to connect Damietta Port's massive facilities and operations.</p>
+            <h1>Cybersecurity Roadmap</h1>
+            <p>Essential resources, platforms, and foundational knowledge to guide your journey from beginner to advanced cybersecurity professional.</p>
         </div>
 
-        <!-- Section 1: Overview & Scale -->
-        <section id="overview" class="mb-5">
-            <h2 class="section-title">Port Overview & Geography</h2>
-            <p class="text-block">The Damietta Port Authority requires a highly available, scalable, and secure network to manage ship traffic, cargo logistics, and administrative operations. Given the massive geographical scale of the port, network design must account for long-distance connectivity and harsh outdoor environments.</p>
+        <!-- Section 1: Top 10 Websites -->
+        <section id="top-websites" class="mb-5">
+            <h2 class="section-title">Top 10 Websites for Cybersecurity Learners</h2>
+            <p class="text-block">To succeed in cybersecurity, theoretical knowledge must be paired with hands-on practice. The following platforms represent the best places to safely learn, practice, and test your skills in real-world scenarios.</p>
             
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e18be2a6-09f5-4f58-a1ec-6505c8a68566.png?auth_key=1886102701-213497e28d3d40dc9e08483607d65959-0-960df9188e338ea5250b58088590dea8" alt="Port Aerial View">
-                <figcaption>Figure 1: Aerial view showing the massive geographical scale and distances (up to 12.5km) covered by the port network.</figcaption>
+                <img src="https://z-cdn-media.chatglm.cn/files/81744589-7083-4822-92d9-d9ddcb87c974.png?auth_key=1886112302-c7f9d6194cfe48418016ea715f8892dd-0-cb097f159ea1817130e414bd441dc393" alt="Top 10 Cybersecurity Websites Poster">
+                <figcaption>Figure 1: A visual guide to the top 10 websites every cybersecurity learner should know.</figcaption>
             </figure>
 
-            <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/439cad78-7044-4f46-9489-c48dca2b6f32.png?auth_key=1886102701-00e2d2d428aa4dc69586de04f4d8ba05-0-52b19064f8ef2c48227af719ad3c5a59" alt="Port Layout Map">
-                <figcaption>Figure 2: Detailed layout of docks, water basins, berths (BR01-BR30), and waiting areas requiring dense network coverage.</figcaption>
-            </figure>
-        </section>
-
-        <!-- Section 2: Used Network Devices -->
-        <section id="devices" class="mb-5">
-            <h2 class="section-title">Network Infrastructure Devices</h2>
-            <p class="text-block">To achieve reliable connectivity across the port, a hierarchical network model is deployed using enterprise-grade routing and switching equipment.</p>
-            
             <div class="image-grid">
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/a4d4106c-69fb-43b6-a2d5-e3c21e3f9919.png?auth_key=1886102701-3da9a3e414d0416e84ce3661cbb359a2-0-0a2cbfd4ef231369db90cafaca4b12c7" class="figure-img" alt="Cisco 891F Router" style="object-fit: contain;">
                     <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-router"></i></div>
-                        <p class="figure-caption">Cisco 891F Router: Used for secure routing between different port zones and external networks.</p>
+                        <div class="figure-icon"><i class="fas fa-flask"></i></div>
+                        <p class="figure-caption"><strong>TryHackMe</strong><br>Beginner-friendly hands-on labs and learning paths covering a wide range of cybersecurity topics.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/0c83a42b-4cba-4113-a023-74d7eb7f49f7.png?auth_key=1886102701-84d7e4f7babb4f3ea143ee88748cd64c-0-39e86d0fe901e945c3fbe1825a135781" class="figure-img" alt="Access Switch" style="object-fit: contain;">
                     <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
-                        <p class="figure-caption">Edge/Access Switch: Connects end users, cameras, and sensors at the docks.</p>
+                        <div class="figure-icon"><i class="fas fa-cube"></i></div>
+                        <p class="figure-caption"><strong>Hack The Box</strong><br>Advanced penetration testing labs and real-world machines for hands-on hackers.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/3f9084fd-a34e-47b2-a61f-754ac1614180.png?auth_key=1886102701-d528699247124365bee775c7df9a4dd6-0-0f703559232599550cbcaaebd6f2aa08" class="figure-img" alt="Distribution Switch" style="object-fit: contain;">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-globe"></i></div>
+                        <p class="figure-caption"><strong>PortSwigger Web Security Academy</strong><br>The industry standard for learning web vulnerability exploitation and mitigation.</p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <p class="figure-caption"><strong>Cybrary</strong><br>Comprehensive courses and certification prep for IT and security professionals.</p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-bug"></i></div>
+                        <p class="figure-caption"><strong>VulnHub</strong><br>Downloadable vulnerable virtual machines to practice locally in your own lab.</p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-shield-alt"></i></div>
+                        <p class="figure-caption"><strong>OWASP</strong><br>The Open Worldwide Application Security Project, providing unbiased resources for web security.</p>
+                    </div>
+                </figure>
+            </div>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Conclusion: Building Practical Skills is Key</h4>
+                <p>Reading about cybersecurity is not enough. You must actively apply what you learn in safe, legal environments. Ethical hacking requires a deep understanding of both the attack techniques and the defensive countermeasures.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Types of Malware -->
+        <section id="malware-types" class="mb-5">
+            <h2 class="section-title">Understanding Types of Malware</h2>
+            <p class="text-block">Malware (malicious software) is any software intentionally designed to cause damage to a computer, server, client, or computer network. It can steal data, bypass access controls, or disrupt operations. Below is a breakdown of the most common types of malware.</p>
+            
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/fe21beab-bd2a-425d-b39a-e17b45b5571f.png?auth_key=1886112302-d1ae1bbefa334cac879d5fe929cbbd3e-0-ecdfee0f9856a49b7f77dddc7f51e137" alt="Types of Malware Diagram">
+                <figcaption>Figure 2: Classification of common malware types, their functions, and examples.</figcaption>
+            </figure>
+
+            <div class="image-grid">
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-virus"></i></div>
+                        <p class="figure-caption"><strong>Virus</strong><br>Attaches itself to clean files and requires a host program to run. Spreads when the infected file is executed.<br><em>Examples: Melissa, CIH</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-worm"></i></div>
+                        <p class="figure-caption"><strong>Worm</strong><br>Self-replicating malware that spreads across networks without needing to attach to a host file.<br><em>Examples: Conficker, Stuxnet</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-horse"></i></div>
+                        <p class="figure-caption"><strong>Trojan</strong><br>Disguises itself as legitimate software to trick users into executing it, creating backdoors.<br><em>Examples: Zeus, Emotet</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-lock"></i></div>
+                        <p class="figure-caption"><strong>Ransomware</strong><br>Encrypts the victim's files and demands a ransom payment in exchange for the decryption key.<br><em>Examples: WannaCry, Ryuk</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-user-secret"></i></div>
+                        <p class="figure-caption"><strong>Spyware</strong><br>Operates secretly in the background to monitor user activity and collect sensitive data.<br><em>Examples: CoolWebSearch, FinFisher</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-mask"></i></div>
+                        <p class="figure-caption"><strong>Rootkit</strong><br>Hides deep within the operating system to maintain privileged access while evading detection.<br><em>Examples: TDSS, ZeroAccess</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-keyboard"></i></div>
+                        <p class="figure-caption"><strong>Keylogger</strong><br>Secretly records every keystroke made by the user, often used to steal passwords and financial data.<br><em>Examples: Ardamax, Elite Keylogger</em></p>
+                    </div>
+                </figure>
+                <figure class="figure">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-network-wired"></i></div>
-                        <p class="figure-caption">Distribution Switch: Aggregates traffic from access switches and provides routing between VLANs.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/4bcf9359-b889-4bf4-b06a-582caa16a2c5.png?auth_key=1886102701-b7d29a0e1833407ea456745f14b726b5-0-8c1f780cadfe4994406ee4ee4c486aa0" class="figure-img" alt="Core Switch" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-server"></i></div>
-                        <p class="figure-caption">HP 10504 Core Switch: The high-capacity backbone of the port network, handling all major traffic routing.</p>
+                        <p class="figure-caption"><strong>Botnet</strong><br>A network of infected computers (zombies) controlled remotely by an attacker to launch DDoS attacks or send spam.<br><em>Examples: Mirai, Zeus Botnet</em></p>
                     </div>
                 </figure>
             </div>
-        </section>
 
-        <!-- Section 3: Access Layer & IP Phone Bridging -->
-        <section id="access-layer" class="mb-5">
-            <h2 class="section-title">Access Layer & IP Phone Bridging</h2>
-            <p class="text-block">In each area, a Distribution switch connects multiple Access switches. End users have a computer and an IP Phone on their desks. To simplify cabling, a single UTP cable runs from the switch to the IP Phone. The IP Phone then acts as a bridge, connecting the user's PC to the network through the same cable. Patch Panels are used in the server rooms to organize all these incoming cables before plugging them into the switch ports.</p>
-            
-            <div class="image-grid">
-                <figure class="figure">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZWFRknN_gIMlqt4TwV9DbJW8oQARQmLLHfrqcfsiJMg&s=10" class="figure-img" alt="Structured Cabling Diagram" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-project-diagram"></i></div>
-                        <p class="figure-caption">Structured cabling diagram showing Wall Jacks connecting to the Patch Panel, then to the Switch.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/b62089c5-a56a-40be-82e5-5ab047252b9d.png?auth_key=1886105636-f9ef4270e1444ee28843bb9755878a98-0-2d3f54d89be7970e2ffd59fc53e70b5e" class="figure-img" alt="Avaya IP Phone" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-phone"></i></div>
-                        <p class="figure-caption">Avaya IP Phone: Acts as a bridge to connect the PC to the network using a single drop cable.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/15c2e437-9d28-4276-857a-be774e10f78d.png?auth_key=1886105636-d080120563884bae9bf186ffa0538ccd-0-92c16088b14f3f714575be78851624f5" class="figure-img" alt="IP Phone Cabling" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-plug"></i></div>
-                        <p class="figure-caption">Connecting the button module and network cables to the Avaya IP Phone.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/9f55554a-a9ca-48ff-86e7-cbe0d01b153a.png?auth_key=1886103527-c85069a98fae4642ab69fce69582de99-0-17b76ed178e2db7b83427bbddf7cbe49" class="figure-img" alt="Switch Port Cabling" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
-                        <p class="figure-caption">Physical switch ports connected with labeled UTP cables for organized network access.</p>
-                    </div>
-                </figure>
-            </div>
-        </section>
-
-        <!-- Section 4: Network Cables & Testing Tools -->
-        <section id="cables-tools" class="mb-5">
-            <h2 class="section-title">Network Cables & Testing Tools</h2>
-            <p class="text-block">Network engineers rely on various tools for installation and troubleshooting. Cable testers are used for UTP continuity checks, console cables for direct device configuration, and fiber identifiers for optical signal testing.</p>
-            
-            <div class="image-grid">
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/05b978c2-acbf-4333-9316-876ec989d68e.png?auth_key=1886103849-640dc6368fad453794d1a819b42a4ee2-0-c1babd29a932ec7497636f3883dcbc4b" class="figure-img" alt="UTP Cable" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-plug"></i></div>
-                        <p class="figure-caption">RJ-45 UTP Cable: Standard copper cable for local area network connections.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/1203afa7-16fb-49b9-8415-a536647cdb3e.png?auth_key=1886103849-43f2f73318974186a82a865b966c27a2-0-b66a35d59737145b93e19be35fc3f950" class="figure-img" alt="Console Cable" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-terminal"></i></div>
-                        <p class="figure-caption">Console Cable (RS232 to RJ45): Used for direct terminal access to configure routers and switches.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/1cd90966-1d0f-4eab-b036-a85d885a9882.png?auth_key=1886103849-f81ce9242b104557ae1f3271229b48c0-0-22fe462815e6903bb70d1af73b471bb0" class="figure-img" alt="Cable Tester" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-toolbox"></i></div>
-                        <p class="figure-caption">Cable Tester: Handheld tool used to verify the pinouts and continuity of UTP cables.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/f4a58c33-5d7f-439f-9e28-b5f81706f3bb.png?auth_key=1886103849-1a1eada2505048c2b40f53af0ce7fc22-0-39b44ccec833c2d11cc9217659b8b8f4" class="figure-img" alt="Fiber Optic Strands" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-bolt"></i></div>
-                        <p class="figure-caption">Fiber Optic Strands: Transmitting data via light for high-speed, long-distance links.</p>
-                    </div>
-                </figure>
-            </div>
-        </section>
-
-        <!-- Section 5: Fiber Optic Infrastructure & SFP Modules -->
-        <section id="fiber-infrastructure" class="mb-5">
-            <h2 class="section-title">Fiber Optic Infrastructure, SFP Modules & Splicing</h2>
-            <p class="text-block">To interconnect the vast six areas of the port, fiber optic cabling is essential. Switches use <strong>SFP (Small Form-factor Pluggable)</strong> transceiver modules to convert electrical signals into light signals. For long cable runs, fiber segments are fused together using <strong>Splicing</strong> machines.</p>
-            
-            <div class="image-grid">
-                <figure class="figure">
-                    <img src="https://m.media-amazon.com/images/I/71fsC05P1GL._AC_SL1500_.jpg" class="figure-img" alt="Inserting SFP Module" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-memory"></i></div>
-                        <p class="figure-caption">Inserting an SFP Module: Transceivers are hot-swapped into switches to enable fiber uplinks.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/3a7f94ff-7ebc-41c7-96ac-c20597928094.png?auth_key=1886103527-f9a7f3da11814acbbf7b9f7795ce8204-0-82b1557bcce6dbd15f631d2845365c52" class="figure-img" alt="Fiber Switch Connections" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
-                        <p class="figure-caption">Active Fiber Connections: Yellow fiber patch cords connected to SFP ports.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d45fc191-da68-475b-86e4-3a0af1ef5f44.png?auth_key=1886103527-d1e3824aaaf8440db668662605388b5d-0-563ceca240805297a7c93c9a4be6ed9d" class="figure-img" alt="Fiber Splicing Machine" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-wrench"></i></div>
-                        <p class="figure-caption">Fiber Splicing: Fusing two fiber ends together permanently to create a continuous cable run.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/29639231-8edf-4810-934b-9a9a904a134e.png?auth_key=1886105636-296b8c0c48924698a747740a1299a239-0-8063f2bf65dd92f85daf4fbe53e35a2e" class="figure-img" alt="3D Infrastructure Map" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-city"></i></div>
-                        <p class="figure-caption">3D visualization of the port's buildings and communication network lines.</p>
-                    </div>
-                </figure>
-				
-				 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/122f351e-eb52-4de4-9b19-2acdd53cd2e8.png?auth_key=1886105636-048ccf8c8c414d58803e779977f210da-0-8a6715b7130e18896ed8f976207ebb68" class="figure-img" alt="Network Node Map" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-city"></i></div>
-                        <p class="figure-caption">Detailed map of network nodes and transport hubs across different port areas.</p>
-                    </div>
-                </figure>
-				
-				
-
-            </div>
-        </section>
-
-        <!-- Section 6: Underground Infrastructure & Fiber Cut Mapping -->
-        <section id="underground-mapping" class="mb-5">
-            <h2 class="section-title">Underground Infrastructure & Fiber Cut Mapping</h2>
-            <p class="text-block">The physical cabling runs through a robust underground infrastructure to protect against the harsh marine environment and heavy port machinery. In the event of a fiber cut, engineers rely on detailed infrastructure maps to trace physical paths. To pinpoint the exact location of the cut, an <strong>OTDR (Optical Time-Domain Reflectometer)</strong> is used. The OTDR calculates the distance to the fault using the formula: <strong>Speed = Distance / Time</strong>. By measuring the time it takes for a light pulse to reflect back from the break, the exact distance is calculated, allowing for immediate repair.</p>
-            
-            <div class="image-grid">
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/b5217a69-ce97-48ab-a114-ec9db71ec84a.png?auth_key=1886105636-4cb8c6dcf36b48588f6bbf351d9a3173-0-f932463fe68c7d560c461dc728e1d7f5" class="figure-img" alt="Underground Work" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-road"></i></div>
-                        <p class="figure-caption">Underground infrastructure work: Excavating and laying protective conduits for network cables.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/8b3f7f36-d1ce-4db0-aa25-736db3b102cb.png?auth_key=1886105636-fe5707a4450c4d8590ebfbeb478a3d10-0-eb18b59e35e2faeb4c754ac57f2bdd29" class="figure-img" alt="Infrastructure Map" style="object-fit: cover;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-map-marked-alt"></i></div>
-                        <p class="figure-caption">Underground Infrastructure Map: Used to trace fiber paths in case of a cable cut.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d45fc191-da68-475b-86e4-3a0af1ef5f44.png?auth_key=1886103527-d1e3824aaaf8440db668662605388b5d-0-563ceca240805297a7c93c9a4be6ed9d" class="figure-img" alt="OTDR Device" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-satellite-dish"></i></div>
-                        <p class="figure-caption">OTDR / Optical Fiber Identifier: Calculates exact cut location using Speed = Distance / Time.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/ff55a57b-3714-40f2-b96d-de742a1206a7.png?auth_key=1886105636-4430d25466c24b25ac044d5f3607f094-0-fc3024d7c2f61cb3418aab95563de3b2" class="figure-img" alt="Dynamic Routing Map" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-project-diagram"></i></div>
-                        <p class="figure-caption">Dynamic Routing Topology: Rerouting traffic logically while physical fiber paths are repaired.</p>
-                    </div>
-                </figure>
-            </div>
-        </section>
-
-        <!-- Section 7: Network Monitoring with Zabbix -->
-        <section id="monitoring" class="mb-5">
-            <h2 class="section-title">Network Monitoring with Zabbix</h2>
-            <p class="text-block">All devices across the port are continuously monitored using <strong>Zabbix</strong>. The monitoring system provides real-time visibility into device status. If a device goes down, Zabbix immediately triggers an alert (e.g., "Ping timeout"), allowing the IT team to respond to outages before they affect port operations.</p>
-            
-            <div class="image-grid">
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d58149d1-e80a-4d1a-9c21-886de4f0bffd.png?auth_key=1886105636-f393e92f685f48ad8a379186427724d4-0-7889aae29daeaf7d8d28e210dbf72676" class="figure-img" alt="Zabbix Topology Map" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-tachometer-alt"></i></div>
-                        <p class="figure-caption">Zabbix Network Map: Showing core switches, area switches, and devices with 'OK' or 'Ping timeout' alerts.</p>
-                    </div>
-                </figure>
-                <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/82fe73c3-7ad3-413b-8d15-a7da6519713b.png?auth_key=1886105636-eb4c58dfb7044877aabb3bf9dca20a9a-0-6db22f32ac4c99c251b66a9e97cd34c4" class="figure-img" alt="Zabbix Device Alerts" style="object-fit: contain;">
-                    <div class="figure-body">
-                        <div class="figure-icon"><i class="fas fa-bell"></i></div>
-                        <p class="figure-caption">Device-level Monitoring: RFID and switch status alerts, highlighting down devices in red.</p>
-                    </div>
-                </figure>
-            </div>
-        </section>
-
-        <!-- Section 8: Phase 2 Design -->
-        <section id="future-design" class="mb-5">
-            <h2 class="section-title">Phase 2: Six-Area Segmentation Design</h2>
-            
             <div class="alert-info-custom">
-                <h4><i class="fas fa-drafting-compass"></i> Upcoming Network Expansion</h4>
-                <p>To ensure optimal performance, fault isolation, and high availability, the entire Damietta Port network will be physically and logically divided into <strong>SIX distinct areas</strong>. </p>
+                <h4><i class="fas fa-shield-virus"></i> Self-Protection Tips</h4>
+                <p>Different malware serves different purposes—from stealing passwords to encrypting files or secretly monitoring victims. To protect yourself:</p>
                 <ul>
-                    <li><strong>Area Segmentation:</strong> The whole port is divided into 6 areas, each containing a group of administrative and operational buildings.</li>
-                    <li><strong>Distribution Layer Redundancy:</strong> Each of the six areas is connected to <strong>two Distribution (Dist) switches</strong> for redundancy, ensuring load balancing and failover.</li>
-                    <li><strong>Core Layer Redundancy:</strong> All Distribution switches across the six areas uplink directly to <strong>two Core switches</strong> centrally located in the main <strong>Datacenter</strong>.</li>
+                    <li>Keep your operating system and software updated.</li>
+                    <li>Use reputable antivirus and anti-malware solutions.</li>
+                    <li>Never download attachments or click links from unknown sources.</li>
+                    <li>Regularly back up critical data offline to mitigate ransomware impact.</li>
                 </ul>
-                <p style="margin-top: 15px;">This hierarchical design guarantees that a single point of failure will not take down the entire port network.</p>
             </div>
-            
-            <figure class="center-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/07890010-ddde-4ff5-b237-e31c4b797ecb.png?auth_key=1886102701-578d8b945da34a8cb8d6904454ecdc56-0-a98dc8ba8e26dfe492e7b048cfa1195d" alt="Hierarchical Network Topology" style="object-fit: contain; max-height: 400px;">
-                <figcaption>Figure 8: Logical topology showing Access nodes (grey) connecting to Distribution nodes (red/green), which uplink to the Core (blue).</figcaption>
-            </figure>
         </section>
 
         <!-- LESSON NAVIGATION BUTTONS (PREV / NEXT) -->
         <div class="lesson-nav">
-            <a href="nessus.html" class="nav-btn prev">
-                <i class="fas fa-arrow-left"></i> Return Back
+            <a href="network-roadmap.html" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Network Roadmap
             </a>
-            <a href="lesson-4.html" class="nav-btn next">
-                Next Lesson <i class="fas fa-arrow-right"></i>
+            <a href="labs.html" class="nav-btn next">
+                Start Labs <i class="fas fa-arrow-right"></i>
             </a>
         </div>
 
