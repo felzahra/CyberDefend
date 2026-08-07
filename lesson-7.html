@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Firewalls & Packet Filtering</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* Back Buttons Styling */
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* ========== CONTENT STYLES ========== */
+        .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .text-block strong { color: var(--body-fg); }
+        
+        .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .tool-title i { color: var(--primary); }
+        
+        ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+
+        /* Custom Tables (For ACL Rules) */
+        .custom-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; background: var(--darkened-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline-color); }
+        .custom-table th, .custom-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
+        .custom-table th { background: var(--selected-bg); color: var(--primary); font-weight: 700; }
+        .custom-table tr:last-child td { border-bottom: none; }
+        .custom-table td strong { color: var(--body-loud-color); }
+        .custom-table .allow { color: #22c55e; font-weight: 700; }
+        .custom-table .deny { color: #ef4444; font-weight: 700; }
+
+        /* Large Stacked Figures */
+        .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
+        .large-figure:hover { border-color: var(--primary); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 800px; background: var(--body-bg); }
+        .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
+
+        /* Custom Alert Box */
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
+
+        /* ========== LESSON NAVIGATION BUTTONS ========== */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            .lesson-nav { flex-direction: column; gap: 15px; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .custom-table { font-size: 0.8rem; }
+            .custom-table th, .custom-table td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <a href="labs.html" class="active">Labs</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-content">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        
+        <!-- BACK BUTTONS ADDED HERE -->
+        <div class="sidebar-back-btns">
+            <a href="index.html" class="sidebar-back-btn">← Back to Dashboard</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Labs</a>
+        </div>
+
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <!-- It is best practice to remove spaces in HTML filenames -->
+                <li><a href="network-roadmap.html">Network Roadmap</a></li>
+                <li><a href="security-roadmap.html">Security Roadmap</a></li>
+                <li><a href="firewalls.html" class="active">Firewalls & Packet Filtering</a></li>
+                <li><a href="labs.html">Networking Labs Overview</a></li>
+                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
+                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-6.html">Lesson Six Title</a></li>
+                <li><a href="lesson-7.html">Lesson Seven Title</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Network Security: Firewalls & Packet Filtering</h1>
+            <p>Understanding how firewalls protect network perimeters by inspecting, allowing, and blocking traffic based on port and IP policies.</p>
+        </div>
+
+        <!-- Section 1: Introduction to Firewalls -->
+        <section id="firewall-intro">
+            <h2 class="section-title">Introduction to Firewalls</h2>
+            <p class="text-block">A firewall is a network security device that monitors incoming and outgoing network traffic and decides whether to allow or block specific traffic based on a defined set of security rules. Firewalls act as the first line of defense in network security, establishing a barrier between trusted internal networks and untrusted external networks (such as the Internet).</p>
+            
+            <p class="text-block">Firewalls can be implemented as hardware devices, software programs, or a combination of both. Hardware firewalls (like Fortinet, Cisco, or Palo Alto) are physical appliances deployed at the network edge. Software firewalls (like Windows Defender Firewall) are installed directly on individual hosts to control inbound and outbound traffic for that specific machine.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/526ef9d2-d95f-467a-bef3-3821eb1f2fae.png?auth_key=1886127033-dfa764fb97a0461fa33c1d0371d5821d-0-8e09f180c9b34d255b3c3bba75a8ea88" alt="Fortinet Hardware Firewall Appliance">
+                <figcaption>Figure 1: A physical hardware firewall appliance (Fortinet) deployed in a data center environment to secure the network perimeter.</figcaption>
+            </figure>
+
+            <p class="text-block">A common firewall architecture involves placing the firewall between the Internet and the Local Area Network (LAN). The firewall blocks malicious traffic from entering the LAN while allowing legitimate traffic to reach internal servers (like Web, Database, and File servers).</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/e5760e83-204e-43ed-bb8f-98936cd13de6.png?auth_key=1886127033-6625a903f12d4bce859a9a5e85b8dfab-0-d131785311817b63ae394c70158c1fd6" alt="Windows Firewall Network Architecture">
+                <figcaption>Figure 2: Network topology showing a Windows Firewall blocking specific ports (e.g., Port 25 SMTP) while allowing others (e.g., Port 80 HTTP, Port 21 FTP) to reach internal LAN servers.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 2: Packet Filtering -->
+        <section id="packet-filtering">
+            <h2 class="section-title">Firewall: Packet Filtering</h2>
+            <p class="text-block">Packet filtering is a fundamental firewall technique that operates at the Network and Transport layers (Layers 3 and 4 of the OSI model). The firewall examines each packet passing through it and checks it against a set of predefined rules. The decision to allow or drop the packet is based on:</p>
+            <ul>
+                <li><strong>Source IP Address</strong></li>
+                <li><strong>Destination IP Address</strong></li>
+                <li><strong>Source Port Number</strong></li>
+                <li><strong>Destination Port Number</strong></li>
+                <li><strong>Protocol</strong> (TCP, UDP, ICMP)</li>
+            </ul>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/b4f52fe2-0e2c-49c8-8084-02f5cd8d1474.png?auth_key=1886127033-6d928f10cbbf4cbe9538e0d720ffe27d-0-ec31fa36d00e52884dc2e04e790ab560" alt="Packet Filtering Topology">
+                <figcaption>Figure 3: A packet filtering scenario where the firewall inspects traffic destined for specific servers (Web, Email, DNS) and filters them based on their destination IP and Port numbers.</figcaption>
+            </figure>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-route"></i> How Packet Filtering Works</h4>
+                <p>In the diagram above, the firewall is configured to allow traffic to specific internal servers:</p>
+                <ul>
+                    <li>Traffic to <strong>192.5.48.1 on Port 80</strong> (HTTP) is allowed to reach the Web Server.</li>
+                    <li>Traffic to <strong>192.5.48.2 on Port 25</strong> (SMTP) is allowed to reach the Email Server.</li>
+                    <li>Traffic to <strong>192.5.48.3 on Port 53</strong> (DNS) is allowed to reach the DNS Server.</li>
+                </ul>
+                <p>Any traffic not matching these rules is dropped by the firewall.</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Access Control Lists (ACLs) -->
+        <section id="acl-policies">
+            <h2 class="section-title">Access Control Lists (ACL) & Policies</h2>
+            <p class="text-block">Firewall policies are implemented using Access Control Lists (ACLs). An ACL is a sequential list of rules that the firewall reads from top to bottom. When a packet matches a rule, the firewall executes the specified action (Allow or Deny) and stops reading the rest of the list.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/3ed03598-a479-47ba-a974-5f3dea8f9449.png?auth_key=1886127033-0edf8bf299334c4494d850a6d029cf8f-0-ec631a81134ade6f2f5dd80ebe5a9f6b" alt="Network Access Control Rules Table">
+                <figcaption>Figure 4: A visual representation of an Access Control List (ACL) mapping Source/Destination IPs and Ports to Allow/Deny actions.</figcaption>
+            </figure>
+
+            <h3 class="tool-title">Example Firewall Rule Table</h3>
+            <p class="text-block">Below is a recreated table based on the packet filtering policies shown in the image. It demonstrates how network administrators restrict access between different network segments.</p>
+
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Rule #</th>
+                        <th>Source Address</th>
+                        <th>Source Port</th>
+                        <th>Destination Address</th>
+                        <th>Destination Port</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td><td>Any</td><td>Any</td><td>10.10.10.0</td><td>Any</td><td class="deny">Deny</td>
+                    </tr>
+                    <tr>
+                        <td>2</td><td>Any</td><td>Any</td><td>10.10.10.5</td><td>80 (HTTP)</td><td class="deny">Deny</td>
+                    </tr>
+                    <tr>
+                        <td>3</td><td>Any</td><td>Any</td><td>10.10.10.6</td><td>443 (HTTPS)</td><td class="deny">Deny</td>
+                    </tr>
+                    <tr>
+                        <td>4</td><td>Any</td><td>Any</td><td>10.10.10.7</td><td>22 (SSH)</td><td class="deny">Deny</td>
+                    </tr>
+                    <tr>
+                        <td>5</td><td>Any</td><td>Any</td><td>10.10.10.0</td><td>> 1023</td><td class="allow">Allow</td>
+                    </tr>
+                    <tr>
+                        <td>6</td><td>10.10.10.5</td><td>Any</td><td>10.10.10.8</td><td>80 (HTTP)</td><td class="deny">Deny</td>
+                    </tr>
+                    <tr>
+                        <td>7</td><td>10.10.10.5</td><td>Any</td><td>10.10.10.8</td><td>443 (HTTPS)</td><td class="allow">Allow</td>
+                    </tr>
+                    <tr>
+                        <td>8</td><td>10.10.10.5</td><td>Any</td><td>10.10.10.8</td><td>22 (SSH)</td><td class="deny">Deny</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-shield-alt"></i> Key Takeaway</h4>
+                <p>When configuring firewall rules, order matters. The firewall evaluates packets sequentially. A common best practice is to place the most specific "Deny" rules at the top, followed by "Allow" rules, and end with a default "Deny All" rule to ensure no unauthorized traffic slips through.</p>
+            </div>
+        </section>
+
+        <!-- LESSON NAVIGATION BUTTONS -->
+        <div class="lesson-nav">
+            <a href="security-roadmap.html" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Security Roadmap
+            </a>
+            <a href="labs.html" class="nav-btn next">
+                Next Lesson <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+                <li><a href="messages.html">Tasks & Submissions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+</body>
+</html>
