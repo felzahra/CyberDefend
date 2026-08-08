@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · DPA Wireless & RFID Solutions</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676; --primary-fg: #000000; --body-fg: #ffffff; --body-bg: #121212;
+            --body-quiet-color: #b0b0b0; --body-loud-color: #ffffff; --hairline-color: #272727;
+            --border-color: #353535; --darkened-bg: #1e1e1e; --selected-bg: #2a2a2a; --header-bg: #1a1a1a; --input-bg: #242424;
+        }
+        html[data-theme="light"] {
+            --primary: #02b3e4; --primary-fg: #ffffff; --body-fg: #1a2c3e; --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87; --body-loud-color: #0b2b3b; --hairline-color: #e6edf4;
+            --border-color: #eef2f8; --darkened-bg: #ffffff; --selected-bg: #e9f4fa; --header-bg: #ffffff; --input-bg: #f9fbfe;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .text-block strong { color: var(--body-fg); }
+        
+        .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .tool-title i { color: var(--primary); }
+        
+        ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+
+        /* Code Blocks */
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
+        pre code { color: var(--primary); }
+        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
+
+        /* Image Grid */
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 2rem 0; }
+        .figure-card { margin: 0; display: flex; flex-direction: column; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+        .figure-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .figure-card img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
+        .figure-body { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .figure-caption { font-size: 0.85rem; color: var(--body-quiet-color); margin-bottom: 0; font-style: italic; }
+        .figure-icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+
+        /* Large Stacked Figures */
+        .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
+        .large-figure:hover { border-color: var(--primary); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 800px; background: var(--body-bg); }
+        .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
+
+        /* Custom Alert Box */
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
+
+        /* Previous / Next Buttons CSS */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+<script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
+
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks & Submissions</a><a href="labs.html" class="active">Labs</a><a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<div class="main-content">
+    <aside class="sidebar">
+        <div class="sidebar-back-btns">
+            <!-- EXACTLY TWO BACK BUTTONS HERE -->
+            <a href="index.html" class="sidebar-back-btn">← Back to Dashboard</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Labs</a>
+        </div>
+        <div class="sidebar-header"><h3>Course Lessons</h3></div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="network-security.html">1. Network Security Overview</a></li>
+                <li><a href="network-roadmap.html">2. Network Roadmap</a></li>
+                <li><a href="security-roadmap.html">3. Security Roadmap</a></li>
+                <li><a href="labs.html">4. Networking Labs Overview</a></li>
+                <li><a href="lesson-3.html">5. Lesson 3</a></li>
+                <li><a href="lesson-4.html">6. Vulnerability Scanners</a></li>
+                <li><a href="nessus.html">7. Nessus Vulnerability Assessment</a></li>
+                <li><a href="ids-ips.html">8. IDS vs IPS</a></li>
+                <li><a href="snort-suricata.html">9. Snort & Suricata</a></li>
+                <li><a href="dmz.html">10. DMZ Architecture</a></li>
+                <li><a href="nat.html">11. NAT & PAT</a></li>
+                <li><a href="vpn.html">12. VPN Security</a></li>
+                <li><a href="kali-tools.html">13. Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-6.html">14. Switching Infrastructure</a></li>
+                <li><a href="lesson-7.html">15. Network Firewalls</a></li>
+                <li><a href="lesson-8.html">16. Kali Linux Setup & Labs</a></li>
+                <li><a href="lesson-9.html">17. Centralized Logging & SIEM</a></li>
+                <li><a href="lesson-10.html">18. Antivirus & Attack Types</a></li>
+                <li><a href="lesson-11.html">19. VirusTotal & HIBP</a></li>
+                <li><a href="lesson-12.html">20. Reconnaissance & OSINT</a></li>
+                <li><a href="lesson-13.html">21. WHOIS Lookup</a></li>
+                <li><a href="lesson-14.html">22. Bug Bounty Hunting</a></li>
+                <!-- ACTIVE CLASS SET HERE -->
+                <li><a href="lesson-15.html" class="active">23. DPA Wireless & RFID</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="content-area">
+        <div class="page-header">
+            <h1>RFID & 3G APN: Unwired / Infrastructure-Free Zones</h1>
+            <p>Implementing secure wireless communication using Closed APNs, Microwave links, SOTI MDM, and dual RFID tagging systems for Damietta Port Authority (DPA).</p>
+        </div>
+
+        <!-- Section 1: The Challenge -->
+        <section id="dpa-challenge">
+            <h2 class="section-title">1. The Challenge: Covering Unwired / Infrastructure-Free Water Zones</h2>
+            <p class="text-block">Damietta Port Authority (DPA) requires reliable, secure wireless communication to track containers and manage logistics across vast water areas and terminal docks. Traditional Wi-Fi is unreliable over water due to reflection and distance limitations. The solution requires a hybrid approach using cellular technology (3G/4G) and microwave backhaul links.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture1.png" alt="DPA Port Map">
+                <figcaption>Figure 1: DPA port infrastructure spanning vast water and land areas requiring comprehensive wireless coverage.</figcaption>
+            </figure>
+
+            <figure class="large-figure">
+                <img src="images/Picture2.png" alt="DPA Container Terminal">
+                <figcaption>Figure 2: RTG cranes and container stacks at the port require real-time tracking via Vehicle Mount Terminals (VMTs).</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 2: Closed APN & Microwave Architecture -->
+        <section id="closed-apn-microwave">
+            <h2 class="section-title">2. Closed APN & Microwave Architecture</h2>
+            <p class="text-block">To ensure maximum security and prevent interception, DPA utilizes a <strong>Closed APN (Access Point Name)</strong> over the 3G/4G network. A Closed APN acts like a private cellular network. Devices with authorized SIM cards cannot access the public internet; they are routed directly into DPA's internal datacenter.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture3.png" alt="Closed APN Architecture">
+                <figcaption>Figure 3: Closed APN architecture routing 3G/4G traffic securely back to the DPA Datacenter via a Microwave link.</figcaption>
+            </figure>
+
+            <p class="text-block">The cellular towers communicate with the DPA Datacenter via a dedicated <strong>Microwave Link</strong>. This bypasses the traditional telecommunications provider's backbone, providing a direct, high-speed, and highly secure connection to the internal network and servers.</p>
+
+             <figure class="large-figure">
+                <img src="images/Picture4.png" alt="Closed APN Architecture">
+                <figcaption>Figure 3: Closed APN architecture routing 3G/4G traffic securely back to the DPA Datacenter via a Microwave link.</figcaption>
+            </figure>
+
+
+
+        </section>
+
+        <!-- Section 3: SOTI MDM & Vehicle Mount Terminals -->
+        <section id="soti-vmt">
+            <h2 class="section-title">3. SOTI MDM & Vehicle Mount Terminals (VMT)</h2>
+            <p class="text-block">The port equipment (RTG Cranes, Reach Stackers, Trucks) is equipped with <strong>Vehicle Mount Terminals (VMTs)</strong> and Remote Data Terminals (RDTs). These ruggedized computers contain SIM cards connected to the Closed APN, allowing them to send real-time inventory data back to the datacenter over the water.</p>
+
+            <figure class="large-figure">
+                <img src="images/CMS_Banner_820x460_noTitle_update.jpg" alt="Logistics Equipment Wireless Connection">
+                <figcaption>Figure 4: VMTs installed on cranes and trucks communicate wirelessly with the central server to track container movements.</figcaption>
+            </figure>
+
+            <p class="text-block">Because these devices are mobile and spread across a massive area, they are managed centrally using <strong>SOTI MobiControl</strong> (an Mobile Device Management system). SOTI allows the IT team to push updates, monitor device health, troubleshoot remotely, and secure the devices if they are tampered with.</p>
+
+            <div class="image-grid">
+                <div class="figure-card">
+                    <img src="images/Picture5.png" alt="VMT Operation">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-truck-loading"></i></div>
+                        <p class="figure-caption"><strong>VMT in action:</strong> A crane operator interacts with the RDT to log container transfers.</p>
+                    </div>
+                </div>
+                <div class="figure-card">
+                    <img src="images/Screenshot 2026-08-08 162213.png" alt="Mobile Terminals and Tablets">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <p class="figure-caption"><strong>Device Ecosystem:</strong> SOTI manages a variety of rugged handhelds, Android phones, and Windows tablets used by port staff.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 3: SOTI MDM & Device Monitoring -->
+        <section id="soti-vmt">
+            <h2 class="section-title">3. Centralized Management via SOTI MobiControl</h2>
+            <p class="text-block">Managing hundreds of mobile devices spread across cranes, trucks, and warehouses over a massive port area is impossible to do manually. DPA solves this by hosting a central <strong>SOTI MobiControl</strong> server inside their Datacenter. SOTI is an Enterprise Mobility Management (EMM) system that acts as the "brain" for the entire wireless terminal ecosystem.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture6.png" alt="Centralized Server Monitoring Dashboard">
+                <figcaption>Figure 3: The SOTI Server provides a single pane of glass to monitor the health, location, and connectivity of all port devices.</figcaption>
+            </figure>
+			
+			            <figure class="large-figure">
+                <img src="images/Picture7.png" alt="Centralized Server Monitoring Dashboard">
+                <figcaption>Figure 3: The SOTI Server provides a single pane of glass to monitor the health, location, and connectivity of all port devices.</figcaption>
+            </figure>
+			
+						            <figure class="large-figure">
+                <img src="images/Screenshot 2026-08-08 162639.png" alt="Centralized Server Monitoring Dashboard">
+                <figcaption>Figure 3: The SOTI Server provides a single pane of glass to monitor the health, location, and connectivity of all port devices.</figcaption>
+            </figure>
+			
+			
+
+            <h3 class="tool-title"><i class="fas fa-microchip"></i> Device & SIM Management</h3>
+            <p class="text-block">Every Vehicle Mount Terminal (VMT) and Remote Data Terminal (RDT) has a SOTI agent installed. This agent communicates back to the server over the Closed APN, allowing the IT team to monitor and control:</p>
+            <ul>
+                <li><strong>Device Health:</strong> Battery life, CPU usage, storage space, and app crashes on all VMTs and RDTs.</li>
+                <li><strong>SIM Card Status:</strong> SOTI monitors the cellular connection of each device. It tracks signal strength, data usage, and ensures the SIM is strictly connected to the authorized <strong>Closed APN</strong>. If a SIM is removed or loses connection, SOTI triggers an alert.</li>
+                <li><strong>Remote Control:</strong> If a crane operator experiences a software issue, the IT team can remotely view and control the VMT screen from the datacenter, fixing the problem instantly without climbing the crane.</li>
+            </ul>
+
+            <h3 class="tool-title"><i class="fas fa-satellite-dish"></i> Real-Time Monitoring</h3>
+            <p class="text-block">The SOTI dashboard provides real-time visibility into the entire fleet of devices. IT administrators can see exactly which devices are online, their current GPS location on the port map, and whether they are successfully transmitting RFID data back to the server.</p>
+
+            <div class="image-grid">
+                <div class="figure-card">
+                    <img src="images/device_manager.png" alt="Datacenter Servers">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-server"></i></div>
+                        <p class="figure-caption"><strong>Central Server:</strong> The SOTI server hosted in the DPA Datacenter processes thousands of heartbeats and data packets from the field.</p>
+                    </div>
+                </div>
+                <div class="figure-card">
+                    <img src="images/soti-connect.png" alt="Mobile Terminals and Tablets">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <p class="figure-caption"><strong>Managed Endpoints:</strong> SOTI secures and monitors rugged handhelds, VMTs, and Windows tablets used across the port.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-shield-alt"></i> Security & Lockdown</h4>
+                <p>SOTI ensures that port devices are used strictly for work. Through "Kiosk Mode," devices are locked down so operators cannot access the public internet, install games, or change APN settings. This guarantees the devices remain secure and focused solely on RFID scanning and data transmission.</p>
+            </div>
+        </section>
+	 <div class="page-header">
+            <h1>Enterprise RFID & Logistics Tracking</h1>
+            <p>Exploring large-scale RFID network architecture, access control, active vs. passive tags, and real-time logistics tracking for ports and enterprise environments.</p>
+        </div>
+
+        <!-- Section 1: RFID Network Architecture -->
+        <section id="network-architecture">
+            <h2 class="section-title">1. RFID Network Architecture</h2>
+            <p class="text-block">An enterprise RFID system is not just about handheld scanners; it requires a robust wired and wireless network backbone. Readers deployed at gates and loading docks must transmit massive amounts of tag data back to a central RFID Management Server hosted in a secure datacenter.</p>
+
+            <figure class="large-figure">
+                <img src="images/rfid-diagram.png" alt="RFID Logistics Management System Network Architecture">
+                <figcaption>Figure 1: RFID Logistics Management Network. Readers at entrance gates connect to Edge Switches, aggregating at Distribution Switches before reaching the Core Network and Datacenter Servers.</figcaption>
+            </figure>
+
+            <figure class="large-figure">
+                <img src="images/rfid-diagram2.png" alt="RFID Access Control System Network Architecture">
+                <figcaption>Figure 2: RFID Access Control Network Architecture showing traffic flow paths from edge antennas to the datacenter.</figcaption>
+            </figure>
+            
+            <figure class="large-figure">
+                <img src="images/rfid-diagram3.png" alt="RFID Access Control Topology">
+                <figcaption>Figure 3: A comprehensive topology demonstrating centralized management and real-time monitoring across multiple gate types.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 2: Active vs. Passive Tags -->
+        <section id="active-passive">
+            <h2 class="section-title">2. Active vs. Passive RFID Tags</h2>
+            <p class="text-block">Choosing the right type of RFID tag is critical for system performance. The choice depends on the required read range, environment, and budget.</p>
+
+            <figure class="large-figure">
+                <img src="images/active-passive.jpg" alt="Active vs Passive RFID Tags">
+                <figcaption>Figure 4: Comparison of Active RFID (Internal Battery, Long Range up to 100m+) vs. Passive RFID (No Battery, Short Range up to 10m).</figcaption>
+            </figure>
+
+            <ul>
+                <li><strong>Active RFID Tags:</strong> Powered by an internal battery. They can broadcast a signal up to 100+ meters. Ideal for tracking high-value assets, vehicles, and real-time location in large yards. Higher cost.</li>
+                <li><strong>Passive RFID Tags:</strong> Have no battery; they are powered by the electromagnetic energy emitted by the reader. Shorter range (up to 10m). Low cost, perfect for inventory control, access cards, and box tracking.</li>
+            </ul>
+        </section>
+
+		  <!-- Section 3: Vehicle Detection & Gate Automation -->
+        <section id="vehicle-detection">
+            <h2 class="section-title">3. Vehicle Detection & Gate Automation</h2>
+            <p class="text-block">In logistics centers, RFID automates the entry and exit of trucks. As a truck approaches the gate, the RFID reader scans the windshield tag, automatically opening the boom gate and logging the arrival time without human intervention.</p>
+
+            <div class="image-grid">
+                <div class="figure-card">
+                    <img src="images/Picture8.png" alt="Truck at Automated Gate">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-truck-moving"></i></div>
+                        <p class="figure-caption"><strong>Gate Scanning:</strong> A truck passes through an automated detection zone using RFID and weight sensors.</p>
+                    </div>
+                </div>
+                <div class="figure-card">
+                    <img src="images/Picture9.png" alt="Worker Scanning Windshield Tag">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-barcode"></i></div>
+                        <p class="figure-caption"><strong>Endpoint Scanning:</strong> A worker manually verifies a vehicle's RFID windshield tag using a handheld terminal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Logistics & Exit Processing -->
+        <section id="logistics-exit">
+            <h2 class="section-title">4. Logistics Yard Management & Exit Processing</h2>
+            <p class="text-block">Once inside the yard, trucks are directed to specific loading zones or weighbridges. Upon completing delivery, the exit gate automatically verifies that all transit documents and excise gate passes have been issued before letting the truck leave.</p>
+
+            <div class="image-grid">
+                <div class="figure-card">
+                    <img src="images/Picture10.png" alt="Logistics Yard Top View">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-warehouse"></i></div>
+                        <p class="figure-caption"><strong>Yard Management:</strong> A top-down view of a logistics center showing waiting areas, loading zones, and weighbridges.</p>
+                    </div>
+                </div>
+                <div class="figure-card">
+                    <img src="images/Picture11.png" alt="Truck Exit Interface">
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-file-signature"></i></div>
+                        <p class="figure-caption"><strong>Exit Verification:</strong> The system verifies driver info and ensures all Delivery and Transit Documents are "Issued" before opening the Truck Exit.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Real-Time Goods Tracking -->
+        <section id="real-time-tracking">
+            <h2 class="section-title">5. Real-Time Goods Tracking</h2>
+            <p class="text-block">RFID data combined with GPS and telematics allows enterprise command centers to track goods in real-time as they move between cities or port terminals. The system logs trip details, quantity loaded, and expected completion times, sending automatic location alerts to the dashboard.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture12.png" alt="Real-time Goods Tracking Dashboard">
+                <figcaption>Figure 5: A centralized dashboard displaying live route maps, trip details, and location alerts for goods in transit.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 6: RFID Hardware -->
+        <section id="rfid-hardware">
+            <h2 class="section-title">6. RFID Hardware & Reader Connectivity</h2>
+            <p class="text-block">Fixed RFID readers are industrial computers. They feature multiple external antenna ports to cover wide lanes, Ethernet for network connectivity, and GPIO (General Purpose Input/Output) ports to trigger physical devices like boom gates or traffic lights when a tag is read.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture13.png" alt="RFID Reader Hardware Connections">
+                <figcaption>Figure 6: Physical connections of an industrial RFID reader, showing DC power, Ethernet, USB, and External Antenna ports.</figcaption>
+            </figure>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Integration Summary</h4>
+                <p>The complete ecosystem operates seamlessly:</p>
+                <ul>
+                    <li><strong>1. Hardware Layer:</strong> Fixed and handheld readers scan Active or Passive tags.</li>
+                    <li><strong>2. Network Layer:</strong> Data travels from Edge to Core switches into the Datacenter.</li>
+                    <li><strong>3. Application Layer:</strong> Servers process the data, updating yard maps and verifying exit documents.</li>
+                    <li><strong>4. Management Layer:</strong> Real-time dashboards provide visibility, while systems like SOTI ensure the handheld devices remain secure and updated.</li>
+                </ul>
+            </div>
+        </section>
+		
+        <!-- Section 4: RFID Infrastructure (Organized & Detailed) -->
+        <section id="rfid-tags">
+            <h2 class="section-title">4. RFID Infrastructure: Tags & Readers</h2>
+            <p class="text-block"><strong>Radio Frequency Identification (RFID)</strong> is the core technology used by DPA to automatically track containers, trucks, and cargo across the port. Unlike traditional barcodes which require line-of-sight and manual scanning, RFID allows multiple items to be scanned simultaneously from a distance, even through obstacles like fog, dust, or rain—making it perfect for harsh marine environments.</p>
+
+
+
+            <h3 class="tool-title"><i class="fas fa-tag"></i> Types of RFID Tags Used at DPA</h3>
+            <p class="text-block">The port utilizes two distinct types of tags depending on the asset being tracked:</p>
+            <ul>
+                <li><strong>Rugged RFID Tags (Heavy-Duty):</strong> 
+                    <br>These tags are encased in hard, industrial-grade plastic or epoxy resin. They are bolted, welded, or riveted directly onto steel shipping containers, truck chassis, and crane spreaders.
+                    <ul>
+                        <li><em>Durability:</em> Built to withstand extreme impacts, saltwater corrosion, UV radiation, and heavy vibrations.</li>
+                        <li><em>Lifespan:</em> Reusable and designed to last for the 10-15 year lifespan of a shipping container.</li>
+                    </ul>
+                </li>
+                <li><strong>Printed RFID Tags (Smart Labels):</strong> 
+                    <br>These are adhesive labels generated by specialized RFID printers. They contain an embedded RFID chip and antenna, alongside a printed barcode and human-readable text.
+                    <ul>
+                        <li><em>Use Case:</em> Applied to individual pallets, cargo boxes, and internal port documentation.</li>
+                        <li><em>Efficiency:</em> Allows for dual-tracking (RFID scanning and manual barcode scanning) and easy integration with warehouse management systems.</li>
+                    </ul>
+                </li>
+            </ul>
+			
+            <figure class="large-figure">
+                <img src="images/RFID tags.png" alt="Worker with Handheld RFID Scanner">
+                <figcaption>RFID tags.</figcaption>
+            </figure>
+
+            <h3 class="tool-title"><i class="fas fa-barcode"></i> RFID Printers</h3>
+            <p class="text-block">To create the Printed RFID Tags, the port uses industrial RFID printers (such as Zebra or Honeywell). These printers do more than just print ink; they encode the specific container or cargo data (like destination, weight, and contents) directly onto the RFID chip embedded in the label while simultaneously printing the visual barcode.</p>
+
+
+			<figure class="large-figure">
+                <img src="images/rfidprinter.png" alt="Centralized Server Monitoring Dashboard">
+                <figcaption>RFID printer.</figcaption>
+            </figure>
+			
+			
+
+            <h3 class="tool-title"><i class="fas fa-wifi"></i> RFID Readers (Interrogators)</h3>
+            <p class="text-block">Readers are the devices that emit radio waves to activate the tags and read their data. DPA deploys readers in two formats:</p>
+            <ul>
+                <li><strong>Fixed Readers (Mounted on Cranes & Gates):</strong> Permanently installed on RTG cranes and port entrance gates. As a truck drives past a gate or a crane picks up a container, the fixed reader automatically scans the Rugged Tag without the operator needing to do anything. This data is sent directly to the Vehicle Mount Terminal (VMT).</li>
+                <li><strong>Handheld Readers (Mobile Scanners):</strong> Used by port workers on the ground for inventory checks, locating specific containers in the yard, and scanning Printed Tags on pallets inside warehouses.</li>
+            </ul>
+
+            <figure class="large-figure">
+                <img src="images/kathrin.png" alt="Worker with Handheld RFID Scanner">
+                <figcaption>Figure 5: A port worker uses a rugged handheld RFID reader to scan printed tags on pallets in the warehouse.</figcaption>
+            </figure>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-project-diagram"></i> The Complete Data Flow</h4>
+                <p>Understanding how RFID fits into the broader wireless network is crucial. Here is the step-by-step lifecycle of a single scan:</p>
+                <ul>
+                    <li><strong>1. Capture:</strong> A crane's fixed reader (or a worker's handheld) scans a Rugged or Printed RFID tag on a container.</li>
+                    <li><strong>2. Process:</strong> The reader sends the tag data via cable to the Vehicle Mount Terminal (VMT) inside the crane cabin or truck.</li>
+                    <li><strong>3. Transmit:</strong> The VMT uses its internal SIM card to transmit the data securely over the 3G/4G <strong>Closed APN</strong> network.</li>
+                    <li><strong>4. Backhaul:</strong> The cellular tower beams the data via a dedicated <strong>Microwave Link</strong> directly to the DPA Datacenter roof.</li>
+                    <li><strong>5. Update & Manage:</strong> The internal servers instantly update the container's location in the port management software, while <strong>SOTI MDM</strong> ensures the VMT remains secure, updated, and connected.</li>
+                </ul>
+            </div>
+        </section>
+		
+		        <div class="page-header">
+            <h1>Crosstalk Server & RFID Infrastructure</h1>
+            <p>Understanding how a central Crosstalk Server acts as the middleware brain to manage, filter, and route data from hundreds of RFID readers across the enterprise network.</p>
+        </div>
+
+        <!-- Section 1: The Crosstalk Server -->
+        <section id="crosstalk-server">
+            <h2 class="section-title">1. The Crosstalk Server (RFID Middleware)</h2>
+            <p class="text-block">In a massive deployment with hundreds of RFID readers, connecting readers directly to a database or ERP system will instantly crash the backend. Readers generate too much "noisy" data (e.g., reading the same tag 50 times a second). The <strong>Crosstalk Server</strong> solves this by acting as an intelligent middleware layer hosted securely in the datacenter.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture14.png" alt="Datacenter Server Infrastructure">
+                <figcaption>Figure 1: The Crosstalk Server is hosted in the secure datacenter, processing millions of tag reads.</figcaption>
+            </figure>
+
+            <p class="text-block">The Crosstalk Server's primary job is <strong>data filtering and device management</strong>. It receives raw data from all readers, filters out duplicates (deduplication), and only forwards meaningful business events (e.g., "Container X entered Gate Y") to the enterprise application.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture15.png" alt="Core Network Switches in Datacenter">
+            </figure>
+
+            <ul>
+                <li><strong>Centralized Management:</strong> IT staff can configure, reboot, and push firmware updates to all readers from the Crosstalk dashboard.</li>
+                <li><strong>Edge Filtering:</strong> The server filters out redundant reads, ensuring the database isn't overwhelmed.</li>
+                <li><strong>Alerting:</strong> If a reader goes offline or a antenna is cut, the Crosstalk server immediately alerts the IT team.</li>
+            </ul>
+        </section>
+
+        <!-- Section 2: Readers to Infrastructure Switches -->
+        <section id="readers-to-infra">
+            <h2 class="section-title">2. Readers to Infrastructure Switches</h2>
+            <p class="text-block">At the edge of the network (gates, docks, warehouses), fixed RFID readers are installed. These readers do not connect via Wi-Fi; they require highly reliable, wired Ethernet connections to <strong>Infrastructure (Edge) Switches</strong>.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture16.png" alt="Industrial Edge Switch">
+            </figure>
+
+            <p class="text-block">These edge switches are usually ruggedized to survive harsh outdoor environments. They provide <strong>Power over Ethernet (PoE)</strong> to the readers, meaning a single Ethernet cable provides both the data connection and the electrical power to the reader. The edge switches then aggregate this traffic and uplink it via fiber optic cables back to the datacenter.</p>
+
+            <figure class="large-figure">
+                <img src="images/Picture17.png" alt="Network Patch Panel and Cables">
+                <figcaption>Figure 4: Patch panels organizing the physical Ethernet links from edge readers back to the distribution switches.</figcaption>
+            </figure>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-project-diagram"></i> The Complete Data Path</h4>
+                <p>Understanding the physical flow of an RFID read is crucial for troubleshooting:</p>
+                <ul>
+                    <li><strong>1. The Edge:</strong> A truck passes a gate. The fixed RFID Reader scans the tag.</li>
+                    <li><strong>2. The Switch:</strong> The reader sends this data via an Ethernet cable to the local Infrastructure (Edge) Switch.</li>
+                    <li><strong>3. The Core:</strong> The Edge Switch uplinks the data through Distribution switches, routing it across the network backbone to the Datacenter.</li>
+                    <li><strong>4. The Brain:</strong> The <strong>Crosstalk Server</strong> receives the data, filters out the noise, and translates it into a business event.</li>
+                    <li><strong>5. The Backend:</strong> The Crosstalk Server forwards the clean event to the ERP/WMS software to update the inventory dashboard.</li>
+                </ul>
+            </div>
+        </section>
+        <!-- PREVIOUS / NEXT BUTTONS -->
+        <div class="lesson-nav">
+            <a href="#" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Previous
+            </a>
+            <a href="#" class="nav-btn next">
+                Next <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col"><h3>🛡️ CyberDefend Academy</h3><p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p></div>
+        <div class="footer-col"><h3>Explore</h3><ul><li><a href="index.html">Dashboard</a></li><li><a href="courses.html">Courses</a></li><li><a href="labs.html">Labs</a></li></ul></div>
+        <div class="footer-col"><h3>Stay Connected</h3><p>Want to level up your skills? Start your journey today.</p><a href="courses.html" class="footer-btn">Open learning path →</a></div>
+    </div>
+    <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
+</footer>
+
+<!-- AUTOMATE PREV / NEXT BUTTONS SCRIPT -->
+<script>
+    // 1. DEFINE YOUR LESSON ORDER HERE (Must match the sidebar exactly)
+    const lessons = [
+        "network-security.html",
+        "network-roadmap.html",
+        "security-roadmap.html",
+        "labs.html",
+        "lesson-3.html",
+        "lesson-4.html",
+        "nessus.html",
+        "ids-ips.html",
+        "snort-suricata.html",
+        "dmz.html",
+        "nat.html",
+        "vpn.html",
+        "kali-tools.html",
+        "lesson-6.html",
+        "lesson-7.html",
+        "lesson-8.html",
+        "lesson-9.html",
+        "lesson-10.html",
+        "lesson-11.html",
+        "lesson-12.html",
+        "lesson-13.html",
+        "lesson-14.html",
+        "lesson-15.html"
+    ];
+
+    // 2. Get current page filename
+    let path = window.location.pathname;
+    let currentPage = path.substring(path.lastIndexOf('/') + 1) || "index.html";
+
+    // 3. Find current page index
+    let currentIndex = lessons.indexOf(currentPage);
+
+    // 4. Update buttons if page is in the list
+    const prevBtn = document.querySelector('.nav-btn.prev');
+    const nextBtn = document.querySelector('.nav-btn.next');
+
+    if (currentIndex !== -1) {
+        // Handle Previous Button
+        if (currentIndex > 0 && prevBtn) {
+            prevBtn.setAttribute('href', lessons[currentIndex - 1]);
+        }
+        
+        // Handle Next Button
+        if (currentIndex < lessons.length - 1 && nextBtn) {
+            nextBtn.setAttribute('href', lessons[currentIndex + 1]);
+        }
+    }
+</script>
+
+</body>
+</html>
