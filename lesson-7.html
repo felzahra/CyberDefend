@@ -621,6 +621,21 @@
                 <li><strong>Alerting:</strong> Triggers real-time alerts if a known threat pattern (like a brute-force attack) is detected.</li>
                 <li><strong>Compliance:</strong> Stores logs securely for audits (e.g., GDPR, HIPAA) and generates compliance reports.</li>
             </ul>
+			
+			            <figure class="large-figure">
+                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39dc_6735e4a0079ef893e8a21fac_60618622150ebe949eed6e3c_components%252520siem.jpeg" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+			
+						            <figure class="large-figure">
+                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39db_6735e4a0079ef893e8a21fa9_6061869fac9d03c417218aff_capabilities%252520siem.jpeg" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+			
+						            <figure class="large-figure">
+                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39da_6735e4a0079ef893e8a21fa6_606187955c9d2b5da0403647_siem%252520security.jpeg" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
         </section>
 
         <!-- Section 4: EDR & XDR -->
@@ -634,6 +649,23 @@
             <h3 class="tool-title"><i class="fas fa-project-diagram"></i> XDR (Extended Detection and Response)</h3>
             <p class="text-block">EDR only protects the endpoint. <strong>XDR</strong> takes it a step further by integrating Endpoint, Network, Cloud, and Email security into one unified platform. This gives the SOC a single pane of glass to detect and respond to threats across the entire IT environment.</p>
 
+ <figure class="large-figure">
+                <img src="https://www.openedr.com/blog/wp-content/uploads/2023/03/edr-vs-xdr.jpg" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+			
+			
+ <figure class="large-figure">
+                <img src="https://media.licdn.com/dms/image/v2/D4D22AQEVWDcl7h245g/feedshare-shrink_800/B4DZi.dwGwH0Ag-/0/1755542127892?e=2147483647&v=beta&t=p_kY0hJtsozXZ2n52gsyiYzQSL0aleuJKeoFNhQvhOo" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+			
+			 <figure class="large-figure">
+                <img src="https://i.ytimg.com/vi/SFFdbeogLFc/maxresdefault.jpg" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+			
+			
             <div class="alert-info-custom">
                 <h4><i class="fas fa-lightbulb"></i> Summary: The Evolution</h4>
                 <p>The progression of security tools generally follows this path:</p>
@@ -642,6 +674,124 @@
                     <li><strong>SIEM:</strong> Analyzes the data and alerts the team.</li>
                     <li><strong>EDR:</strong> Analyzes endpoint data and takes automated action.</li>
                     <li><strong>XDR:</strong> Analyzes all data (endpoints, network, cloud) and takes automated action everywhere.</li>
+                </ul>
+            </div>
+        </section>
+		
+		        <!-- Section 1: Antivirus Detection Methods -->
+        <section id="av-mechanisms">
+            <h2 class="section-title"> Antivirus Detection Methods</h2>
+            <p class="text-block">Antivirus (AV) software is the foundational layer of endpoint security. Historically, AV relied heavily on signatures, but modern threats require behavioral analysis. Understanding the difference between these two detection methods is crucial for a cybersecurity professional.</p>
+
+            <h3 class="tool-title"><i class="fas fa-fingerprint"></i> Signature-Based Detection</h3>
+            <p class="text-block">Signature-based detection works like a digital "wanted poster." The antivirus vendor analyzes a known piece of malware, extracts a unique fingerprint (a hash or specific code sequence), and adds it to a database. The AV scanner then checks files on your computer against this database.</p>
+            
+            <figure class="large-figure">
+                <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1007%2Fs12083-025-02112-7/MediaObjects/12083_2025_2112_Fig1_HTML.png" alt="Signature-based detection code">
+                <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
+            </figure>
+			
+			            <figure class="large-figure">
+                <img src="https://www.researchgate.net/publication/234082442/figure/fig3/AS:669328231919632@1536591694482/Signature-based-methodology-architecture.png" alt="Signature-based detection code">
+                <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
+            </figure>
+
+            <ul>
+                <li><strong>Pros:</strong> Very fast, highly accurate (no false positives), and great for stopping known, older malware.</li>
+                <li><strong>Cons:</strong> Completely useless against <strong>Zero-Day attacks</strong> (new, unseen malware) and polymorphic malware (malware that changes its code to evade signatures).</li>
+            </ul>
+
+            <h3 class="tool-title"><i class="fas fa-brain"></i> Anomaly-Based (Heuristic/Behavioral) Detection</h3>
+            <p class="text-block">Because signature-based detection is easily bypassed by new malware, modern AV uses anomaly-based detection. This method monitors the <em>behavior</em> of programs. It establishes a baseline of "normal" activity. If a program suddenly tries to do something abnormal (like a Word document attempting to modify the Windows Registry), the AV flags it as a threat.</p>
+
+ <figure class="large-figure">
+                <img src="https://www.brightdefense.com/wp-content/uploads/2025/07/Antivirus-Behavior-Based-Detection-1024x683.jpg" alt="Anomaly based monitoring">
+                <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
+            </figure>
+			
+			
+            <figure class="large-figure">
+                <img src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs12911-024-02760-4/MediaObjects/12911_2024_2760_Fig5_HTML.png" alt="Anomaly based monitoring">
+                <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
+            </figure>
+            <figure class="large-figure">
+                <img src="https://media.springernature.com/m685/springer-static/image/art%3A10.1038%2Fs41598-025-21826-5/MediaObjects/41598_2025_21826_Fig1_HTML.png" alt="Anomaly based monitoring">
+                <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
+            </figure>
+			
+			            <figure class="large-figure">
+                <img src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs12911-024-02760-4/MediaObjects/12911_2024_2760_Fig4_HTML.png" alt="Anomaly based monitoring">
+                <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
+            </figure>
+			
+            <ul>
+                <li><strong>Pros:</strong> Can detect new, previously unknown threats (Zero-days) and stop ransomware in its tracks by detecting mass file encryption.</li>
+                <li><strong>Cons:</strong> Requires more system resources (CPU/RAM) and can generate <strong>False Positives</strong> (flagging legitimate software as malicious).</li>
+            </ul>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Modern EDR</h4>
+                <p>Today, traditional AV has evolved into <strong>EDR (Endpoint Detection and Response)</strong>. EDR combines signature-based, anomaly-based, and machine learning engines to provide comprehensive, real-time protection and automated response.</p>
+            </div>
+	 <figure class="large-figure">
+                <img src="https://www.brightdefense.com/wp-content/uploads/2025/07/EDR-vs-Antivirus-716x1536.png" alt="Malware code analysis">
+                
+            </figure>		
+			
+        </section>
+		
+		<!-- Section 1: VirusTotal -->
+        <section id="virustotal">
+            <h2 class="section-title">1. VirusTotal</h2>
+            <p class="text-block"><strong>VirusTotal</strong> is a free service acquired by Google that analyzes files and URLs for viruses, worms, trojans, and other kinds of malicious content. It is an essential tool for malware analysts and SOC defenders.</p>
+
+            <figure class="large-figure">
+                <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2025/07/virustotal-file-checker-file-upload-process.jpg?q=70&fit=crop&w=825&dpr=1" alt="Malware code analysis">
+                <figcaption>Figure 1: VirusTotal aggregates the results of dozens of antivirus engines to provide a comprehensive threat verdict.</figcaption>
+            </figure>
+			            <figure class="large-figure">
+                <img src="https://i.sstatic.net/MPASXGpB.png" alt="Malware code analysis">
+                <figcaption>web scanners - Sites flagged by Virustotal .</figcaption>
+            </figure>
+
+            <h3 class="tool-title"><i class="fas fa-search"></i> How VirusTotal Works</h3>
+            <p class="text-block">Instead of relying on a single antivirus program, VirusTotal inspects submitted items with over 70 different antivirus scanners and URL/domain blocklisting services. This multi-engine approach drastically increases the chances of detecting disguised or newly modified malware.</p>
+
+            <ul>
+                <li><strong>File Analysis:</strong> You can upload a suspicious file (up to 550MB). VirusTotal computes its hash (MD5, SHA-1, SHA-256) and checks it against its database. If it hasn't been seen before, it runs the file through all 70+ engines.</li>
+                <li><strong>URL & Domain Analysis:</strong> You can paste a suspicious link. VirusTotal checks it against services like Google Safe Browsing, PhishTank, and various endpoint protection platforms to see if the URL is hosting malware or phishing pages.</li>
+                <li><strong>Details & Relations:</strong> Beyond just "clean" or "malicious," VirusTotal shows the file's history, embedded URLs, dropped files, and contact with known malicious IP addresses.</li>
+            </ul>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-exclamation-triangle"></i> Operational Security (OPSEC) Warning</h4>
+                <p>Uploading a file to VirusTotal makes it publicly available to all premium users (which includes threat researchers and sometimes the attackers themselves). If you are analyzing highly sensitive, proprietary, or zero-day malware, do <strong>not</strong> upload it to the public VirusTotal portal. Instead, use a private sandbox.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Have I Been Pwned -->
+        <section id="hibp">
+            <h2 class="section-title">2. Have I Been Pwned (HIBP)</h2>
+            <p class="text-block">Created by Microsoft MVP and security expert Troy Hunt, <strong>Have I Been Pwned</strong> is a website that allows users to check if their personal data (email addresses, phone numbers, and passwords) has been compromised by a data breach.</p>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWtiaqMtfxpgumLxfSbakPv8zwOrXzqwRqlKcH2_L-4OJ-4j7-CO4Hs42F&s=10" alt="Data breach and credentials">
+                <figcaption>Figure 2: HIBP aggregates data from massive corporate data breaches and allows users to search for their exposed credentials.</figcaption>
+            </figure>
+
+            <h3 class="tool-title"><i class="fas fa-user-secret"></i> How HIBP Works</h3>
+            <p class="text-block">When a company is hacked and their user database is stolen, the attackers often dump the stolen emails and passwords on the dark web or hacking forums. HIBP collects these "breach dumps" and safely catalogs them.</p>
+            <ul>
+                <li><strong>Email Search:</strong> You can enter your email address. HIBP will tell you which known data breaches your email was involved in (e.g., LinkedIn 2012, Adobe 2013, Dropbox 2016) and what specific data was leaked (passwords, names, DOB).</li>
+                <li><strong>Password Search:</strong> You can enter a password you use. HIBP checks it against a database of hundreds of millions of real passwords leaked in breaches. It tells you how many times that password has been seen in breaches, proving it is unsafe to use.</li>
+            </ul>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lock"></i> How Cybersecurity Professionals Use HIBP</h4>
+                <p>While regular users use it to check their own accounts, IT and Security teams use HIBP to protect organizations:</p>
+                <ul>
+                    <li><strong>Domain Monitoring:</strong> Enterprise accounts allow admins to monitor all corporate email addresses. If employee emails appear in a new breach, the IT team is alerted immediately to force a password reset.</li>
+                    <li><strong>Preventing Credential Stuffing:</strong> Attackers use passwords leaked on HIBP in automated "credential stuffing" attacks. By checking if their employees' passwords are compromised, admins can enforce safer password policies.</li>
                 </ul>
             </div>
         </section>
