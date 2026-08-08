@@ -298,6 +298,242 @@
                 </div>
             </div>
         </section>
+		
+		
+		
+		<div class="page-header">
+            <h1>Reconnaissance & OSINT Tools</h1>
+            <p>The first phase of any cyber attack or security assessment is gathering information. Learn how to use Shodan, theHarvester, DNS_lookup, and Google Dorks to map a target's digital footprint.</p>
+			            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwaScfHMatbSiI5_SaTSzrld_ZMqrfgdOwPDKtZRiS3O5mVcmbc8wRttk&s=10" alt="Data center servers and network cables">
+            </figure>
+        </div>
+
+        <!-- Section 1: Shodan -->
+        <section id="shodan">
+            <h2 class="section-title"> Shodan: The Search Engine for the Internet of Things</h2>
+            <p class="text-block">While Google searches for websites (HTML), <strong>Shodan</strong> searches for internet-connected devices. It scans the entire internet for open ports, grabbing the "banners" (metadata) returned by services like webcams, routers, servers, and Industrial Control Systems (ICS).</p>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfRZxHp2D8e_2RPxmUiH3FGS9r1HaTR4EXvU5hwtQTv61gF7k6v6XpGA59&s=10" alt="Data center servers and network cables">
+                <figcaption>Figure 1: Shodan maps exposed infrastructure across the global internet.</figcaption>
+            </figure>
+			            <figure class="large-figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*3sfS_DsXxKvE0nWsVixs9Q.png" alt="Data center servers and network cables">
+            </figure>
+
+            <p class="text-block">Security professionals use Shodan to find exposed devices on their own networks that they didn't realize were public. Attackers use it to find vulnerable targets (e.g., unpatched web servers or default-password webcams).</p>
+            
+            <h3 class="tool-title"><i class="fas fa-search"></i> Shodan Search Examples</h3>
+            <pre><code># Find Apache servers in the US
+apache country:US
+
+# Find devices running default RDP port (3389) in a specific city
+port:3389 city:"New York"
+
+# Find industrial control systems (SCADA) exposed online
+port:502</code></pre>
+        </section>
+
+        <!-- Section 2: theHarvester -->
+        <section id="theharvester">
+            <h2 class="section-title"> theHarvester: Email and Subdomain Gathering</h2>
+            <p class="text-block"><strong>theHarvester</strong> is a built-in Kali Linux tool designed for Open-Source Intelligence (OSINT). It queries multiple search engines (Google, Bing), PGP keys, and social networks to gather emails, subdomains, and employee names associated with a target domain.</p>
+
+            <figure class="large-figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*nX698hkMSglYgfh9gc_6Ow.jpeg" alt="Data extraction and code">
+                <figcaption>Figure 2: theHarvester automates the collection of public-facing corporate data for phishing and recon.</figcaption>
+            </figure>
+			            <figure class="large-figure">
+                <img src="https://www.oreilly.com/api/v2/epubs/urn:orm:book:9781789611809/files/assets/8bf9fc69-0596-4cfa-b1af-4eb1d062fc72.png" alt="Data extraction and code">
+            </figure>
+
+            <p class="text-block">This tool is essential for the reconnaissance phase of a penetration test. Finding employee emails allows testers to launch controlled phishing campaigns to test an organization's human firewall.</p>
+
+            <h3 class="tool-title"><i class="fas fa-envelope"></i> theHarvester Command Example</h3>
+            <pre><code>theHarvester -d example.com -b google,linkedin -l 500</code></pre>
+            <p class="text-block">This command searches Google and LinkedIn for up to 500 results related to the domain <span class="inline-code">example.com</span>.</p>
+        </section>
+
+<!-- Section 1: Introduction -->
+        <section id="whois-intro">
+            <h2 class="section-title">What is WHOIS?</h2>
+            <p class="text-block"><strong>WHOIS</strong> (pronounced "who is") is a query and response protocol widely used for querying databases that store the registered users or assignees of an Internet resource, such as a domain name or an IP address block. It is a fundamental tool for OSINT (Open-Source Intelligence), network troubleshooting, and cybersecurity investigations.</p>
+
+		
+		
+
+            <figure class="large-figure">
+                <img src="https://hackercoolmagazine.com/wp-content/uploads/2023/07/WHOIS-Footprinting_5-1.jpg" alt="Network configuration and routing">
+                <figcaption>Figure 3: DNS records reveal the architecture of a target's web presence.</figcaption>
+            </figure>
+            <figure class="large-figure">
+                <img src="https://www.ipxo.com/app/uploads/2021/11/example-com-domain-information-1012x1024.png" alt="Network configuration and routing">
+                <figcaption>Figure 3: DNS records reveal the architecture of a target's web presence.</figcaption>
+            </figure>
+			
+        </section>
+
+        <!-- Section 2: Features -->
+        <section id="whois-features">
+            <h2 class="section-title">Features of WHOIS</h2>
+            <p class="text-block">When performing a WHOIS lookup, the protocol returns various pieces of valuable information regarding the domain's registration and infrastructure:</p>
+            
+            <ul>
+                <li><strong>Registration Timeline:</strong> Provides information on the domain's registration date, expiration date, and last update.</li>
+                <li><strong>Contact Details:</strong> Displays names, addresses, phone numbers, and email addresses linked with the domain (Registrant, Admin, and Tech contacts).</li>
+                <li><strong>Nameservers:</strong> Lists the nameservers in charge of routing traffic to the domain, which might offer information on the website's hosting provider.</li>
+                <li><strong>Domain Status:</strong> Determines if the domain is live, dormant, or marked for possible problems (e.g., pending deletion, serverHold, or transferProhibited).</li>
+            </ul>
+        </section>
+
+        <!-- Section 3: Pros & Cons -->
+        <section id="whois-pros-cons">
+            <h2 class="section-title">Pros & Cons of WHOIS</h2>
+            <p class="text-block">While WHOIS is an essential tool for security and network professionals, it comes with its own set of advantages and disadvantages.</p>
+
+            <div class="alert-pros">
+                <h4><i class="fas fa-check-circle"></i> Pros</h4>
+                <ul>
+                    <li>Gives a clearer picture of who is behind a website, potentially aiding accountability.</li>
+                    <li>Assists network administrators in resolving technical issues with a domain or website.</li>
+                    <li>Helps businesses detect infringement of trademarks and take necessary actions.</li>
+                    <li>Can be used to find the responsible parties in cases of phishing scams or the distribution of illegal content.</li>
+                </ul>
+            </div>
+
+            <div class="alert-cons">
+                <h4><i class="fas fa-times-circle"></i> Cons</h4>
+                <ul>
+                    <li>Exposes contact details of the domain owner, potentially leading to unsolicited emails or spam.</li>
+                    <li>Actions taken against parties misusing domains can be difficult, especially when operating across international borders.</li>
+                    <li>Registrants may not keep their contact details current, making it hard to reach relevant parties.</li>
+                    <li>Domain owners can mask their identifying details through paid privacy protection services, rendering some WHOIS data less useful.</li>
+                </ul>
+            </div>
+
+
+        </section>
+
+			
+
+
+        <!-- Section 4: Google Dorks -->
+        <section id="google-dorks">
+            <h2 class="section-title">4. Google Dorks (Google Hacking)</h2>
+            <p class="text-block"><strong>Google Dorking</strong> or "Google Hacking" is a technique that uses advanced search operators in Google to find specific, hidden, or sensitive information that was accidentally exposed on the internet. This could include passwords, exposed admin panels, or confidential documents.</p>
+
+            <figure class="large-figure">
+                <img src="https://media.geeksforgeeks.org/wp-content/uploads/20260311153729811295/file.webp" alt="Searching for hidden data">
+                <figcaption>Figure 4: Google Dorks leverage search engine indexing to uncover unintentionally public files.</figcaption>
+            </figure>
+			            <figure class="large-figure">
+                <img src="https://www.hackthebox.com/hubfs/Imported_Blog_Media/1fEZoe21GVzGqkqaIbEdWCDActDzv3HO.jpg" alt="Searching for hidden data">
+            </figure>
+			
+						            <figure class="large-figure">
+                <img src="https://www.hackthebox.com/hubfs/Imported_Blog_Media/dMsJsC1gjPTTqvOSRARGwT05N1d5s9rn.png" alt="Searching for hidden data">
+            </figure>
+			
+
+            <h3 class="tool-title"><i class="fas fa-search-dollar"></i> Common Google Dork Operators</h3>
+            <ul>
+                <li><strong>site:</strong> Restricts results to a specific website (e.g., <span class="inline-code">site:example.com</span>).</li>
+                <li><strong>filetype:</strong> Searches for specific file extensions (e.g., <span class="inline-code">filetype:pdf</span>).</li>
+                <li><strong>inurl:</strong> Searches for a specific word in the URL (e.g., <span class="inline-code">inurl:admin</span>).</li>
+                <li><strong>intitle:</strong> Searches for a specific word in the page title (e.g., <span class="inline-code">intitle:"index of"</span>).</li>
+            </ul>
+
+            <h3 class="tool-title"><i class="fas fa-exclamation-triangle"></i> Google Dork Examples</h3>
+            <pre><code># Find exposed password files on a specific domain
+site:example.com filetype:txt "password"
+
+# Find open directory listings
+intitle:"index of" "parent directory"
+
+# Find exposed phpMyAdmin login pages
+inurl:phpmyadmin intitle:"phpMyAdmin"</code></pre>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-shield-alt"></i> The Google Hacking Database (GHDB)</h4>
+                <p>Offensive Security maintains the GHDB, a massive collection of Google Dorks used by penetration testers to find exposed data. Defenders should regularly use these dorks against their own domains to ensure they aren't leaking sensitive files.</p>
+            </div>
+        </section>
+		
+		
+		 <div class="page-header">
+            <h1>Bug Bounty Hunting</h1>
+            <p>Learn how ethical hackers legally hack organizations to find vulnerabilities, improve global security, and get paid for their discoveries.</p>
+        </div>
+
+        <!-- Section 1: What is Bug Bounty? -->
+        <section id="what-is-bug-bounty">
+            <h2 class="section-title"> What is a Bug Bounty Program?</h2>
+            <p class="text-block">A <strong>Bug Bounty Program</strong> is a deal offered by websites, organizations, and software developers by which individuals can receive recognition and compensation (bounties) for reporting bugs, especially those pertaining to security exploits and vulnerabilities.</p>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyfuCn3IUGysTjxvwIdwZ-rxvbQd0dWVxb7j3ftA4EajturxnIftse83I&s=10" alt="Bug Bounty Hunting Concept">
+                <figcaption>Figure 1: Bug bounty hunting bridges the gap between independent hackers and enterprise security teams.</figcaption>
+            </figure>
+
+            <p class="text-block">Instead of hiring a full-time penetration testing team, companies use bug bounty platforms to crowdsource security testing. This allows thousands of ethical hackers from around the world to continuously test their applications. Famous programs include those run by Google, Microsoft, Apple, and the US Department of Defense.</p>
+        </section>
+
+        <!-- Section 2: How it Works -->
+        <section id="how-it-works">
+            <h2 class="section-title"> How Bug Bounties Work</h2>
+            <p class="text-block">Bug bounty hunting requires a systematic approach. You cannot just start hacking; you must follow the rules set by the organization to ensure you are testing legally and ethically.</p>
+
+            <h3 class="tool-title"><i class="fas fa-list-alt"></i> The Process</h3>
+            <ul>
+                <li><strong>1. Find a Program:</strong> Register on a bug bounty platform like HackerOne, Bugcrowd, or Intigriti. Browse the public programs.</li>
+                <li><strong>2. Read the Scope:</strong> The program will define exactly what you are allowed to test (e.g., <span class="inline-code">*.example.com</span>) and what is strictly off-limits (e.g., physical security, social engineering, DDoS attacks).</li>
+                <li><strong>3. Hunt for Bugs:</strong> Use your penetration testing skills (Recon, Scanning, Exploitation) to find vulnerabilities in the scope.</li>
+                <li><strong>4. Write a Report:</strong> Document the vulnerability clearly, including steps to reproduce (PoC) and the potential impact.</li>
+                <li><strong>5. Get Rewarded:</strong> If the bug is valid and not a duplicate (already reported by someone else), you receive a bounty. Payouts range from $50 to $100,000+ depending on the severity.</li>
+            </ul>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKxJPtu10pV3vcU05Uc_CjZgAxWrlL-ZSPIbGpDBxbWw&s" alt="Analyzing data and reports">
+                <figcaption>Figure 2: Clear documentation and Proof of Concept (PoC) are crucial for a successful bug bounty report.</figcaption>
+            </figure>
+			
+			            <figure class="large-figure">
+                <img src="https://www.mdpi.com/blockchains/blockchains-02-00010/article_deploy/html/images/blockchains-02-00010-g002.png" alt="Analyzing data and reports">
+            </figure>
+			
+        </section>
+
+        <!-- Section 3: Methodology -->
+        <section id="methodology">
+            <h2 class="section-title">3. The Bug Bounty Methodology</h2>
+            <p class="text-block">Top bug bounty hunters don't just scan randomly; they follow a refined methodology to find hidden bugs that automated scanners miss.</p>
+
+            <ol>
+                <li><strong>Reconnaissance (The Key):</strong> The most important phase. Hunters spend 70% of their time mapping the target's infrastructure, finding forgotten subdomains, hidden API endpoints, and old development servers using tools like Amass, Subfinder, and httpx.</li>
+                <li><strong>Fingerprinting:</strong> Identifying the exact technologies, frameworks, and versions running on the target using tools like Wappalyzer or Nmap.</li>
+                <li><strong>Vulnerability Discovery:</strong> Manually testing for Business Logic Flaws, IDOR (Insecure Direct Object References), XSS, and SQLi. Automated scanners are often blocked by WAFs, so manual testing is required.</li>
+                <li><strong>Exploitation (PoC):</strong> Safely demonstrating the bug without causing actual damage to the system. For example, proving an XSS by popping an alert box with your username.</li>
+            </ol>
+        </section>
+
+        <!-- Section 4: Writing a Good Report -->
+        <section id="reporting">
+            <h2 class="section-title">4. Writing a High-Quality Report</h2>
+            <p class="text-block">A bug is only as good as the report you write. If the company's security team cannot understand or reproduce your bug, they will close it as "Not Applicable" (N/A) and you won't get paid.</p>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-file-alt"></i> Structure of a Winning Report</h4>
+                <ul>
+                    <li><strong>Title:</strong> Clear and concise. (e.g., "Stored XSS in Profile Picture Upload Field via SVG file").</li>
+                    <li><strong>Description:</strong> Explain what the vulnerability is and where it is located.</li>
+                    <li><strong>Steps to Reproduce:</strong> Numbered, easy-to-follow steps. (1. Log in, 2. Go to /profile, 3. Upload malicious file...).</li>
+                    <li><strong>Proof of Concept (PoC):</strong> Screenshots, HTTP requests, or a short video proving the exploit works.</li>
+                    <li><strong>Impact:</strong> Explain the business risk. (e.g., "An attacker could steal the session cookies of any user who views the profile").</li>
+                    <li><strong>Remediation:</strong> Suggest how to fix it. (e.g., "Sanitize all SVG uploads and strip executable JavaScript tags").</li>
+                </ul>
+            </div>
+        </section>
 
         <!-- LESSON NAVIGATION BUTTONS (PREV / NEXT) -->
         <div class="lesson-nav">
