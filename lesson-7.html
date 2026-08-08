@@ -412,8 +412,12 @@
             <p class="text-block"><strong>Intrusion Detection Systems (IDS)</strong> and <strong>Intrusion Prevention Systems (IPS)</strong> are security technologies designed to inspect network traffic for malicious activity. An IDS is configured in a <strong>Promiscuous mode</strong> (connected to a span/mirror port); it passively monitors traffic and raises alerts but cannot block attacks. An IPS is deployed <strong>Inline</strong> (directly in the traffic path); it actively drops malicious packets and blocks attacks in real-time.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/717462e5-8380-422d-a093-fce6deb23a71.png?auth_key=1886127424-6dc74f62e8df4f72a8ad3871c79e3314-0-2da0fe707649e02938d7e388e4c2a5d3" alt="IDS/IPS Network Topology">
+                <img src="https://www.howtonetwork.com/wp-content/uploads/2022/03/8-3.png" alt="IDS/IPS Network Topology">
                 <figcaption>Figure 1: Network topology showing Network-Based IPS deployed in Inline mode and Promiscuous mode across Internal Networks and Core Business Units.</figcaption>
+            </figure>
+			<figure class="large-figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*s0U3qNSadcnLY8Dtt94qsw.png" alt="IDS/IPS Network Topology">
+                <figcaption>IDS deployed across Internal Networks.</figcaption>
             </figure>
         </section>
 
@@ -423,7 +427,7 @@
             <p class="text-block">Configuring an IDS/IPS is a balancing act. If the system is too sensitive, it generates <strong>False Positives</strong> (blocking legitimate traffic). If it is too loose, it generates <strong>False Negatives</strong> (missing actual attacks). Security engineers use a classification model called the Confusion Matrix to tune their sensors.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/b8dfac8b-6148-4eb3-88a5-a1fc4eca7241.png?auth_key=1886127424-d5e8d3c6f38b49c28d95f24d6e51da37-0-8eddf7c0a8c84e22b0b62c60c4c10f9f" alt="Confusion Matrix">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0CyrW4S9s_fckqSyPKAPRRgrnU405AK4JyzEUV25UuvTbKMwYtDpLCTk&s=10" alt="Confusion Matrix">
                 <figcaption>Figure 2: The Confusion Matrix evaluating model predictions: True Positive, False Positive, False Negative, and True Negative.</figcaption>
             </figure>
 
@@ -439,10 +443,16 @@
         <section id="snort-suricata">
             <h2 class="section-title">Open-Source IDS/IPS Tools: Snort & Suricata</h2>
             <p class="text-block"><strong>Snort</strong> and <strong>Suricata</strong> are the industry standard open-source network intrusion detection/prevention systems. They use rule-based signatures to detect and block malicious network traffic.</p>
+            </figure>
 
+			
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/080affb3-53bd-4f78-a805-44a51535a0c1.png?auth_key=1886127424-b8f1a86f1dca4740b0f68a313b3fc37e-0-9e2ac711d06e49f9b15ef3ee7b2c62d2" alt="Snort Rule Format">
+                <img src="https://2.bp.blogspot.com/-Vaz4Msmd5X4/XHDefazjsVI/AAAAAAAAc9Q/BUPzjQ32ft4gBMxFIU-Ibz3_-Mdw6lUCACEwYBhgL/s1600/9.png" alt="Snort Rule Format">
                 <figcaption>Figure 3: Anatomy of a Snort rule, breaking down Action, Protocol, Source/Destination IPs, Ports, and Rule Options.</figcaption>
+            </figure>
+			            <figure class="large-figure">
+                <img src="https://sublimerobots.com/wp-content/uploads/2017/06/network-graph-01.jpg" alt="Snort Rule Format">
+                <figcaption> Snort Ports.</figcaption>
             </figure>
 
             <p class="text-block">A standard Snort rule consists of a rule header and rule options. For example: <span class="inline-code">alert ip any any -> any any (msg: "IP Packet detected";)</span></p>
@@ -454,7 +464,7 @@
             </ul>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/c35490a0-828e-44a7-97eb-cc87f949ae7e.png?auth_key=1886127424-e3c26cd36e834d899f95c75fc42ba863-0-46e65d5a39d848b3a1e2a77a1de9f21e" alt="Suricata vs Snort Comparison">
+                <img src="https://i.ytimg.com/vi/m_3uE0XM_Ok/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBohrwNyr2SktX_nseWw3tc5aVbjQ alt="Suricata vs Snort Comparison">
                 <figcaption>Figure 4: Feature and performance comparison between Suricata and Snort.</figcaption>
             </figure>
 
@@ -489,10 +499,18 @@
             <p class="text-block">A <strong>DMZ</strong> is a subnetwork that exposes an organization's external-facing services (like web, email, and DNS servers) to the internet while isolating the internal network. It acts as a buffer zone. If an attacker compromises a server in the DMZ, they still face a firewall blocking them from reaching the trusted internal corporate network.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/ea3cc213-d8eb-4172-bdb7-3655b0c6f315.png?auth_key=1886127424-1b0f7d5744284644b4d9d3ab690fe09b-0-1f034a70a04944599f3df0a2a3ec3064" alt="Cisco ASA DMZ Topology">
+                <img src="https://ipwithease.com/wp-content/uploads/2020/06/asa-firewall-security-levels.jpg.webp" alt="Cisco ASA DMZ Topology">
                 <figcaption>Figure 5: Cisco ASA firewall topology configuring security levels for OUTSIDE, INSIDE, and DMZ zones to control traffic flow.</figcaption>
             </figure>
-
+            <figure class="large-figure">
+                <img src="https://cdn-m4m.chd01.com/pro/uploads/account_711/660214/idmz-dmz-network-architecture.jpg" alt="Cisco ASA DMZ Topology">
+                <figcaption>DMZ.</figcaption>
+            </figure>
+            <figure class="large-figure">
+                <img src="https://docs.ipswitch.com/MOVEit/DMZ%207.5/online%20guide/images_MOVEitDMZ/dmzfirewall.gif" alt="Cisco ASA DMZ Topology">
+                <figcaption>System Configuration - Firewall Configuration.</figcaption>
+            </figure>
+			
             <p class="text-block">Firewalls assign security levels to interfaces. By default, traffic flows from higher security levels (e.g., INSIDE=100) to lower security levels (e.g., DMZ=50, OUTSIDE=0). Traffic from a lower level to a higher level requires an explicit Access Control List (ACL).</p>
             <ul>
                 <li><strong>INSIDE to DMZ:</strong> Allowed (Administrators managing servers).</li>
@@ -508,14 +526,27 @@
             <p class="text-block"><strong>NAT</strong> is a method used by routers and firewalls to map private IP addresses used inside a local network to a public IP address used on the internet. This conserves the limited IPv4 address space and adds a layer of security by hiding internal network topology from the outside world.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e9163d07-0614-4621-bdfb-a272b0d34725.png?auth_key=1886127424-4a06bb5b56054d56b64a7088aeb3678c-0-c2850a73b6484aa88686479438f871ac" alt="NAT Public vs Private IP">
+                <img src="https://surfshark.com/wp-content/uploads/2024/09/types_of_IP_addresses_infographic-1-img.svg" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
-
+			            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb6T_B2P_-tTvz2GdDH-Q2Caga-ZmFeEfAxoA3VSh1Ow&s=10" alt="NAT Public vs Private IP">
+                <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
+            </figure>
+			<figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ79k9b6udObmXytjsuF9KomFSImzicGw9SaK0R3mal1A&s=10" alt="NAT Public vs Private IP">
+                <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
+            </figure>
+			
             <p class="text-block">There are two main types of IPv4 addresses: <strong>Public</strong> (routable on the internet, e.g., <span class="inline-code">66.94.234.13</span>) and <strong>Private</strong> (used internally, e.g., <span class="inline-code">192.168.1.0/24</span>, <span class="inline-code">10.0.0.0/8</span>). When an internal device requests a webpage, the NAT router intercepts the packet, swaps the private source IP with its own public IP, records the translation in a table, and forwards it.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/1e34dc70-d7a2-4799-80d5-51265d8d07d4.png?auth_key=1886127424-0f0f80593d8a4be1b249ae8d5e2a3c54-0-ee17ad7de81c46c08478cda0ad57ee44" alt="NAT Translation Table">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm6Uq1JnwcJcoQyEAggl4buFjPvhjNLY5zYQoi_J_6_9cr82_c9zuCQIH_&s=10" alt="NAT Translation Table">
+                <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
+            </figure>
+			
+			            <figure class="large-figure">
+                <img src="https://media.geeksforgeeks.org/wp-content/uploads/20250812123705780750/Static-NAT.webp" alt="NAT Translation Table">
                 <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
             </figure>
 
@@ -528,16 +559,91 @@
             <p class="text-block">A <strong>VPN</strong> extends a private network across a public network (the internet). It enables users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network. VPNs use encryption and tunneling protocols to ensure confidentiality and security.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/74cb0eda-508a-47c7-bfdc-042827ae84ba.png?auth_key=1886127424-d3c96c8f6e5f4d6e8cc6a4f74e23465d-0-4c6d6f3c1d2f4d3d8f3a3e5b9f2d5c8a" alt="VPN Hiding IP Address">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBMFTr2iAzzK96RnlYcMlc-unAKYQlV0YYmksVYjlHfSn8CMLYj-D57mw&s=10" alt="VPN Hiding IP Address">
                 <figcaption>Figure 8: Without a VPN, your real IP address is visible to the ISP and internet services. A VPN disguises your identity by hiding your IP address.</figcaption>
             </figure>
 
             <p class="text-block">When you connect to a VPN server, your internet traffic is routed through an encrypted tunnel to that server. To the outside world, your traffic appears to originate from the VPN server's IP address, not your actual location. This protects your privacy and secures your data from eavesdropping on untrusted networks (like public Wi-Fi).</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e1d94a97-efb3-4fb0-a408-1530128cbbbf.png?auth_key=1886127424-ea3a6f03b4ad42a5b32c8a4a9e0e5b6d-0-9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d" alt="VPN Server Routing">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiRW054WJUKmjH8mND7NGQcqgZDnK32jjkPdL4z0cMhfUqy7mq5YOgwKC4&s=10" alt="VPN Server Routing">
                 <figcaption>Figure 9: Network flow showing traffic securely tunneled from a client workstation to a VPN Server, masking the original IP address.</figcaption>
             </figure>
+			            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJfpXkrGct_bQCIH3YINqwjz_FCyCioGO4toxgo3zkRQ&s=10" alt="VPN Server Routing">
+                <figcaption>Types of a VPN </figcaption>
+            </figure>
+			
+						            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-n4V3NiwGf8PEiCnbVmaVyACY6N8HajXS_TgxQ9b1AbA1S6Eo43Vwdpc&s=10" alt="VPN Server Routing">
+                <figcaption>Types of a VPN </figcaption>
+            </figure>
+			
+        </section>
+		
+		       <div class="page-header">
+            <h1>Centralized Logging, SIEM, EDR & XDR</h1>
+            <p>Understanding how modern Security Operations Centers (SOC) aggregate logs, detect threats, and automate responses across endpoints and networks.</p>
+        </div>
+
+        <!-- Section 1: Centralized Logging -->
+        <section id="centralized-logging">
+            <h2 class="section-title">1. Centralized Logging</h2>
+            <p class="text-block">In a modern enterprise, devices like firewalls, servers, web applications, and printers all generate logs. If a security engineer tries to check each device individually, they will miss attacks. <strong>Centralized Logging</strong> is the practice of forwarding all these logs to a single, central server for storage and analysis.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/98b4c4ba-ff8e-44eb-993e-2902df94db61.png?auth_key=1886180764-5c50d8de10e9467a943085f07e1560f4-0-a54c4cecb53489c7d8dfd25151d9f54a" alt="Centralized Logging Architecture">
+                <figcaption>Figure 1: Different endpoints forwarding their logs to a Centralized Logging system, which is then used for Events, Security, and Compliance monitoring.</figcaption>
+            </figure>
+
+            <p class="text-block">Centralized logging allows organizations to correlate events. For example, if a firewall logs a blocked connection from a malicious IP, and an endpoint logs a failed login at the exact same time, the centralized system can link these events together to reveal a coordinated attack.</p>
+        </section>
+
+        <!-- Section 2: HIDS Architecture -->
+        <section id="hids">
+            <h2 class="section-title">2. HIDS (Host Intrusion Detection System)</h2>
+            <p class="text-block">A <strong>Host Intrusion Detection System (HIDS)</strong> is a specific type of centralized logging focused entirely on individual endpoints (hosts). HIDS agents are installed on servers and workstations to monitor internal activities like file integrity, process execution, and local logins.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/a356286d-7968-47fc-8772-ffab69001400.png?auth_key=1886180764-4e95bb1e471c4624839ba984947863dc-0-905ea27e228f6c37e36607fbb5bfc648" alt="HIDS Architecture">
+                <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Section 3: SIEM -->
+        <section id="siem">
+            <h2 class="section-title">3. SIEM (Security Information and Event Management)</h2>
+            <p class="text-block">While centralized logging just collects logs, a <strong>SIEM</strong> adds intelligence. SIEM platforms (like Splunk, Microsoft Sentinel, or IBM QRadar) aggregate, normalize, and correlate logs from across the entire organization.</p>
+            
+            <h3 class="tool-title"><i class="fas fa-brain"></i> What SIEM Does:</h3>
+            <ul>
+                <li><strong>Correlation:</strong> Connects the dots between different logs to identify complex attack patterns.</li>
+                <li><strong>Alerting:</strong> Triggers real-time alerts if a known threat pattern (like a brute-force attack) is detected.</li>
+                <li><strong>Compliance:</strong> Stores logs securely for audits (e.g., GDPR, HIPAA) and generates compliance reports.</li>
+            </ul>
+        </section>
+
+        <!-- Section 4: EDR & XDR -->
+        <section id="edr-xdr">
+            <h2 class="section-title">4. EDR & XDR (Detection and Response)</h2>
+            <p class="text-block">As threats became more advanced, simply logging events wasn't enough. Organizations needed the ability to actively respond. This led to the development of EDR and XDR.</p>
+
+            <h3 class="tool-title"><i class="fas fa-desktop"></i> EDR (Endpoint Detection and Response)</h3>
+            <p class="text-block">EDR is an evolution of HIDS. Instead of just alerting on an attack, an EDR (like CrowdStrike Falcon or Microsoft Defender for Endpoint) can <strong>actively respond</strong>. If it detects ransomware executing on a laptop, it can automatically isolate that laptop from the network to stop the spread.</p>
+
+            <h3 class="tool-title"><i class="fas fa-project-diagram"></i> XDR (Extended Detection and Response)</h3>
+            <p class="text-block">EDR only protects the endpoint. <strong>XDR</strong> takes it a step further by integrating Endpoint, Network, Cloud, and Email security into one unified platform. This gives the SOC a single pane of glass to detect and respond to threats across the entire IT environment.</p>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Summary: The Evolution</h4>
+                <p>The progression of security tools generally follows this path:</p>
+                <ul>
+                    <li><strong>Centralized Logging:</strong> Collects the data.</li>
+                    <li><strong>SIEM:</strong> Analyzes the data and alerts the team.</li>
+                    <li><strong>EDR:</strong> Analyzes endpoint data and takes automated action.</li>
+                    <li><strong>XDR:</strong> Analyzes all data (endpoints, network, cloud) and takes automated action everywhere.</li>
+                </ul>
+            </div>
         </section>
         <!-- LESSON NAVIGATION BUTTONS -->
         <div class="lesson-nav">
