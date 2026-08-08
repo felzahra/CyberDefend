@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Networking Labs</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links a:hover { color: var(--body-fg); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        
+        /* Back Buttons Styling */
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* Labs Grid */
+        .labs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .lab-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); border-color: var(--primary); }
+        .lab-image-wrapper { width: 100%; height: 220px; overflow: hidden; background: var(--body-bg); border-bottom: 1px solid var(--hairline-color); }
+        .lab-image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .lab-card:hover .lab-image-wrapper img { transform: scale(1.05); }
+        .lab-content { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+        .lab-content h3 { font-size: 1.2rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .lab-content p { font-size: 0.9rem; color: var(--body-quiet-color); line-height: 1.5; margin-bottom: 20px; flex: 1; }
+        .lab-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: var(--primary-fg); padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.2s; margin-top: auto; }
+        .lab-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .lab-btn-github { background: #333; color: #fff; border: 1px solid #555; }
+        .lab-btn-github:hover { background: #444; }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            
+            /* Sidebar becomes horizontal/full width on mobile */
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <a href="labs.html" class="active">Labs</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER (Flexbox Row) -->
+<div class="main-content">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        
+        <!-- BACK BUTTONS ADDED HERE -->
+        <div class="sidebar-back-btns">
+            <a href="index.html" class="sidebar-back-btn">← Back to Dashboard</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Labs</a>
+        </div>
+
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <!-- It is best practice to remove spaces in HTML filenames -->
+                <li><a href="labs.html" class="active">Network Security Overview</a></li>
+                <li><a href="network Roadmap.html">Network Roadmap</a></li>
+                <li><a href="security Roadmap.html">Security Roadmap</a></li>
+                <li><a href="lesson-6.html"> Switching Architecture </a></li>
+                <li><a href="lesson-7.html"> Firewall Security Architecture</a></li>
+                <li><a href="lesson-3.html"> KALI Linux</a></li>
+                <li><a href="kali-tools.html"> Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-4.html"> Vulnerability Scanners</a></li>
+                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
+                <li><a href="labs2.html"> Networking Labs Overview</a></li>
+
+                <li><a href="lesson-8.html">Concept</a></li>
+                <li><a href="lesson-9.html">Concept</a></li>
+                <li><a href="lesson-10.html">Concept</a></li>
+                <li><a href="lesson-11.html">Concept</a></li>
+                <li><a href="lesson-12.html">Concept</a></li>
+                <li><a href="lesson-13.html">Concept</a></li>
+
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Networking Labs & Topologies</h1>
+            <p>Explore hands-on networking labs, topologies, and configurations built with Cisco Packet Tracer, EVE-NG, and Palo Alto.</p>
+        </div>
+
+        <!-- LABS GRID -->
+        <div class="labs-grid">
+            
+            <!-- LAB 1 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/d5dd1944-2d02-4aea-9c20-017b84380c8b.png?auth_key=1886092929-dc4c0bb6bcb2406580ea1b45e5b9cf59-0-c99d7e1e23d0584b8e2bfe242e5edb38" alt="3-Tier Hierarchical Switches Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=3-Tier+Architecture';">
+                </div>
+                <div class="lab-content">
+                    <h3>3-Site Hierarchical 3-Tier Switches</h3>
+                    <p>Packet Tracer lab demonstrating a hierarchical 3-tier network architecture (Core, Distribution, Access) connecting three different sites with proper IP addressing and routing.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-3-sites-Hierarchal-3-tier-switches-" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 2 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/fd9d0981-f78e-484c-b777-e985eaf55b0d.png?auth_key=1886092929-9b3c7d1dc009459c930c4c701cbfa2de-0-e1723e660775992157e1f7e4d0bdf7e4" alt="OSPF Complex Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=OSPF+Complex';">
+                </div>
+                <div class="lab-content">
+                    <h3>Complex OSPF Multi-Area</h3>
+                    <p>An advanced OSPF topology featuring multiple areas (0, 47, 48, 49, 50) with loopback interfaces, LAN connections, and specific bandwidth configurations.</p>
+                    <a href="https://github.com/felzahra/ospf-complex" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 3 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/e5cd17f3-6803-4d1a-ae6d-500e98b25c38.png?auth_key=1886092929-89dee3c59c764f2e9cf0e90c7b9fb56a-0-72fe777302f7f714c8f88a2a9c3dc00b" alt="Palo Alto HA Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=Palo+Alto+HA';">
+                </div>
+                <div class="lab-content">
+                    <h3>Palo Alto High Availability (EVE-NG)</h3>
+                    <p>Palo Alto firewalls configured in High Availability (HA1/HA2) mode within an EVE-NG environment. Includes DMZ, Inside, Outside, and Management zones with Windows Server AD.</p>
+                    <a href="https://github.com/felzahra/Palot-Alto-High-Availability-in-eve-ng" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 4 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/d7a49b4e-2150-4fd7-a3e7-aae978bd5826.png?auth_key=1886092929-5082edd5e97546cfae4d462d791bdc0e-0-71cfc57f6526f05884fdff9fe0b80ca2" alt="MPLS VRF Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <h3>EVE-NG MPLS Lab (VPNv4/v6 & Inter-VRF)</h3>
+                    <p>Advanced EVE-NG MPLS lab covering IPv4/IPv6, VPNv4/VPNv6, Xconnect, and inter-VRF routing with BGP and OSPF core protocols.</p>
+                    <a href="https://github.com/felzahra/eve-ng-MPLS-LAB-with-IPv6_IPv4-VPNv6_VPNv4-Xconnect-inter-VRF-routing" target="_blank" class="lab-btn lab-btn-github">📂 View Lab on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 5 (More Repositories) -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/965bf6ac-1282-495d-b4df-14fc84aa9cc7.png?auth_key=1886092929-19df017e85dc4b88a8de103e934a7295-0-0457b61ef87798c25a10055124a363cf" alt="More Labs Topology" onerror="this.src='https://via.placeholder.com/600x400/1a1a1a/00e676?text=More+Labs';">
+                </div>
+                <div class="lab-content">
+                    <h3>More Labs & Solutions</h3>
+                    <p>Explore more networking labs, scripts, and solutions. Visit the GitHub profile to access all repositories and network topologies.</p>
+                    <a href="https://github.com/felzahra?tab=repositories" target="_blank" class="lab-btn">🚀 Explore All Repositories</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+                <li><a href="messages.html">Tasks & Submissions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+</body>
+</html>
