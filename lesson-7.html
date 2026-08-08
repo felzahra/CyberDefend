@@ -226,14 +226,14 @@
             <p class="text-block">Firewalls can be implemented as hardware devices, software programs, or a combination of both. Hardware firewalls (like Fortinet, Cisco, or Palo Alto) are physical appliances deployed at the network edge. Software firewalls (like Windows Defender Firewall) are installed directly on individual hosts to control inbound and outbound traffic for that specific machine.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/526ef9d2-d95f-467a-bef3-3821eb1f2fae.png?auth_key=1886127033-dfa764fb97a0461fa33c1d0371d5821d-0-8e09f180c9b34d255b3c3bba75a8ea88" alt="Fortinet Hardware Firewall Appliance">
+                <img src="fw/Picture32.png" alt="Fortinet Hardware Firewall Appliance">
                 <figcaption>Figure 1: A physical hardware firewall appliance (Fortinet) deployed in a data center environment to secure the network perimeter.</figcaption>
             </figure>
 
             <p class="text-block">A common firewall architecture involves placing the firewall between the Internet and the Local Area Network (LAN). The firewall blocks malicious traffic from entering the LAN while allowing legitimate traffic to reach internal servers (like Web, Database, and File servers).</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e5760e83-204e-43ed-bb8f-98936cd13de6.png?auth_key=1886127033-6625a903f12d4bce859a9a5e85b8dfab-0-d131785311817b63ae394c70158c1fd6" alt="Windows Firewall Network Architecture">
+                <img src="fw/Picture33.png" alt="Windows Firewall Network Architecture">
                 <figcaption>Figure 2: Network topology showing a Windows Firewall blocking specific ports (e.g., Port 25 SMTP) while allowing others (e.g., Port 80 HTTP, Port 21 FTP) to reach internal LAN servers.</figcaption>
             </figure>
         </section>
@@ -251,7 +251,7 @@
             </ul>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/b4f52fe2-0e2c-49c8-8084-02f5cd8d1474.png?auth_key=1886127033-6d928f10cbbf4cbe9538e0d720ffe27d-0-ec31fa36d00e52884dc2e04e790ab560" alt="Packet Filtering Topology">
+                <img src="fw/Picture34.png" alt="Packet Filtering Topology">
                 <figcaption>Figure 3: A packet filtering scenario where the firewall inspects traffic destined for specific servers (Web, Email, DNS) and filters them based on their destination IP and Port numbers.</figcaption>
             </figure>
 
@@ -273,7 +273,7 @@
             <p class="text-block">Firewall policies are implemented using Access Control Lists (ACLs). An ACL is a sequential list of rules that the firewall reads from top to bottom. When a packet matches a rule, the firewall executes the specified action (Allow or Deny) and stops reading the rest of the list.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/3ed03598-a479-47ba-a974-5f3dea8f9449.png?auth_key=1886127033-0edf8bf299334c4494d850a6d029cf8f-0-ec631a81134ade6f2f5dd80ebe5a9f6b" alt="Network Access Control Rules Table">
+                <img src="fw/Picture35.png" alt="Network Access Control Rules Table">
                 <figcaption>Figure 4: A visual representation of an Access Control List (ACL) mapping Source/Destination IPs and Ports to Allow/Deny actions.</figcaption>
             </figure>
 
@@ -331,7 +331,7 @@
             <p class="text-block"><strong>Defense in Depth</strong> is a cybersecurity strategy that uses multiple security measures to protect the integrity of information. If one line of defense is compromised, additional layers exist as a backup. This approach acknowledges that no single security mechanism is perfect.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/448ae800-2a78-473d-9514-34ebe1ca61a4.png?auth_key=1886127156-4f24a1b72a06427289d686fdcbe41d2b-0-d5705a263263d219a843cc8caf2cedce" alt="Applying Layered Security Diagram">
+                <img src="fw/Screenshot 2026-08-08 185305.png" alt="Applying Layered Security Diagram">
                 <figcaption>Figure 5: Layered Security Model. Security controls are applied at multiple levels: Policy, Physical, Perimeter, Network, Host, Application, and Data.</figcaption>
             </figure>
 
@@ -353,7 +353,7 @@
             <p class="text-block">Application layer attacks target software vulnerabilities to gain unauthorized access, steal data, or disrupt services. Attackers exploit weak input validation, misconfigured servers, or unpatched software. Because these attacks occur at Layer 7 of the OSI model, they can easily bypass traditional packet-filtering firewalls.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/3894eb26-fc34-4075-8fd3-ba5ee52079aa.png?auth_key=1886127156-39a85ccd419343a89b030073e8743fdb-0-24363d909ff84794e17b2b1b8a73459f" alt="Application Attacks Diagram">
+                <img src="fw/Picture37.png" alt="Application Attacks Diagram">
                 <figcaption>Figure 6: Common attack vectors targeting the application stack, from the user's workstation down to the database.</figcaption>
             </figure>
 
@@ -372,7 +372,7 @@
             <p class="text-block">Network attacks occur at various layers of the network stack (from the Physical layer up to the Application layer). Understanding where these attacks happen is critical for deploying the correct defensive controls.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/402f6ac2-afff-4e04-a89d-89f46b9ad996.png?auth_key=1886127156-28be9ace78fb465d997e7fd020dbbde9-0-995d5a4d0ef72ae2d2eadf1a42785fc3" alt="Network Attacks Diagram">
+                <img src="fw/Picture38.png" alt="Network Attacks Diagram">
                 <figcaption>Figure 7: Network attack scenarios mapped to the OSI/TCP-IP model, from endpoint compromise to transport-layer disruption.</figcaption>
             </figure>
 
@@ -391,7 +391,7 @@
             <p class="text-block">Authentication is the process of verifying a user's identity. The strength of authentication depends on the number and type of factors used. Implementing Multi-Factor Authentication (MFA) is one of the most effective ways to prevent unauthorized access, even if passwords are compromised.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e62b8059-7073-40e2-ad84-7e5fa149a7ae.png?auth_key=1886127156-83b3bb61fabf43e8867312ed46de9582-0-767c6cdb695648c75a571303689ddcd1" alt="Authentication Factors SFA DFA MFA">
+                <img src="fw/Picture39.png" alt="Authentication Factors SFA DFA MFA">
                 <figcaption>Figure 8: Progression from Single-Factor Authentication (SFA) to Dual-Factor (DFA) and Multi-Factor Authentication (MFA).</figcaption>
             </figure>
 
@@ -412,11 +412,11 @@
             <p class="text-block"><strong>Intrusion Detection Systems (IDS)</strong> and <strong>Intrusion Prevention Systems (IPS)</strong> are security technologies designed to inspect network traffic for malicious activity. An IDS is configured in a <strong>Promiscuous mode</strong> (connected to a span/mirror port); it passively monitors traffic and raises alerts but cannot block attacks. An IPS is deployed <strong>Inline</strong> (directly in the traffic path); it actively drops malicious packets and blocks attacks in real-time.</p>
 
             <figure class="large-figure">
-                <img src="https://www.howtonetwork.com/wp-content/uploads/2022/03/8-3.png" alt="IDS/IPS Network Topology">
+                <img src="fw/8-3.png" alt="IDS/IPS Network Topology">
                 <figcaption>Figure 1: Network topology showing Network-Based IPS deployed in Inline mode and Promiscuous mode across Internal Networks and Core Business Units.</figcaption>
             </figure>
 			<figure class="large-figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1400/1*s0U3qNSadcnLY8Dtt94qsw.png" alt="IDS/IPS Network Topology">
+                <img src="fw/1_s0U3qNSadcnLY8Dtt94qsw.png" alt="IDS/IPS Network Topology">
                 <figcaption>IDS deployed across Internal Networks.</figcaption>
             </figure>
         </section>
@@ -427,7 +427,7 @@
             <p class="text-block">Configuring an IDS/IPS is a balancing act. If the system is too sensitive, it generates <strong>False Positives</strong> (blocking legitimate traffic). If it is too loose, it generates <strong>False Negatives</strong> (missing actual attacks). Security engineers use a classification model called the Confusion Matrix to tune their sensors.</p>
 
             <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0CyrW4S9s_fckqSyPKAPRRgrnU405AK4JyzEUV25UuvTbKMwYtDpLCTk&s=10" alt="Confusion Matrix">
+                <img src="fw/images.jpeg" alt="Confusion Matrix">
                 <figcaption>Figure 2: The Confusion Matrix evaluating model predictions: True Positive, False Positive, False Negative, and True Negative.</figcaption>
             </figure>
 
@@ -447,11 +447,11 @@
 
 			
             <figure class="large-figure">
-                <img src="https://2.bp.blogspot.com/-Vaz4Msmd5X4/XHDefazjsVI/AAAAAAAAc9Q/BUPzjQ32ft4gBMxFIU-Ibz3_-Mdw6lUCACEwYBhgL/s1600/9.png" alt="Snort Rule Format">
+                <img src="fw/9.png" alt="Snort Rule Format">
                 <figcaption>Figure 3: Anatomy of a Snort rule, breaking down Action, Protocol, Source/Destination IPs, Ports, and Rule Options.</figcaption>
             </figure>
 			            <figure class="large-figure">
-                <img src="https://sublimerobots.com/wp-content/uploads/2017/06/network-graph-01.jpg" alt="Snort Rule Format">
+                <img src="fw/network-graph-01.jpg" alt="Snort Rule Format">
                 <figcaption> Snort Ports.</figcaption>
             </figure>
 
@@ -464,7 +464,7 @@
             </ul>
 
             <figure class="large-figure">
-                <img src="https://i.ytimg.com/vi/m_3uE0XM_Ok/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBohrwNyr2SktX_nseWw3tc5aVbjQ alt="Suricata vs Snort Comparison">
+                <img src="fw/hq720.jpg" alt="Suricata vs Snort Comparison">
                 <figcaption>Figure 4: Feature and performance comparison between Suricata and Snort.</figcaption>
             </figure>
 
@@ -499,15 +499,15 @@
             <p class="text-block">A <strong>DMZ</strong> is a subnetwork that exposes an organization's external-facing services (like web, email, and DNS servers) to the internet while isolating the internal network. It acts as a buffer zone. If an attacker compromises a server in the DMZ, they still face a firewall blocking them from reaching the trusted internal corporate network.</p>
 
             <figure class="large-figure">
-                <img src="https://ipwithease.com/wp-content/uploads/2020/06/asa-firewall-security-levels.jpg.webp" alt="Cisco ASA DMZ Topology">
+                <img src="fw/Screenshot 2026-08-08 190136.png" alt="Cisco ASA DMZ Topology">
                 <figcaption>Figure 5: Cisco ASA firewall topology configuring security levels for OUTSIDE, INSIDE, and DMZ zones to control traffic flow.</figcaption>
             </figure>
             <figure class="large-figure">
-                <img src="https://cdn-m4m.chd01.com/pro/uploads/account_711/660214/idmz-dmz-network-architecture.jpg" alt="Cisco ASA DMZ Topology">
+                <img src="fw/idmz-dmz-network-architecture.jpg" alt="Cisco ASA DMZ Topology">
                 <figcaption>DMZ.</figcaption>
             </figure>
             <figure class="large-figure">
-                <img src="https://docs.ipswitch.com/MOVEit/DMZ%207.5/online%20guide/images_MOVEitDMZ/dmzfirewall.gif" alt="Cisco ASA DMZ Topology">
+                <img src="fw/dmzfirewall.gif" alt="Cisco ASA DMZ Topology">
                 <figcaption>System Configuration - Firewall Configuration.</figcaption>
             </figure>
 			
@@ -526,27 +526,27 @@
             <p class="text-block"><strong>NAT</strong> is a method used by routers and firewalls to map private IP addresses used inside a local network to a public IP address used on the internet. This conserves the limited IPv4 address space and adds a layer of security by hiding internal network topology from the outside world.</p>
 
             <figure class="large-figure">
-                <img src="https://surfshark.com/wp-content/uploads/2024/09/types_of_IP_addresses_infographic-1-img.svg" alt="NAT Public vs Private IP">
+                <img src="fw/types_of_IP_addresses_infographic-1-img.svg" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
 			            <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb6T_B2P_-tTvz2GdDH-Q2Caga-ZmFeEfAxoA3VSh1Ow&s=10" alt="NAT Public vs Private IP">
+                <img src="fw/images2.jpeg" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
 			<figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ79k9b6udObmXytjsuF9KomFSImzicGw9SaK0R3mal1A&s=10" alt="NAT Public vs Private IP">
+                <img src="fw/images.png" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
 			
             <p class="text-block">There are two main types of IPv4 addresses: <strong>Public</strong> (routable on the internet, e.g., <span class="inline-code">66.94.234.13</span>) and <strong>Private</strong> (used internally, e.g., <span class="inline-code">192.168.1.0/24</span>, <span class="inline-code">10.0.0.0/8</span>). When an internal device requests a webpage, the NAT router intercepts the packet, swaps the private source IP with its own public IP, records the translation in a table, and forwards it.</p>
 
             <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm6Uq1JnwcJcoQyEAggl4buFjPvhjNLY5zYQoi_J_6_9cr82_c9zuCQIH_&s=10" alt="NAT Translation Table">
+                <img src="fw/images3.jpeg" alt="NAT Translation Table">
                 <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
             </figure>
 			
 			            <figure class="large-figure">
-                <img src="https://media.geeksforgeeks.org/wp-content/uploads/20250812123705780750/Static-NAT.webp" alt="NAT Translation Table">
+                <img src="fw/Screenshot 2026-08-08 190424.png" alt="NAT Translation Table">
                 <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
             </figure>
 
@@ -559,23 +559,23 @@
             <p class="text-block">A <strong>VPN</strong> extends a private network across a public network (the internet). It enables users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network. VPNs use encryption and tunneling protocols to ensure confidentiality and security.</p>
 
             <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBMFTr2iAzzK96RnlYcMlc-unAKYQlV0YYmksVYjlHfSn8CMLYj-D57mw&s=10" alt="VPN Hiding IP Address">
+                <img src="fw/images5.jpeg" alt="VPN Hiding IP Address">
                 <figcaption>Figure 8: Without a VPN, your real IP address is visible to the ISP and internet services. A VPN disguises your identity by hiding your IP address.</figcaption>
             </figure>
 
             <p class="text-block">When you connect to a VPN server, your internet traffic is routed through an encrypted tunnel to that server. To the outside world, your traffic appears to originate from the VPN server's IP address, not your actual location. This protects your privacy and secures your data from eavesdropping on untrusted networks (like public Wi-Fi).</p>
 
             <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiRW054WJUKmjH8mND7NGQcqgZDnK32jjkPdL4z0cMhfUqy7mq5YOgwKC4&s=10" alt="VPN Server Routing">
+                <img src="fw/images6.jpeg" alt="VPN Server Routing">
                 <figcaption>Figure 9: Network flow showing traffic securely tunneled from a client workstation to a VPN Server, masking the original IP address.</figcaption>
             </figure>
 			            <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJfpXkrGct_bQCIH3YINqwjz_FCyCioGO4toxgo3zkRQ&s=10" alt="VPN Server Routing">
+                <img src="fw/images7.jpeg" alt="VPN Server Routing">
                 <figcaption>Types of a VPN </figcaption>
             </figure>
 			
 						            <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-n4V3NiwGf8PEiCnbVmaVyACY6N8HajXS_TgxQ9b1AbA1S6Eo43Vwdpc&s=10" alt="VPN Server Routing">
+                <img src="fw/images8.jpeg" alt="VPN Server Routing">
                 <figcaption>Types of a VPN </figcaption>
             </figure>
 			
@@ -592,7 +592,7 @@
             <p class="text-block">In a modern enterprise, devices like firewalls, servers, web applications, and printers all generate logs. If a security engineer tries to check each device individually, they will miss attacks. <strong>Centralized Logging</strong> is the practice of forwarding all these logs to a single, central server for storage and analysis.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/98b4c4ba-ff8e-44eb-993e-2902df94db61.png?auth_key=1886180764-5c50d8de10e9467a943085f07e1560f4-0-a54c4cecb53489c7d8dfd25151d9f54a" alt="Centralized Logging Architecture">
+                <img src="fw/98b4c4ba-ff8e-44eb-993e-2902df94db61.png" alt="Centralized Logging Architecture">
                 <figcaption>Figure 1: Different endpoints forwarding their logs to a Centralized Logging system, which is then used for Events, Security, and Compliance monitoring.</figcaption>
             </figure>
 
@@ -605,7 +605,7 @@
             <p class="text-block">A <strong>Host Intrusion Detection System (HIDS)</strong> is a specific type of centralized logging focused entirely on individual endpoints (hosts). HIDS agents are installed on servers and workstations to monitor internal activities like file integrity, process execution, and local logins.</p>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/a356286d-7968-47fc-8772-ffab69001400.png?auth_key=1886180764-4e95bb1e471c4624839ba984947863dc-0-905ea27e228f6c37e36607fbb5bfc648" alt="HIDS Architecture">
+                <img src="fw/a356286d-7968-47fc-8772-ffab69001400.png" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
         </section>
@@ -623,17 +623,17 @@
             </ul>
 			
 			            <figure class="large-figure">
-                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39dc_6735e4a0079ef893e8a21fac_60618622150ebe949eed6e3c_components%252520siem.jpeg" alt="HIDS Architecture">
+                <img src="fw/6a020fca21245d64af2c39dc_6735e4a0079ef893e8a21fac_60618622150ebe949eed6e3c_components_2520siem.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
 			
 						            <figure class="large-figure">
-                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39db_6735e4a0079ef893e8a21fa9_6061869fac9d03c417218aff_capabilities%252520siem.jpeg" alt="HIDS Architecture">
+                <img src="fw/6a020fca21245d64af2c39db_6735e4a0079ef893e8a21fa9_6061869fac9d03c417218aff_capabilities_2520siem.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
 			
 						            <figure class="large-figure">
-                <img src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c39da_6735e4a0079ef893e8a21fa6_606187955c9d2b5da0403647_siem%252520security.jpeg" alt="HIDS Architecture">
+                <img src="fw/6a020fca21245d64af2c39da_6735e4a0079ef893e8a21fa6_606187955c9d2b5da0403647_siem_2520security.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
         </section>
@@ -650,18 +650,18 @@
             <p class="text-block">EDR only protects the endpoint. <strong>XDR</strong> takes it a step further by integrating Endpoint, Network, Cloud, and Email security into one unified platform. This gives the SOC a single pane of glass to detect and respond to threats across the entire IT environment.</p>
 
  <figure class="large-figure">
-                <img src="https://www.openedr.com/blog/wp-content/uploads/2023/03/edr-vs-xdr.jpg" alt="HIDS Architecture">
+                <img src="fw/edr-vs-xdr.jpg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
 			
 			
  <figure class="large-figure">
-                <img src="https://media.licdn.com/dms/image/v2/D4D22AQEVWDcl7h245g/feedshare-shrink_800/B4DZi.dwGwH0Ag-/0/1755542127892?e=2147483647&v=beta&t=p_kY0hJtsozXZ2n52gsyiYzQSL0aleuJKeoFNhQvhOo" alt="HIDS Architecture">
+                <img src="fw/1755542127892.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
 			
 			 <figure class="large-figure">
-                <img src="https://i.ytimg.com/vi/SFFdbeogLFc/maxresdefault.jpg" alt="HIDS Architecture">
+                <img src="fw/maxresdefault.jpg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
 			
@@ -687,12 +687,12 @@
             <p class="text-block">Signature-based detection works like a digital "wanted poster." The antivirus vendor analyzes a known piece of malware, extracts a unique fingerprint (a hash or specific code sequence), and adds it to a database. The AV scanner then checks files on your computer against this database.</p>
             
             <figure class="large-figure">
-                <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1007%2Fs12083-025-02112-7/MediaObjects/12083_2025_2112_Fig1_HTML.png" alt="Signature-based detection code">
+                <img src="fw/12083_2025_2112_Fig1_HTML.png" alt="Signature-based detection code">
                 <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
             </figure>
 			
 			            <figure class="large-figure">
-                <img src="https://www.researchgate.net/publication/234082442/figure/fig3/AS:669328231919632@1536591694482/Signature-based-methodology-architecture.png" alt="Signature-based detection code">
+                <img src="fw/Signature-based-methodology-architecture.png" alt="Signature-based detection code">
                 <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
             </figure>
 
@@ -705,22 +705,21 @@
             <p class="text-block">Because signature-based detection is easily bypassed by new malware, modern AV uses anomaly-based detection. This method monitors the <em>behavior</em> of programs. It establishes a baseline of "normal" activity. If a program suddenly tries to do something abnormal (like a Word document attempting to modify the Windows Registry), the AV flags it as a threat.</p>
 
  <figure class="large-figure">
-                <img src="https://www.brightdefense.com/wp-content/uploads/2025/07/Antivirus-Behavior-Based-Detection-1024x683.jpg" alt="Anomaly based monitoring">
+                <img src="fw/Antivirus-Behavior-Based-Detection-1024x683.jpg" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
             </figure>
 			
 			
             <figure class="large-figure">
-                <img src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs12911-024-02760-4/MediaObjects/12911_2024_2760_Fig5_HTML.png" alt="Anomaly based monitoring">
+                <img src="hfw/12911_2024_2760_Fig5_HTML.png" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
             </figure>
             <figure class="large-figure">
-                <img src="https://media.springernature.com/m685/springer-static/image/art%3A10.1038%2Fs41598-025-21826-5/MediaObjects/41598_2025_21826_Fig1_HTML.png" alt="Anomaly based monitoring">
-                <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
+                <img src="fw/41598_2025_21826_Fig1_HTML.png
             </figure>
 			
 			            <figure class="large-figure">
-                <img src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs12911-024-02760-4/MediaObjects/12911_2024_2760_Fig4_HTML.png" alt="Anomaly based monitoring">
+                <img src="fw/12911_2024_2760_Fig4_HTML.png" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
             </figure>
 			
@@ -734,7 +733,7 @@
                 <p>Today, traditional AV has evolved into <strong>EDR (Endpoint Detection and Response)</strong>. EDR combines signature-based, anomaly-based, and machine learning engines to provide comprehensive, real-time protection and automated response.</p>
             </div>
 	 <figure class="large-figure">
-                <img src="https://www.brightdefense.com/wp-content/uploads/2025/07/EDR-vs-Antivirus-716x1536.png" alt="Malware code analysis">
+                <img src="fw/EDR-vs-Antivirus-716x1536.png" alt="Malware code analysis">
                 
             </figure>		
 			
@@ -746,11 +745,11 @@
             <p class="text-block"><strong>VirusTotal</strong> is a free service acquired by Google that analyzes files and URLs for viruses, worms, trojans, and other kinds of malicious content. It is an essential tool for malware analysts and SOC defenders.</p>
 
             <figure class="large-figure">
-                <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2025/07/virustotal-file-checker-file-upload-process.jpg?q=70&fit=crop&w=825&dpr=1" alt="Malware code analysis">
+                <img src="fw/virustotal-file-checker-file-upload-process.avif" alt="Malware code analysis">
                 <figcaption>Figure 1: VirusTotal aggregates the results of dozens of antivirus engines to provide a comprehensive threat verdict.</figcaption>
             </figure>
 			            <figure class="large-figure">
-                <img src="https://i.sstatic.net/MPASXGpB.png" alt="Malware code analysis">
+                <img src="fw/MPASXGpB.png" alt="Malware code analysis">
                 <figcaption>web scanners - Sites flagged by Virustotal .</figcaption>
             </figure>
 
@@ -775,7 +774,7 @@
             <p class="text-block">Created by Microsoft MVP and security expert Troy Hunt, <strong>Have I Been Pwned</strong> is a website that allows users to check if their personal data (email addresses, phone numbers, and passwords) has been compromised by a data breach.</p>
 
             <figure class="large-figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWtiaqMtfxpgumLxfSbakPv8zwOrXzqwRqlKcH2_L-4OJ-4j7-CO4Hs42F&s=10" alt="Data breach and credentials">
+                <img src="fw/images9.jpeg" alt="Data breach and credentials">
                 <figcaption>Figure 2: HIBP aggregates data from massive corporate data breaches and allows users to search for their exposed credentials.</figcaption>
             </figure>
 
