@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
         :root {
             --primary: #00e676; --primary-fg: #000000; --body-fg: #ffffff; --body-bg: #121212;
             --body-quiet-color: #b0b0b0; --body-loud-color: #ffffff; --hairline-color: #272727;
@@ -22,7 +21,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
-        /* ========== TOP NAVIGATION BAR ========== */
         .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
@@ -34,7 +32,6 @@
         .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
 
-        /* ========== MAIN CONTENT & LAYOUT ========== */
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
         .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
         .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
@@ -56,31 +53,57 @@
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
         .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
         .text-block strong { color: var(--body-fg); }
-        
         .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .tool-title i { color: var(--primary); }
-        
         ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
         li { margin-bottom: 8px; }
 
-        /* Code Blocks */
+        .step-block { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 28px; margin: 2rem 0; position: relative; transition: border-color 0.2s; }
+        .step-block:hover { border-color: var(--primary); }
+        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--primary-fg); font-weight: 800; font-size: 0.95rem; margin-bottom: 16px; }
+        .step-block h3 { font-size: 1.25rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+        .step-block p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.7; margin-bottom: 12px; }
+        .step-block p strong { color: var(--body-fg); }
+        .step-sub { margin-top: 16px; }
+        .step-sub-title { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .step-sub p { margin-bottom: 8px; }
+
+        /* Topic card — used for the new sub-sections in Section 5 */
+        .topic-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 16px; padding: 28px; margin: 2rem 0; transition: border-color 0.2s; }
+        .topic-card:hover { border-color: var(--primary); }
+        .topic-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        .topic-card h3 i { color: var(--primary); }
+        .topic-card p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.7; margin-bottom: 12px; }
+        .topic-card p strong { color: var(--body-fg); }
+        .topic-card ul { margin-top: 8px; margin-bottom: 0; }
+        .topic-sub { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin: 18px 0 8px; display: flex; align-items: center; gap: 8px; }
+
         pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
         pre code { color: var(--primary); }
         .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
 
-        /* Large Stacked Figures */
         .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
         .large-figure:hover { border-color: var(--primary); }
-        .large-figure img { width: 100%; border-radius: 8px; object-fit: cover; height: 400px; background: var(--body-bg); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; height: 400px; background: var(--body-bg); }
         .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
 
-        /* Custom Alert Box */
         .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
         .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
         .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
 
-        /* Previous / Next Buttons CSS */
+        .alert-warning-custom { background-color: rgba(255, 152, 0, 0.08); border-left: 4px solid #ff9800; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-warning-custom h4 { color: #ff9800; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-warning-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+
+        .alert-danger-custom { background-color: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-danger-custom h4 { color: #ef4444; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-danger-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+
+        .alert-success-custom { background-color: rgba(0, 230, 118, 0.08); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-success-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-success-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+
         .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
         .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
         .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
@@ -102,6 +125,7 @@
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
             .main-content { flex-direction: column; }
             .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .large-figure img { height: auto; }
         }
     </style>
 </head>
@@ -121,24 +145,21 @@
 <div class="main-content">
     <aside class="sidebar">
         <div class="sidebar-back-btns">
-            <!-- ONLY BACK TO DASHBOARD HERE -->
             <a href="labs.html" class="sidebar-back-btn">← Back to Labs</a>
         </div>
         <div class="sidebar-header"><h3>Course Lessons</h3></div>
         <nav class="sidebar-nav">
             <ul>
-	                <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html" >Network Security Overview</a></li>
+                <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
-                <li><a href="lesson-6.html"> Switching Architecture </a></li>
-                <li><a href="lesson-7.html"> Firewall Security Architecture</a></li>
-                <li><a href="lesson-3.html"> KALI Linux</a></li>
-                <li><a href="kali-tools.html"> Top 50 Kali Linux Tools</a></li>
-                <li><a href="lesson-4.html"> Vulnerability Scanners</a></li>
+                <li><a href="lesson-6.html">Switching Architecture</a></li>
+                <li><a href="lesson-7.html">Firewall Security Architecture</a></li>
+                <li><a href="lesson-3.html">KALI Linux</a></li>
+                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
-                <li><a href="labs2.html"> Networking Labs Overview</a></li>
-
+                <li><a href="labs2.html">Networking Labs Overview</a></li>
                 <li><a href="lesson-8.html">Wireless Solutions</a></li>
                 <li><a href="lesson-9.html">Cyber Attacks</a></li>
                 <li><a href="lesson-10.html" class="active">Troubleshooting</a></li>
@@ -151,24 +172,30 @@
 
     <div class="content-area">
         <div class="page-header">
-            <h1>Switch IOS Recovery, TFTP & SCADA Networks</h1>
-            <p>Managing catastrophic switch crashes, recovering IOS images via TFTP, backing up configuration files, and understanding the role of switches in SCADA environments.</p>
+            <h1>Switch IOS Recovery, TFTP</h1>
+            <p>Managing catastrophic switch crashes, recovering IOS images via TFTP, backing up configuration files.</p>
         </div>
 
-        <!-- Section 1: Switch IOS Crash & Recovery -->
+        <!-- Section 1 -->
         <section id="ios-crash">
             <h2 class="section-title">1. Switch IOS Crash & Rommon Recovery</h2>
             <p class="text-block">A Cisco switch's operating system (IOS - Internetwork Operating System) is stored in flash memory. If the IOS image becomes corrupted, is accidentally deleted, or fails an upgrade, the switch will crash and enter <strong>ROMMON mode</strong> (ROM Monitor). ROMMON is a low-level diagnostic mode with a basic command set, indicated by the <span class="inline-code">switch:</span> prompt.</p>
-
             <figure class="large-figure">
-                <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Network Switch Hardware">
-                <figcaption>Figure 1: Enterprise switches rely on a stable IOS image in flash memory to route and switch traffic.</figcaption>
+                <img src="qw/Picture2.png" alt="IOS File System IFS" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                <figcaption>IOS File system IFS — the internal file structure where the Cisco IOS image resides.</figcaption>
             </figure>
-
+            <figure class="large-figure">
+                <img src="qw/Picture1.png" alt="Enterprise Switch Hardware">
+                <figcaption>Enterprise switches rely on a stable IOS image in flash memory to route and switch traffic.</figcaption>
+            </figure>
+            <figure class="large-figure">
+                <img src="qw/Picture5.png" alt="Managing Multiple Switches">
+                <figcaption>Managing multiple switches in a rack environment.</figcaption>
+            </figure>
             <p class="text-block">To recover from ROMMON, you must connect to the switch physically using a console cable and use the <strong>XMODEM</strong> protocol or the <strong>boot</strong> command to pull a new IOS image from a TFTP server.</p>
         </section>
 
-        <!-- Section 2: Config File Management -->
+        <!-- Section 2 -->
         <section id="config-mgmt">
             <h2 class="section-title">2. Configuration File Management</h2>
             <p class="text-block">A switch's configuration is separate from its OS. The configuration dictates how the ports behave, VLANs, routing, and security. There are two main config files:</p>
@@ -176,85 +203,614 @@
                 <li><strong>running-config:</strong> The active configuration currently running in the switch's RAM. Changes take effect immediately but are lost on reboot.</li>
                 <li><strong>startup-config:</strong> The saved configuration stored in NVRAM. The switch loads this file into RAM when it boots up.</li>
             </ul>
-
             <p class="text-block">It is critical to back up the <span class="inline-code">startup-config</span> to an external TFTP server before making major changes to the network.</p>
-
             <h3 class="tool-title"><i class="fas fa-terminal"></i> Backup & Restore Commands</h3>
-            <pre><code># Save running changes to NVRAM
-Switch# copy running-config startup-config
+            <pre><code>Switch# copy running-config startup-config
 
-# Backup configuration to TFTP Server
 Switch# copy startup-config tftp:
 Address or name of remote host []? 192.168.1.100
 Destination filename [startup-config]? switch-backup-cfg.txt
 
-# Restore configuration from TFTP Server
 Switch# copy tftp: running-config
 Address or name of remote host []? 192.168.1.100
 Source filename []? switch-backup-cfg.txt</code></pre>
         </section>
 
-        <!-- Section 3: TFTP Server & File Transfers -->
+        <!-- Section 3 -->
         <section id="tftp-transfer">
             <h2 class="section-title">3. TFTP Server & IOS Transfers</h2>
             <p class="text-block"><strong>TFTP (Trivial File Transfer Protocol)</strong> is a simple, lightweight protocol used by network admins to transfer IOS images and configuration files. Unlike FTP, TFTP does not require authentication and uses UDP port 69, making it fast for LAN transfers.</p>
-
             <figure class="large-figure">
-                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Datacenter Server Infrastructure">
-                <figcaption>Figure 2: A laptop acting as a TFTP server, connected to the network to push IOS images to the switch.</figcaption>
+                <img src="qw/Picture6.png" alt="TFTP Server Configuration" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                <figcaption>TFTP server interface used for file transfers.</figcaption>
             </figure>
-
+            <figure class="large-figure">
+                <img src="qw/Picture7.png" alt="Laptop as TFTP Server">
+                <figcaption>A laptop acting as a TFTP server, connected to the network to push IOS images to the switch.</figcaption>
+            </figure>
             <h3 class="tool-title"><i class="fas fa-cloud-download-alt"></i> Upgrading the IOS Image</h3>
             <p class="text-block">To upgrade or replace the IOS, you point the switch to the TFTP server and instruct it to copy the new <span class="inline-code">.bin</span> file into its flash memory.</p>
-            <pre><code># Copy new IOS image from TFTP to Switch Flash
-Switch# copy tftp: flash:
+            <pre><code>Switch# copy tftp: flash:
 Address or name of remote host []? 192.168.1.100
 Source filename []? c2960-lanbasek9-mz.150-2.SE.bin
 Destination filename [c2960-lanbasek9-mz.150-2.SE.bin]? 
 
-# Tell the switch to boot the new image
 Switch(config)# boot system flash:c2960-lanbasek9-mz.150-2.SE.bin
 Switch# reload</code></pre>
         </section>
 
-        <!-- Section 4: SCADA Daemons & Industrial Switches -->
-        <section id="scada-networks">
-            <h2 class="section-title">4. SCADA Networks & Daemons</h2>
-            <p class="text-block"><strong>SCADA (Supervisory Control and Data Acquisition)</strong> networks are used in Industrial Control Systems (ICS) like power grids, water treatment plants, and manufacturing floors. In these environments, switches must guarantee 99.999% uptime.</p>
+        <!-- Section 4 -->
+        <section id="ios-recovery-lab">
+            <h2 class="section-title">4. Step-by-Step: IOS Recovery via TFTP Lab</h2>
+            <p class="text-block">This section walks through the complete hands-on process of recovering a crashed Cisco switch by downloading a fresh IOS image from a TFTP server. Follow each step in order.</p>
+            <div class="alert-warning-custom">
+                <h4><i class="fas fa-exclamation-triangle"></i> Prerequisites Before You Start</h4>
+                <ul>
+                    <li>A Cisco switch that has crashed or has a corrupted/deleted IOS image</li>
+                    <li>A PC/laptop with a console cable (RJ45-to-USB) and an Ethernet cable</li>
+                    <li><strong>3CDaemon</strong> (or any TFTP server software like SolarWinds TFTP Server) installed on the PC</li>
+                    <li>The correct IOS <span class="inline-code">.bin</span> file downloaded from the Cisco vendor website</li>
+                </ul>
+            </div>
 
-            <figure class="large-figure">
-                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Industrial Control Panel">
-                <figcaption>Figure 3: SCADA environments rely on ruggedized switches to ensure PLCs and sensors communicate without latency.</figcaption>
-            </figure>
+            <div class="step-block">
+                <div class="step-number">1</div>
+                <h3>Physical Setup and Basic IP Connectivity</h3>
+                <p>Before any file can be transferred, the switch and the PC must be physically connected, manually assigned IP addresses on the same subnet, and able to ping each other.</p>
+                <figure class="large-figure">
+                    <img src="qw/Picture8.png" alt="Physical cable connection between PC and switch" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Connect the console cable (blue port) for CLI access, and an Ethernet cable from the PC to a switch access port.</figcaption>
+                </figure>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-desktop"></i> PC Action: Manual IP Setup (Windows)</div>
+                    <p>Open <strong>Control Panel → Network and Sharing Center → Change adapter settings</strong>. Right-click your Ethernet adapter → Properties → IPv4. Set a <strong>static IP</strong> (e.g., <span class="inline-code">192.168.1.100 / 255.255.255.0</span>). Leave the gateway blank.</p>
+                </div>
+                <figure class="large-figure">
+                    <img src="qw/Picture9.png" alt="Windows manual IP configuration" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Set a static IPv4 address on the PC's Ethernet adapter to match the switch's VLAN subnet.</figcaption>
+                </figure>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-terminal"></i> Switch Action: Assign IP via Console CLI</div>
+                    <p>Log in via console (9600 baud, 8-N-1). Use <span class="inline-code">show ip interface brief</span> to find a Layer 3 interface (typically VLAN 1). Assign it an IP on the <strong>same subnet</strong>.</p>
+                </div>
+                <figure class="large-figure">
+                    <img src="qw/Picture10.png" alt="Console connection to switch" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Console terminal session showing the switch CLI interface.</figcaption>
+                </figure>
+                <pre><code>Switch> enable
+Switch# configure terminal
+Switch(config)# interface vlan 1
+Switch(config-if)# ip address 192.168.1.1 255.255.255.0
+Switch(config-if)# no shutdown
+Switch(config-if)# exit
+Switch# show ip interface brief</code></pre>
+                <figure class="large-figure">
+                    <img src="qw/Picture12.png" alt="show ip interface brief output" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Use <strong>show ip interface brief</strong> to confirm VLAN 1 has the correct IP and is in "up/up" status.</figcaption>
+                </figure>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-network-wired"></i> Verification: Ping from Both Sides</div>
+                    <p>From the PC, ping the switch's VLAN IP. From the switch CLI, ping the PC's IP. <strong>Both must succeed</strong>.</p>
+                </div>
+                <pre><code>C:\> ping 192.168.1.1
+Switch# ping 192.168.1.100</code></pre>
+                <figure class="large-figure">
+                    <img src="qw/Picture11.png" alt="Successful ping between PC and switch" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Successful ping replies confirm Layer 3 connectivity between the PC and the switch.</figcaption>
+                </figure>
+            </div>
 
-            <p class="text-block">A <strong>SCADA Daemon</strong> is a background process running on industrial servers or routers that continuously polls field devices (PLCs, RTUs) for data. If a switch crashes in a SCADA network, the daemon loses connection to the field devices, potentially causing physical damage or safety hazards. Therefore, SCADA switches are often configured with redundant ring topologies (like Cisco's Resilient Ethernet Protocol - REP) to ensure traffic reroutes in milliseconds if a link goes down.</p>
-        </section>
+            <div class="step-block">
+                <div class="step-number">2</div>
+                <h3>Preparing the TFTP Transfer and Initiating Copy</h3>
+                <p>With connectivity confirmed, configure the TFTP server software on the PC with the correct file path, then instruct the switch to pull the IOS image.</p>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-download"></i> Download the IOS from the Vendor Website</div>
+                    <p>Go to <strong>cisco.com → Support → Download Software</strong>. Search for your exact switch model. Download the correct <span class="inline-code">.bin</span> file to <span class="inline-code">C:\TFTP_Root\</span>.</p>
+                </div>
+                <figure class="large-figure">
+                    <img src="qw/Picture13.png" alt="Cisco IOS download page" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Download the correct IOS .bin file for your exact switch model from Cisco's software center.</figcaption>
+                </figure>
+                <div class="alert-warning-custom">
+                    <h4><i class="fas fa-exclamation-circle"></i> Critical: Match the Exact IOS Version</h4>
+                    <p>Downloading the wrong IOS image (wrong model, wrong feature set) will cause the switch to fail booting again. Always verify the part number matches your switch's <span class="inline-code">show version</span> output.</p>
+                </div>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-server"></i> PC Action: Configure 3CDaemon TFTP Server</div>
+                    <p>Open <strong>3CDaemon</strong>. Click <strong>"TFTP Server"</strong> tab — ensure status shows <strong>Running</strong>. Click <strong>"Configure TFTP Server"</strong> and set the <strong>"Upload/Download Directory"</strong> to <span class="inline-code">C:\TFTP_Root\</span>.</p>
+                </div>
+                <figure class="large-figure">
+                    <img src="qw/Picture14.png" alt="3CDaemon TFTP Server configuration" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>In 3CDaemon, set the Upload/Download directory to the folder containing your IOS .bin file.</figcaption>
+                </figure>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-upload"></i> Switch Action: Initiate the File Transfer</div>
+                    <p>From the switch console, use <span class="inline-code">copy tftp: flash:</span>. Enter the PC's IP and the exact IOS filename.</p>
+                </div>
+                <pre><code>Switch# copy tftp: flash:
+Address or name of remote host []? 192.168.1.100
+Source filename []? c2960-lanbasek9-mz.150-2.SE.bin
+Destination filename [c2960-lanbasek9-mz.150-2.SE.bin]? 
 
-        <!-- Section 5: Physical Cabling & Connections -->
-        <section id="physical-cabling">
-            <h2 class="section-title">5. Physical Cabling & Connections</h2>
-            <p class="text-block">When a switch crashes and network access (in-band management) is lost, you must rely on <strong>out-of-band management</strong> using physical console cables.</p>
+Accessing tftp://192.168.1.100/c2960-lanbasek9-mz.150-2.SE.bin...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</code></pre>
+                <figure class="large-figure">
+                    <img src="qw/Picture15.png" alt="Switch console showing exclamation marks during TFTP transfer" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>The switch console displays exclamation marks (!!!) as packets are successfully received from the TFTP server.</figcaption>
+                </figure>
+            </div>
 
-            <ul>
-                <li><strong>Console Cable (RJ45 to USB/Serial):</strong> Connects directly from your laptop to the switch's blue console port. Used for ROMMON recovery and initial configuration.</li>
-                <li><strong> rollover Cable:</strong> The specific pinout used inside the console cable (Pin 1 to Pin 8, Pin 2 to Pin 7, etc.).</li>
-                <li><strong>Ethernet (RJ45 / Fiber):</strong> Used for in-band management, TFTP file transfers, and normal network traffic once the switch is booted and has an IP address.</li>
-            </ul>
+            <div class="step-block">
+                <div class="step-number">3</div>
+                <h3>Verifying the Transfer and Booting the New Image</h3>
+                <p>Monitor both the PC and the switch until the file is fully copied. Then verify integrity and configure the switch to boot from the new image.</p>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-eye"></i> Observation: Monitor Both Sides</div>
+                    <p>On the <strong>switch console</strong>, each <span class="inline-code">!</span> is a successfully received TFTP data packet. On the <strong>PC</strong>, 3CDaemon's log window scrolls with transfer activity.</p>
+                </div>
+                <figure class="large-figure">
+                    <img src="qw/3cdaemon-screenshot.png" alt="3CDaemon log window showing active file transfer" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>3CDaemon's log window scrolls in real-time as the IOS file is being sent to the switch.</figcaption>
+                </figure>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-check-circle"></i> Verification: Confirm Successful Transfer</div>
+                    <p>The switch will display <span class="inline-code">[OK - xxxxxxx bytes]</span>. The byte count <strong>must match</strong> the original file size on your PC. Use <span class="inline-code">dir flash:</span> to compare.</p>
+                </div>
+                <pre><code>[OK - 11234567 bytes]
 
-            <div class="alert-info-custom">
-                <h4><i class="fas fa-exclamation-triangle"></i> Transfer Speed Warning</h4>
-                <p>Console port speeds default to 9600 baud (very slow). If you are transferring a 20MB IOS image over a console cable using XMODEM, it can take over 2 hours. Always recover the switch by booting from a TFTP server over an Ethernet cable whenever possible, as it takes only minutes.</p>
+Switch# dir flash:
+Directory of flash:/
+    1  -rw-    11234567  <date>  c2960-lanbasek9-mz.150-2.SE.bin
+    2  -rw-      104857  <date>  vlan.dat
+32514048 bytes total (21279481 bytes free)</code></pre>
+                <figure class="large-figure">
+                    <img src="qw/Picture1.png" alt="dir flash output showing the new IOS file" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Use <strong>dir flash:</strong> to confirm the new IOS .bin file is present and the byte size is correct.</figcaption>
+                </figure>
+                <div class="alert-success-custom">
+                    <h4><i class="fas fa-check-double"></i> Size Match Check</h4>
+                    <p>Right-click the original .bin file on your PC → Properties → compare the "Size" in bytes with <span class="inline-code">dir flash:</span> output. They must be <strong>identical</strong>. Even a 1-byte difference means a corrupted image.</p>
+                </div>
+                <div class="step-sub">
+                    <div class="step-sub-title"><i class="fas fa-play-circle"></i> Final Actions: Set Boot Variable and Reload</div>
+                    <p>Instruct the switch to boot from the new IOS image, save the configuration, and reload.</p>
+                </div>
+                <pre><code>Switch# configure terminal
+Switch(config)# boot system flash:c2960-lanbasek9-mz.150-2.SE.bin
+Switch(config)# exit
+Switch# copy running-config startup-config
+Switch# show boot
+Switch# reload
+Proceed with reload? [confirm]</code></pre>
+                <figure class="large-figure">
+                    <img src="qw/Picture16.png" alt="Switch booting with new IOS image" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>After reload, the switch boots using the newly transferred IOS image from flash.</figcaption>
+                </figure>
+                <div class="alert-info-custom">
+                    <h4><i class="fas fa-lightbulb"></i> Troubleshooting Tips</h4>
+                    <ul>
+                        <li><strong>No !!! marks:</strong> Check PC firewall isn't blocking UDP port 69. Temporarily disable Windows Firewall.</li>
+                        <li><strong>Transfer stalls:</strong> Verify Ethernet cable is seated. Try a different port.</li>
+                        <li><strong>Size mismatch:</strong> Re-run the transfer. Try different TFTP software.</li>
+                        <li><strong>Won't boot after reload:</strong> Enter ROMMON and manually boot: <span class="inline-code">switch: boot flash:c2960-lanbasek9-mz.150-2.SE.bin</span></li>
+                    </ul>
+                </div>
             </div>
         </section>
 
+        <!-- ============================================================
+             SECTION 5: SWITCH TROUBLESHOOTING & NETWORK INCIDENTS
+             Covers module replacement, speed mismatches, config backup,
+             management VLAN incident, DHCP/APIPA, NTP, Syslog, SNMP.
+             Placed before SCADA as requested.
+             ============================================================ -->
+        <section id="switch-troubleshooting">
+            <h2 class="section-title">5. Switch Troubleshooting & Network Incidents</h2>
+            <p class="text-block">Beyond IOS recovery, network engineers routinely deal with hardware failures, speed mismatches between optics and cables, misconfigured VLANs, and protocol-level issues. This section covers the most critical real-world troubleshooting scenarios.</p>
+
+            <!-- 5.1 Switch Module Replacement -->
+            <div class="topic-card" id="module-replacement">
+                <h3><i class="fas fa-microchip"></i> 5.1 Switch Module Replacement</h3>
+                <p>When a line card or blade module in a modular switch chassis fails, it must be identified, traffic drained safely, and replaced with an OEM-verified spare — all within a scheduled maintenance window to minimize downtime.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture17.png" alt="Modular switch chassis with line cards" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Enterprise modular switch chassis with multiple line card slots. A defective card must be hot-swapped carefully.</figcaption>
+                </figure>
+
+                <div class="topic-sub"><i class="fas fa-search"></i> Identifying Defective Line Cards</div>
+                <ul>
+                    <li><strong>System Log Diagnostics:</strong> Review syslog entries for persistent fabric interface errors, ASIC fatal faults, or port transceiver communication failures.</li>
+                    <li><strong>Front Panel LED Indicators:</strong> Identify red or solid amber <span class="inline-code">STATUS / FAIL</span> LEDs on the target blade module panel.</li>
+                    <li><strong>Graceful Traffic Drain:</strong> Reroute active VLAN traffic and drain core routing protocols (OSPF/BGP) away from card ports via CLI commands prior to extraction.</li>
+                    <li><strong>Hardware Verification:</strong> Cross-check serial number, model identifier, and target slot ID in CLI output with spare inventory ticket.</li>
+                </ul>
+
+                <pre><code>! Check for hardware errors on the target module
+Switch# show logging | include ASIC|FATAL|fabric|transceiver
+Switch# show module | include <slot-number>
+
+! Verify OSPF/BGP neighbor status on card ports before drain
+Switch# show ip ospf neighbor
+Switch# show ip bgp summary
+
+! Shut down all ports on the failing card before extraction
+Switch# configure terminal
+Switch(config)# interface range gigabitEthernet <slot>/<port1-24>
+Switch(config-if-range)# shutdown
+Switch(config-if-range)# exit</code></pre>
+
+                <div class="topic-sub"><i class="fas fa-toolbox"></i> Spare Hardware & Access Requirements</div>
+                <ul>
+                    <li><strong>Replacement Line Card:</strong> OEM verified replacement module inside sealed anti-static bag.</li>
+                    <li><strong>Console Access:</strong> Admin laptop, USB-to-Serial console cable, and terminal emulator tool (PuTTY/Tera Term).</li>
+                    <li><strong>Work Order:</strong> Pre-approved maintenance window authorization ticket and backup switch config files.</li>
+                </ul>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture18.png" alt="Patch panel and cable management guide" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                </figure>
+				                <figure class="large-figure">
+                    <img src="qw/Picture19.png" alt="Patch panel and cable management guide" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                </figure>
+				                <figure class="large-figure">
+                    <img src="qw/Picture20.png" alt="Patch panel and cable management guide" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                </figure>
+
+                <pre><code>! After physical insertion, verify the new module is recognized
+Switch# show module
+Switch# show hardware
+
+! Re-enable ports and verify traffic
+Switch# configure terminal
+Switch(config)# interface range gigabitEthernet <slot>/<port1-24>
+Switch(config-if-range)# no shutdown
+
+! Verify routing protocols have re-established
+Switch# show ip ospf neighbor
+Switch# show ip bgp summary</code></pre>
+            </div>
+
+            <!-- 5.2 SFP & Fiber Cable Speed Mismatches -->
+            <div class="topic-card" id="speed-mismatch">
+                <h3><i class="fas fa-tachometer-alt"></i> 5.2 SFP Module & Fiber Cable Speed Mismatches</h3>
+                <p>Speed mismatches occur when the SFP transceiver, the fiber optic cable, and the switch port configuration do not agree on the same link speed and duplex settings. This causes the link to flap, drop packets, or fail to come up entirely.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture21.png" alt="SFP modules and fiber connections" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>SFP transceivers must match the cable type (single-mode vs multi-mode) and the negotiated speed of the switch port.</figcaption>
+                </figure>
+
+                <div class="topic-sub"><i class="fas fa-exclamation-circle"></i> Common Mismatch Scenarios</div>
+                <ul>
+                    <li><strong>SFP Module Speed Mismatch:</strong> Inserting a 1G SFP into a port configured for 10G, or vice versa. The port will show <span class="inline-code">err-disabled</span> or stay <span class="inline-code">down</span>.</li>
+                    <li><strong>Fiber Cable Speed Mismatch:</strong> Using a multi-mode fiber (OM1/OM2) cable for a long-distance single-mode SFP link — the signal degrades and CRC errors spike.</li>
+                    <li><strong>Duplex Mismatch:</strong> One side hardcoded to full-duplex while the other auto-negotiates to half-duplex. Causes late collisions and severe packet loss.</li>
+                </ul>
+
+                <pre><code>! Check the SFP module details and supported speed
+Switch# show interface transceiver details
+Switch# show inventory
+
+! Check for CRC errors, alignment errors, or late collisions
+Switch# show interfaces gigabitEthernet 0/1 | include errors|CRC|collisions
+
+! Verify speed and duplex settings on both ends
+Switch# show interfaces status
+Switch# show interfaces gigabitEthernet 0/1 | include speed|duplex
+
+! Manually set correct speed and duplex if auto-negotiation fails
+Switch# configure terminal
+Switch(config)# interface gigabitEthernet 0/1
+Switch(config-if)# speed 1000
+Switch(config-if)# duplex full
+Switch(config-if)# no shutdown</code></pre>
+
+                <figure class="large-figure">
+                    <img src="https://www.fibermall.com/blog/wp-content/uploads/2026/06/qsfp56-troubleshooting.jpg" alt="Interface status showing speed mismatch errors" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Interface output showing CRC errors and speed negotiation status — indicators of a speed or duplex mismatch.</figcaption>
+                </figure>
+
+                <div class="alert-warning-custom">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Golden Rule of SFP Compatibility</h4>
+                    <p>Always match three things: <strong>SFP type</strong> (SX/LX/LR/T), <strong>cable type</strong> (single-mode fiber / multi-mode fiber / copper DAC), and <strong>port speed configuration</strong>. Mismatching any one of these will cause link failures.</p>
+                </div>
+            </div>
+
+            <!-- 5.3 Backup Config.cfg Through TFTP -->
+            <div class="topic-card" id="backup-config-tftp">
+                <h3><i class="fas fa-save"></i> 5.3 Backup Config.cfg Through TFTP</h3>
+                <p>Before any hardware replacement, IOS upgrade, or major configuration change, you <strong>must</strong> back up the running configuration to an external TFTP server. This allows you to restore the switch to its exact previous state if anything goes wrong.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture22.png" alt="TFTP server ready for config backup" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Ensure the TFTP server is running and the destination directory is set before initiating the backup.</figcaption>
+                </figure>
+
+                <pre><code>! Step 1: Save current running config to startup-config (NVRAM)
+Switch# copy running-config startup-config
+
+! Step 2: Backup the startup-config to TFTP server
+Switch# copy startup-config tftp:
+Address or name of remote host []? 192.168.1.100
+Destination filename [startup-config]? Switch-Core-01-backup-2025-01-15.cfg
+!!
+11234 bytes copied in 0.5 secs
+
+! Step 3: Verify the backup file exists on the TFTP server
+! (Check the TFTP server's upload directory for the .cfg file)
+
+! Step 4: To restore the config from TFTP
+Switch# copy tftp: startup-config
+Address or name of remote host []? 192.168.1.100
+Source filename []? Switch-Core-01-backup-2025-01-15.cfg
+Destination filename [startup-config]? 
+!!
+11234 bytes copied in 0.8 secs
+
+! Step 5: Reload to apply the restored configuration
+Switch# reload
+Proceed with reload? [confirm]</code></pre>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture22.png" alt="Config backup transfer complete" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>TFTP log showing the configuration file was successfully received and stored.</figcaption>
+                </figure>
+
+                <div class="alert-info-custom">
+                    <h4><i class="fas fa-lightbulb"></i> Best Practice: Timestamped Backups</h4>
+                    <p>Always include the switch hostname and date in the backup filename (e.g., <span class="inline-code">Switch-Core-01-2025-01-15.cfg</span>). This makes it easy to identify which backup corresponds to which change window and avoids overwriting previous backups.</p>
+                </div>
+            </div>
+
+            <!-- 5.4 The Management VLAN Incident -->
+            <div class="topic-card" id="mgmt-vlan-incident">
+                <h3><i class="fas fa-shield-alt"></i> 5.4 The Management VLAN Incident</h3>
+                <p>One of the most dangerous network incidents occurs when an unlabelled or misconfigured port assigned to the Management VLAN is physically accessible in an office workspace. This creates a direct bridge between untrusted user devices and the switch management plane.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture23.png" alt="Network loop detected - broadcast storm in progress" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>A broadcast storm caused by a Management VLAN breach — the network monitoring screen shows "CRITICAL: NETWORK LOOP DETECTED".</figcaption>
+                </figure>
+                <figure class="large-figure">
+                    <img src="qw/Picture25.png" alt="Network loop detected - broadcast storm in progress" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                </figure>
+				
+                <div class="topic-sub"><i class="fas fa-bug"></i> The Vulnerability</div>
+                <p>An unlabelled or misconfigured port assigned to <strong>VLAN 99</strong> (or any management VLAN) is accessible in an office workspace. The port has no port-security, no 802.1X, and is not administratively shut down.</p>
+
+                <div class="topic-sub"><i class="fas fa-bolt"></i> The Trigger</div>
+                <p>A user plugs a personal laptop or docking station into the Management VLAN port while simultaneously bridged to Wi-Fi or another physical network link. This creates an unauthorized bridge between segments.</p>
+
+                <div class="topic-sub"><i class="fas fa-explosion"></i> Immediate Effects</div>
+                <ul>
+                    <li><strong>Unfiltered Access:</strong> The end host receives an IP in the management subnet (via DHCP) or sends untagged frames directly to the management bridge — gaining access to all switches, routers, and possibly firewalls on that VLAN.</li>
+                    <li><strong>Layer 2 Loop Formation:</strong> Dual-homed adapters bridge traffic between the User segment and Management segment. This creates a spanning-tree loop that generates a <strong>broadcast storm</strong>, flooding the management VLAN and potentially crashing all managed devices.</li>
+                </ul>
+
+                <pre><code>! Identify the loop — check for rapidly incrementing counters
+Switch# show interfaces | include broadcast|CRC|errors
+Switch# show spanning-tree detail | include blocking|forwarding|loop
+
+! Find the offending port
+Switch# show mac address-table
+Switch# show interfaces status | include connected
+
+! Immediate containment: shut down the suspicious port
+Switch# configure terminal
+Switch(config)# interface gigabitEthernet 0/15
+Switch(config-if)# shutdown
+
+! Verify the storm has stopped
+Switch# show interfaces gigabitEthernet 0/15 | include errors
+Switch# show logging last 50 | include STP|loop|storm</code></pre>
+
+                <div class="alert-danger-custom">
+                    <h4><i class="fas fa-skull-crossbones"></i> Critical Security Impact</h4>
+                    <p>A Management VLAN breach gives an attacker direct access to the <strong>control plane</strong> of every network device. They can SSH/Telnet into switches, modify routing tables, disable ports, or deploy a persistent backdoor. This is why management ports must <strong>never</strong> be accessible from user workspaces.</p>
+                </div>
+
+                <div class="alert-info-custom">
+                    <h4><i class="fas fa-shield-alt"></i> Prevention Measures</h4>
+                    <ul>
+                        <li>Label all management ports physically with red tape or "MANAGEMENT ONLY" tags</li>
+                        <li>Enable <span class="inline-code">switchport mode access</span> + <span class="inline-code">switchport access vlan 99</span> + <span class="inline-code">spanning-tree portfast edge bpduguard enable</span></li>
+                        <li>Enable 802.1X authentication on all user-facing ports</li>
+                        <li>Configure port-security with a maximum of 1 MAC address</li>
+                        <li>Use a dedicated, out-of-band management network (separate physical switches or VRF)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 5.5 DHCP Conflict & APIPA Problem -->
+            <div class="topic-card" id="dhcp-apipa">
+                <h3><i class="fas fa-network-wired"></i> 5.5 DHCP Conflict & APIPA Problem</h3>
+                <p>When a DHCP server is unavailable, misconfigured, or overwhelmed, client devices fail to obtain an IP address and automatically assign themselves an <strong>APIPA</strong> (Automatic Private IP Addressing) address in the <span class="inline-code">169.254.x.x</span> range. These devices can communicate with each other but <strong>cannot reach the network</strong>.</p>
+
+                <figure class="large-figure">
+                    <img src="https://www.bluecompute.co.uk/wp-content/uploads/2013/07/APIPA-1.png" alt="DHCP server and network devices" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>A misconfigured or unreachable DHCP server causes all downstream clients to fall back to APIPA addresses.</figcaption>
+                </figure>
+
+                <div class="topic-sub"><i class="fas fa-question-circle"></i> Symptoms of APIPA</div>
+                <ul>
+                    <li>Device shows IP address <span class="inline-code">169.254.x.x</span> with subnet mask <span class="inline-code">255.255.0.0</span></li>
+                    <li>Device cannot ping the default gateway or any external host</li>
+                    <li><span class="inline-code>ipconfig /all</span> (Windows) shows "Autoconfiguration Enabled: Yes" and no DHCP server listed</li>
+                </ul>
+
+                <div class="topic-sub"><i class="fas fa-crosshairs"></i> Common Causes</div>
+                <ul>
+                    <li><strong>DHCP server down:</strong> The DHCP service crashed or the server is unreachable (VLAN issue, cable disconnected)</li>
+                    <li><strong>DHCP scope exhausted:</strong> All IP addresses in the pool have been allocated — no free leases</li>
+                    <li><strong>DHCP conflict:</strong> Two DHCP servers on the same VLAN handing out overlapping address ranges</li>
+                    <li><strong>DHCP relay misconfigured:</strong> The switch's <span class="inline-code">ip helper-address</span> is pointing to the wrong server or missing</li>
+                </ul>
+
+                <pre><code>! Check if the switch is relaying DHCP requests correctly
+Switch# show running-config | include helper
+! Should show: ip helper-address <DHCP_SERVER_IP>
+
+! Check for DHCP snooping conflicts
+Switch# show ip dhcp snooping
+Switch# show ip dhcp snooping binding
+
+! Verify the DHCP server is reachable from the switch
+Switch# ping <DHCP_SERVER_IP>
+
+! Check interface status for the VLAN carrying DHCP
+Switch# show ip interface brief | include <vlan-id>
+
+! On Windows client — force a new DHCP request
+C:\> ipconfig /release
+C:\> ipconfig /renew</code></pre>
+
+                <figure class="large-figure">
+                    <img src="https://miro.medium.com/1*zZ1zZPC1OiNi0Ug5SaspiA.jpeg" alt="Windows ipconfig showing APIPA address" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Windows <strong>ipconfig</strong> output showing a 169.254.x.x APIPA address — the client could not reach a DHCP server.</figcaption>
+                </figure>
+            </div>
+
+            <!-- 5.6 Network Time Protocol (NTP) -->
+            <div class="topic-card" id="ntp">
+                <h3><i class="fas fa-clock"></i> 5.6 Network Time Protocol (NTP)</h3>
+                <p><strong>NTP</strong> synchronizes the clocks of all network devices to a common time source. Accurate time is <strong>critical</strong> for log correlation, certificate validation, scheduled tasks, and forensic investigation. Even a few seconds of drift between devices makes it impossible to reconstruct an attack timeline.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture26.png" alt="NTP synchronization hierarchy" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>NTP hierarchy: Stratum 1 servers get time from atomic clocks/GPS, and distribute it down to Stratum 2/3 devices.</figcaption>
+                </figure>
+
+                <pre><code>! Configure the switch to use an NTP server
+Switch# configure terminal
+Switch(config)# ntp server 10.0.0.1 prefer
+Switch(config)# ntp server 10.0.0.2
+
+! Set the local timezone
+Switch(config)# clock timezone EET 2 0
+
+! Verify NTP synchronization status
+Switch# show ntp status
+Switch# show ntp associations
+
+! Manually set the clock if NTP is not yet synced (temporary)
+Switch# clock set 15:30:00 15 January 2025</code></pre>
+
+                <div class="alert-info-custom">
+                    <h4><i class="fas fa-lightbulb"></i> Why NTP Matters for Security</h4>
+                    <p>When analyzing a breach, you correlate logs from firewalls, switches, IDS/IPS, and servers. If their clocks are not synchronized, you cannot determine the exact sequence of events. <strong>Always</strong> configure at least two NTP servers for redundancy and use authenticated NTP (NTPv4 with symmetric key authentication) to prevent time-spoofing attacks.</p>
+                </div>
+            </div>
+
+            <!-- 5.7 System Logging (Syslog) -->
+            <div class="topic-card" id="syslog">
+                <h3><i class="fas fa-file-alt"></i> 5.7 System Logging (Syslog)</h3>
+                <p><strong>Syslog</strong> is the standard protocol (UDP port 514) for sending event log messages from network devices to a centralized log server. Without centralized logging, you must log into each device individually to investigate incidents — which is impractical in any network larger than a few switches.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture27.png" alt="Syslog server receiving messages from network devices" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>A centralized syslog server collects log messages from all switches, routers, and firewalls for unified analysis.</figcaption>
+                </figure>
+
+                <pre><code>! Configure the switch to send logs to a syslog server
+Switch# configure terminal
+
+! Set the syslog server IP
+Switch(config)# logging host 192.168.1.50
+
+! Set the logging severity level (0=emergency to 7=debug)
+! Level 4 = warnings and above (warnings, errors, critical, alerts, emergencies)
+Switch(config)# logging trap warnings
+
+! Set the source interface for syslog messages
+Switch(config)# logging source-interface vlan 1
+
+! Enable timestamps on log messages
+Switch(config)# service timestamps log datetime localtime
+
+! Verify syslog configuration
+Switch# show logging</code></pre>
+
+                <div class="topic-sub"><i class="fas fa-layer-group"></i> Syslog Severity Levels</div>
+                <ul>
+                    <li><strong>0 — Emergency:</strong> System unusable</li>
+                    <li><strong>1 — Alert:</strong> Immediate action needed</li>
+                    <li><strong>2 — Critical:</strong> Critical condition</li>
+                    <li><strong>3 — Error:</strong> Error condition</li>
+                    <li><strong>4 — Warning:</strong> Warning condition (recommended minimum for production)</li>
+                    <li><strong>5 — Notification:</strong> Normal but significant</li>
+                    <li><strong>6 — Informational:</strong> Informational message</li>
+                    <li><strong>7 — Debug:</strong> Debug messages (verbose — not recommended in production)</li>
+                </ul>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture28.png" alt="Syslog message flow verification" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Verify syslog messages are arriving at the server by checking the live log feed.</figcaption>
+                </figure>
+            </div>
+
+            <!-- 5.8 Simple Network Management Protocol (SNMP) -->
+            <div class="topic-card" id="snmp">
+                <h3><i class="fas fa-chart-line"></i> 5.8 Simple Network Management Protocol (SNMP)</h3>
+                <p><strong>SNMP</strong> enables network monitoring platforms (like PRTG, SolarWinds, Zabbix) to poll switches and routers for status information: CPU usage, memory, interface traffic, port status, and error counters. SNMP uses <strong>Managers</strong> (monitoring server) and <strong>Agents</strong> (the switch) communicating over UDP port 161.</p>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture29.png" alt="SNMP monitoring dashboard" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>An SNMP monitoring dashboard showing real-time interface traffic, CPU, and port status across all managed switches.</figcaption>
+                </figure>
+
+                <div class="topic-sub"><i class="fas fa-exclamation-triangle"></i> SNMP Versions — Critical Security Difference</div>
+                <ul>
+                    <li><strong>v1/v2c:</strong> Uses community strings (plain-text passwords). <span style="color:#ef4444;font-weight:700;">NEVER use in production</span> — anyone who guesses the community string (often "public"/"private") can read or modify all device configurations.</li>
+                    <li><strong>v3:</strong> Uses USM (User-based Security Model) with authentication (MD5/SHA) and encryption (DES/AES). <span style="color:var(--primary);font-weight:700;">Always use SNMPv3</span> in production networks.</li>
+                </ul>
+
+                <pre><code>! ===== SNMPv2c (LEGACY — only for isolated lab environments) =====
+Switch# configure terminal
+Switch(config)# snmp-server community ReadOnlyString RO
+Switch(config)# snmp-server community ReadWriteString RW
+
+! ===== SNMPv3 (RECOMMENDED FOR PRODUCTION) =====
+Switch# configure terminal
+
+! Define an SNMP view (what the user can see)
+Switch(config)# snmp-server view READONLY iso included
+
+! Create an authentication-only user (can read data, no encryption)
+Switch(config)# snmp-server user netadmin AuthGroup v3 auth sha MySecretPass123
+
+! Create an authenticated + encrypted user (full security)
+Switch(config)# snmp-server user netadmin SecureGroup v3 auth sha MySecretPass123 priv aes 256 MyEncKey456
+
+! Set the contact and location info (visible in SNMP queries)
+Switch(config)# snmp-server contact admin@company.com
+Switch(config)# snmp-server location "Data Center - Rack A3"
+
+! Restrict which hosts can query SNMP
+Switch(config)# snmp-server host 192.168.1.50 version 3 SecureGroup
+
+! Verify SNMP configuration
+Switch# show snmp
+Switch# show snmp user</code></pre>
+
+                <figure class="large-figure">
+                    <img src="qw/Picture30.png" alt="SNMP v3 configuration verification" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+                    <figcaption>Verify SNMP users, groups, and views are configured correctly using <strong>show snmp user</strong>.</figcaption>
+                </figure>
+
+                <div class="alert-danger-custom">
+                    <h4><i class="fas fa-skull-crossbones"></i> SNMPv2c is a Critical Vulnerability</h4>
+                    <p>Many large-scale breaches have started with an attacker scanning for SNMPv2c community strings. Once found, they can enumerate every interface, VLAN, routing table, and password hash on the device. If you inherit a network using SNMPv2c, migrate to v3 <strong>immediately</strong> as part of your hardening checklist.</p>
+                </div>
+            </div>
+        </section>
+
+   
         <!-- PREVIOUS / NEXT BUTTONS -->
         <div class="lesson-nav">
-            <a href="#" class="nav-btn prev">
-                <i class="fas fa-arrow-left"></i> Previous
-            </a>
-            <a href="#" class="nav-btn next">
-                Next <i class="fas fa-arrow-right"></i>
-            </a>
+            <a href="#" class="nav-btn prev"><i class="fas fa-arrow-left"></i> Previous</a>
+            <a href="#" class="nav-btn next">Next <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 </div>
@@ -268,62 +824,24 @@ Switch# reload</code></pre>
     <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
 </footer>
 
-<!-- AUTOMATE PREV / NEXT BUTTONS SCRIPT -->
 <script>
-    // 1. DEFINE YOUR LESSON ORDER HERE (Must match the sidebar exactly)
     const lessons = [
-        "network-security.html",
-        "network-roadmap.html",
-        "security-roadmap.html",
-        "labs.html",
-        "lesson-3.html",
-        "lesson-4.html",
-        "nessus.html",
-        "ids-ips.html",
-        "snort-suricata.html",
-        "dmz.html",
-        "nat.html",
-        "vpn.html",
-        "kali-tools.html",
-        "lesson-6.html",
-        "lesson-7.html",
-        "lesson-8.html",
-        "lesson-9.html",
-        "lesson-10.html",
-        "lesson-11.html",
-        "lesson-12.html",
-        "lesson-13.html",
-        "lesson-14.html",
-        "lesson-15.html",
-        "lesson-16.html",
-        "lesson-17.html",
-        "lesson-18.html",
-        "lesson-19.html"
+        "network-security.html","network-roadmap.html","security-roadmap.html","labs.html",
+        "lesson-3.html","lesson-4.html","nessus.html","ids-ips.html","snort-suricata.html",
+        "dmz.html","nat.html","vpn.html","kali-tools.html","lesson-6.html","lesson-7.html",
+        "lesson-8.html","lesson-9.html","lesson-10.html","lesson-11.html","lesson-12.html",
+        "lesson-13.html","lesson-14.html","lesson-15.html","lesson-16.html","lesson-17.html",
+        "lesson-18.html","lesson-19.html"
     ];
-
-    // 2. Get current page filename
     let path = window.location.pathname;
     let currentPage = path.substring(path.lastIndexOf('/') + 1) || "index.html";
-
-    // 3. Find current page index
     let currentIndex = lessons.indexOf(currentPage);
-
-    // 4. Update buttons if page is in the list
     const prevBtn = document.querySelector('.nav-btn.prev');
     const nextBtn = document.querySelector('.nav-btn.next');
-
     if (currentIndex !== -1) {
-        // Handle Previous Button
-        if (currentIndex > 0 && prevBtn) {
-            prevBtn.setAttribute('href', lessons[currentIndex - 1]);
-        }
-        
-        // Handle Next Button
-        if (currentIndex < lessons.length - 1 && nextBtn) {
-            nextBtn.setAttribute('href', lessons[currentIndex + 1]);
-        }
+        if (currentIndex > 0 && prevBtn) prevBtn.setAttribute('href', lessons[currentIndex - 1]);
+        if (currentIndex < lessons.length - 1 && nextBtn) nextBtn.setAttribute('href', lessons[currentIndex + 1]);
     }
 </script>
-
 </body>
 </html>
