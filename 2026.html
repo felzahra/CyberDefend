@@ -39,7 +39,7 @@
             --primary: #264b5d;
             --primary-fg: #f7f7f7;
             --body-fg: #eeeeee;
-            --body-bg: #121212; /* الأسود الأساسي */
+            --body-bg: #121212;
             --body-quiet-color: #b0b0b0;
             --body-loud-color: #ffffff;
             --breadcrumbs-link-fg: #e0e0e0;
@@ -53,13 +53,94 @@
             --message-success-bg: #006b1b;
             --message-warning-bg: #583305;
             --message-error-bg: #570808;
-            --darkened-bg: #212121; /* خلفية الكروت */
+            --darkened-bg: #212121;
             --selected-bg: #1b1b1b;
             --selected-row: #1e2a35;
             --close-button-bg: #333333;
             --close-button-hover-bg: #666666;
-            --header-bg: #212121;
+            --header-bg: #1a1a1a;
             --header-link-color: #81d4fa;
+        }
+
+        /* ========== TOP NAVIGATION ========== */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 32px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--hairline-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background 0.3s, border-color 0.3s;
+            flex-shrink: 0;
+        }
+        .top-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .top-nav-logo {
+            background: var(--primary);
+            color: var(--primary-fg);
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 8px rgba(2,179,228,0.15);
+        }
+        .top-nav-brand h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--body-loud-color);
+        }
+        .top-nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .top-nav-links a {
+            color: var(--body-quiet-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .top-nav-links a:hover {
+            color: var(--body-fg);
+        }
+        .top-nav-links a.active {
+            color: var(--link-fg);
+            border-bottom-color: var(--link-fg);
+        }
+        .top-nav-links a.login-btn {
+            background: var(--primary);
+            color: var(--primary-fg);
+            padding: 7px 16px;
+            border-radius: 8px;
+            border-bottom: none;
+            font-size: 0.8rem;
+        }
+        .top-nav-links a.login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: 1px solid var(--hairline-color);
+            color: var(--body-fg);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
         }
 
         /* THEME SWITCH BUTTON */
@@ -93,7 +174,8 @@
 
         /* ========== MAIN STYLES ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        .body-wrapper { display: flex; flex: 1; min-height: 0; }
         .sidebar { width: 340px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
@@ -218,6 +300,21 @@
 
         @media (max-width: 1000px) { .side-by-side { grid-template-columns: 1fr; } }
         @media (max-width: 780px) {
+            .top-nav { padding: 12px 16px; }
+            .top-nav-links { 
+                display: none; 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 4px; 
+                padding: 12px 0 6px;
+                border-top: 1px solid var(--hairline-color);
+                margin-top: 10px;
+            }
+            .top-nav-links.open { display: flex; }
+            .top-nav-links a { padding: 10px 14px; border-bottom: none; border-radius: 8px; }
+            .top-nav-links a:hover { background: var(--selected-bg); }
+            .top-nav-links a.login-btn { text-align: center; margin-top: 4px; }
+            .nav-hamburger { display: block; }
             .sidebar { width: 280px; }
             .main-content { padding: 16px; }
             .card-header h2 { font-size: 1.2rem; }
@@ -234,6 +331,24 @@
     </style>
 </head>
 <body>
+
+<!-- ========== TOP NAVIGATION BAR ========== -->
+<nav class="top-nav">
+    <a href="index.html" class="top-nav-brand">
+        <div class="top-nav-logo">🛡️</div>
+        <h1>CyberDefend</h1>
+    </a>
+    <button class="nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('open')" aria-label="Toggle menu">☰</button>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- ========== SIDEBAR + MAIN CONTENT ========== -->
+<div class="body-wrapper">
 <div class="sidebar">
     <div class="brand">
         <div class="logo">
@@ -310,6 +425,7 @@
 
     <footer>🎬 CyberDefend Academy — DPA Summer Training | Part of Accenture</footer>
 </div>
+</div><!-- end body-wrapper -->
 
 <!-- FLOATING COMMENT BUTTON -->
 <button class="comment-fab" id="commentFab">
@@ -342,19 +458,15 @@
 // THEME TOGGLE LOGIC - DEFAULTS TO DARK MODE
 const themeToggle = document.getElementById('themeToggle');
 const themeLabel = document.getElementById('themeLabel');
-const savedTheme = localStorage.getItem('cd_theme') || 'dark'; // يبدأ بالوضع الليلي افتراضياً
+const savedTheme = localStorage.getItem('cd_theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
 
 function updateThemeLabel() {
     let currentTheme = document.documentElement.getAttribute('data-theme');
     themeLabel.textContent = currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1) + ' Mode';
-    
-    // إظهار الأيقونة الصحيحة
     document.querySelectorAll('.theme-toggle svg').forEach(svg => svg.style.display = 'none');
     if (currentTheme === 'light') {
         document.querySelector('.theme-icon-when-light').style.display = 'block';
-    } else if (currentTheme === 'dark') {
-        document.querySelector('.theme-icon-when-dark').style.display = 'block';
     } else {
         document.querySelector('.theme-icon-when-dark').style.display = 'block';
     }
@@ -423,18 +535,14 @@ function renderQuiz(slideId) {
     const completedBadge = document.getElementById('quizCompletedBadge');
     const submitBtn = document.getElementById('quizSubmitBtn');
     const scoreEl = document.getElementById('quizScore');
-
     errorEl.style.display = 'none';
     completedBadge.style.display = 'none';
-
     const qData = quizzes[slideId];
-
     if (!qData || qData.length === 0) {
         body.innerHTML = '<div class="quiz-no-quiz"><span>📝</span>No quiz available for this lecture yet.</div>';
         footer.style.display = 'none';
         return;
     }
-
     let html = '';
     qData.forEach((q, qi) => {
         html += `<div class="quiz-question" id="qq_${qi}"><span class="quiz-q-num">QUESTION ${qi + 1} OF ${qData.length}</span><div class="quiz-q-text">${escapeHtml(q.question)}</div><div class="quiz-options">`;
@@ -448,7 +556,6 @@ function renderQuiz(slideId) {
     scoreEl.innerHTML = '';
     submitBtn.textContent = 'Submit Quiz';
     submitBtn.disabled = false;
-
     if (quizCompleted[slideId]) {
         completedBadge.style.display = 'inline-block';
         submitBtn.disabled = true;
@@ -457,9 +564,7 @@ function renderQuiz(slideId) {
         quizCompleted[slideId].answers.forEach((ans, qi) => {
             const q = qData[qi];
             document.getElementById(`qopt_${qi}_${ans.selected}`).classList.add(ans.selected === q.correct ? 'correct-answer' : 'wrong-answer');
-            if (ans.selected !== q.correct) {
-                document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
-            }
+            if (ans.selected !== q.correct) document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
             document.querySelectorAll(`#qq_${qi} .quiz-option`).forEach(el => el.style.pointerEvents = 'none');
             document.getElementById(`qq_${qi}`).querySelector('input[type="radio"]').checked = false;
         });
@@ -470,9 +575,7 @@ function selectOption(qi, oi) {
     const slideId = currentSlideId;
     if (quizCompleted[slideId]) return;
     const qData = quizzes[slideId];
-    qData[qi].options.forEach((_, i) => {
-        document.getElementById(`qopt_${qi}_${i}`).classList.remove('selected');
-    });
+    qData[qi].options.forEach((_, i) => { document.getElementById(`qopt_${qi}_${i}`).classList.remove('selected'); });
     document.getElementById(`qopt_${qi}_${oi}`).classList.add('selected');
     document.getElementById(`qopt_${qi}_${oi}`).querySelector('input').checked = true;
     document.getElementById(`qq_${qi}`).classList.remove('unanswered-highlight');
@@ -482,43 +585,26 @@ document.getElementById('quizSubmitBtn').addEventListener('click', function() {
     const slideId = currentSlideId;
     const qData = quizzes[slideId];
     if (!qData) return;
-
     const errorEl = document.getElementById('quizError');
     let allAnswered = true;
     const answers = [];
-
     qData.forEach((q, qi) => {
         const selected = document.querySelector(`input[name="quiz_q${qi}"]:checked`);
-        if (!selected) {
-            allAnswered = false;
-            document.getElementById(`qq_${qi}`).classList.add('unanswered-highlight');
-        } else {
-            answers.push({ selected: parseInt(selected.value) });
-            document.getElementById(`qq_${qi}`).classList.remove('unanswered-highlight');
-        }
+        if (!selected) { allAnswered = false; document.getElementById(`qq_${qi}`).classList.add('unanswered-highlight'); }
+        else { answers.push({ selected: parseInt(selected.value) }); document.getElementById(`qq_${qi}`).classList.remove('unanswered-highlight'); }
     });
-
-    if (!allAnswered) {
-        errorEl.style.display = 'block';
-        return;
-    }
+    if (!allAnswered) { errorEl.style.display = 'block'; return; }
     errorEl.style.display = 'none';
-
     let score = 0;
     answers.forEach((ans, qi) => {
         const q = qData[qi];
         const isCorrect = ans.selected === q.correct;
         if (isCorrect) score++;
-
         document.getElementById(`qopt_${qi}_${ans.selected}`).classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
-        if (!isCorrect) {
-            document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
-        }
+        if (!isCorrect) document.getElementById(`qopt_${qi}_${q.correct}`).classList.add('correct-answer');
         document.querySelectorAll(`#qq_${qi} .quiz-option`).forEach(el => el.style.pointerEvents = 'none');
     });
-
     quizCompleted[slideId] = { score, answers };
-
     document.getElementById('quizSubmitBtn').disabled = true;
     document.getElementById('quizSubmitBtn').textContent = 'Submitted ✓';
     document.getElementById('quizScore').innerHTML = `Score: <strong>${score}/${qData.length}</strong>`;
@@ -559,7 +645,6 @@ function activate(slideId) {
     const subEl = document.getElementById('slide-sub');
     const d = items[slideId];
     if (!d) return;
-
     badge.textContent = d.badge;
     badge.className = 'lesson-badge ' + d.badgeClass;
     titleEl.textContent = d.title;
@@ -567,11 +652,9 @@ function activate(slideId) {
     if (d.type === 'side-by-side') area.innerHTML = renderSideBySide(d);
     else if (d.type === 'video-only') area.innerHTML = renderVideoOnly(d);
     else area.innerHTML = renderSlidesOnly(d);
-
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const active = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
     if (active) active.classList.add('active');
-
     updateNavButtons(slideId);
     renderQuiz(slideId);
     loadComments(slideId);
@@ -594,16 +677,10 @@ const cmtFabBadge = document.getElementById('commentFabBadge');
 const savedCmtName = localStorage.getItem('cd_comment_name');
 if (savedCmtName) cmtName.value = savedCmtName;
 
-commentFab.addEventListener('click', () => {
-    commentPanel.classList.toggle('open');
-});
-document.getElementById('commentPanelClose').addEventListener('click', () => {
-    commentPanel.classList.remove('open');
-});
+commentFab.addEventListener('click', () => { commentPanel.classList.toggle('open'); });
+document.getElementById('commentPanelClose').addEventListener('click', () => { commentPanel.classList.remove('open'); });
 
-function updateCmtForm() {
-    cmtSendBtn.disabled = !(cmtName.value.trim() && cmtMsg.value.trim());
-}
+function updateCmtForm() { cmtSendBtn.disabled = !(cmtName.value.trim() && cmtMsg.value.trim()); }
 cmtName.addEventListener('input', updateCmtForm);
 cmtMsg.addEventListener('input', updateCmtForm);
 cmtMsg.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
@@ -626,21 +703,15 @@ async function loadComments(slideId) {
         cmtList.innerHTML = '';
         cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
         cmtFabBadge.textContent = comments.length;
-        if (comments.length === 0) {
-            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>';
-        } else {
-            comments.reverse().forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
-        }
+        if (comments.length === 0) { cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>'; }
+        else { comments.reverse().forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); }); }
     } catch (e) {
         const cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
         const comments = (cached[slideId] || []).reverse();
         cmtFabBadge.style.display = comments.length > 0 ? 'flex' : 'none';
         cmtFabBadge.textContent = comments.length;
-        if (comments.length === 0) {
-            cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>';
-        } else {
-            comments.forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); });
-        }
+        if (comments.length === 0) { cmtList.innerHTML = '<div class="cmt-empty"><span>💬</span>No comments yet.</div>'; }
+        else { comments.forEach(c => { cmtList.insertAdjacentHTML('beforeend', renderCmtItem(c)); }); }
     }
 }
 
@@ -648,27 +719,21 @@ cmtSendBtn.addEventListener('click', async function() {
     const name = cmtName.value.trim();
     const message = cmtMsg.value.trim();
     if (!name || !message) return;
-
     cmtSendBtn.disabled = true;
     cmtSendBtn.textContent = 'Sending...';
-
     const commentData = { slideId: currentSlideId, name, message, timestamp: new Date().toISOString() };
-
     try {
         await fetch(COMMENTS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentData) });
-
         localStorage.setItem('cd_comment_name', name);
         cmtEmpty.style.display = 'none';
         cmtList.insertAdjacentHTML('afterbegin', renderCmtItem(commentData));
         const count = parseInt(cmtFabBadge.textContent || '0') + 1;
         cmtFabBadge.textContent = count;
         cmtFabBadge.style.display = 'flex';
-
         const cached = JSON.parse(localStorage.getItem('cd_comments_cache') || '{}');
         if (!cached[currentSlideId]) cached[currentSlideId] = [];
         cached[currentSlideId].push(commentData);
         localStorage.setItem('cd_comments_cache', JSON.stringify(cached));
-
         cmtMsg.value = '';
         cmtMsg.style.height = 'auto';
         updateCmtForm();
@@ -684,7 +749,6 @@ cmtSendBtn.addEventListener('click', async function() {
         cmtStatus.style.background = 'var(--message-error-bg)';
         setTimeout(() => { cmtStatus.style.display = 'none'; }, 2500);
     }
-
     cmtSendBtn.disabled = false;
     cmtSendBtn.textContent = 'Send ➤';
     updateCmtForm();
