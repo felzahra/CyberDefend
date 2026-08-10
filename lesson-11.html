@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Switch Management - Labs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}.mono{font-family:'JetBrains Mono',monospace}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
+.top-nav-links{display:flex;align-items:center;gap:4px}.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}.top-nav-links a.active{color:var(--ac);background:var(--acD)}.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}.sidebar::-webkit-scrollbar{width:3px}
+.sidebar-back-btns{padding:14px;border-bottom:1px solid var(--bdr)}.sidebar-back-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,229,160,.06);color:var(--ac);border:1px solid rgba(0,229,160,.15);border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}.sidebar-back-btn:hover{background:rgba(0,229,160,.15);border-color:var(--ac)}
+.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}.sidebar-brand i{font-size:18px;color:var(--ac)}.sidebar-brand span{font-weight:700;font-size:13px}
+.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}.nav-item .arrow{margin-left:auto;font-size:9px;transition:transform .25s}.nav-item.open .arrow{transform:rotate(90deg)}
+.sub-nav{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.15)}.sub-nav.open{max-height:500px}.sub-item{display:block;padding:7px 18px 7px 48px;color:var(--mt);text-decoration:none;font-size:12px;transition:all .15s;border-left:3px solid transparent}.sub-item:hover,.sub-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-weight:700;font-size:14px}.topbar-right{display:flex;align-items:center;gap:12px}.progress-bar{width:110px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}.progress-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%}
+.content{padding:28px;max-width:1100px}
+.sec{margin-bottom:48px;scroll-margin-top:120px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
+.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden}.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.card-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cw{color:var(--wn)}
+/* FIX: object-fit:contain shows full image without cropping */
+.imgf{border-radius:12px;overflow:hidden;border:1px solid var(--bdr);position:relative;background:#080c14}.imgf img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .5s}.imgf:hover img{transform:scale(1.02)}.imgf .il{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(8,12,20,.95));font-size:11px;color:var(--mt)}
+.tabs{display:flex;gap:3px;margin-bottom:20px;flex-wrap:wrap}.tbtn{padding:6px 16px;border:1px solid var(--bdr);border-radius:7px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;transition:all .15s}.tbtn:hover{border-color:var(--ac);color:var(--fg)}.tbtn.active{background:var(--acD);border-color:var(--ac);color:var(--ac)}.tpanel{display:none;animation:fu .35s ease}.tpanel.active{display:block}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:start}.vs-badge{align-self:center;width:44px;height:44px;border-radius:50%;background:var(--wn);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-top:30px;box-shadow:0 0 24px rgba(255,99,71,.25);flex-shrink:0}
+.dtbl{width:100%;border-collapse:collapse;font-size:13px}.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+.st{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}.st-g{background:rgba(0,229,160,.1);color:var(--ac)}.st-r{background:rgba(255,99,71,.1);color:var(--wn)}.st-y{background:rgba(240,192,64,.1);color:var(--gd)}.st-b{background:rgba(59,184,245,.1);color:var(--inf)}.st-p{background:rgba(168,124,255,.1);color:var(--pu)}
+.acc{border:1px solid var(--bdr);border-radius:10px;margin-bottom:6px;overflow:hidden;background:var(--card)}.acc.open{border-color:rgba(0,229,160,.25)}.acc-h{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;font-weight:600;font-size:14px;transition:color .15s}.acc-h:hover{color:var(--ac)}.acc-h i{transition:transform .25s;font-size:11px;color:var(--mt)}.acc.open .acc-h i{transform:rotate(180deg);color:var(--ac)}.acc-b{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;padding:0 18px}.acc.open .acc-b{max-height:1200px;padding:0 18px 18px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}.reveal.vis{opacity:1;transform:translateY(0)}
+.hero-mini{padding:36px 0 16px;text-align:center;position:relative}.hero-mini::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 80%,rgba(0,229,160,.05),transparent);pointer-events:none}
+.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}.mob-overlay.show{display:block}
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}.top-nav-links a:not(.login-btn):not(.active){display:none}.vs-grid{grid-template-columns:1fr}.vs-badge{margin-top:0;justify-self:center}.content{padding:20px 14px}}
+@media(max-width:600px){.top-nav-links a{padding:5px 8px;font-size:11px}.back-to-labs span{display:none}.back-to-labs{padding:6px 10px}}
+</style>
+</head>
+<body>
+<nav class="top-nav"><div class="top-nav-left"><a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a></div><div class="top-nav-links"><a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks & Submissions</a><a href="labs.html" class="active">Labs</a><a href="login.html" class="login-btn">Login</a></div></nav>
+<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<div class="mob-overlay" id="mobOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-back-btns"><a href="labs.html" class="sidebar-back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Labs</a></div>
+<div class="sidebar-brand"><i class="fa-solid fa-network-wired"></i><span>Switch Management</span></div>
+<div class="sidebar-label">Course Lessons</div>
+<div class="nav-item open" data-nav="remote"><i class="fa-solid fa-tower-broadcast icon"></i><span>Remote Management</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav open" data-sub="remote"><a href="#telnet" class="sub-item">Telnet</a><a href="#ssh" class="sub-item">SSH</a><a href="#putty" class="sub-item">PuTTY</a><a href="#securecrt" class="sub-item">SecureCRT</a></div>
+<div class="nav-item open" data-nav="secure"><i class="fa-solid fa-shield-halved icon"></i><span>Secure Management</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav open" data-sub="secure"><a href="#https-sec" class="sub-item">HTTPS Web GUI</a><a href="#console" class="sub-item">Console Port</a></div>
+<div class="nav-item" data-nav="modes"><i class="fa-solid fa-user-shield icon"></i><span>User / Privileged Mode</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="modes"><a href="#usermode" class="sub-item">User Mode</a><a href="#privmode" class="sub-item">Privileged Mode</a></div>
+<div class="nav-item" data-nav="rbac"><i class="fa-solid fa-users-gear icon"></i><span>RBAC &amp; Delegation</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="rbac"><a href="#rbac-levels" class="sub-item">Privilege Levels</a><a href="#rbac-config" class="sub-item">RBAC Config</a></div>
+<div class="nav-item" data-nav="pw"><i class="fa-solid fa-key icon"></i><span>Password Management</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="pw"><a href="#shared-accounts" class="sub-item">Shared Risks</a><a href="#pw-best" class="sub-item">Best Practices</a><a href="#pw-config" class="sub-item">Password Config</a></div>
+<div class="nav-item" data-nav="sw"><i class="fa-solid fa-arrows-left-right icon"></i><span>L2 / L3 Switching</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="sw"><a href="#l2switch" class="sub-item">Layer 2</a><a href="#l3switch" class="sub-item">Layer 3</a><a href="#svi" class="sub-item">SVI Routing</a></div>
+<div class="nav-item" data-nav="gw"><i class="fa-solid fa-door-open icon"></i><span>Default Gateway</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="gw"><a href="#gw-config" class="sub-item">Configuration</a><a href="#gw-notes" class="sub-item">Key Notes</a></div>
+<div class="nav-item" data-nav="red"><i class="fa-solid fa-clone icon"></i><span>Redundancy &amp; HA</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="red"><a href="#stacking" class="sub-item">Stacking</a><a href="#lag" class="sub-item">LAG / LACP</a><a href="#hsrp" class="sub-item">HSRP</a><a href="#vrrp" class="sub-item">VRRP</a></div>
+<div class="nav-item" data-nav="ports"><i class="fa-solid fa-ethernet icon"></i><span>Access vs Trunk</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="ports"><a href="#access-port" class="sub-item">Access Port</a><a href="#trunk-port" class="sub-item">Trunk Port</a></div>
+<div class="nav-item" data-nav="vlan"><i class="fa-solid fa-layer-group icon"></i><span>VLANs</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="vlan"><a href="#vlan-config" class="sub-item">VLAN Config</a><a href="#vlan-types" class="sub-item">VLAN Types</a></div>
+<div class="nav-item" data-nav="acl"><i class="fa-solid fa-filter icon"></i><span>ACLs</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="acl"><a href="#std-acl" class="sub-item">Standard ACL</a><a href="#ext-acl" class="sub-item">Extended ACL</a><a href="#acl-rules" class="sub-item">ACL Rules</a></div>
+<div class="nav-item" data-nav="rt"><i class="fa-solid fa-route icon"></i><span>Routing</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="rt"><a href="#static-rt" class="sub-item">Static</a><a href="#dynamic-rt" class="sub-item">Dynamic</a><a href="#default-rt" class="sub-item">Default</a></div>
+<div class="nav-item" data-nav="roas"><i class="fa-solid fa-plug icon"></i><span>Router on a Stick</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="roas"><a href="#roas-config" class="sub-item">ROAS Config</a></div>
+<div class="nav-item" data-nav="tasks"><i class="fa-solid fa-list-check icon"></i><span>R&amp;S Tasks</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+<div class="sub-nav" data-sub="tasks"><a href="#task1" class="sub-item">Basic Setup</a><a href="#task2" class="sub-item">VLAN &amp; Ports</a><a href="#task3" class="sub-item">Trunk &amp; Inter-VLAN</a><a href="#task4" class="sub-item">Security</a><a href="#task5" class="sub-item">Full Lab</a></div>
+</aside>
+
+<div class="main">
+<div class="topbar"><div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--ac);margin-right:6px"></i>Switch Management</div><div class="topbar-right"><span style="color:var(--mt);font-size:12px" id="progText">0%</span><div class="progress-bar"><div class="progress-fill" id="progFill"></div></div></div></div>
+<div class="content">
+
+<div class="hero-mini reveal">
+<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:10px">Comprehensive Reference Guide</div>
+<h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">Switch <span style="color:var(--ac)">Management</span></h1>
+<p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">From console cables to layer 3 routing - master enterprise switch configuration, security, and architecture.</p>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px"><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> SSH</span><span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> HTTPS</span><span class="st st-p"><i class="fa-solid fa-circle" style="font-size:5px"></i> RBAC</span><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> HSRP/VRRP</span><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> ACLs</span></div>
+</div>
+
+<!-- S1: REMOTE MANAGEMENT -->
+<div class="sec" id="remote">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-tower-broadcast"></i> Section 01</div><h2 class="sec-title">Remote Management</h2><p class="sec-desc">Connect to switches remotely. Telnet is legacy; SSH is the modern secure standard.</p></div>
+<div class="sec reveal" id="telnet">
+<div class="card"><div style="display:flex;gap:20px;flex-wrap:wrap"><div style="flex:1;min-width:260px">
+<div class="card-icon" style="background:rgba(255,99,71,.1);color:var(--wn)"><i class="fa-solid fa-terminal"></i></div>
+<h3 style="font-size:17px;font-weight:700;margin-bottom:6px">Telnet</h3>
+<span class="st st-r" style="margin-bottom:10px"><i class="fa-solid fa-triangle-exclamation" style="font-size:7px"></i> Insecure</span>
+<p style="font-size:13px;color:var(--mt);margin-bottom:12px">Operates on <span class="mono" style="color:var(--wn)">TCP/23</span>. All data in plaintext.</p>
+<div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Telnet</span></div><div class="code-body"><span class="ck">Switch</span>(config)# <span class="cm">line vty 0 4</span>
+<span class="ck">Switch</span>(config-line)# <span class="cm">password</span> <span class="cv">TelnetPass123</span>
+<span class="ck">Switch</span>(config-line)# <span class="cm">login</span>
+<span class="ck">Switch</span>(config-line)# <span class="cm">transport input</span> <span class="cv">telnet</span></div></div>
+</div><div class="imgf" style="width:240px;min-height:190px;flex-shrink:0"><img src="https://www.certificationkits.com/assets/images/cisco/clip_image004_0013.jpg" alt="Telnet"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Telnet terminal</div></div></div></div>
+</div>
+<div class="sec reveal" id="ssh">
+<div class="card"><div style="display:flex;gap:20px;flex-wrap:wrap"><div style="flex:1;min-width:260px">
+<div class="card-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-lock"></i></div>
+<h3 style="font-size:17px;font-weight:700;margin-bottom:6px">SSH</h3>
+<span class="st st-g" style="margin-bottom:10px"><i class="fa-solid fa-check" style="font-size:7px"></i> Secure</span>
+<p style="font-size:13px;color:var(--mt);margin-bottom:12px">Operates on <span class="mono" style="color:var(--ac)">TCP/22</span>. Requires hostname, domain, RSA key.</p>
+<div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>SSH</span></div><div class="code-body"><span class="ck">Switch</span>(config)# <span class="cm">hostname</span> <span class="cv">SW1</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip domain-name</span> <span class="cv">lab.local</span>
+<span class="ck">SW1</span>(config)# <span class="cm">crypto key generate rsa</span>
+<span class="ck">SW1</span>(config)# <span class="cm">username admin</span> <span class="cv">secret</span> <span class="cv">SshP@ss456!</span>
+<span class="ck">SW1</span>(config)# <span class="cm">line vty 0 4</span>
+<span class="ck">SW1</span>(config-line)# <span class="cm">login local</span>
+<span class="ck">SW1</span>(config-line)# <span class="cm">transport input</span> <span class="cv">ssh</span></div></div>
+</div><div class="imgf" style="width:240px;min-height:190px;flex-shrink:0"><img src="https://www.9tut.com/images/ccna_self_study/SSH_Configuration/putty_SSH.jpg" alt="SSH"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> SSH tunnel</div></div></div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px" class="reveal">
+<div class="card" id="putty"><div style="display:flex;gap:14px;align-items:flex-start"><div class="imgf" style="width:90px;height:90px;flex-shrink:0"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZHARyuZhUPPfWMPqt0a1Wnr3ax1li-3u7oSQzJLg6jBzrrs1-vuvlw1U&s=10" alt="PuTTY"></div><div><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">PuTTY</h3><span class="st st-b" style="margin-bottom:6px"><i class="fa-solid fa-circle" style="font-size:5px"></i> Free &amp; Open Source</span><p style="font-size:12px;color:var(--mt);margin-bottom:6px">Lightweight Windows SSH/Telnet client.</p><div style="display:flex;flex-wrap:wrap;gap:4px"><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">SSH-2</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">Telnet</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">Serial</span></div></div></div></div>
+<div class="card" id="securecrt"><div style="display:flex;gap:14px;align-items:flex-start"><div class="imgf" style="width:90px;height:90px;flex-shrink:0"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcwj3RZobQhd6b0Hzy4Afiw6rDlVi12xGI8EkNTvI4qXYQerSoLMGVb7Xs&s=10" alt="SecureCRT"></div><div><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">SecureCRT</h3><span class="st st-p" style="margin-bottom:6px"><i class="fa-solid fa-circle" style="font-size:5px"></i> Commercial</span><p style="font-size:12px;color:var(--mt);margin-bottom:6px">VanDyke premium terminal. Tabbed, scripting, SFTP.</p><div style="display:flex;flex-wrap:wrap;gap:4px"><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Scripting</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Tabbed</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">SFTP</span></div></div></div></div>
+</div>
+<div class="card reveal" style="margin-top:16px"><h3 style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-table-columns" style="color:var(--ac);margin-right:6px"></i>Protocol Comparison</h3><div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Protocol</th><th>Port</th><th>Encryption</th><th>Access</th><th>Status</th></tr></thead><tbody><tr><td class="mono" style="color:var(--fg)">Telnet</td><td class="mono">TCP/23</td><td><span class="st st-r">None</span></td><td>In-Band</td><td style="color:var(--wn)">Avoid</td></tr><tr><td class="mono" style="color:var(--fg)">SSH v2</td><td class="mono">TCP/22</td><td><span class="st st-g">AES</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">HTTPS</td><td class="mono">TCP/443</td><td><span class="st st-g">TLS</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">Console</td><td class="mono">Serial</td><td><span class="st st-y">Physical</span></td><td>Out-of-Band</td><td style="color:var(--gd)">Emergency</td></tr></tbody></table></div></div>
+</div>
+
+<!-- S2: SECURE MANAGEMENT -->
+<div class="sec" id="secure">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-shield-halved"></i> Section 02</div><h2 class="sec-title">Secure Management Methods</h2><p class="sec-desc">HTTPS web GUI and console port for out-of-band management.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+<div class="card reveal" id="https-sec"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-globe"></i></div><h3 style="font-size:15px;font-weight:700;margin-bottom:6px">HTTPS Management</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Web GUI using TLS on <span class="mono" style="color:var(--inf)">TCP/443</span>.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>HTTPS</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip http secure-server</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip http authentication local</span>
+<span class="ck">SW1</span>(config)# <span class="cm">username webadmin</span> <span class="cv">secret</span> <span class="cv">WebP@ss!</span></div></div><div class="imgf" style="min-height:140px;margin-top:10px"><img src="https://us1.discourse-cdn.com/spiceworks/optimized/4X/8/d/e/8de897b6adc9a5a73554a88ed26e30c1786c58bc_2_690x476.jpeg" alt="HTTPS GUI"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Switch web GUI</div></div></div>
+<div class="card reveal" id="console"><div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-plug"></i></div><h3 style="font-size:15px;font-weight:700;margin-bottom:6px">Console Port</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Physical RJ-45/USB for out-of-band. Rollover cable at 9600 baud.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Console</span></div><div class="code-body"><span class="cv">Baud:</span> 9600
+<span class="cv">Data bits:</span> 8
+<span class="cv">Parity:</span> None
+<span class="cv">Stop bits:</span> 1
+<span class="cv">Flow control:</span> None</div></div><div class="imgf" style="min-height:140px;margin-top:10px"><img src="https://m.media-amazon.com/images/I/81XCM0KYi2L._AC_UF350,350_QL80_.jpg" alt="Console cable"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Console rollover cable</div></div></div>
+</div></div>
+
+<!-- S3: MODES -->
+<div class="sec" id="modes">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-user-shield"></i> Section 03</div><h2 class="sec-title">User Mode vs Privileged Mode</h2><p class="sec-desc">Cisco IOS hierarchical privilege model.</p></div>
+<div class="vs-grid reveal">
+<div class="card" id="usermode" style="border-color:rgba(59,184,245,.25)"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-user"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--inf);margin-bottom:4px">User Mode</h3><p class="mono" style="font-size:12px;color:var(--mt);margin-bottom:8px">Switch&gt;</p><span class="st st-b" style="margin-bottom:8px">Level 1</span><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Basic tests (ping, traceroute)</li><li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>View interface status</li><li style="margin-bottom:5px"><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i>Cannot modify config</li><li><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i>Cannot reboot or save</li></ul><div class="code" style="margin-top:10px"><div class="code-body"><span class="ck">Switch</span><span class="cm">&gt;</span> <span class="cm">show version</span>
+<span class="ck">Switch</span><span class="cm">&gt;</span> <span class="cm">enable</span> <span class="cc">! Enter privileged</span></div></div><div class="imgf" style="min-height:120px;margin-top:10px"><img src="https://ipcisco.com/wp-content/uploads/2019/12/huawei-cli-privilege-levels.png" alt="User mode"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> User EXEC</div></div></div>
+<div class="vs-badge">VS</div>
+<div class="card" id="privmode" style="border-color:rgba(0,229,160,.25)"><div class="card-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-crown"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--ac);margin-bottom:4px">Privileged Mode</h3><p class="mono" style="font-size:12px;color:var(--mt);margin-bottom:8px">Switch#</p><span class="st st-g" style="margin-bottom:8px">Level 15</span><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i>Full read access to all shows</li><li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i>Enter global config mode</li><li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i>Reload, save, erase configs</li><li><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i>Manage users and passwords</li></ul><div class="code" style="margin-top:10px"><div class="code-body"><span class="ck">Switch</span><span class="cm">#</span> <span class="cm">configure terminal</span>
+<span class="ck">Switch</span>(config)# <span class="cm">hostname</span> <span class="cv">CORE-SW</span>
+<span class="ck">Switch</span><span class="cm">#</span> <span class="cm">copy run start</span></div></div><div class="imgf" style="min-height:120px;margin-top:10px"><img src="https://www.ciscozine.com/wp-content/uploads/Multiple-privilege-levels.png" alt="Priv mode"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Privileged EXEC</div></div></div>
+</div></div>
+
+<!-- S4: RBAC -->
+<div class="sec" id="rbac">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-users-gear"></i> Section 04</div><h2 class="sec-title">RBAC &amp; Security Delegation</h2><p class="sec-desc">Delegate specific privileges without granting full Level 15 access.</p></div>
+<div id="rbac-levels" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px" class="reveal">
+<div class="card" style="text-align:center"><div class="card-icon" style="margin:0 auto 12px;background:var(--acD);color:var(--ac)"><i class="fa-solid fa-crown"></i></div><h4 style="font-weight:700;margin-bottom:2px">Level 15</h4><p style="font-size:11px;color:var(--mt);margin-bottom:4px">Full Admin</p><p style="font-size:12px;color:var(--mt)">Unrestricted access.</p></div>
+<div class="card" style="text-align:center"><div class="card-icon" style="margin:0 auto 12px;background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-user-gear"></i></div><h4 style="font-weight:700;margin-bottom:2px">Level 7-10</h4><p style="font-size:11px;color:var(--mt);margin-bottom:4px">Limited Admin</p><p style="font-size:12px;color:var(--mt)">Interfaces/VLANs only.</p></div>
+<div class="card" style="text-align:center"><div class="card-icon" style="margin:0 auto 12px;background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-eye"></i></div><h4 style="font-weight:700;margin-bottom:2px">Level 1-5</h4><p style="font-size:11px;color:var(--mt);margin-bottom:4px">Read-Only</p><p style="font-size:12px;color:var(--mt)">Show commands only.</p></div>
+</div>
+<div class="card reveal" style="margin-top:14px" id="rbac-config"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--ac);margin-right:6px"></i>RBAC Configuration</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>RBAC</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">privilege exec level 5</span> <span class="cv">show running-config</span>
+<span class="ck">SW1</span>(config)# <span class="cm">privilege exec level 5</span> <span class="cv">show vlan</span>
+<span class="ck">SW1</span>(config)# <span class="cm">privilege configure level 7</span> <span class="cv">interface</span>
+<span class="ck">SW1</span>(config)# <span class="cm">privilege configure level 7</span> <span class="cv">vlan</span>
+<span class="ck">SW1</span>(config)# <span class="cm">username vlanop</span> <span class="cv">secret</span> <span class="cv">VlanOp!23</span> <span class="ck">privilege 7</span>
+<span class="ck">SW1</span>(config)# <span class="cm">aaa new-model</span>
+<span class="ck">SW1</span>(config)# <span class="cm">aaa authentication login</span> <span class="cv">default</span> <span class="ck">group tacacs+</span> <span class="cv">local</span></div></div><div class="imgf" style="min-height:160px;margin-top:10px"><img src="https://cdn.sanity.io/images/3jwyzebk/production/ab0d45a55f0c41a243093fb57d460fc366fed9ab-6336x3952.png" alt="RBAC"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> RBAC hierarchy</div></div></div>
+</div>
+
+<!-- S5: PASSWORDS -->
+<div class="sec" id="pw">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-key"></i> Section 05</div><h2 class="sec-title">Password Management</h2><p class="sec-desc">Shared accounts create accountability gaps. Use individual accounts with strong passwords.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
+<div class="card reveal" id="shared-accounts" style="border-color:rgba(255,99,71,.25)"><h3 style="font-weight:700;color:var(--wn);margin-bottom:8px"><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px"></i>Shared Risks</h3><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:7px"><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">No Accountability</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Credential Leakage</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Audit Failure</strong></li><li><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Blast Radius</strong></li></ul></div>
+<div class="card reveal" id="pw-best" style="border-color:rgba(0,229,160,.25)"><h3 style="font-weight:700;color:var(--ac);margin-bottom:8px"><i class="fa-solid fa-shield-halved" style="margin-right:6px"></i>Best Practices</h3><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Individual Accounts</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Centralized AAA</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Use <span class="mono" style="color:var(--ac)">secret</span> not <span class="mono" style="color:var(--wn)">password</span></strong></li><li><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">90-day expiry, lockout</strong></li></ul></div>
+</div>
+<div class="card reveal" id="pw-config"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--ac);margin-right:6px"></i>Password Config</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Passwords</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">enable secret</span> <span class="cv">EnableP@ss2024</span>
+<span class="ck">SW1</span>(config)# <span class="cm">username jsmith</span> <span class="cv">secret</span> <span class="cv">Jsmith#Secure99</span>
+<span class="ck">SW1</span>(config)# <span class="cm">security passwords min-length</span> <span class="cv">12</span>
+<span class="ck">SW1</span>(config)# <span class="cm">service password-encryption</span>
+<span class="ck">SW1</span>(config)# <span class="cm">login block-for</span> <span class="cv">120</span> <span class="cm">attempts</span> <span class="cv">5</span> <span class="cm">within</span> <span class="cv">60</span></div></div></div>
+</div>
+
+<!-- S6: L2/L3 -->
+<div class="sec" id="sw">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-arrows-left-right"></i> Section 06</div><h2 class="sec-title">L2 vs L3 Switching</h2><p class="sec-desc">L2 forwards by MAC. L3 adds hardware-based IP routing.</p></div>
+	  	          <div class="attack-overview-img">
+            <img src="https://ascentoptics.com/blog/wp-content/uploads/2023/08/layer-2-vs-layer-3-switch-1.png" alt="Overview of cyber attack types">
+        </div>
+		
+	          <div class="attack-overview-img">
+            <img src="https://media.licdn.com/dms/image/v2/D4D22AQFoLqQAVQU2Bg/feedshare-shrink_800/B4DZZShcc5GgAg-/0/1745141222370?e=2147483647&v=beta&t=bboAcepk79_xUS3S2Z6xK0IBZN9aTqjkHIbgVMB1iOU" alt="Overview of cyber attack types">
+        </div>
+<div class="vs-grid reveal">
+<div class="card" id="l2switch" style="border-color:rgba(59,184,245,.25)"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-network-wired"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--inf);margin-bottom:4px">Layer 2</h3><span class="st st-b" style="margin-bottom:8px">Data Link</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Forwards by MAC</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Builds MAC table</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>VLANs, STP, LACP</li><li><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i>No IP routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV9dtw7gJQEdiO5FjpSJzus8Gjziy33Qx4nAiwMmjpCkCgucHTgbxnDEf7&s=10" alt="L2"><div class="il">L2 access switch</div></div></div>
+<div class="vs-badge">VS</div>
+<div class="card" id="l3switch" style="border-color:rgba(168,124,255,.25)"><div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-microchip"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--pu);margin-bottom:4px">Layer 3</h3><span class="st st-p" style="margin-bottom:8px">Network Layer</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>All L2 + IP routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Hardware ASIC routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Inter-VLAN via SVI</li><li><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Static/dynamic routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://3.imimg.com/data3/FP/QN/MY-7081298/24-36-and-48-port-fibre-channel-switches-500x500.jpg" alt="L3"><div class="il">L3 core switch</div></div></div>
+
+</div>
+<div class="card reveal" style="margin-top:14px" id="svi"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--pu);margin-right:6px"></i>SVI Inter-VLAN Routing</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>SVI</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip routing</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface vlan 10</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">ip address</span> <span class="cv">10.10.10.1 255.255.255.0</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">no shutdown</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface vlan 20</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">ip address</span> <span class="cv">10.10.20.1 255.255.255.0</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">no shutdown</span></div></div></div>
+</div>
+
+<!-- S7: GATEWAY -->
+<div class="sec" id="gw">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-door-open"></i> Section 07</div><h2 class="sec-title">Default Gateway</h2><p class="sec-desc">Next-hop IP for reaching networks outside locally connected subnets.</p></div>
+			          <div class="attack-overview-img">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgQOTVfl6FlXT-953ISzgRfqkkp9iPtAW2TIOYUC7nbOf5AvOkYGDejYSt&s=10" alt="Overview of cyber attack types">
+        </div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+<div class="card reveal" id="gw-config"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Gateway</span></div><div class="code-body"><span class="cc">! L2 switch - management only</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip default-gateway</span> <span class="cv">192.168.1.1</span>
+<span class="cc">! L3 switch - use ip route</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 192.168.1.1</span></div></div></div>
+<div class="card reveal" id="gw-notes"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-lightbulb" style="color:var(--gd);margin-right:6px"></i>Key Notes</h3><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:10px"><span class="st st-b" style="margin-right:6px">L2</span><span class="mono" style="font-size:11px">ip default-gateway</span> is management traffic only.</li><li style="margin-bottom:10px"><span class="st st-y" style="margin-right:6px">L3</span>With <span class="mono" style="font-size:11px">ip routing</span>, use <span class="mono" style="font-size:11px">ip route 0.0.0.0</span> instead.</li><li><span class="st st-g" style="margin-right:6px">TIP</span>Use dedicated management VLAN (e.g., 999).</li></ul><div class="imgf" style="min-height:100px;margin-top:8px"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWyvhqxNJRjn3FUJiP-V2LtvcPazk0EloxO7eUc4I3vEWHjguP45O9N_OQ&s=10" alt="Gateway"><div class="il">Gateway flow</div></div></div>
+</div></div>
+
+<!-- S8: REDUNDANCY -->
+<div class="sec" id="red">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-clone"></i> Section 08</div><h2 class="sec-title">Redundancy &amp; High Availability</h2><p class="sec-desc">Eliminate single points of failure through stacking, LAG, and FHRP.</p></div>
+<div class="tabs reveal" id="redTabs"><button class="tbtn active" data-tab="t-stack">Stacking</button><button class="tbtn" data-tab="t-lag">LAG / LACP</button><button class="tbtn" data-tab="t-hsrp">HSRP</button><button class="tbtn" data-tab="t-vrrp">VRRP</button></div>
+<div class="tpanel active" id="t-stack"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="stacking"><h3 style="font-weight:700;margin-bottom:6px">Switch Stacking</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Multiple switches as one logical unit.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>StackWise</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">stackwise-virtual</span>
+<span class="ck">SW1</span>(config-sv)# <span class="cm">domain</span> <span class="cv">10</span>
+<span class="ck">SW1</span>(config-sv)# <span class="cm">dual-active-detection</span> <span class="cv">pagp</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface TenG1/0/49</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">stackwise-virtual link</span> <span class="cv">1</span></div></div></div><div class="imgf" style="min-height:180px"><img src="https://media.licdn.com/dms/image/v2/D5622AQFQtUkskFZa4Q/feedshare-shrink_800/B56ZhKL6X6G0Ak-/0/1753591294945?e=2147483647&v=beta&t=llwuDqOQaTk_NSAJ43lhz_-XkaOpGHaS6ZgDDVa6GL0" alt="Stacking"><div class="il">StackWise cables</div></div></div></div>
+<div class="tpanel" id="t-lag"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="lag"><h3 style="font-weight:700;margin-bottom:6px">Link Aggregation</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Bundle links for bandwidth + redundancy.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>LACP</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">interface range Gi0/1 - 2</span>
+<span class="ck">SW1</span>(config-if-range)# <span class="cm">channel-group</span> <span class="cv">1</span> <span class="ck">mode active</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface port-channel 1</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport mode trunk</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">LACP Modes</h3><table class="dtbl"><thead><tr><th>Mode</th><th>Behavior</th></tr></thead><tbody><tr><td class="mono" style="color:var(--ac)">Active</td><td>Sends PDUs</td></tr><tr><td class="mono" style="color:var(--inf)">Passive</td><td>Responds only</td></tr><tr><td class="mono" style="color:var(--mt)">On</td><td>Static, no LACP</td></tr></tbody></table></div></div></div>
+<div class="tpanel" id="t-hsrp"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="hsrp"><h3 style="font-weight:700;margin-bottom:4px">HSRP</h3><span class="st st-p" style="margin-bottom:8px">Cisco Proprietary</span><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Active/Standby. Hello 3s, Hold 10s.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>HSRP</span></div><div class="code-body"><span class="ck">R1</span>(config-if)# <span class="cm">standby 1 ip</span> <span class="cv">10.10.10.254</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 priority</span> <span class="cv">110</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 preempt</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 timers</span> <span class="cv">1 3</span>
+<span class="ck">R2</span>(config-if)# <span class="cm">standby 1 ip</span> <span class="cv">10.10.10.254</span></div></div></div><div class="imgf" style="min-height:180px"><img src="https://picsum.photos/seed/hsrp-topology-failover/600/360.jpg" alt="HSRP"><div class="il">HSRP topology</div></div></div></div>
+<div class="tpanel" id="t-vrrp"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="vrrp"><h3 style="font-weight:700;margin-bottom:4px">VRRP</h3><span class="st st-g" style="margin-bottom:8px">IEEE Standard</span><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Master/Backup. Default priority 100.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VRRP</span></div><div class="code-body"><span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 ip</span> <span class="cv">10.10.10.254</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 priority</span> <span class="cv">120</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 preempt</span>
+<span class="ck">R2</span>(config-if)# <span class="cm">vrrp 1 ip</span> <span class="cv">10.10.10.254</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">HSRP vs VRRP</h3><table class="dtbl"><thead><tr><th>Feature</th><th>HSRP</th><th>VRRP</th></tr></thead><tbody><tr><td>Standard</td><td>Cisco</td><td>IEEE</td></tr><tr><td>Roles</td><td>Active/Standby</td><td>Master/Backup</td></tr><tr><td>Hello</td><td>3 sec</td><td>1 sec</td></tr><tr><td>Preempt</td><td>Off default</td><td>On default</td></tr><tr><td>MAC</td><td>0000.0C07.ACxx</td><td>0000.5E00.01xx</td></tr></tbody></table></div></div></div>
+</div>
+
+<!-- S9: PORTS -->
+<div class="sec" id="ports">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-ethernet"></i> Section 09</div><h2 class="sec-title">Access Port vs Trunk Port</h2><p class="sec-desc">Access = one VLAN. Trunk = multiple VLANs with 802.1Q tags.</p></div>
+			          <div class="attack-overview-img">
+            <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/802-1q-vlan-tagging.gif" alt="Overview of cyber attack types">
+        </div>
+
+<div class="vs-grid reveal">
+<div class="card" id="access-port" style="border-color:rgba(0,229,160,.25)"><div class="card-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-desktop"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--ac);margin-bottom:4px">Access Port</h3><span class="st st-g" style="margin-bottom:8px">Single VLAN</span><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Access</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">interface Gi0/1</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport mode access</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport access vlan</span> <span class="cv">10</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">spanning-tree portfast</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport port-security</span></div></div><div class="imgf" style="min-height:100px;margin-top:10px"><img src="https://study-notes.org/images/infographics/vlanports.png" alt="Access"><div class="il">Access to PC</div></div></div>
+<div class="vs-badge">VS</div>
+<div class="card" id="trunk-port" style="border-color:rgba(240,192,64,.25)"><div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-arrows-left-right-to-line"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--gd);margin-bottom:4px">Trunk Port</h3><span class="st st-y" style="margin-bottom:8px">Tagged</span><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Trunk</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">interface Gi0/24</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport trunk encap dot1q</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport mode trunk</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport trunk allowed vlan</span> <span class="cv">10,20,30</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport trunk native vlan</span> <span class="cv">99</span></div></div><div class="imgf" style="min-height:100px;margin-top:10px"><img src="https://cdn.networkacademy.io/sites/default/files/2025-06/trunk-link.gif" alt="Trunk"><div class="il">Trunk link</div></div></div>
+</div></div>
+
+<!-- S10: VLANs -->
+<div class="sec" id="vlan">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-layer-group"></i> Section 10</div><h2 class="sec-title">VLANs</h2><p class="sec-desc">Logically segment a physical network into separate broadcast domains.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
+<div class="card reveal" id="vlan-config"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--ac);margin-right:6px"></i>VLAN Configuration</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VLANs</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">vlan 10</span>
+<span class="ck">SW1</span>(config-vlan)# <span class="cm">name</span> <span class="cv">SALES</span>
+<span class="ck">SW1</span>(config)# <span class="cm">vlan 20</span>
+<span class="ck">SW1</span>(config-vlan)# <span class="cm">name</span> <span class="cv">ENGINEERING</span>
+<span class="ck">SW1</span>(config)# <span class="cm">vlan 999</span>
+<span class="ck">SW1</span>(config-vlan)# <span class="cm">name</span> <span class="cv">MGMT</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface range Gi0/1-12</span>
+<span class="ck">SW1</span>(config-if-range)# <span class="cm">switchport mode access</span>
+<span class="ck">SW1</span>(config-if-range)# <span class="cm">switchport access vlan</span> <span class="cv">10</span></div></div></div>
+<div class="card reveal" id="vlan-types"><h3 style="font-weight:700;margin-bottom:10px">VLAN Types</h3><div style="display:flex;flex-direction:column;gap:7px"><div style="padding:8px 12px;border-radius:8px;background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.12)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="st st-g" style="font-size:9px">STATIC</span><span style="font-weight:600;font-size:13px">Static VLAN</span></div><p style="font-size:11px;color:var(--mt)">Manually assigned. Most common.</p></div><div style="padding:8px 12px;border-radius:8px;background:rgba(240,192,64,.05);border:1px solid rgba(240,192,64,.12)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="st st-y" style="font-size:9px">DYNAMIC</span><span style="font-weight:600;font-size:13px">Dynamic VLAN</span></div><p style="font-size:11px;color:var(--mt)">MAC-based via VMPS. Rare.</p></div><div style="padding:8px 12px;border-radius:8px;background:rgba(59,184,245,.05);border:1px solid rgba(59,184,245,.12)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="st st-b" style="font-size:9px">VOICE</span><span style="font-weight:600;font-size:13px">Voice VLAN</span></div><p style="font-size:11px;color:var(--mt)">IP phones via CDP/LLDP.</p></div><div style="padding:8px 12px;border-radius:8px;background:rgba(168,124,255,.05);border:1px solid rgba(168,124,255,.12)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="st st-p" style="font-size:9px">NATIVE</span><span style="font-weight:600;font-size:13px">Native VLAN</span></div><p style="font-size:11px;color:var(--mt)">Untagged on trunk. Must match.</p></div></div></div>
+</div>
+
+<div class="image-row">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/vlan-concept.gif" alt="First Image">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/vlan-port-membership.gif" alt="Second Image">
+</div>
+
+<style>
+.image-row {
+    display: flex;
+    gap: 15px; /* Adjust spacing between images */
+}
+
+.image-row img {
+    width: 50%; /* Makes both images share the row equally */
+    height: auto;
+    object-fit: cover;
+}
+</style>
+</div>
+
+
+<!-- S11: ACLs -->
+<div class="sec" id="acl">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-filter"></i> Section 11</div><h2 class="sec-title">Access Control Lists</h2><p class="sec-desc">Filter traffic by IP, protocol, and port.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
+<div class="card reveal" id="std-acl"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-filter-circle-xmark"></i></div><h3 style="font-weight:700;color:var(--inf);margin-bottom:6px">Standard ACL</h3><p style="font-size:12px;color:var(--mt);margin-bottom:8px">Source IP only. Range 1-99.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Standard</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">access-list 10</span> <span class="ck">deny</span> <span class="cv">192.168.10.50 0.0.0.0</span>
+<span class="ck">SW1</span>(config)# <span class="cm">access-list 10</span> <span class="ck">permit</span> <span class="cv">192.168.10.0 0.0.0.255</span>
+<span class="ck">SW1</span>(config)# <span class="cm">access-list 10</span> <span class="ck">permit any</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface vlan 20</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">ip access-group</span> <span class="cv">10</span> <span class="ck">out</span></div></div></div>
+<div class="card reveal" id="ext-acl"><div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-filter-circle-check"></i></div><h3 style="font-weight:700;color:var(--pu);margin-bottom:6px">Extended ACL</h3><p style="font-size:12px;color:var(--mt);margin-bottom:8px">Source+dest, protocol, port. Range 100-199.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Extended</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip access-list extended</span> <span class="cv">WEB-ONLY</span>
+<span class="ck">SW1</span>(config-ext-nacl)# <span class="ck">permit tcp</span> <span class="cv">192.168.10.0 0.0.0.255</span> <span class="cv">host 10.10.20.5</span> <span class="ck">eq</span> <span class="cv">80</span>
+<span class="ck">SW1</span>(config-ext-nacl)# <span class="ck">permit tcp</span> <span class="cv">192.168.10.0 0.0.0.255</span> <span class="cv">host 10.10.20.5</span> <span class="ck">eq</span> <span class="cv">443</span>
+<span class="ck">SW1</span>(config-ext-nacl)# <span class="ck">deny ip</span> <span class="cv">any any</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface vlan 10</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">ip access-group</span> <span class="cv">WEB-ONLY</span> <span class="ck">in</span></div></div></div>
+</div>
+<div class="card reveal" id="acl-rules"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-table" style="color:var(--ac);margin-right:6px"></i>ACL Rules</h3><div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Rule</th><th>Description</th></tr></thead><tbody><tr><td style="color:var(--fg);font-weight:600">Implicit Deny</td><td>Every ACL ends with invisible <span class="mono" style="color:var(--wn);font-size:11px">deny any</span></td></tr><tr><td style="color:var(--fg);font-weight:600">Processing Order</td><td>Top to bottom. First match wins.</td></tr><tr><td style="color:var(--fg);font-weight:600">Standard Placement</td><td>Close to <strong>destination</strong></td></tr><tr><td style="color:var(--fg);font-weight:600">Extended Placement</td><td>Close to <strong>source</strong></td></tr><tr><td style="color:var(--fg);font-weight:600">Named ACLs</td><td>Preferred - easier to edit</td></tr></tbody></table></div></div>
+<div class="imgf reveal" style="min-height:160px;margin-top:14px"><img src="https://picsum.photos/seed/acl-filter-decision/1200/320.jpg" alt="ACL"><div class="il">ACL decision flow</div></div>
+</div>
+
+<!-- S12: ROUTING -->
+<div class="sec" id="rt">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-route"></i> Section 12</div><h2 class="sec-title">Routing: Static, Dynamic &amp; Default</h2><p class="sec-desc">L3 switches use routing tables to forward packets.</p></div>
+<div class="tabs reveal" id="rtTabs"><button class="tbtn active" data-tab="rt-static">Static</button><button class="tbtn" data-tab="rt-dynamic">Dynamic</button><button class="tbtn" data-tab="rt-default">Default</button></div>
+<div class="tpanel active" id="rt-static"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="static-rt"><h3 style="font-weight:700;margin-bottom:6px">Static Routing</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Static</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">172.16.30.0 255.255.255.0 192.168.1.2</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">10.50.0.0 255.255.0.0 Gi0/1</span>
+<span class="cc">! Floating static (backup, AD=200)</span>
+<span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 192.168.1.3</span> <span class="cv">200</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">Administrative Distance</h3><table class="dtbl"><thead><tr><th>Source</th><th>AD</th></tr></thead><tbody><tr><td>Connected</td><td class="mono" style="color:var(--ac)">0</td></tr><tr><td>Static</td><td class="mono" style="color:var(--ac)">1</td></tr><tr><td>BGP</td><td class="mono">20</td></tr><tr><td>EIGRP</td><td class="mono">90</td></tr><tr><td>OSPF</td><td class="mono">110</td></tr><tr><td>RIP</td><td class="mono">120</td></tr></tbody></table></div></div></div>
+<div class="tpanel" id="rt-dynamic"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px"><div class="card" id="dynamic-rt" style="border-color:rgba(0,229,160,.25)"><div class="card-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-diagram-project"></i></div><h4 style="font-weight:700;color:var(--ac);margin-bottom:4px">OSPF</h4><p style="font-size:11px;color:var(--mt);margin-bottom:6px">Link-State, AD 110</p><div class="code"><div class="code-body" style="font-size:11px"><span class="cm">router ospf 1</span>
+<span class="cm">network</span> <span class="cv">10.0.0.0 0.0.0.255</span> <span class="cv">area 0</span></div></div></div><div class="card" style="border-color:rgba(240,192,64,.25)"><div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-share-nodes"></i></div><h4 style="font-weight:700;color:var(--gd);margin-bottom:4px">EIGRP</h4><p style="font-size:11px;color:var(--mt);margin-bottom:6px">Hybrid, AD 90</p><div class="code"><div class="code-body" style="font-size:11px"><span class="cm">router eigrp 100</span>
+<span class="cm">network</span> <span class="cv">10.0.0.0</span>
+<span class="cm">no auto-summary</span></div></div></div><div class="card" style="border-color:rgba(255,99,71,.25)"><div class="card-icon" style="background:rgba(255,99,71,.1);color:var(--wn)"><i class="fa-solid fa-arrows-spin"></i></div><h4 style="font-weight:700;color:var(--wn);margin-bottom:4px">RIP</h4><p style="font-size:11px;color:var(--mt);margin-bottom:6px">Distance-Vector, AD 120</p><div class="code"><div class="code-body" style="font-size:11px"><span class="cm">router rip</span>
+<span class="cm">version 2</span>
+<span class="cm">network</span> <span class="cv">10.0.0.0</span></div></div></div></div><div class="imgf"><img src="https://picsum.photos/seed/dynamic-routing-protocols-compare/1200/340.jpg" alt="Dynamic"><div class="il">Protocol comparison</div></div></div>
+<div class="tpanel" id="rt-default"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="default-rt"><h3 style="font-weight:700;margin-bottom:6px">Default Routes</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px"><span class="mono" style="color:var(--ac);font-size:12px">0.0.0.0/0</span> - gateway of last resort.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Default</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 192.168.1.254</span>
+<span class="cc">! With OSPF:</span>
+<span class="ck">R1</span>(config-router)# <span class="cm">default-information originate</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">When to Use</h3><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Stub Networks</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Edge Routing</strong> - to ISP</li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Backup Paths</strong> - floating static</li><li><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">OSPF</strong> - default-information originate</li></ul></div></div></div>
+</div>
+
+<!-- S13: ROAS -->
+<div class="sec" id="roas">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-plug"></i> Section 13</div><h2 class="sec-title">Router on a Stick</h2><p class="sec-desc">Inter-VLAN routing via single trunk link with sub-interfaces.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
+<div class="card reveal" id="roas-config"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--ac);margin-right:6px"></i>ROAS Configuration</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>ROAS</span></div><div class="code-body"><span class="cc">! Physical - no IP</span>
+<span class="ck">R1</span>(config)# <span class="cm">interface Gi0/0</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">no shutdown</span>
+<span class="cc">! VLAN 10 sub-if</span>
+<span class="ck">R1</span>(config)# <span class="cm">interface Gi0/0.10</span>
+<span class="ck">R1</span>(config-subif)# <span class="cm">encapsulation dot1q</span> <span class="cv">10</span>
+<span class="ck">R1</span>(config-subif)# <span class="cm">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span>
+<span class="cc">! VLAN 20 sub-if</span>
+<span class="ck">R1</span>(config)# <span class="cm">interface Gi0/0.20</span>
+<span class="ck">R1</span>(config-subif)# <span class="cm">encapsulation dot1q</span> <span class="cv">20</span>
+<span class="ck">R1</span>(config-subif)# <span class="cm">ip address</span> <span class="cv">192.168.20.1 255.255.255.0</span>
+<span class="cc">! Switch side</span>
+<span class="ck">SW1</span>(config)# <span class="cm">interface Gi0/24</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport mode trunk</span>
+<span class="ck">SW1</span>(config-if)# <span class="cm">switchport trunk allowed vlan</span> <span class="cv">10,20</span></div></div></div>
+<div class="reveal" style="display:flex;flex-direction:column;gap:14px"><div class="imgf" style="flex:1;min-height:150px"><img src="https://picsum.photos/seed/router-on-stick-topology/600/360.jpg" alt="ROAS"><div class="il">ROAS topology</div></div><div style="padding:10px 14px;border-radius:8px;background:rgba(255,99,71,.05);border:1px solid rgba(255,99,71,.15)"><p style="font-size:12px;color:var(--mt)"><i class="fa-solid fa-triangle-exclamation" style="color:var(--wn);margin-right:4px"></i><strong style="color:var(--fg)">Limitation:</strong> Single link bottleneck. L3 SVIs preferred.</p></div></div>
+</div></div>
+
+<!-- S14: TASKS -->
+<div class="sec" id="tasks">
+<div class="reveal"><div class="sec-badge"><i class="fa-solid fa-list-check"></i> Section 14</div><h2 class="sec-title">R&amp;S Practical Tasks</h2><p class="sec-desc">Common lab tasks for certification and real-world deployment.</p></div>
+<div class="reveal" id="taskAccordion">
+<div class="acc" id="task1"><div class="acc-h"><span><i class="fa-solid fa-network-wired" style="color:var(--ac);margin-right:8px"></i>Task 1: Basic Switch Configuration</span><i class="fa-solid fa-chevron-down"></i></div><div class="acc-b"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Setup</span></div><div class="code-body"><span class="ck">Switch</span># <span class="cm">erase startup-config</span>
+<span class="ck">Switch</span># <span class="cm">reload</span>
+<span class="ck">Switch</span>(config)# <span class="cm">hostname</span> <span class="cv">ACC-SW1</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">enable secret</span> <span class="cv">Classified!24</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">no ip domain-lookup</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">service password-encryption</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">banner motd</span> <span class="cv"># Authorized Access Only #</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">line console 0</span>
+<span class="ck">ACC-SW1</span>(config-line)# <span class="cm">logging synchronous</span>
+<span class="ck">ACC-SW1</span>(config-line)# <span class="cm">exec-timeout</span> <span class="cv">10 0</span></div></div></div></div>
+<div class="acc" id="task2"><div class="acc-h"><span><i class="fa-solid fa-layer-group" style="color:var(--pu);margin-right:8px"></i>Task 2: VLAN &amp; Port Assignment</span><i class="fa-solid fa-chevron-down"></i></div><div class="acc-b"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VLANs</span></div><div class="code-body"><span class="ck">ACC-SW1</span>(config)# <span class="cm">vlan 10</span>
+<span class="ck">ACC-SW1</span>(config-vlan)# <span class="cm">name</span> <span class="cv">SALES</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">vlan 20</span>
+<span class="ck">ACC-SW1</span>(config-vlan)# <span class="cm">name</span> <span class="cv">IT</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">interface range fa0/1 - 10</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport mode access</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport access vlan</span> <span class="cv">10</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">interface range fa0/11 - 20</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport mode access</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport access vlan</span> <span class="cv">20</span></div></div></div></div>
+<div class="acc" id="task3"><div class="acc-h"><span><i class="fa-solid fa-arrows-left-right-to-line" style="color:var(--gd);margin-right:8px"></i>Task 3: Trunk &amp; Inter-VLAN</span><i class="fa-solid fa-chevron-down"></i></div><div class="acc-b"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Trunk+SVI</span></div><div class="code-body"><span class="ck">ACC-SW1</span>(config)# <span class="cm">interface gi0/1</span>
+<span class="ck">ACC-SW1</span>(config-if)# <span class="cm">switchport mode trunk</span>
+<span class="ck">ACC-SW1</span>(config-if)# <span class="cm">switchport trunk allowed vlan</span> <span class="cv">10,20,999</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">ip routing</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">interface vlan 10</span>
+<span class="ck">CORE-SW</span>(config-if)# <span class="cm">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span>
+<span class="ck">CORE-SW</span>(config-if)# <span class="cm">no shut</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">interface vlan 20</span>
+<span class="ck">CORE-SW</span>(config-if)# <span class="cm">ip address</span> <span class="cv">192.168.20.1 255.255.255.0</span>
+<span class="ck">CORE-SW</span>(config-if)# <span class="cm">no shut</span></div></div></div></div>
+<div class="acc" id="task4"><div class="acc-h"><span><i class="fa-solid fa-shield-halved" style="color:var(--inf);margin-right:8px"></i>Task 4: Security Hardening</span><i class="fa-solid fa-chevron-down"></i></div><div class="acc-b"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Security</span></div><div class="code-body"><span class="ck">ACC-SW1</span>(config)# <span class="cm">interface range fa0/21 - 24</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">shutdown</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">interface range fa0/1 - 20</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport port-security</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport port-security maximum</span> <span class="cv">2</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport port-security violation</span> <span class="cv">shutdown</span>
+<span class="ck">ACC-SW1</span>(config-if-range)# <span class="cm">switchport port-security mac-address sticky</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">ip domain-name</span> <span class="cv">corp.local</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">crypto key generate rsa</span> <span class="cv">2048</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">username admin</span> <span class="cv">secret</span> <span class="cv">Adm1n$ecure</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">line vty 0 4</span>
+<span class="ck">ACC-SW1</span>(config-line)# <span class="cm">transport input ssh</span>
+<span class="ck">ACC-SW1</span>(config-line)# <span class="cm">login local</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">no cdp run</span>
+<span class="ck">ACC-SW1</span>(config)# <span class="cm">no ip http server</span></div></div></div></div>
+<div class="acc" id="task5"><div class="acc-h"><span><i class="fa-solid fa-route" style="color:var(--ac);margin-right:8px"></i>Task 5: Full Lab - OSPF + HSRP + LACP</span><i class="fa-solid fa-chevron-down"></i></div><div class="acc-b"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Full Lab</span></div><div class="code-body"><span class="cc">! OSPF on Core</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">router ospf 1</span>
+<span class="ck">CORE-SW</span>(config-router)# <span class="cm">router-id</span> <span class="cv">1.1.1.1</span>
+<span class="ck">CORE-SW</span>(config-router)# <span class="cm">network</span> <span class="cv">192.168.10.0 0.0.0.255</span> <span class="cv">area 0</span>
+<span class="ck">CORE-SW</span>(config-router)# <span class="cm">network</span> <span class="cv">192.168.20.0 0.0.0.255</span> <span class="cv">area 0</span>
+<span class="ck">CORE-SW</span>(config-router)# <span class="cm">passive-interface default</span>
+<span class="ck">CORE-SW</span>(config-router)# <span class="cm">no passive-interface</span> <span class="cv">Gi0/1</span>
+<span class="cc">! HSRP</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 ip</span> <span class="cv">192.168.10.254</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 priority</span> <span class="cv">110</span>
+<span class="ck">R1</span>(config-if)# <span class="cm">standby 1 preempt</span>
+<span class="cc">! LACP</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">interface range Gi0/23 - 24</span>
+<span class="ck">CORE-SW</span>(config-if-range)# <span class="cm">channel-group</span> <span class="cv">10</span> <span class="ck">mode active</span>
+<span class="ck">CORE-SW</span>(config)# <span class="cm">interface port-channel 10</span>
+<span class="ck">CORE-SW</span>(config-if)# <span class="cm">switchport mode trunk</span>
+<span class="cc">! Verify</span>
+<span class="ck">CORE-SW</span># <span class="cm">show ip ospf neighbor</span>
+<span class="ck">CORE-SW</span># <span class="cm">show standby brief</span>
+<span class="ck">CORE-SW</span># <span class="cm">show etherchannel summary</span></div></div></div></div>
+</div>
+<div class="imgf reveal" style="min-height:200px;margin-top:18px"><img src="https://picsum.photos/seed/network-lab-equipment-rack/1200/400.jpg" alt="Lab"><div class="il">Network lab equipment</div></div>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:28px 0 16px;border-top:1px solid var(--bdr);margin-top:28px">
+<p style="font-size:13px;color:var(--mt)">Switch Management Complete Reference - 14 Core Topics</p>
+<p style="font-size:11px;color:var(--bdr);margin-top:6px">Remote | Security | Modes | RBAC | Passwords | L2/L3 | Gateway | Redundancy | Ports | VLANs | ACLs | Routing | ROAS | R&amp;S Tasks</p>
+</div>
+
+</div></div></div>
+
+<script>
+document.querySelectorAll('.nav-item').forEach(function(item){item.addEventListener('click',function(){var n=this.getAttribute('data-nav');var s=document.querySelector('.sub-nav[data-sub="'+n+'"]');if(!s)return;this.classList.toggle('open');s.classList.toggle('open')})});
+document.querySelectorAll('.sub-item').forEach(function(l){l.addEventListener('click',function(e){e.preventDefault();var t=this.getAttribute('href').substring(1);var el=document.getElementById(t);if(el)el.scrollIntoView({behavior:'smooth'});document.querySelectorAll('.sub-item').forEach(function(s){s.classList.remove('active')});this.classList.add('active');if(window.innerWidth<=900){document.getElementById('sidebar').classList.remove('show');document.getElementById('mobOverlay').classList.remove('show')}})});
+document.querySelectorAll('.tabs').forEach(function(g){g.querySelectorAll('.tbtn').forEach(function(b){b.addEventListener('click',function(){var id=this.getAttribute('data-tab');g.querySelectorAll('.tbtn').forEach(function(x){x.classList.remove('active')});this.classList.add('active');var p=g.parentElement;p.querySelectorAll('.tpanel').forEach(function(x){x.classList.remove('active')});var panel=document.getElementById(id);if(panel)panel.classList.add('active')})})});
+document.querySelectorAll('.acc-h').forEach(function(h){h.addEventListener('click',function(){this.parentElement.classList.toggle('open')})});
+var rev=document.querySelectorAll('.reveal');var ro=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting)en.target.classList.add('vis')})},{threshold:0.06,rootMargin:'0px 0px -20px 0px'});rev.forEach(function(el){ro.observe(el)});
+var pf=document.getElementById('progFill'),pt=document.getElementById('progText');window.addEventListener('scroll',function(){var s=window.pageYOffset||document.documentElement.scrollTop;var d=document.documentElement.scrollHeight-window.innerHeight;var p=d>0?Math.round((s/d)*100):0;if(pf)pf.style.width=p+'%';if(pt)pt.textContent=p+'%'});
+var sb=document.getElementById('sidebar'),ov=document.getElementById('mobOverlay');document.getElementById('mobBtn').addEventListener('click',function(){sb.classList.toggle('show');ov.classList.toggle('show')});ov.addEventListener('click',function(){sb.classList.remove('show');ov.classList.remove('show')});
+</script>
+</body>
+</html>
