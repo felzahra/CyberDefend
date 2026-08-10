@@ -253,13 +253,16 @@
 <span class="ck">R1</span>(config-if)# <span class="cm">standby 1 priority</span> <span class="cv">110</span>
 <span class="ck">R1</span>(config-if)# <span class="cm">standby 1 preempt</span>
 <span class="ck">R1</span>(config-if)# <span class="cm">standby 1 timers</span> <span class="cv">1 3</span>
-<span class="ck">R2</span>(config-if)# <span class="cm">standby 1 ip</span> <span class="cv">10.10.10.254</span></div></div></div><div class="imgf" style="min-height:180px"><img src="https://picsum.photos/seed/hsrp-topology-failover/600/360.jpg" alt="HSRP"><div class="il">HSRP topology</div></div></div></div>
+<span class="ck">R2</span>(config-if)# <span class="cm">standby 1 ip</span> <span class="cv">10.10.10.254</span></div></div></div><div class="imgf" style="min-height:180px"><img src="https://cdn.networkacademy.io/sites/default/files/2024-12/what-is-fhrp.svg" alt="HSRP"><div class="il">HSRP topology</div></div></div></div>
 <div class="tpanel" id="t-vrrp"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="vrrp"><h3 style="font-weight:700;margin-bottom:4px">VRRP</h3><span class="st st-g" style="margin-bottom:8px">IEEE Standard</span><p style="font-size:13px;color:var(--mt);margin-bottom:10px">Master/Backup. Default priority 100.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VRRP</span></div><div class="code-body"><span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 ip</span> <span class="cv">10.10.10.254</span>
 <span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 priority</span> <span class="cv">120</span>
 <span class="ck">R1</span>(config-if)# <span class="cm">vrrp 1 preempt</span>
 <span class="ck">R2</span>(config-if)# <span class="cm">vrrp 1 ip</span> <span class="cv">10.10.10.254</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">HSRP vs VRRP</h3><table class="dtbl"><thead><tr><th>Feature</th><th>HSRP</th><th>VRRP</th></tr></thead><tbody><tr><td>Standard</td><td>Cisco</td><td>IEEE</td></tr><tr><td>Roles</td><td>Active/Standby</td><td>Master/Backup</td></tr><tr><td>Hello</td><td>3 sec</td><td>1 sec</td></tr><tr><td>Preempt</td><td>Off default</td><td>On default</td></tr><tr><td>MAC</td><td>0000.0C07.ACxx</td><td>0000.5E00.01xx</td></tr></tbody></table></div></div></div>
 </div>
-
+<div class="attack-overview-img" style="display: block; margin: 0 auto; width: fit-content;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-01/vrrp-basic-configuration.svg" alt="Overview of cyber attack types">
+</div>
+		
 <!-- S9: PORTS -->
 <div class="sec" id="ports">
 <div class="reveal"><div class="sec-badge"><i class="fa-solid fa-ethernet"></i> Section 09</div><h2 class="sec-title">Access Port vs Trunk Port</h2><p class="sec-desc">Access = one VLAN. Trunk = multiple VLANs with 802.1Q tags.</p></div>
