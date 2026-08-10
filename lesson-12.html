@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoIP Infrastructure - Labs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff;--cisco:#049fd9;--avaya:#e31937;--voice:#10b981}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.top-nav-left{display:flex;align-items:center;gap:12px}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
+.top-nav-links{display:flex;align-items:center;gap:4px}
+.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}
+.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}
+.top-nav-links a.active{color:var(--ac);background:var(--acD)}
+.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
+.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+
+.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar-back-btns{padding:14px 14px 10px;border-bottom:1px solid var(--bdr)}
+.sidebar-back-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,229,160,.06);color:var(--ac);border:1px solid rgba(0,229,160,.15);border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}
+.sidebar-back-btn:hover{background:rgba(0,229,160,.15);border-color:var(--ac)}
+.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sidebar-brand i{font-size:18px;color:var(--cisco)}
+.sidebar-brand span{font-weight:700;font-size:13px}
+.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}
+.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}
+.nav-item .arrow{margin-left:auto;font-size:9px;transition:transform .25s}
+.nav-item.open .arrow{transform:rotate(90deg)}
+.sub-nav{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.15)}
+.sub-nav.open{max-height:600px}
+.sub-item{display:block;padding:7px 18px 7px 48px;color:var(--mt);text-decoration:none;font-size:12px;transition:all .15s;border-left:3px solid transparent}
+.sub-item:hover,.sub-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+
+.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-weight:700;font-size:14px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.progress-bar{width:110px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%}
+.content{padding:28px;max-width:1100px}
+
+.sec{margin-bottom:48px;scroll-margin-top:120px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
+.sec-badge.cisco-b{background:rgba(4,159,217,.1);color:var(--cisco);border-color:rgba(4,159,217,.2)}
+.sec-badge.avaya-b{background:rgba(227,25,55,.1);color:var(--avaya);border-color:rgba(227,25,55,.2)}
+.sec-badge.dsl-b{background:rgba(240,192,64,.1);color:var(--gd);border-color:rgba(240,192,64,.2)}
+.sec-badge.ts-b{background:rgba(255,99,71,.1);color:var(--wn);border-color:rgba(255,99,71,.2)}
+.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.card-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+
+.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}
+.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}
+.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}
+.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cw{color:var(--wn)}.cic{color:var(--cisco)}.cav{color:var(--avaya)}.cp{color:var(--wn)}
+
+.imgf{border-radius:12px;overflow:hidden;border:1px solid var(--bdr);position:relative;background:var(--card)}
+.imgf img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;filter:grayscale(25%)}
+.imgf:hover img{transform:scale(1.03);filter:grayscale(0%)}
+.imgf .il{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(9,13,20,.92));font-size:11px;color:var(--mt)}
+
+.tabs{display:flex;gap:3px;margin-bottom:20px;flex-wrap:wrap}
+.tbtn{padding:6px 16px;border:1px solid var(--bdr);border-radius:7px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;transition:all .15s}
+.tbtn:hover{border-color:var(--ac);color:var(--fg)}
+.tbtn.active{background:var(--acD);border-color:var(--ac);color:var(--ac)}
+.tpanel{display:none;animation:fu .35s ease}
+.tpanel.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:start}
+.vs-badge{align-self:center;width:44px;height:44px;border-radius:50%;background:var(--wn);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-top:30px;box-shadow:0 0 24px rgba(255,99,71,.25);flex-shrink:0}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:13px}
+.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}
+.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+
+.st{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
+.st-g{background:rgba(0,229,160,.1);color:var(--ac)}
+.st-r{background:rgba(255,99,71,.1);color:var(--wn)}
+.st-y{background:rgba(240,192,64,.1);color:var(--gd)}
+.st-b{background:rgba(59,184,245,.1);color:var(--inf)}
+.st-p{background:rgba(168,124,255,.1);color:var(--pu)}
+.st-ci{background:rgba(4,159,217,.1);color:var(--cisco)}
+.st-av{background:rgba(227,25,55,.1);color:var(--avaya)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+.hero-mini{padding:36px 0 16px;text-align:center;position:relative}
+.hero-mini::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 80%,rgba(0,229,160,.05),transparent);pointer-events:none}
+
+.copy-btn{padding:3px 10px;border:1px solid var(--bdr);border-radius:5px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:10px;transition:all .15s;display:flex;align-items:center;gap:4px}
+.copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,.3);padding:10px 18px;border-radius:10px;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .4s ease;z-index:9999;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@keyframes blink-dot{0%,100%{opacity:1;r:3}50%{opacity:.3;r:1.5}}
+@keyframes dash-flow{to{stroke-dashoffset:-20}}
+.dash-anim{animation:dash-flow 1s linear infinite}
+.blink-d{animation:blink-dot 1.5s ease-in-out infinite}
+
+.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+.mob-overlay.show{display:block}
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
+.top-nav-links a:not(.login-btn):not(.active){display:none}.vs-grid{grid-template-columns:1fr}.vs-badge{margin-top:0;justify-self:center}.content{padding:20px 14px}
+}
+@media(max-width:600px){.top-nav-links a{padding:5px 8px;font-size:11px}.back-to-labs span{display:none}.back-to-labs{padding:6px 10px}}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a>
+  </div>
+  <div class="top-nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="courses.html">Courses</a>
+    <a href="messages.html">📝 Tasks</a>
+    <a href="labs.html" class="active">Labs</a>
+    <a href="login.html" class="login-btn">Login</a>
+  </div>
+</nav>
+<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<div class="mob-overlay" id="mobOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-back-btns">
+    <a href="labs.html" class="sidebar-back-btn"><i class="fa-solid fa-arrow-left"></i>Back to Labs</a>
+  </div>
+  <div class="sidebar-brand">
+    <i class="fa-solid fa-phone-volume"></i>
+    <span>VoIP Infrastructure</span>
+  </div>
+  <div class="sidebar-label">Lab Sections</div>
+
+  <div class="nav-item open" data-nav="overview"><i class="fa-solid fa-circle-info icon"></i><span>VoIP Overview</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav open" data-sub="overview">
+    <a href="#concepts" class="sub-item">Key Concepts</a>
+    <a href="#compare" class="sub-item">Cisco vs Avaya</a>
+  </div>
+
+  <div class="nav-item" data-nav="topo"><i class="fa-solid fa-diagram-project icon"></i><span>Network Topology</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="topo">
+    <a href="#topology" class="sub-item">Topology Diagram</a>
+  </div>
+
+  <div class="nav-item" data-nav="cisco"><i class="fa-solid fa-cube icon" style="color:var(--cisco)"></i><span>Cisco Config</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="cisco">
+    <a href="#cisco-vlan" class="sub-item">Voice VLAN</a>
+    <a href="#cisco-port" class="sub-item">Access Port</a>
+    <a href="#cisco-qos" class="sub-item">QoS / Auto-QoS</a>
+    <a href="#cisco-poe" class="sub-item">PoE Settings</a>
+    <a href="#cisco-trunk" class="sub-item">Trunk / Core</a>
+  </div>
+
+  <div class="nav-item" data-nav="avaya"><i class="fa-solid fa-phone icon" style="color:var(--avaya)"></i><span>Avaya Config</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="avaya">
+    <a href="#avaya-vlan" class="sub-item">Voice VLAN</a>
+    <a href="#avaya-port" class="sub-item">Access Port</a>
+    <a href="#avaya-dhcp" class="sub-item">DHCP Options</a>
+    <a href="#avaya-qos" class="sub-item">QoS / L2Q</a>
+  </div>
+
+  <div class="nav-item" data-nav="dsl"><i class="fa-solid fa-wifi icon" style="color:var(--gd)"></i><span>DSL Integration</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="dsl">
+    <a href="#dsl-types" class="sub-item">DSL Types & BW</a>
+    <a href="#dsl-config" class="sub-item">DSL Router Config</a>
+  </div>
+
+  <div class="nav-item" data-nav="qos"><i class="fa-solid fa-gauge-high icon"></i><span>QoS Reference</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="qos">
+    <a href="#qos-table" class="sub-item">DSCP / CoS Table</a>
+  </div>
+
+  <div class="nav-item" data-nav="ts"><i class="fa-solid fa-bug icon" style="color:var(--wn)"></i><span>Troubleshooting</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="ts">
+    <a href="#ts-cisco" class="sub-item">Cisco Debug</a>
+    <a href="#ts-avaya" class="sub-item">Avaya Debug</a>
+    <a href="#ts-issues" class="sub-item">Common Issues</a>
+  </div>
+
+  <div class="nav-item" data-nav="ref"><i class="fa-solid fa-bookmark icon"></i><span>Quick Reference</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="ref">
+    <a href="#ref-card" class="sub-item">Command Cheat Sheet</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--ac);margin-right:6px"></i>VoIP Voice VLAN & DSL - Complete Lab</div>
+    <div class="topbar-right">
+      <span class="text-xs" style="color:var(--mt)" id="progText">0%</span>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+  </div>
+
+<div class="content">
+
+<!-- HERO -->
+<div class="hero-mini reveal">
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:10px">Enterprise Voice Lab</div>
+  <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">VoIP <span style="color:var(--cisco)">Cisco</span> & <span style="color:var(--avaya)">Avaya</span></h1>
+  <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">Complete guide to deploying VoIP over DSL with voice VLAN segmentation, QoS policies, and switch configurations.</p>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
+    <span class="st st-ci"><i class="fa-solid fa-circle" style="font-size:5px"></i> Cisco CUCM</span>
+    <span class="st st-av"><i class="fa-solid fa-circle" style="font-size:5px"></i> Avaya Aura</span>
+    <span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Voice VLAN</span>
+    <span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> DSL/VDSL2</span>
+    <span class="st st-p"><i class="fa-solid fa-circle" style="font-size:5px"></i> QoS DSCP</span>
+  </div>
+</div>
+
+<!-- ===== 1. OVERVIEW ===== -->
+<div class="sec" id="overview">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-circle-info"></i> Section 01</div>
+    <h2 class="sec-title">VoIP Overview</h2>
+    <p class="sec-desc">Voice over IP transforms analog voice into digital packets. Proper VLAN segmentation and QoS are critical for toll-quality voice.</p>
+  </div>
+  <div id="concepts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px" class="reveal">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(0,229,160,.1);color:var(--ac)"><i class="fa-solid fa-layer-group"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:6px">Voice VLAN</h3>
+      <p style="font-size:12px;color:var(--mt)">Separates voice (VLAN 100) from data (VLAN 200) on the same switch port using 802.1Q tagging.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-gauge-high"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:6px">QoS Marking</h3>
+      <p style="font-size:12px;color:var(--mt)">DSCP EF (46) for voice, AF41 for signaling. Priority queuing ensures low latency under congestion.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(4,159,217,.1);color:var(--cisco)"><i class="fa-solid fa-plug-circle-bolt"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:6px">PoE Power</h3>
+      <p style="font-size:12px;color:var(--mt)">802.3af (15.4W) or 802.3at (25.5W) powers IP phones directly from the switch.</p>
+    </div>
+  </div>
+
+  <!-- Cisco vs Avaya -->
+  <div id="compare" class="reveal" style="margin-top:28px">
+    <div class="vs-grid">
+      <div class="card" style="border-color:rgba(4,159,217,.25)">
+        <div class="card-icon" style="background:rgba(4,159,217,.1);color:var(--cisco)"><i class="fa-solid fa-cube"></i></div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--cisco);margin-bottom:4px">Cisco</h3>
+        <p style="font-size:11px;color:var(--mt);margin-bottom:8px">Unified Communications Manager</p>
+        <ul style="font-size:12px;color:var(--mt);list-style:none">
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>SCCP / SIP signaling</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>CDP for phone discovery</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>mls qos & auto-qos macros</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>Trustsec integration</li>
+          <li><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>DevNet API automation</li>
+        </ul>
+        <div class="imgf" style="height:120px;margin-top:12px"><img src="https://picsum.photos/seed/cisco-phone-9971/600/300.jpg" alt="Cisco Phone"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 9971 IP Phone</div></div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="card" style="border-color:rgba(227,25,55,.25)">
+        <div class="card-icon" style="background:rgba(227,25,55,.1);color:var(--avaya)"><i class="fa-solid fa-phone"></i></div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--avaya);margin-bottom:4px">Avaya</h3>
+        <p style="font-size:11px;color:var(--mt);margin-bottom:8px">Aura Communication Manager</p>
+        <ul style="font-size:12px;color:var(--mt);list-style:none">
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>H.323 / SIP signaling</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>CDP / DHCP Option 176/242</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>LLDP-MED provisioning</li>
+          <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>MLPP priority for govt</li>
+          <li><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>One-X Mobile / SME</li>
+        </ul>
+        <div class="imgf" style="height:120px;margin-top:12px"><img src="https://picsum.photos/seed/avaya-phone-1608/600/300.jpg" alt="Avaya Phone"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya 1608 IP Phone</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 2. TOPOLOGY ===== -->
+<div class="sec" id="topo">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-diagram-project"></i> Section 02</div>
+    <h2 class="sec-title">Network Topology</h2>
+    <p class="sec-desc">Voice VLAN deployment from DSL modem through distribution switch to IP phone endpoints.</p>
+  </div>
+  <div id="topology" class="reveal">
+    <div class="code" style="padding:0;overflow:hidden">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VoIP Network Topology</span></div>
+      <div style="padding:20px;overflow-x:auto;background:#060a12">
+        <svg viewBox="0 0 1000 520" style="width:100%;min-width:700px" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern>
+            <marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/></marker>
+            <filter id="gb"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="gg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="gr"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="1000" height="520" fill="url(#grid)"/>
+          <ellipse cx="90" cy="120" rx="60" ry="40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="90" y="116" text-anchor="middle" fill="#666" font-size="11" font-family="Space Grotesk">ISP</text><text x="90" y="132" text-anchor="middle" fill="#444" font-size="9" font-family="Space Grotesk">DSLAM</text>
+          <rect x="190" y="95" width="100" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="240" y="117" text-anchor="middle" fill="#f0c040" font-size="10" font-family="JetBrains Mono">DSL</text><text x="240" y="133" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Modem/Router</text>
+          <line x1="150" y1="120" x2="188" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="6,3" class="dash-anim"/>
+          <rect x="360" y="95" width="110" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="415" y="117" text-anchor="middle" fill="#ff6347" font-size="10" font-family="JetBrains Mono">FW/Router</text><text x="415" y="133" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Edge Gateway</text>
+          <line x1="290" y1="120" x2="358" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+          <rect x="560" y="85" width="130" height="70" rx="10" fill="#111" stroke="#049fd9" stroke-width="1.5" filter="url(#gb)"/>
+          <text x="625" y="115" text-anchor="middle" fill="#049fd9" font-size="11" font-weight="600" font-family="JetBrains Mono">L3 Switch</text><text x="625" y="132" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Core/Distribution</text><text x="625" y="145" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">VLAN 10,100,200</text>
+          <line x1="470" y1="120" x2="558" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+          <rect x="770" y="60" width="120" height="24" rx="12" fill="rgba(0,229,160,.08)" stroke="#00e5a0" stroke-width="0.5"/><text x="830" y="76" text-anchor="middle" fill="#00e5a0" font-size="10" font-weight="500" font-family="JetBrains Mono">VLAN 100</text>
+          <rect x="770" y="200" width="120" height="24" rx="12" fill="rgba(240,192,64,.08)" stroke="#f0c040" stroke-width="0.5"/><text x="830" y="216" text-anchor="middle" fill="#f0c040" font-size="10" font-weight="500" font-family="JetBrains Mono">VLAN 200</text>
+          <rect x="560" y="250" width="130" height="60" rx="10" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <text x="625" y="278" text-anchor="middle" fill="#e4eaf3" font-size="10" font-weight="500" font-family="JetBrains Mono">L2 Switch</text><text x="625" y="295" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Access Layer</text>
+          <line x1="625" y1="155" x2="625" y2="248" stroke="#049fd9" stroke-width="1.5" stroke-dasharray="6,3" class="dash-anim"/><text x="640" y="205" fill="#049fd9" font-size="8" font-family="JetBrains Mono">TRUNK</text>
+          <path d="M690 270 Q750 270 770 120" fill="none" stroke="#00e5a0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <path d="M690 280 Q730 280 770 212" fill="none" stroke="#f0c040" stroke-width="1.5" marker-end="url(#arr)"/>
+          <rect x="200" y="350" width="110" height="65" rx="10" fill="#111" stroke="#00e5a0" stroke-width="1" filter="url(#gg)"/>
+          <text x="255" y="378" text-anchor="middle" fill="#00e5a0" font-size="10" font-family="JetBrains Mono">IP Phone</text><text x="255" y="395" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">VLAN 100 (tagged)</text><text x="255" y="408" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">PoE 802.3af</text>
+          <rect x="200" y="450" width="110" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="255" y="473" text-anchor="middle" fill="#f0c040" font-size="10" font-family="JetBrains Mono">PC</text><text x="255" y="489" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">VLAN 200 (untagged)</text>
+          <line x1="255" y1="415" x2="255" y2="448" stroke="#555" stroke-width="1"/><text x="265" y="435" fill="#444" font-size="7" font-family="JetBrains Mono">daisy-chain</text>
+          <path d="M560 290 Q400 330 312 370" fill="none" stroke="#00e5a0" stroke-width="1.5" marker-end="url(#arr)"/><text x="420" y="330" fill="#00e5a0" font-size="8" font-family="JetBrains Mono">access port</text>
+          <rect x="770" y="310" width="130" height="65" rx="10" fill="#111" stroke="#049fd9" stroke-width="1"/>
+          <text x="835" y="338" text-anchor="middle" fill="#049fd9" font-size="10" font-weight="500" font-family="JetBrains Mono">CUCM</text><text x="835" y="355" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Call Manager</text><text x="835" y="368" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">10.1.100.10</text>
+          <rect x="770" y="420" width="130" height="55" rx="10" fill="#111" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="835" y="445" text-anchor="middle" fill="#e4eaf3" font-size="10" font-family="JetBrains Mono">DHCP</text><text x="835" y="462" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Option 150 / 176</text>
+          <line x1="835" y1="375" x2="835" y2="418" stroke="#555" stroke-width="1"/>
+          <path d="M690 130 Q730 200 770 320" fill="none" stroke="#049fd9" stroke-width="1" stroke-dasharray="4,4" class="dash-anim"/>
+          <circle cx="170" cy="120" r="3" fill="#f0c040" class="blink-d"/><circle cx="520" cy="120" r="3" fill="#049fd9" class="blink-d" style="animation-delay:.5s"/><circle cx="625" cy="200" r="3" fill="#049fd9" class="blink-d" style="animation-delay:1s"/><circle cx="430" cy="340" r="3" fill="#00e5a0" class="blink-d" style="animation-delay:.7s"/>
+        </svg>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px">
+      <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/network-rack-44/700/400.jpg" alt="Rack"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Enterprise Network Rack</div></div>
+      <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/cabling-voip-77/700/400.jpg" alt="Cabling"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cat6A Structured Cabling</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. CISCO CONFIG ===== -->
+<div class="sec" id="cisco">
+  <div class="reveal">
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-cube"></i> Section 03</div>
+    <h2 class="sec-title">Cisco Switch Configuration</h2>
+    <p class="sec-desc">Complete Catalyst switch config for voice VLAN, QoS, PoE, and CDP-based phone discovery.</p>
+  </div>
+
+  <div class="tabs reveal" id="cisco-tabs">
+    <button class="tbtn active" onclick="switchTab('cisco','cvlan',this)">Voice VLAN</button>
+    <button class="tbtn" onclick="switchTab('cisco','cport',this)">Access Port</button>
+    <button class="tbtn" onclick="switchTab('cisco','cqos',this)">QoS / Auto-QoS</button>
+    <button class="tbtn" onclick="switchTab('cisco','cpoe',this)">PoE Settings</button>
+    <button class="tbtn" onclick="switchTab('cisco','ctrunk',this)">Trunk / Core</button>
+  </div>
+
+  <div id="cisco-cvlan" class="tpanel active">
+    <div class="card reveal" id="cisco-vlan">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cisco-voice-vlan.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">Switch#</span> <span class="cic">configure terminal</span>
+<span class="cc">! Create the Voice VLAN</span>
+<span class="cp">Switch(config)#</span> <span class="ck">vlan</span> <span class="cv">100</span>
+<span class="cp">Switch(config-vlan)#</span> <span class="cm">name</span> <span class="cv">VOICE_VLAN</span>
+<span class="cp">Switch(config-vlan)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Create the Data VLAN</span>
+<span class="cp">Switch(config)#</span> <span class="ck">vlan</span> <span class="cv">200</span>
+<span class="cp">Switch(config-vlan)#</span> <span class="cm">name</span> <span class="cv">DATA_VLAN</span>
+<span class="cp">Switch(config-vlan)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Enable CDP globally (for Cisco phone discovery)</span>
+<span class="cp">Switch(config)#</span> <span class="ck">cdp</span> <span class="cm">run</span>
+
+<span class="cc">! Set voice VLAN on interface range</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface range</span> <span class="cv">gi1/0/1 - 24</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">switchport mode</span> <span class="cm">access</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">switchport access vlan</span> <span class="cv">200</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">switchport voice vlan</span> <span class="cv">100</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">Switch#</span> <span class="cic">show vlan brief | include 100</span>
+<span class="cv">100</span>  <span class="cm">VOICE_VLAN</span>  <span class="cm">active</span>  <span class="cm">Gi1/0/1, Gi1/0/2, Gi1/0/3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cisco-cport" class="tpanel">
+    <div class="card reveal" id="cisco-port">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cisco-access-port.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">Switch#</span> <span class="cic">configure terminal</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet1/0/5</span>
+
+<span class="cc">! Set as access port for data + voice</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cm">access</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport access vlan</span> <span class="cv">200</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport voice vlan</span> <span class="cv">100</span>
+
+<span class="cc">! Enable CDP on this port</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">cdp</span> <span class="cm">enable</span>
+
+<span class="cc">! Port security — limit MAC addresses</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security maximum</span> <span class="cv">3</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security violation</span> <span class="cm">restrict</span>
+
+<span class="cc">! Spanning-tree portfast for quick phone boot</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree portfast</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree bpduguard</span> <span class="cm">enable</span>
+
+<span class="cc">! Storm control</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">storm-control broadcast level</span> <span class="cv">10.00</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">storm-control multicast level</span> <span class="cv">20.00</span>
+
+<span class="cp">Switch(config-if)#</span> <span class="cm">no shutdown</span>
+<span class="cp">Switch(config-if)#</span> <span class="cm">end</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">Switch#</span> <span class="cic">show running-config interface gi1/0/5</span>
+<span class="cp">Switch#</span> <span class="cic">show interfaces gi1/0/5 switchport</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cisco-cqos" class="tpanel">
+    <div class="card reveal" id="cisco-qos">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cisco-qos-auto.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">Switch#</span> <span class="cic">configure terminal</span>
+
+<span class="cc">! === METHOD 1: Auto-QoS (Recommended for Cisco phones) ===</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface range</span> <span class="cv">gi1/0/1 - 24</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="cic">auto qos voip cisco-phone</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="cm">end</span>
+
+<span class="cc">! === METHOD 2: Manual QoS (for Avaya / mixed environments) ===</span>
+<span class="cp">Switch(config)#</span> <span class="ck">mls qos</span>
+
+<span class="cc">! Trust DSCP from IP phones</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface range</span> <span class="cv">gi1/0/1 - 24</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">mls qos trust</span> <span class="cm">dscp</span>
+
+<span class="cc">! Map DSCP EF (46) to priority queue</span>
+<span class="cp">Switch(config)#</span> <span class="ck">class-map</span> <span class="cm">match-any</span> <span class="cv">VOICE-TRAFFIC</span>
+<span class="cp">Switch(config-cmap)#</span> <span class="ck">match</span> <span class="cm">ip dscp</span> <span class="cv">ef</span>
+<span class="cp">Switch(config-cmap)#</span> <span class="cm">exit</span>
+
+<span class="cp">Switch(config)#</span> <span class="ck">class-map</span> <span class="cm">match-any</span> <span class="cv">SIGNALING-TRAFFIC</span>
+<span class="cp">Switch(config-cmap)#</span> <span class="ck">match</span> <span class="cm">ip dscp</span> <span class="cv">af31</span> <span class="cv">cs3</span>
+<span class="cp">Switch(config-cmap)#</span> <span class="cm">exit</span>
+
+<span class="cp">Switch(config)#</span> <span class="ck">policy-map</span> <span class="cv">VOIP-POLICY</span>
+<span class="cp">Switch(config-pmap)#</span> <span class="ck">class</span> <span class="cv">VOICE-TRAFFIC</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="ck">priority</span> <span class="cm">percent</span> <span class="cv">30</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="ck">class</span> <span class="cv">SIGNALING-TRAFFIC</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="ck">bandwidth</span> <span class="cm">percent</span> <span class="cv">5</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="ck">class</span> <span class="cm">class-default</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="ck">bandwidth</span> <span class="cm">remaining</span> <span class="cm">percent</span> <span class="cv">100</span>
+<span class="cp">Switch(config-pmap-c)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Apply to uplink</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">Te1/0/1</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">service-policy output</span> <span class="cv">VOIP-POLICY</span>
+<span class="cp">Switch(config-if)#</span> <span class="cm">end</span>
+
+<span class="cc">! Verify QoS</span>
+<span class="cp">Switch#</span> <span class="cic">show mls qos interface gi1/0/5</span>
+<span class="cp">Switch#</span> <span class="cic">show policy-map interface te1/0/1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cisco-cpoe" class="tpanel">
+    <div class="card reveal" id="cisco-poe">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cisco-poe.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">Switch#</span> <span class="cic">configure terminal</span>
+
+<span class="cc">! Verify PoE capacity</span>
+<span class="cp">Switch#</span> <span class="cic">show power inline</span>
+<span class="cc">Module  Available  Used     Remaining</span>
+<span class="cc">  1       370.0W   186.4W    183.6W</span>
+
+<span class="cc">! Set PoE to 802.3at (PoE+) for color phones</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface range</span> <span class="cv">gi1/0/1 - 24</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">power inline</span> <span class="cm">static</span> <span class="cv">25.5</span>
+
+<span class="cc">! Or use auto-negotiation (recommended)</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">power inline</span> <span class="cm">auto</span>
+
+<span class="cc">! Set priority for critical phones</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">gi1/0/1</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">power inline</span> <span class="cm">auto</span> <span class="cm">priority</span> <span class="cv">2</span>
+<span class="cc">! priority: 0=low, 1=high, 2=critical</span>
+
+<span class="cc">! Verify per-port power</span>
+<span class="cp">Switch#</span> <span class="cic">show power inline gi1/0/1 detail</span>
+<span class="cc">Interface: Gi1/0/1</span>
+<span class="cc">Inline Power Mode: auto</span>
+<span class="cc">Operational Power: 12.9W</span>
+<span class="cc">Device Type: Cisco IP Phone 7841</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cisco-ctrunk" class="tpanel">
+    <div class="card reveal" id="cisco-trunk">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cisco-trunk-uplink.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">Switch#</span> <span class="cic">configure terminal</span>
+
+<span class="cc">! Uplink to core switch (802.1Q trunk)</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">TenGigabitEthernet1/0/1</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk encapsulation</span> <span class="cm">dot1q</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cm">trunk</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk allowed vlan</span> <span class="cv">10,100,200</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk native vlan</span> <span class="cv">200</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">mls qos trust</span> <span class="cm">dscp</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">service-policy output</span> <span class="cv">VOIP-POLICY</span>
+
+<span class="cc">! EtherChannel for redundancy</span>
+<span class="cp">Switch(config)#</span> <span class="ck">interface range</span> <span class="cv">Te1/0/1 - 2</span>
+<span class="cp">Switch(config-if-range)#</span> <span class="ck">channel-group</span> <span class="cv">1</span> <span class="cm">mode</span> <span class="cm">active</span>
+
+<span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">Port-channel1</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk encapsulation</span> <span class="cm">dot1q</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cm">trunk</span>
+<span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk allowed vlan</span> <span class="cv">10,100,200</span>
+<span class="cp">Switch(config-if)#</span> <span class="cm">no shutdown</span>
+<span class="cp">Switch(config-if)#</span> <span class="cm">end</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">Switch#</span> <span class="cic">show etherchannel summary</span>
+<span class="cp">Switch#</span> <span class="cic">show interfaces trunk</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px" class="reveal">
+    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/catalyst-9300-55/500/350.jpg" alt="C9300"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Catalyst 9300 Access</div></div>
+    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/catalyst-9500-33/500/350.jpg" alt="C9500"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Catalyst 9500 Core</div></div>
+    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/cisco-7841-phone-22/500/350.jpg" alt="7841"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 7841 Phone</div></div>
+  </div>
+</div>
+
+<!-- ===== 4. AVAYA CONFIG ===== -->
+<div class="sec" id="avaya">
+  <div class="reveal">
+    <div class="sec-badge avaya-b"><i class="fa-solid fa-phone"></i> Section 04</div>
+    <h2 class="sec-title">Avaya Switch Configuration</h2>
+    <p class="sec-desc">Avaya ERS/VSP switch config for voice VLAN with DHCP Option 176/242 phone provisioning.</p>
+  </div>
+
+  <div class="tabs reveal" id="avaya-tabs">
+    <button class="tbtn active" onclick="switchTab('avaya','avlan',this)">Voice VLAN</button>
+    <button class="tbtn" onclick="switchTab('avaya','aport',this)">Access Port</button>
+    <button class="tbtn" onclick="switchTab('avaya','adhcp',this)">DHCP Options</button>
+    <button class="tbtn" onclick="switchTab('avaya','aqos',this)">QoS / L2Q</button>
+  </div>
+
+  <div id="avaya-avlan" class="tpanel active">
+    <div class="card reveal" id="avaya-vlan">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">avaya-ers-vlan.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cc">! Avaya ERS 4500/5500 Series</span>
+<span class="cp">ERS#</span> <span class="cav">configure terminal</span>
+
+<span class="cc">! Create Voice VLAN</span>
+<span class="cp">ERS(config)#</span> <span class="ck">vlan create</span> <span class="cv">100</span> <span class="cm">type</span> <span class="cv">port</span>
+<span class="cp">ERS(config)#</span> <span class="ck">vlan name</span> <span class="cv">100</span> <span class="cv">"VOICE_VLAN"</span>
+
+<span class="cc">! Create Data VLAN</span>
+<span class="cp">ERS(config)#</span> <span class="ck">vlan create</span> <span class="cv">200</span> <span class="cm">type</span> <span class="cv">port</span>
+<span class="cp">ERS(config)#</span> <span class="ck">vlan name</span> <span class="cv">200</span> <span class="cv">"DATA_VLAN"</span>
+
+<span class="cc">! Enable CDP for Avaya phone discovery</span>
+<span class="cp">ERS(config)#</span> <span class="ck">cdp</span> <span class="cm">enable</span>
+
+<span class="cc">! Enable LLDP-MED (preferred for Avaya)</span>
+<span class="cp">ERS(config)#</span> <span class="ck">lldp</span> <span class="cm">enable</span>
+<span class="cp">ERS(config)#</span> <span class="ck">lldp med</span> <span class="cm">enable</span>
+
+<span class="cc">! Set voice VLAN ID for LLDP-MED advertisement</span>
+<span class="cp">ERS(config)#</span> <span class="ck">lldp med voice-vlan</span> <span class="cv">100</span>
+
+<span class="cp">ERS(config)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">ERS#</span> <span class="cav">show vlan</span>
+<span class="cp">ERS#</span> <span class="cav">show lldp med configuration</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="avaya-aport" class="tpanel">
+    <div class="card reveal" id="avaya-port">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">avaya-ers-port.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">ERS#</span> <span class="cav">configure terminal</span>
+
+<span class="cc">! Configure port for IP phone + PC daisy-chain</span>
+<span class="cp">ERS(config)#</span> <span class="ck">interface</span> <span class="cv">ethernet 1/5</span>
+
+<span class="cc">! Set PVID (native VLAN) for data</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan pvid</span> <span class="cv">200</span>
+
+<span class="cc">! Tag voice VLAN on this port</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan membership</span> <span class="cv">200</span> <span class="cm">untagged</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan membership</span> <span class="cv">100</span> <span class="cm">tagged</span>
+
+<span class="cc">! Enable PoE</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">poe</span> <span class="cm">enable</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">poe</span> <span class="cm">power-class</span> <span class="cv">3</span>
+<span class="cc">! Class 3 = up to 15.4W (802.3af)</span>
+
+<span class="cc">! Enable spanning-tree edge port (portfast)</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">spanning-tree edge-port</span>
+
+<span class="cc">! Enable QoS trust</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">qos trust</span> <span class="cm">dscp</span>
+
+<span class="cp">ERS(config-if)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Apply to multiple ports</span>
+<span class="cp">ERS(config)#</span> <span class="ck">interface ethernet 1/1-1/24</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan pvid</span> <span class="cv">200</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan membership</span> <span class="cv">200</span> <span class="cm">untagged</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">vlan membership</span> <span class="cv">100</span> <span class="cm">tagged</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">poe</span> <span class="cm">enable</span>
+<span class="cp">ERS(config-if)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">ERS#</span> <span class="cav">show vlan ports 1/5</span>
+<span class="cp">ERS#</span> <span class="cav">show poe</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="avaya-adhcp" class="tpanel">
+    <div class="card reveal" id="avaya-dhcp">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">avaya-dhcp-options.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cc">! === Windows DHCP Server — Avaya Option 176 ===</span>
+<span class="cc">! Option 176: MCIPADD=,MCPORT=,TFTPSRVR=,HTTPSRVR=</span>
+<span class="cv">MCIPADD=10.1.100.10,MCPORT=2727,TFTPSRVR=10.1.100.20,HTTPSRVR=10.1.100.10</span>
+
+<span class="cc">! === Windows DHCP Server — Avaya Option 242 ===</span>
+<span class="cc">! Option 242: VLANTEST=,TLSSRVR=,PHYSPORT=,SYSCODE=</span>
+<span class="cv">VLANTEST=100,TLSSRVR=10.1.100.10,L2Q=1,L2QVLAN=100,VLANCHG=1</span>
+
+<span class="cc">! === Linux isc-dhcp-server ===</span>
+<span class="ck">subnet</span> <span class="cv">10.1.100.0</span> <span class="cm">netmask</span> <span class="cv">255.255.255.0</span> {
+  <span class="cm">option routers</span> <span class="cv">10.1.100.1</span>;
+  <span class="cm">option subnet-mask</span> <span class="cv">255.255.255.0</span>;
+  <span class="cm">option domain-name-servers</span> <span class="cv">10.1.10.5</span>;
+
+  <span class="cc">! Avaya-specific options</span>
+  <span class="ck">option</span> <span class="cv">avaya-176</span> <span class="cm">code</span> <span class="cv">176</span> = <span class="cm">text</span>;
+  <span class="ck">option</span> <span class="cv">avaya-242</span> <span class="cm">code</span> <span class="cv">242</span> = <span class="cm">text</span>;
+
+  <span class="ck">option</span> <span class="cv">avaya-176</span> <span class="cv">"MCIPADD=10.1.100.10,MCPORT=2727,TFTPSRVR=10.1.100.20"</span>;
+  <span class="ck">option</span> <span class="cv">avaya-242</span> <span class="cv">"VLANTEST=100,L2Q=1,L2QVLAN=100,VLANCHG=1"</span>;
+
+  <span class="cm">range</span> <span class="cv">10.1.100.100</span> <span class="cv">10.1.100.200</span>;
+}
+
+<span class="cc">! Key fields:</span>
+<span class="cc">! L2Q=1       → Enable 802.1Q tagging</span>
+<span class="cc">! L2QVLAN=100 → Voice VLAN ID</span>
+<span class="cc">! VLANCHG=1   → Allow VLAN change via DHCP</span>
+<span class="cc">! MCIPADD     → Communication Manager IP</span>
+<span class="cc">! TFTPSRVR    → TFTP server for firmware</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="avaya-aqos" class="tpanel">
+    <div class="card reveal" id="avaya-qos">
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">avaya-ers-qos.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cp">ERS#</span> <span class="cav">configure terminal</span>
+
+<span class="cc">! Enable QoS globally</span>
+<span class="cp">ERS(config)#</span> <span class="ck">qos enable</span>
+
+<span class="cc">! Define DSCP-to-queue mapping</span>
+<span class="cp">ERS(config)#</span> <span class="ck">qos dscp-map</span> <span class="cv">46</span> <span class="cm">to</span> <span class="cv">queue</span> <span class="cv">7</span>
+<span class="cc">! DSCP EF (46) → Queue 7 (highest priority / expedite)</span>
+
+<span class="cp">ERS(config)#</span> <span class="ck">qos dscp-map</span> <span class="cv">26</span> <span class="cm">to</span> <span class="cv">queue</span> <span class="cv">5</span>
+<span class="cc">! DSCP AF31 (26) → Queue 5 (signaling)</span>
+
+<span class="cp">ERS(config)#</span> <span class="ck">qos dscp-map</span> <span class="cv">0</span> <span class="cm">to</span> <span class="cv">queue</span> <span class="cv">1</span>
+<span class="cc">! Best effort → Queue 1</span>
+
+<span class="cc">! Enable expedite queue (strict priority)</span>
+<span class="cp">ERS(config)#</span> <span class="ck">qos queue</span> <span class="cv">7</span> <span class="cm">expedite</span>
+
+<span class="cc">! Apply to ports</span>
+<span class="cp">ERS(config)#</span> <span class="ck">interface ethernet 1/1-1/24</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">qos trust</span> <span class="cm">dscp</span>
+<span class="cp">ERS(config-if)#</span> <span class="cm">exit</span>
+
+<span class="cp">ERS(config)#</span> <span class="ck">interface ethernet 1/25</span>
+<span class="cp">ERS(config-if)#</span> <span class="ck">qos trust</span> <span class="cm">dscp</span>
+<span class="cp">ERS(config-if)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">ERS#</span> <span class="cav">show qos dscp-map</span>
+<span class="cp">ERS#</span> <span class="cav">show qos queue-config</span>
+<span class="cp">ERS#</span> <span class="cav">show qos interface ethernet 1/5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px" class="reveal">
+    <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/avaya-ers-5500-88/600/400.jpg" alt="ERS5500"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya ERS 5500</div></div>
+    <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/avaya-aura-server-61/600/400.jpg" alt="Aura"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya Aura CM</div></div>
+  </div>
+</div>
+
+<!-- ===== 5. DSL ===== -->
+<div class="sec" id="dsl">
+  <div class="reveal">
+    <div class="sec-badge dsl-b"><i class="fa-solid fa-wifi"></i> Section 05</div>
+    <h2 class="sec-title">DSL Integration with VoIP</h2>
+    <p class="sec-desc">Connecting VoIP over DSL requires bandwidth planning, proper MTU, and upstream QoS shaping.</p>
+  </div>
+
+  <div id="dsl-types" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px" class="reveal">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-wifi"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px">DSL Types for VoIP</h3>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><span style="font-size:12px;color:var(--mt)">VDSL2</span><span class="mono" style="font-size:12px;color:var(--gd)">Up to 100Mbps</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><span style="font-size:12px;color:var(--mt)">ADSL2+</span><span class="mono" style="font-size:12px;color:var(--gd)">Up to 24Mbps</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><span style="font-size:12px;color:var(--mt)">SDSL</span><span class="mono" style="font-size:12px;color:var(--gd)">Up to 2.3Mbps sym</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(0,229,160,.1);color:var(--ac)"><i class="fa-solid fa-calculator"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px">Bandwidth per Call</h3>
+      <div style="font-size:12px;color:var(--mt);line-height:2">
+        <p>G.711 (uncompressed): <span class="mono" style="color:var(--ac)">~87 kbps</span></p>
+        <p>G.729 (compressed): <span class="mono" style="color:var(--ac)">~24 kbps</span></p>
+        <p>G.722 (HD voice): <span class="mono" style="color:var(--ac)">~87 kbps</span></p>
+        <div style="margin-top:8px;padding:10px;border-radius:8px;background:rgba(0,0,0,.2);font-size:11px;color:var(--mt)">Rule: Reserve <span class="mono" style="color:var(--gd)">30% overhead</span> for signaling, STUN, and burst.</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(255,99,71,.25)">
+      <div class="card-icon" style="background:rgba(255,99,71,.1);color:var(--wn)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px">DSL Considerations</h3>
+      <ul style="font-size:12px;color:var(--mt);list-style:none;line-height:2">
+        <li><span style="color:var(--wn);margin-right:6px">•</span>MTU reduced to 1492 (PPPoE) — fragmentation kills voice</li>
+        <li><span style="color:var(--wn);margin-right:6px">•</span>Interleaving adds latency — request fast-path</li>
+        <li><span style="color:var(--wn);margin-right:6px">•</span>Upstream bandwidth is the bottleneck</li>
+        <li><span style="color:var(--wn);margin-right:6px">•</span>Jitter buffer must compensate for DSL variance</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="dsl-config" class="reveal" style="margin-top:14px">
+    <div class="card">
+      <h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--gd);margin-right:6px"></i>DSL Router QoS Configuration</h3>
+      <div class="code">
+        <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">dsl-voip-qos.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+        <div class="code-body"><span class="cc">! === Cisco Router DSL Interface Config ===</span>
+<span class="cp">Router#</span> <span class="cic">configure terminal</span>
+
+<span class="cc">! VDSL2 controller</span>
+<span class="cp">Router(config)#</span> <span class="ck">controller VDSL</span> <span class="cv">0/0/0</span>
+<span class="cp">Router(config-controller)#</span> <span class="ck">operating mode</span> <span class="cm">vdsl2</span>
+<span class="cp">Router(config-controller)#</span> <span class="ck">sra</span> <span class="cm">enable</span>
+<span class="cp">Router(config-controller)#</span> <span class="cm">exit</span>
+
+<span class="cc">! PPPoE dialer</span>
+<span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">Dialer0</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">ip address negotiated</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">encapsulation ppp</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">dialer pool</span> <span class="cv">1</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">dialer-group</span> <span class="cv">1</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">mtu</span> <span class="cv">1492</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">ip tcp adjust-mss</span> <span class="cv">1452</span>
+
+<span class="cc">! === QoS on DSL — Critical! ===</span>
+<span class="cp">Router(config)#</span> <span class="ck">policy-map</span> <span class="cv">DSL-VOIP-OUT</span>
+<span class="cp">Router(config-pmap)#</span> <span class="ck">class</span> <span class="cv">VOICE-TRAFFIC</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">priority</span> <span class="cv">256</span>
+<span class="cc">! 256 kbps = ~3 G.711 calls strict priority</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">class</span> <span class="cv">SIGNALING</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">bandwidth</span> <span class="cv">32</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">class</span> <span class="cm">class-default</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">fair-queue</span>
+<span class="cp">Router(config-pmap-c)#</span> <span class="ck">police</span> <span class="cv">8000000</span> <span class="cv">12000</span> <span class="cv">24000</span> <span class="cm">conform-action</span> <span class="cm">transmit</span> <span class="cm">exceed-action</span> <span class="cm">drop</span>
+
+<span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">Dialer0</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">service-policy output</span> <span class="cv">DSL-VOIP-OUT</span>
+<span class="cp">Router(config-if)#</span> <span class="ck">shape average</span> <span class="cv">6400000</span>
+<span class="cc">! Shape to 80% of DSL upstream (e.g. 8Mbps up)</span>
+<span class="cp">Router(config-if)#</span> <span class="cm">end</span>
+
+<span class="cc">! Verify</span>
+<span class="cp">Router#</span> <span class="cic">show policy-map interface dialer0</span>
+<span class="cp">Router#</span> <span class="cic">show controller vdsl 0/0/0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px" class="reveal">
+    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/dsl-modem-router-42/500/300.jpg" alt="DSL"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> VDSL2 Modem</div></div>
+    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/dslam-close-19/500/300.jpg" alt="DSLAM"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> ISP DSLAM</div></div>
+    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/phone-booth-lines-67/500/300.jpg" alt="Copper"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Copper Pairs</div></div>
+  </div>
+</div>
+
+<!-- ===== 6. QOS TABLE ===== -->
+<div class="sec" id="qos">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-gauge-high"></i> Section 06</div>
+    <h2 class="sec-title">QoS Reference Table</h2>
+    <p class="sec-desc">DSCP markings and 802.1p CoS values for VoIP deployments.</p>
+  </div>
+  <div id="qos-table" class="card reveal">
+    <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Traffic Type</th><th>DSCP</th><th>Decimal</th><th>802.1p</th><th>Queue</th><th>Notes</th></tr></thead>
+        <tbody class="mono" style="font-size:12px">
+          <tr><td style="font-family:'Space Grotesk';color:var(--ac);font-weight:600">RTP Voice</td><td style="color:var(--cisco)">EF</td><td style="color:var(--gd)">46</td><td>5</td><td style="color:var(--ac)">7 (Expedite)</td><td style="font-family:'Space Grotesk'">Strict priority, low latency</td></tr>
+          <tr><td style="font-family:'Space Grotesk';color:var(--gd);font-weight:600">Signaling</td><td style="color:var(--cisco)">AF31</td><td style="color:var(--gd)">26</td><td>3</td><td style="color:var(--gd)">5</td><td style="font-family:'Space Grotesk'">Guaranteed bandwidth</td></tr>
+          <tr><td style="font-family:'Space Grotesk';color:var(--mt)">Video Conf</td><td style="color:var(--cisco)">AF41</td><td style="color:var(--gd)">34</td><td>4</td><td>4</td><td style="font-family:'Space Grotesk'">If video on same network</td></tr>
+          <tr><td style="font-family:'Space Grotesk';color:var(--mt)">Call Manager</td><td style="color:var(--cisco)">CS3</td><td style="color:var(--gd)">24</td><td>3</td><td>5</td><td style="font-family:'Space Grotesk'">CTI / API traffic</td></tr>
+          <tr><td style="font-family:'Space Grotesk';color:#444">Best Effort</td><td style="color:#444">BE</td><td style="color:#444">0</td><td style="color:#444">0</td><td style="color:#444">1</td><td style="font-family:'Space Grotesk'">Everything else</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 7. TROUBLESHOOTING ===== -->
+<div class="sec" id="ts">
+  <div class="reveal">
+    <div class="sec-badge ts-b"><i class="fa-solid fa-bug"></i> Section 07</div>
+    <h2 class="sec-title">Troubleshooting</h2>
+    <p class="sec-desc">Common VoIP issues and verification commands.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px" class="reveal">
+    <div class="card" id="ts-cisco" style="border-color:rgba(4,159,217,.25)">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="color:var(--cisco)"><i class="fa-solid fa-cube"></i></span> Cisco Debug Commands</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Phone not registering</p><code class="mono" style="font-size:11px;color:var(--cisco)">show cdp neighbors detail</code><br><code class="mono" style="font-size:11px;color:var(--cisco)">show ip dhcp binding | incl voice</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">One-way audio</p><code class="mono" style="font-size:11px;color:var(--cisco)">show mac address-table | incl 100</code><br><code class="mono" style="font-size:11px;color:var(--cisco)">show access-lists | incl 172.16</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Voice quality issues</p><code class="mono" style="font-size:11px;color:var(--cisco)">show mls qos interface gi1/0/5</code><br><code class="mono" style="font-size:11px;color:var(--cisco)">show policy-map interface te1/0/1</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">PoE not delivering</p><code class="mono" style="font-size:11px;color:var(--cisco)">show power inline gi1/0/5</code><br><code class="mono" style="font-size:11px;color:var(--cisco)">show log | incl ILPOWER</code></div>
+      </div>
+    </div>
+    <div class="card" id="ts-avaya" style="border-color:rgba(227,25,55,.25)">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="color:var(--avaya)"><i class="fa-solid fa-phone"></i></span> Avaya Debug Commands</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Phone not discovering VLAN</p><code class="mono" style="font-size:11px;color:var(--avaya)">show lldp med neighbors</code><br><code class="mono" style="font-size:11px;color:var(--avaya)">show cdp neighbors detail</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">VLAN tagging issue</p><code class="mono" style="font-size:11px;color:var(--avaya)">show vlan ports 1/5 detail</code><br><code class="mono" style="font-size:11px;color:var(--avaya)">show mac-address-table vlan 100</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">QoS not working</p><code class="mono" style="font-size:11px;color:var(--avaya)">show qos interface ethernet 1/5</code><br><code class="mono" style="font-size:11px;color:var(--avaya)">show qos dscp-map</code></div>
+        <div style="padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.2)"><p style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">DHCP option verification</p><code class="mono" style="font-size:11px;color:var(--avaya)">show dhcp-snoop binding</code><br><code class="mono" style="font-size:11px;color:var(--avaya)">debug dhcp packet</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ts-issues" class="card reveal" style="margin-top:14px">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px"><i class="fa-solid fa-bug" style="color:var(--wn);margin-right:6px"></i>Common Issues & Fixes</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px">
+      <div style="display:flex;gap:10px;padding:12px;border-radius:8px;background:rgba(0,0,0,.2)">
+        <span class="mono" style="color:var(--wn);font-size:11px;flex-shrink:0">01</span>
+        <div><p style="font-size:12px;font-weight:600;color:var(--fg);margin-bottom:4px">Phone stuck on "Configuring VLAN"</p><p style="font-size:11px;color:var(--mt)">Check CDP/LLDP-MED is enabled. Verify DHCP Option 176/242 has correct VLAN ID.</p></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:8px;background:rgba(0,0,0,.2)">
+        <span class="mono" style="color:var(--wn);font-size:11px;flex-shrink:0">02</span>
+        <div><p style="font-size:12px;font-weight:600;color:var(--fg);margin-bottom:4px">Choppy audio on DSL</p><p style="font-size:11px;color:var(--mt)">Enable shaping to 80% of upstream. Use G.729. Request fast-path from ISP.</p></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:8px;background:rgba(0,0,0,.2)">
+        <span class="mono" style="color:var(--wn);font-size:11px;flex-shrink:0">03</span>
+        <div><p style="font-size:12px;font-weight:600;color:var(--fg);margin-bottom:4px">PC behind phone loses connectivity</p><p style="font-size:11px;color:var(--mt)">Verify native VLAN matches data VLAN (200). Check port-security max is at least 3.</p></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:8px;background:rgba(0,0,0,.2)">
+        <span class="mono" style="color:var(--wn);font-size:11px;flex-shrink:0">04</span>
+        <div><p style="font-size:12px;font-weight:600;color:var(--fg);margin-bottom:4px">PoE phone powers up then resets</p><p style="font-size:11px;color:var(--mt)">Check total PoE budget. Color phones may need 802.3at. Verify cable length.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px" class="reveal">
+    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/wireshark-voip-51/600/350.jpg" alt="Wireshark"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Wireshark RTP Analysis</div></div>
+    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/server-room-cables-93/600/350.jpg" alt="Monitoring"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Infrastructure Monitoring</div></div>
+  </div>
+</div>
+
+<!-- ===== 8. QUICK REFERENCE ===== -->
+<div class="sec" id="ref">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-bookmark"></i> Section 08</div>
+    <h2 class="sec-title">Quick Reference Card</h2>
+  </div>
+  <div id="ref-card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px" class="reveal">
+    <div class="card" style="border-color:rgba(4,159,217,.2)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--cisco);margin-bottom:12px;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-cube"></i> Cisco Key Commands</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Create VLAN</span><span class="mono" style="color:var(--cisco)">vlan 100</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Voice VLAN</span><span class="mono" style="color:var(--cisco)">sw voice vlan 100</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Auto QoS</span><span class="mono" style="color:var(--cisco)">auto qos voip cisco-phone</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Trust DSCP</span><span class="mono" style="color:var(--cisco)">mls qos trust dscp</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Trunk</span><span class="mono" style="color:var(--cisco)">sw mode trunk</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">PoE Auto</span><span class="mono" style="color:var(--cisco)">power inline auto</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Portfast</span><span class="mono" style="color:var(--cisco)">spanning-tree portfast</span></div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(227,25,55,.2)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--avaya);margin-bottom:12px;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-phone"></i> Avaya Key Commands</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Create VLAN</span><span class="mono" style="color:var(--avaya)">vlan create 100</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Tag Voice</span><span class="mono" style="color:var(--avaya)">vlan mem 100 tagged</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">LLDP-MED</span><span class="mono" style="color:var(--avaya)">lldp med enable</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Trust DSCP</span><span class="mono" style="color:var(--avaya)">qos trust dscp</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Native VLAN</span><span class="mono" style="color:var(--avaya)">vlan pvid 200</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">PoE Enable</span><span class="mono" style="color:var(--avaya)">poe enable</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Edge Port</span><span class="mono" style="color:var(--avaya)">spanning-tree edge-port</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Toast -->
+<div id="toast" class="toast"><i class="fa-solid fa-check-circle" style="color:var(--ac)"></i><span id="toastMsg">Copied!</span></div>
+
+<script>
+// Tab switching
+function switchTab(group, tab, btn) {
+  const container = btn.closest('.sec');
+  container.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tpanel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(group + '-' + tab).classList.add('active');
+}
+
+// Copy code
+function copyCode(btn) {
+  const codeBody = btn.closest('.code').querySelector('.code-body');
+  navigator.clipboard.writeText(codeBody.innerText).then(() => showToast('Copied to clipboard!')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = codeBody.innerText; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copied to clipboard!');
+  });
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Sidebar nav toggle
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const nav = item.dataset.nav;
+    const sub = document.querySelector(`[data-sub="${nav}"]`);
+    if (sub) { item.classList.toggle('open'); sub.classList.toggle('open'); }
+  });
+});
+
+// Sidebar sub-item active + scroll
+const allSecs = document.querySelectorAll('.sec, .card[id]');
+const subItems = document.querySelectorAll('.sub-item');
+const navItems = document.querySelectorAll('.nav-item');
+
+function updateActive() {
+  let current = '';
+  allSecs.forEach(s => { if (s.getBoundingClientRect().top < 140) current = s.id; });
+  subItems.forEach(s => { s.classList.toggle('active', s.getAttribute('href') === '#' + current); });
+  navItems.forEach(n => {
+    const sub = document.querySelector(`[data-sub="${n.dataset.nav}"]`);
+    if (sub && sub.querySelector('.sub-item.active')) { n.classList.add('active'); }
+  });
+  // Progress
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = h > 0 ? Math.round((window.scrollY / h) * 100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = pct + '%';
+}
+window.addEventListener('scroll', updateActive);
+
+// Sub-item click: smooth scroll + close mobile
+subItems.forEach(s => {
+  s.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(s.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('show'); document.getElementById('mobOverlay').classList.remove('show'); }
+  });
+});
+
+// Reveal on scroll
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// Mobile menu
+document.getElementById('mobBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('show');
+  document.getElementById('mobOverlay').classList.toggle('show');
+});
+document.getElementById('mobOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('show');
+  document.getElementById('mobOverlay').classList.remove('show');
+});
+
+// Init
+updateActive();
+</script>
+</body>
+</html>
