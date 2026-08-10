@@ -91,6 +91,10 @@
 <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">From console cables to layer 3 routing - master enterprise switch configuration, security, and architecture.</p>
 <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px"><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> SSH</span><span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> HTTPS</span><span class="st st-p"><i class="fa-solid fa-circle" style="font-size:5px"></i> RBAC</span><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> HSRP/VRRP</span><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> ACLs</span></div>
 </div>
+<div class="attack-overview-img" style="display: flex; justify-content: center;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/why-do-we-need-layer3-switches.svg" alt="Overview of cyber attack types">
+</div>
+
 
 <!-- S1: REMOTE MANAGEMENT -->
 <div class="sec" id="remote">
@@ -126,7 +130,8 @@
 <div class="card" id="putty"><div style="display:flex;gap:14px;align-items:flex-start"><div class="imgf" style="width:90px;height:90px;flex-shrink:0"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZHARyuZhUPPfWMPqt0a1Wnr3ax1li-3u7oSQzJLg6jBzrrs1-vuvlw1U&s=10" alt="PuTTY"></div><div><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">PuTTY</h3><span class="st st-b" style="margin-bottom:6px"><i class="fa-solid fa-circle" style="font-size:5px"></i> Free &amp; Open Source</span><p style="font-size:12px;color:var(--mt);margin-bottom:6px">Lightweight Windows SSH/Telnet client.</p><div style="display:flex;flex-wrap:wrap;gap:4px"><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">SSH-2</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">Telnet</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">Serial</span></div></div></div></div>
 <div class="card" id="securecrt"><div style="display:flex;gap:14px;align-items:flex-start"><div class="imgf" style="width:90px;height:90px;flex-shrink:0"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcwj3RZobQhd6b0Hzy4Afiw6rDlVi12xGI8EkNTvI4qXYQerSoLMGVb7Xs&s=10" alt="SecureCRT"></div><div><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">SecureCRT</h3><span class="st st-p" style="margin-bottom:6px"><i class="fa-solid fa-circle" style="font-size:5px"></i> Commercial</span><p style="font-size:12px;color:var(--mt);margin-bottom:6px">VanDyke premium terminal. Tabbed, scripting, SFTP.</p><div style="display:flex;flex-wrap:wrap;gap:4px"><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Scripting</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Tabbed</span><span class="mono" style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">SFTP</span></div></div></div></div>
 </div>
-<div class="card reveal" style="margin-top:16px"><h3 style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-table-columns" style="color:var(--ac);margin-right:6px"></i>Protocol Comparison</h3><div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Protocol</th><th>Port</th><th>Encryption</th><th>Access</th><th>Status</th></tr></thead><tbody><tr><td class="mono" style="color:var(--fg)">Telnet</td><td class="mono">TCP/23</td><td><span class="st st-r">None</span></td><td>In-Band</td><td style="color:var(--wn)">Avoid</td></tr><tr><td class="mono" style="color:var(--fg)">SSH v2</td><td class="mono">TCP/22</td><td><span class="st st-g">AES</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">HTTPS</td><td class="mono">TCP/443</td><td><span class="st st-g">TLS</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">Console</td><td class="mono">Serial</td><td><span class="st st-y">Physical</span></td><td>Out-of-Band</td><td style="color:var(--gd)">Emergency</td></tr></tbody></table></div></div>
+<div class="card reveal" style="margin-top:16px"><h3 style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-table-columns" style="color:var(--ac);margin-right:6px"></i>Protocol Comparison</h3><div style="over
+-x:auto"><table class="dtbl"><thead><tr><th>Protocol</th><th>Port</th><th>Encryption</th><th>Access</th><th>Status</th></tr></thead><tbody><tr><td class="mono" style="color:var(--fg)">Telnet</td><td class="mono">TCP/23</td><td><span class="st st-r">None</span></td><td>In-Band</td><td style="color:var(--wn)">Avoid</td></tr><tr><td class="mono" style="color:var(--fg)">SSH v2</td><td class="mono">TCP/22</td><td><span class="st st-g">AES</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">HTTPS</td><td class="mono">TCP/443</td><td><span class="st st-g">TLS</span></td><td>In-Band</td><td style="color:var(--ac)">Recommended</td></tr><tr><td class="mono" style="color:var(--fg)">Console</td><td class="mono">Serial</td><td><span class="st st-y">Physical</span></td><td>Out-of-Band</td><td style="color:var(--gd)">Emergency</td></tr></tbody></table></div></div>
 </div>
 
 <!-- S2: SECURE MANAGEMENT -->
@@ -189,17 +194,20 @@
 <!-- S6: L2/L3 -->
 <div class="sec" id="sw">
 <div class="reveal"><div class="sec-badge"><i class="fa-solid fa-arrows-left-right"></i> Section 06</div><h2 class="sec-title">L2 vs L3 Switching</h2><p class="sec-desc">L2 forwards by MAC. L3 adds hardware-based IP routing.</p></div>
-	  	          <div class="attack-overview-img">
-            <img src="https://ascentoptics.com/blog/wp-content/uploads/2023/08/layer-2-vs-layer-3-switch-1.png" alt="Overview of cyber attack types">
-        </div>
-		
-	          <div class="attack-overview-img">
-            <img src="https://media.licdn.com/dms/image/v2/D4D22AQFoLqQAVQU2Bg/feedshare-shrink_800/B4DZZShcc5GgAg-/0/1745141222370?e=2147483647&v=beta&t=bboAcepk79_xUS3S2Z6xK0IBZN9aTqjkHIbgVMB1iOU" alt="Overview of cyber attack types">
-        </div>
+<div class="attack-overview-img" style="display: flex; justify-content: center;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/why-do-we-need-layer3-switches.svg" alt="Overview of cyber attack types">
+</div>
+
+		<div class="image-row">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/intervlan-routing-by-a-layer3-switch.svg" alt="First Image">
+    <img src="https://media.licdn.com/dms/image/v2/D4D22AQFoLqQAVQU2Bg/feedshare-shrink_800/B4DZZShcc5GgAg-/0/1745141222370?e=2147483647&v=beta&t=bboAcepk79_xUS3S2Z6xK0IBZN9aTqjkHIbgVMB1iOU" alt="Second Image">
+</div>
+
+
 <div class="vs-grid reveal">
-<div class="card" id="l2switch" style="border-color:rgba(59,184,245,.25)"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-network-wired"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--inf);margin-bottom:4px">Layer 2</h3><span class="st st-b" style="margin-bottom:8px">Data Link</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Forwards by MAC</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Builds MAC table</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>VLANs, STP, LACP</li><li><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i>No IP routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV9dtw7gJQEdiO5FjpSJzus8Gjziy33Qx4nAiwMmjpCkCgucHTgbxnDEf7&s=10" alt="L2"><div class="il">L2 access switch</div></div></div>
+<div class="card" id="l2switch" style="border-color:rgba(59,184,245,.25)"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-network-wired"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--inf);margin-bottom:4px">Layer 2</h3><span class="st st-b" style="margin-bottom:8px">Data Link</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Forwards by MAC</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>Builds MAC table</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--inf);margin-right:6px;font-size:10px"></i>VLANs, STP, LACP</li><li><i class="fa-solid fa-xmark" style="color:var(--wn);margin-right:6px;font-size:10px"></i>No IP routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://cdn.networkacademy.io/sites/default/files/2025-06/vlan-concept.gif" alt="L2"><div class="il">L2 access switch</div></div></div>
 <div class="vs-badge">VS</div>
-<div class="card" id="l3switch" style="border-color:rgba(168,124,255,.25)"><div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-microchip"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--pu);margin-bottom:4px">Layer 3</h3><span class="st st-p" style="margin-bottom:8px">Network Layer</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>All L2 + IP routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Hardware ASIC routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Inter-VLAN via SVI</li><li><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Static/dynamic routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://3.imimg.com/data3/FP/QN/MY-7081298/24-36-and-48-port-fibre-channel-switches-500x500.jpg" alt="L3"><div class="il">L3 core switch</div></div></div>
+<div class="card" id="l3switch" style="border-color:rgba(168,124,255,.25)"><div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-microchip"></i></div><h3 style="font-size:16px;font-weight:700;color:var(--pu);margin-bottom:4px">Layer 3</h3><span class="st st-p" style="margin-bottom:8px">Network Layer</span><ul style="font-size:13px;color:var(--mt);list-style:none;margin-bottom:10px"><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>All L2 + IP routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Hardware ASIC routing</li><li style="margin-bottom:4px"><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Inter-VLAN via SVI</li><li><i class="fa-solid fa-check" style="color:var(--pu);margin-right:6px;font-size:10px"></i>Static/dynamic routing</li></ul><div class="imgf" style="min-height:120px"><img src="https://cdn.networkacademy.io/sites/default/files/2025-06/l3-switch-performing-intervlan-routing.gif" alt="L3"><div class="il">L3 core switch</div></div></div>
 
 </div>
 <div class="card reveal" style="margin-top:14px" id="svi"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-code" style="color:var(--pu);margin-right:6px"></i>SVI Inter-VLAN Routing</h3><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>SVI</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip routing</span>
@@ -214,9 +222,12 @@
 <!-- S7: GATEWAY -->
 <div class="sec" id="gw">
 <div class="reveal"><div class="sec-badge"><i class="fa-solid fa-door-open"></i> Section 07</div><h2 class="sec-title">Default Gateway</h2><p class="sec-desc">Next-hop IP for reaching networks outside locally connected subnets.</p></div>
-			          <div class="attack-overview-img">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgQOTVfl6FlXT-953ISzgRfqkkp9iPtAW2TIOYUC7nbOf5AvOkYGDejYSt&s=10" alt="Overview of cyber attack types">
-        </div>
+
+		
+	<div class="attack-overview-img" style="display: block; margin: 0 auto; width: fit-content;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgQOTVfl6FlXT-953ISzgRfqkkp9iPtAW2TIOYUC7nbOf5AvOkYGDejYSt&s=10" alt="Overview of cyber attack types">
+</div>
+	
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
 <div class="card reveal" id="gw-config"><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Gateway</span></div><div class="code-body"><span class="cc">! L2 switch - management only</span>
 <span class="ck">SW1</span>(config)# <span class="cm">ip default-gateway</span> <span class="cv">192.168.1.1</span>
@@ -309,6 +320,11 @@
 <!-- S11: ACLs -->
 <div class="sec" id="acl">
 <div class="reveal"><div class="sec-badge"><i class="fa-solid fa-filter"></i> Section 11</div><h2 class="sec-title">Access Control Lists</h2><p class="sec-desc">Filter traffic by IP, protocol, and port.</p></div>
+
+	          <div class="attack-overview-img">
+            <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/ipv4-access-control-lists.svg" alt="Overview of cyber attack types">
+        </div>
+		
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
 <div class="card reveal" id="std-acl"><div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-filter-circle-xmark"></i></div><h3 style="font-weight:700;color:var(--inf);margin-bottom:6px">Standard ACL</h3><p style="font-size:12px;color:var(--mt);margin-bottom:8px">Source IP only. Range 1-99.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Standard</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">access-list 10</span> <span class="ck">deny</span> <span class="cv">192.168.10.50 0.0.0.0</span>
 <span class="ck">SW1</span>(config)# <span class="cm">access-list 10</span> <span class="ck">permit</span> <span class="cv">192.168.10.0 0.0.0.255</span>
@@ -323,7 +339,20 @@
 <span class="ck">SW1</span>(config-if)# <span class="cm">ip access-group</span> <span class="cv">WEB-ONLY</span> <span class="ck">in</span></div></div></div>
 </div>
 <div class="card reveal" id="acl-rules"><h3 style="font-weight:700;margin-bottom:10px"><i class="fa-solid fa-table" style="color:var(--ac);margin-right:6px"></i>ACL Rules</h3><div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Rule</th><th>Description</th></tr></thead><tbody><tr><td style="color:var(--fg);font-weight:600">Implicit Deny</td><td>Every ACL ends with invisible <span class="mono" style="color:var(--wn);font-size:11px">deny any</span></td></tr><tr><td style="color:var(--fg);font-weight:600">Processing Order</td><td>Top to bottom. First match wins.</td></tr><tr><td style="color:var(--fg);font-weight:600">Standard Placement</td><td>Close to <strong>destination</strong></td></tr><tr><td style="color:var(--fg);font-weight:600">Extended Placement</td><td>Close to <strong>source</strong></td></tr><tr><td style="color:var(--fg);font-weight:600">Named ACLs</td><td>Preferred - easier to edit</td></tr></tbody></table></div></div>
-<div class="imgf reveal" style="min-height:160px;margin-top:14px"><img src="https://picsum.photos/seed/acl-filter-decision/1200/320.jpg" alt="ACL"><div class="il">ACL decision flow</div></div>
+
+<div class="imgf reveal" style="min-height: auto; padding: 8px; margin: 14px auto 0 auto; width: fit-content;">
+
+	
+	<div style="background-color: #ffffff; padding: 15px; border-radius: 8px; display: flex; justify-content: center; align-items: center; width: 100%; box-sizing: border-box;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/basic-structure-of-an-acl.svg" alt="ACL" style="max-width: 100%; height: auto; object-fit: contain;">
+</div>
+
+    <div class="il">ACL decision flow</div>
+</div>
+
+<div class="image-row" style="display: flex; gap: 15px; width: 100%; background-color: #ffffff; padding: 15px; border-radius: 8px; box-sizing: border-box;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/how-do-acls-work.svg" alt="How ACLs Work" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-07/standard-acl-matching-logic.svg" alt="Standard ACL Matching Logic" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
 </div>
 
 <!-- S12: ROUTING -->
@@ -343,6 +372,17 @@
 <div class="tpanel" id="rt-default"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px"><div class="card" id="default-rt"><h3 style="font-weight:700;margin-bottom:6px">Default Routes</h3><p style="font-size:13px;color:var(--mt);margin-bottom:10px"><span class="mono" style="color:var(--ac);font-size:12px">0.0.0.0/0</span> - gateway of last resort.</p><div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>Default</span></div><div class="code-body"><span class="ck">SW1</span>(config)# <span class="cm">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 192.168.1.254</span>
 <span class="cc">! With OSPF:</span>
 <span class="ck">R1</span>(config-router)# <span class="cm">default-information originate</span></div></div></div><div class="card"><h3 style="font-weight:700;margin-bottom:10px">When to Use</h3><ul style="font-size:13px;color:var(--mt);list-style:none"><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Stub Networks</strong></li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Edge Routing</strong> - to ISP</li><li style="margin-bottom:7px"><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">Backup Paths</strong> - floating static</li><li><i class="fa-solid fa-check" style="color:var(--ac);margin-right:6px;font-size:10px"></i><strong style="color:var(--fg)">OSPF</strong> - default-information originate</li></ul></div></div></div>
+
+<div class="image-row" style="display: flex; gap: 15px; background-color: #ffffff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-08/router-connecting-two-ip-networks.svg" alt="Router connecting two IP networks" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-08/dynamic-routing.svg" alt="Dynamic routing" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
+</div>
+
+<div class="image-row" style="display: flex; gap: 15px; background-color: #ffffff; padding: 15px; border-radius: 8px; box-sizing: border-box;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-08/why-do-we-need-layer3-switches.svg" alt="Why do we need layer 3 switches" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
+    <img src="https://cdn.networkacademy.io/sites/default/files/2025-08/how-does-router-work.svg" alt="How does router work" style="flex: 1; min-width: 0; width: 50%; height: auto; object-fit: contain;">
+</div>
+
 </div>
 
 <!-- S13: ROAS -->
@@ -364,7 +404,7 @@
 <span class="ck">SW1</span>(config)# <span class="cm">interface Gi0/24</span>
 <span class="ck">SW1</span>(config-if)# <span class="cm">switchport mode trunk</span>
 <span class="ck">SW1</span>(config-if)# <span class="cm">switchport trunk allowed vlan</span> <span class="cv">10,20</span></div></div></div>
-<div class="reveal" style="display:flex;flex-direction:column;gap:14px"><div class="imgf" style="flex:1;min-height:150px"><img src="https://picsum.photos/seed/router-on-stick-topology/600/360.jpg" alt="ROAS"><div class="il">ROAS topology</div></div><div style="padding:10px 14px;border-radius:8px;background:rgba(255,99,71,.05);border:1px solid rgba(255,99,71,.15)"><p style="font-size:12px;color:var(--mt)"><i class="fa-solid fa-triangle-exclamation" style="color:var(--wn);margin-right:4px"></i><strong style="color:var(--fg)">Limitation:</strong> Single link bottleneck. L3 SVIs preferred.</p></div></div>
+<div class="reveal" style="display:flex;flex-direction:column;gap:14px"><div class="imgf" style="flex:1;min-height:150px"><img src="https://cdn.networkacademy.io/sites/default/files/2025-06/routing-between-vlans.gif" alt="ROAS"><div class="il">ROAS topology</div></div><div style="padding:10px 14px;border-radius:8px;background:rgba(255,99,71,.05);border:1px solid rgba(255,99,71,.15)"><p style="font-size:12px;color:var(--mt)"><i class="fa-solid fa-triangle-exclamation" style="color:var(--wn);margin-right:4px"></i><strong style="color:var(--fg)">Limitation:</strong> Single link bottleneck. L3 SVIs preferred.</p></div></div>
 </div></div>
 
 <!-- S14: TASKS -->
@@ -437,7 +477,6 @@
 <span class="ck">CORE-SW</span># <span class="cm">show standby brief</span>
 <span class="ck">CORE-SW</span># <span class="cm">show etherchannel summary</span></div></div></div></div>
 </div>
-<div class="imgf reveal" style="min-height:200px;margin-top:18px"><img src="https://picsum.photos/seed/network-lab-equipment-rack/1200/400.jpg" alt="Lab"><div class="il">Network lab equipment</div></div>
 </div>
 
 <!-- FOOTER -->
