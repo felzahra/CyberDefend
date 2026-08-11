@@ -275,7 +275,11 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
           <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>Trustsec integration</li>
           <li><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>DevNet API automation</li>
         </ul>
-        <div class="imgf" style="height:120px;margin-top:12px"><img src="https://picsum.photos/seed/cisco-phone-9971/600/300.jpg" alt="Cisco Phone"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 9971 IP Phone</div></div>
+		<div class="imgf" style="height: auto; margin-top: 12px; text-align: center;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShKxMLXfgUAcMPgg94Ti6aV3t4hxwnwH-J7x_EfT1wtA&s=10" alt="Avaya Phone" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya 1608 IP Phone</div>
+</div>
+
       </div>
       <div class="vs-badge">VS</div>
       <div class="card" style="border-color:rgba(227,25,55,.25)">
@@ -289,7 +293,11 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
           <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>MLPP priority for govt</li>
           <li><i class="fa-solid fa-check" style="color:var(--avaya);margin-right:6px;font-size:10px"></i>One-X Mobile / SME</li>
         </ul>
-        <div class="imgf" style="height:120px;margin-top:12px"><img src="https://picsum.photos/seed/avaya-phone-1608/600/300.jpg" alt="Avaya Phone"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya 1608 IP Phone</div></div>
+<div class="imgf" style="height: auto; margin-top: 12px; text-align: center;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9Hf4WzlIHHsfJO3L8VN1PCfj5Nqbj5hy83Nhitv7Wug&s=10" alt="Avaya Phone" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya 1608 IP Phone</div>
+</div>		
+		
       </div>
     </div>
   </div>
@@ -306,53 +314,37 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
     <div class="code" style="padding:0;overflow:hidden">
       <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span>VoIP Network Topology</span></div>
       <div style="padding:20px;overflow-x:auto;background:#060a12">
-        <svg viewBox="0 0 1000 520" style="width:100%;min-width:700px" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern>
-            <marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/></marker>
-            <filter id="gb"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="gg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="gr"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <rect width="1000" height="520" fill="url(#grid)"/>
-          <ellipse cx="90" cy="120" rx="60" ry="40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
-          <text x="90" y="116" text-anchor="middle" fill="#666" font-size="11" font-family="Space Grotesk">ISP</text><text x="90" y="132" text-anchor="middle" fill="#444" font-size="9" font-family="Space Grotesk">DSLAM</text>
-          <rect x="190" y="95" width="100" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <text x="240" y="117" text-anchor="middle" fill="#f0c040" font-size="10" font-family="JetBrains Mono">DSL</text><text x="240" y="133" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Modem/Router</text>
-          <line x1="150" y1="120" x2="188" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="6,3" class="dash-anim"/>
-          <rect x="360" y="95" width="110" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <text x="415" y="117" text-anchor="middle" fill="#ff6347" font-size="10" font-family="JetBrains Mono">FW/Router</text><text x="415" y="133" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Edge Gateway</text>
-          <line x1="290" y1="120" x2="358" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
-          <rect x="560" y="85" width="130" height="70" rx="10" fill="#111" stroke="#049fd9" stroke-width="1.5" filter="url(#gb)"/>
-          <text x="625" y="115" text-anchor="middle" fill="#049fd9" font-size="11" font-weight="600" font-family="JetBrains Mono">L3 Switch</text><text x="625" y="132" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Core/Distribution</text><text x="625" y="145" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">VLAN 10,100,200</text>
-          <line x1="470" y1="120" x2="558" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
-          <rect x="770" y="60" width="120" height="24" rx="12" fill="rgba(0,229,160,.08)" stroke="#00e5a0" stroke-width="0.5"/><text x="830" y="76" text-anchor="middle" fill="#00e5a0" font-size="10" font-weight="500" font-family="JetBrains Mono">VLAN 100</text>
-          <rect x="770" y="200" width="120" height="24" rx="12" fill="rgba(240,192,64,.08)" stroke="#f0c040" stroke-width="0.5"/><text x="830" y="216" text-anchor="middle" fill="#f0c040" font-size="10" font-weight="500" font-family="JetBrains Mono">VLAN 200</text>
-          <rect x="560" y="250" width="130" height="60" rx="10" fill="#111" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <text x="625" y="278" text-anchor="middle" fill="#e4eaf3" font-size="10" font-weight="500" font-family="JetBrains Mono">L2 Switch</text><text x="625" y="295" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Access Layer</text>
-          <line x1="625" y1="155" x2="625" y2="248" stroke="#049fd9" stroke-width="1.5" stroke-dasharray="6,3" class="dash-anim"/><text x="640" y="205" fill="#049fd9" font-size="8" font-family="JetBrains Mono">TRUNK</text>
-          <path d="M690 270 Q750 270 770 120" fill="none" stroke="#00e5a0" stroke-width="1.5" marker-end="url(#arr)"/>
-          <path d="M690 280 Q730 280 770 212" fill="none" stroke="#f0c040" stroke-width="1.5" marker-end="url(#arr)"/>
-          <rect x="200" y="350" width="110" height="65" rx="10" fill="#111" stroke="#00e5a0" stroke-width="1" filter="url(#gg)"/>
-          <text x="255" y="378" text-anchor="middle" fill="#00e5a0" font-size="10" font-family="JetBrains Mono">IP Phone</text><text x="255" y="395" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">VLAN 100 (tagged)</text><text x="255" y="408" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">PoE 802.3af</text>
-          <rect x="200" y="450" width="110" height="50" rx="8" fill="#111" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-          <text x="255" y="473" text-anchor="middle" fill="#f0c040" font-size="10" font-family="JetBrains Mono">PC</text><text x="255" y="489" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">VLAN 200 (untagged)</text>
-          <line x1="255" y1="415" x2="255" y2="448" stroke="#555" stroke-width="1"/><text x="265" y="435" fill="#444" font-size="7" font-family="JetBrains Mono">daisy-chain</text>
-          <path d="M560 290 Q400 330 312 370" fill="none" stroke="#00e5a0" stroke-width="1.5" marker-end="url(#arr)"/><text x="420" y="330" fill="#00e5a0" font-size="8" font-family="JetBrains Mono">access port</text>
-          <rect x="770" y="310" width="130" height="65" rx="10" fill="#111" stroke="#049fd9" stroke-width="1"/>
-          <text x="835" y="338" text-anchor="middle" fill="#049fd9" font-size="10" font-weight="500" font-family="JetBrains Mono">CUCM</text><text x="835" y="355" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Call Manager</text><text x="835" y="368" text-anchor="middle" fill="#444" font-size="8" font-family="JetBrains Mono">10.1.100.10</text>
-          <rect x="770" y="420" width="130" height="55" rx="10" fill="#111" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-          <text x="835" y="445" text-anchor="middle" fill="#e4eaf3" font-size="10" font-family="JetBrains Mono">DHCP</text><text x="835" y="462" text-anchor="middle" fill="#666" font-size="9" font-family="Space Grotesk">Option 150 / 176</text>
-          <line x1="835" y1="375" x2="835" y2="418" stroke="#555" stroke-width="1"/>
-          <path d="M690 130 Q730 200 770 320" fill="none" stroke="#049fd9" stroke-width="1" stroke-dasharray="4,4" class="dash-anim"/>
-          <circle cx="170" cy="120" r="3" fill="#f0c040" class="blink-d"/><circle cx="520" cy="120" r="3" fill="#049fd9" class="blink-d" style="animation-delay:.5s"/><circle cx="625" cy="200" r="3" fill="#049fd9" class="blink-d" style="animation-delay:1s"/><circle cx="430" cy="340" r="3" fill="#00e5a0" class="blink-d" style="animation-delay:.7s"/>
-        </svg>
+<div class="imgf" style="margin-top:12px">
+
+  <div class="imgf" style="height: auto; text-align: center;">
+    <img src="https://i0.wp.com/rickfreyconsulting.com/wp-content/uploads/2016/09/VLANs-for-VOIP.jpg" alt="Rack" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Enterprise Network Rack</div>
+</div>
+
+<div class="imgf" style="margin-top: 12px; text-align: center;">
+    <img src="https://cdn.networklessons.com/wp-content/uploads/2016/12/switch-host-ip-phone-voice-vlan.png" alt="Cisco Phone" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
+    <div class="il">Voice VLAN Diagram</div>
+</div>
+
+  <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 9971 IP Phone</div>
+</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px">
-      <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/network-rack-44/700/400.jpg" alt="Rack"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Enterprise Network Rack</div></div>
-      <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/cabling-voip-77/700/400.jpg" alt="Cabling"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cat6A Structured Cabling</div></div>
+      <!-- Fixed Cropped Image & Centered -->
+<div class="imgf" style="margin-top:12px; height:auto; text-align:center;">
+    <img src="https://irp.cdn-website.com//ecd3ff35/dms3rep/multi/opt/install-voip-system-step-by-step+from+the+voip+shop-7ea0f7ea-640w.jpg" alt="Cisco Phone" style="max-width:100%; height:auto; object-fit:contain;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 9971 IP Phone</div>
+</div>
+
+<!-- Added White Background, Fixed Height Syntax, & Padding -->
+<div class="imgf" style="height:auto; background-color:#ffffff; padding:15px; border-radius:8px; text-align:center;">
+    <img src="https://help.uisp.com/hc/article_attachments/22591737804951/" alt="Cabling" style="max-width:100%; height:auto; object-fit:contain;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cat6A Structured Cabling</div>
+</div>
     </div>
+	
+	
   </div>
 </div>
 
@@ -557,10 +549,21 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px" class="reveal">
-    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/catalyst-9300-55/500/350.jpg" alt="C9300"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Catalyst 9300 Access</div></div>
-    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/catalyst-9500-33/500/350.jpg" alt="C9500"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Catalyst 9500 Core</div></div>
-    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/cisco-7841-phone-22/500/350.jpg" alt="7841"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cisco 7841 Phone</div></div>
-  </div>
+<div class="imgf" style="height: auto; max-width: 500px; margin: 0 auto 16px auto; text-align: center;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZUcTVdLJpfzTryxiFtk7t773ITfcy7_0WoDcE-a4yKA&s=10" alt="C9300" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Catalyst 9300 Access</div>
+</div>
+
+<div class="imgf" style="height: auto; max-width: 500px; margin: 0 auto 16px auto; text-align: center;">
+    <img src="https://www.tritondatacom.com/cdn/shop/products/cisco-catalyst-c9500-10gbit-switch-c9500-40x-a-new-28123287650374.png?v=1658779496" alt="C9500" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Catalyst 9500 Core</div>
+</div>
+
+<div class="imgf" style="height: auto; max-width: 500px; margin: 0 auto; text-align: center;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1sO2C06pEkEsOmPJHnwSogdu01YBBQ4HOlHCbXsD0TQ&s=10" alt="7841" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Cisco 7841 Phone</div>
+</div>
+ </div>
 </div>
 
 <!-- ===== 4. AVAYA CONFIG ===== -->
@@ -734,9 +737,16 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px" class="reveal">
-    <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/avaya-ers-5500-88/600/400.jpg" alt="ERS5500"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya ERS 5500</div></div>
-    <div class="imgf" style="height:160px"><img src="https://picsum.photos/seed/avaya-aura-server-61/600/400.jpg" alt="Aura"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Avaya Aura CM</div></div>
-  </div>
+<div class="imgf" style="height: auto; max-width: 500px; margin: 0 auto 16px auto; text-align: center;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEcG4-nIb08fLEt_-CDY0fINv5FprA4Dd1qR9EE1WN2A&s=10" alt="ERS5500" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya ERS 5500</div>
+</div>
+
+<div class="imgf" style="height: auto; max-width: 500px; margin: 0 auto; text-align: center;">
+    <img src="https://www.pbxdom.com/wp-content/uploads/2015/12/P0001-2.png" alt="Aura" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya Aura CM</div>
+</div> 
+ </div>
 </div>
 
 <!-- ===== 5. DSL ===== -->
@@ -827,10 +837,21 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px" class="reveal">
-    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/dsl-modem-router-42/500/300.jpg" alt="DSL"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> VDSL2 Modem</div></div>
-    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/dslam-close-19/500/300.jpg" alt="DSLAM"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> ISP DSLAM</div></div>
-    <div class="imgf" style="height:140px"><img src="https://picsum.photos/seed/phone-booth-lines-67/500/300.jpg" alt="Copper"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Copper Pairs</div></div>
-  </div>
+<div class="imgf" style="height: auto; text-align: center; margin-bottom: 12px;">
+    <img src="https://f.nooncdn.com/p/pzsku/ZFE45A846ADB975BD6608Z/45/_/1779704134/10cd3d87-9f02-4c21-831b-0edbdb5d3047.jpg?width=1200" alt="DSL" style="max-height: 160px; width: auto; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> VDSL2 Modem</div>
+</div>
+
+<div class="imgf" style="height: auto; text-align: center; margin-bottom: 12px;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkE_yKITNUHs4IzAd21SKqUv903WP5dzYJFTfe5UWIDcuKGEhjdQcuIOA_&s=10" alt="DSLAM" style="max-height: 160px; width: auto; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> ISP DSLAM</div>
+</div>
+
+<div class="imgf" style="height: auto; text-align: center; margin-bottom: 12px;">
+    <img src="https://m.media-amazon.com/images/I/51nqcJvFU9L._AC_UF350,350_QL80_.jpg" alt="Copper" style="max-height: 160px; width: auto; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Copper Pairs</div>
+</div>   
+   </div>
 </div>
 
 <!-- ===== 6. QOS TABLE ===== -->
@@ -908,9 +929,26 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px" class="reveal">
-    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/wireshark-voip-51/600/350.jpg" alt="Wireshark"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Wireshark RTP Analysis</div></div>
-    <div class="imgf" style="height:150px"><img src="https://picsum.photos/seed/server-room-cables-93/600/350.jpg" alt="Monitoring"><div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Infrastructure Monitoring</div></div>
+	
   </div>
+  <!-- First Image Container -->
+<!-- First Image Container -->
+<div class="imgf" style="height: auto; max-width: 600px; margin: 0 auto 24px auto; text-align: center;">
+    <img src="https://forums.telcobridges.com/mediawiki/images/5/5e/Telephony_RTP_RTP_Streams.png" alt="Wireshark" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Wireshark RTP Analysis</div>
+</div>
+
+<!-- Duplicated Image Container with Margin Space -->
+<div class="imgf" style="height: auto; max-width: 600px; margin: 0 auto; text-align: center;">
+    <img src="https://www.wireshark.org/docs/wsug_html_chunked/images/ws-tel-rtpstream-analysis_1.png" alt="Wireshark" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Wireshark RTP Analysis</div>
+</div>
+
+<div class="imgf" style="height: auto; max-width: 600px; margin: 0 auto; text-align: center;">
+    <img src="https://wireshark.marwan.ma/docs/wsug_html_chunked/wsug_graphics/ws-tel-rtp-player_2.png" alt="Wireshark" style="max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Wireshark RTP Analysis</div>
+</div>
+
 </div>
 
 <!-- ===== 8. QUICK REFERENCE ===== -->
