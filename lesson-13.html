@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Computing - Labs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff;--aws:#ff9900;--azure:#0078d4;--gcp:#4285f4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.top-nav-left{display:flex;align-items:center;gap:12px}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
+.top-nav-links{display:flex;align-items:center;gap:4px}
+.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}
+.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}
+.top-nav-links a.active{color:var(--ac);background:var(--acD)}
+.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
+.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+
+.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar-back-btns{padding:14px 14px 10px;border-bottom:1px solid var(--bdr)}
+.sidebar-back-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,229,160,.06);color:var(--ac);border:1px solid rgba(0,229,160,.15);border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}
+.sidebar-back-btn:hover{background:rgba(0,229,160,.15);border-color:var(--ac)}
+.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sidebar-brand i{font-size:18px;color:var(--inf)}
+.sidebar-brand span{font-weight:700;font-size:13px}
+.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}
+.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}
+.nav-item .arrow{margin-left:auto;font-size:9px;transition:transform .25s}
+.nav-item.open .arrow{transform:rotate(90deg)}
+.sub-nav{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.15)}
+.sub-nav.open{max-height:600px}
+.sub-item{display:block;padding:7px 18px 7px 48px;color:var(--mt);text-decoration:none;font-size:12px;transition:all .15s;border-left:3px solid transparent}
+.sub-item:hover,.sub-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+
+.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-weight:700;font-size:14px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.progress-bar{width:110px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%}
+.content{padding:28px;max-width:1100px}
+
+.sec{margin-bottom:48px;scroll-margin-top:120px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
+.sec-badge.aws-b{background:rgba(255,153,0,.1);color:var(--aws);border-color:rgba(255,153,0,.2)}
+.sec-badge.az-b{background:rgba(0,120,212,.1);color:var(--azure);border-color:rgba(0,120,212,.2)}
+.sec-badge.gcp-b{background:rgba(66,133,244,.1);color:var(--gcp);border-color:rgba(66,133,244,.2)}
+.sec-badge.sec-b{background:rgba(255,99,71,.1);color:var(--wn);border-color:rgba(255,99,71,.2)}
+.sec-badge.inf-b{background:rgba(59,184,245,.1);color:var(--inf);border-color:rgba(59,184,245,.2)}
+.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.card-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+
+.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}
+.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}
+.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}
+.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cw{color:var(--wn)}.caw{color:var(--aws)}.caz{color:var(--azure)}.cgcp{color:var(--gcp)}.cp{color:var(--wn)}
+
+/* ===== IMAGE — NO CROP, WHITE BG ===== */
+.imgf{border-radius:12px;overflow:visible;border:1px solid var(--bdr);position:relative;background:#ffffff}
+.imgf img{width:100%;height:auto;display:block;transition:transform .5s}
+.imgf:hover img{transform:scale(1.02)}
+.imgf .il{position:relative;padding:8px 14px;background:#f8f8f8;font-size:11px;color:#333;border-top:1px solid #e5e5e5}
+.imgf.img-center{text-align:center}
+.imgf.img-center img{display:inline-block;max-width:550px}
+
+.tabs{display:flex;gap:3px;margin-bottom:20px;flex-wrap:wrap}
+.tbtn{padding:6px 16px;border:1px solid var(--bdr);border-radius:7px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;transition:all .15s}
+.tbtn:hover{border-color:var(--ac);color:var(--fg)}
+.tbtn.active{background:var(--acD);border-color:var(--ac);color:var(--ac)}
+.tpanel{display:none;animation:fu .35s ease}
+.tpanel.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:start}
+.vs-badge{align-self:center;width:44px;height:44px;border-radius:50%;background:var(--wn);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-top:30px;box-shadow:0 0 24px rgba(255,99,71,.25);flex-shrink:0}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:13px}
+.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}
+.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+
+.st{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
+.st-g{background:rgba(0,229,160,.1);color:var(--ac)}
+.st-r{background:rgba(255,99,71,.1);color:var(--wn)}
+.st-y{background:rgba(240,192,64,.1);color:var(--gd)}
+.st-b{background:rgba(59,184,245,.1);color:var(--inf)}
+.st-p{background:rgba(168,124,255,.1);color:var(--pu)}
+.st-aw{background:rgba(255,153,0,.1);color:var(--aws)}
+.st-az{background:rgba(0,120,212,.1);color:var(--azure)}
+.st-gc{background:rgba(66,133,244,.1);color:var(--gcp)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+.hero-mini{padding:36px 0 16px;text-align:center;position:relative}
+.hero-mini::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 80%,rgba(59,184,245,.05),transparent);pointer-events:none}
+
+.copy-btn{padding:3px 10px;border:1px solid var(--bdr);border-radius:5px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:10px;transition:all .15s;display:flex;align-items:center;gap:4px}
+.copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,.3);padding:10px 18px;border-radius:10px;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .4s ease;z-index:9999;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@keyframes blink-dot{0%,100%{opacity:1;r:3}50%{opacity:.3;r:1.5}}
+@keyframes dash-flow{to{stroke-dashoffset:-20}}
+.dash-anim{animation:dash-flow 1s linear infinite}
+.blink-d{animation:blink-dot 1.5s ease-in-out infinite}
+
+.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+.mob-overlay.show{display:block}
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
+.top-nav-links a:not(.login-btn):not(.active){display:none}.vs-grid{grid-template-columns:1fr}.vs-badge{margin-top:0;justify-self:center}.content{padding:20px 14px}
+}
+@media(max-width:600px){.top-nav-links a{padding:5px 8px;font-size:11px}.back-to-labs span{display:none}.back-to-labs{padding:6px 10px}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a>
+  </div>
+  <div class="top-nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="courses.html">Courses</a>
+    <a href="messages.html">📝 Tasks</a>
+    <a href="labs.html" class="active">Labs</a>
+    <a href="login.html" class="login-btn">Login</a>
+  </div>
+</nav>
+<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<div class="mob-overlay" id="mobOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-back-btns">
+    <a href="labs.html" class="sidebar-back-btn"><i class="fa-solid fa-arrow-left"></i>Back to Labs</a>
+  </div>
+  <div class="sidebar-brand">
+    <i class="fa-solid fa-cloud"></i>
+    <span>Cloud Computing</span>
+  </div>
+  <div class="sidebar-label">Lab Sections</div>
+
+  <div class="nav-item open" data-nav="overview"><i class="fa-solid fa-circle-info icon"></i><span>Overview</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav open" data-sub="overview">
+    <a href="#what-is" class="sub-item">What is Cloud</a>
+    <a href="#characteristics" class="sub-item">Key Characteristics</a>
+  </div>
+
+  <div class="nav-item" data-nav="models"><i class="fa-solid fa-layer-group icon"></i><span>Service Models</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="models">
+    <a href="#iaas" class="sub-item">IaaS</a>
+    <a href="#paas" class="sub-item">PaaS</a>
+    <a href="#saas" class="sub-item">SaaS</a>
+  </div>
+
+  <div class="nav-item" data-nav="deploy"><i class="fa-solid fa-server icon" style="color:var(--inf)"></i><span>Deployment Models</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="deploy">
+    <a href="#public-cloud" class="sub-item">Public Cloud</a>
+    <a href="#private-cloud" class="sub-item">Private Cloud</a>
+    <a href="#hybrid-cloud" class="sub-item">Hybrid Cloud</a>
+  </div>
+
+  <div class="nav-item" data-nav="providers"><i class="fa-brands fa-aws icon" style="color:var(--aws)"></i><span>Major Providers</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="providers">
+    <a href="#aws" class="sub-item">AWS</a>
+    <a href="#azure" class="sub-item">Azure</a>
+    <a href="#gcp" class="sub-item">GCP</a>
+  </div>
+
+  <div class="nav-item" data-nav="services"><i class="fa-solid fa-cubes icon" style="color:var(--pu)"></i><span>Core Services</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="services">
+    <a href="#compute" class="sub-item">Compute</a>
+    <a href="#storage" class="sub-item">Storage</a>
+    <a href="#networking" class="sub-item">Networking</a>
+    <a href="#database" class="sub-item">Databases</a>
+  </div>
+
+  <div class="nav-item" data-nav="security"><i class="fa-solid fa-shield-halved icon" style="color:var(--wn)"></i><span>Security & IAM</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="security">
+    <a href="#iam" class="sub-item">IAM Policies</a>
+    <a href="#security-bp" class="sub-item">Security Best Practices</a>
+  </div>
+
+  <div class="nav-item" data-nav="cost"><i class="fa-solid fa-dollar-sign icon" style="color:var(--gd)"></i><span>Cost Management</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="cost">
+    <a href="#pricing" class="sub-item">Pricing Models</a>
+    <a href="#optimization" class="sub-item">Cost Optimization</a>
+  </div>
+
+  <div class="nav-item" data-nav="hands"><i class="fa-solid fa-terminal icon" style="color:var(--ac)"></i><span>Hands-On Labs</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="hands">
+    <a href="#lab-ec2" class="sub-item">Launch EC2 Instance</a>
+    <a href="#lab-s3" class="sub-item">S3 Bucket Setup</a>
+    <a href="#lab-vpc" class="sub-item">VPC & Subnets</a>
+  </div>
+
+  <div class="nav-item" data-nav="ref"><i class="fa-solid fa-bookmark icon"></i><span>Quick Reference</span><i class="fa-solid fa-chevron-right arrow"></i></div>
+  <div class="sub-nav" data-sub="ref">
+    <a href="#ref-card" class="sub-item">CLI Cheat Sheet</a>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--inf);margin-right:6px"></i>Cloud Computing - Complete Lab</div>
+    <div class="topbar-right">
+      <span class="text-xs" style="color:var(--mt)" id="progText">0%</span>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+  </div>
+
+<div class="content">
+
+<!-- HERO -->
+<div class="hero-mini reveal">
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--inf);margin-bottom:10px">Enterprise Cloud Lab</div>
+  <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">Cloud <span style="color:var(--aws)">Computing</span></h1>
+  <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">From IaaS to SaaS — master cloud service models, deployment architectures, provider configurations, and hands-on labs.</p>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
+    <span class="st st-aw"><i class="fa-solid fa-circle" style="font-size:5px"></i> AWS</span>
+    <span class="st st-az"><i class="fa-solid fa-circle" style="font-size:5px"></i> Azure</span>
+    <span class="st st-gc"><i class="fa-solid fa-circle" style="font-size:5px"></i> GCP</span>
+    <span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> IaaS / PaaS / SaaS</span>
+    <span class="st st-p"><i class="fa-solid fa-circle" style="font-size:5px"></i> IAM & Security</span>
+  </div>
+</div>
+
+<!-- ===== 1. OVERVIEW ===== -->
+<div class="sec" id="overview">
+  <div class="reveal">
+    <div class="sec-badge inf-b"><i class="fa-solid fa-circle-info"></i> Section 01</div>
+    <h2 class="sec-title">What is Cloud Computing?</h2>
+    <p class="sec-desc">On-demand delivery of computing resources over the internet with pay-as-you-go pricing.</p>
+  </div>
+  <div id="what-is" class="reveal">
+    <div class="imgf img-center" style="margin-bottom:20px">
+      <img src="https://zd-brightspot.s3.us-east-1.amazonaws.com/wp-content/uploads/2021/07/09134159/38-3-e1715636964776.png" alt="Cloud Computing Overview">
+      <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cloud Computing Overview</div>
+    </div>
+  </div>
+  <div id="characteristics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px" class="reveal">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-arrows-rotate"></i></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">On-Demand Self-Service</h3>
+      <p style="font-size:12px;color:var(--mt)">Provision resources automatically without human interaction.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(0,229,160,.1);color:var(--ac)"><i class="fa-solid fa-expand"></i></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Broad Network Access</h3>
+      <p style="font-size:12px;color:var(--mt)">Access via standard mechanisms from any device.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(240,192,64,.1);color:var(--gd)"><i class="fa-solid fa-layer-group"></i></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Resource Pooling</h3>
+      <p style="font-size:12px;color:var(--mt)">Multi-tenant model with dynamic assignment.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-gauge-simple-high"></i></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Rapid Elasticity</h3>
+      <p style="font-size:12px;color:var(--mt)">Scale out/in quickly to match demand.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(255,153,0,.1);color:var(--aws)"><i class="fa-solid fa-chart-line"></i></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Measured Service</h3>
+      <p style="font-size:12px;color:var(--mt)">Pay only for what you use — metered billing.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 2. SERVICE MODELS ===== -->
+<div class="sec" id="models">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-layer-group"></i> Section 02</div>
+    <h2 class="sec-title">Cloud Service Models</h2>
+    <p class="sec-desc">Three core service models with different levels of managed responsibility.</p>
+  </div>
+
+  <div class="reveal" style="margin-bottom:20px">
+    <div class="imgf img-center">
+      <img src="https://s7280.pcdn.co/wp-content/uploads/2017/09/iaas-paas-saas-comparison.jpg.optimal.jpg" alt="Service Models">
+      <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> IaaS / PaaS / SaaS Stack</div>
+    </div>
+  </div>
+
+  <div id="iaas" class="card reveal" style="border-color:rgba(59,184,245,.25);margin-bottom:14px">
+    <div class="card-icon" style="background:rgba(59,184,245,.1);color:var(--inf)"><i class="fa-solid fa-server"></i></div>
+    <h3 style="font-size:16px;font-weight:700;color:var(--inf);margin-bottom:4px">IaaS — Infrastructure as a Service</h3>
+    <span class="st st-b" style="margin-bottom:8px"><i class="fa-solid fa-circle" style="font-size:5px"></i> You manage: OS, Runtime, Data, Apps</span>
+    <p style="font-size:13px;color:var(--mt);margin-bottom:8px">Virtual machines, storage, networking. Provider manages physical hardware.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">AWS EC2</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">Azure VMs</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">GCP Compute Engine</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(59,184,245,.08);color:var(--inf)">DigitalOcean Droplets</span>
+    </div>
+  </div>
+
+  <div id="paas" class="card reveal" style="border-color:rgba(0,229,160,.25);margin-bottom:14px">
+    <div class="card-icon" style="background:rgba(0,229,160,.1);color:var(--ac)"><i class="fa-solid fa-code"></i></div>
+    <h3 style="font-size:16px;font-weight:700;color:var(--ac);margin-bottom:4px">PaaS — Platform as a Service</h3>
+    <span class="st st-g" style="margin-bottom:8px"><i class="fa-solid fa-circle" style="font-size:5px"></i> You manage: Data, Apps only</span>
+    <p style="font-size:13px;color:var(--mt);margin-bottom:8px">Runtime, OS, middleware managed by provider. Focus on code.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(0,229,160,.08);color:var(--ac)">AWS Elastic Beanstalk</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(0,229,160,.08);color:var(--ac)">Azure App Service</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(0,229,160,.08);color:var(--ac)">GCP App Engine</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(0,229,160,.08);color:var(--ac)">Heroku</span>
+    </div>
+  </div>
+
+  <div id="saas" class="card reveal" style="border-color:rgba(168,124,255,.25)">
+    <div class="card-icon" style="background:rgba(168,124,255,.1);color:var(--pu)"><i class="fa-solid fa-globe"></i></div>
+    <h3 style="font-size:16px;font-weight:700;color:var(--pu);margin-bottom:4px">SaaS — Software as a Service</h3>
+    <span class="st st-p" style="margin-bottom:8px"><i class="fa-solid fa-circle" style="font-size:5px"></i> You manage: Nothing — fully managed</span>
+    <p style="font-size:13px;color:var(--mt);margin-bottom:8px">Complete application delivered over the browser. Provider manages everything.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Office 365</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Gmail / Workspace</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Salesforce</span>
+      <span class="mono" style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(168,124,255,.08);color:var(--pu)">Slack</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. DEPLOYMENT MODELS ===== -->
+<div class="sec" id="deploy">
+  <div class="reveal">
+    <div class="sec-badge inf-b"><i class="fa-solid fa-server"></i> Section 03</div>
+    <h2 class="sec-title">Deployment Models</h2>
+    <p class="sec-desc">How cloud infrastructure is hosted and who has access to it.</p>
+  </div>
+  <div class="reveal" style="margin-bottom:16px">
+    <div class="imgf img-center">
+      <img src="https://cdn.educba.com/academy/wp-content/uploads/2023/10/Cloud-Deployment-Models.jpg" alt="Deployment Models">
+      <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cloud Deployment Models</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px" class="reveal">
+    <div class="card" id="public-cloud">
+      <h3 style="font-size:15px;font-weight:700;color:var(--inf);margin-bottom:6px"><i class="fa-solid fa-cloud" style="margin-right:6px"></i>Public Cloud</h3>
+      <p style="font-size:12px;color:var(--mt);margin-bottom:8px">Shared infrastructure, open to the public. Pay-per-use. Highest scalability.</p>
+      <div style="font-size:11px;color:var(--mt);line-height:1.8">
+        <p><span style="color:var(--ac)">✓</span> No upfront cost</p>
+        <p><span style="color:var(--ac)">✓</span> Infinite scalability</p>
+        <p><span style="color:var(--wn)">✗</span> Less control over infrastructure</p>
+        <p><span style="color:var(--wn)">✗</span> Compliance concerns</p>
+      </div>
+    </div>
+    <div class="card" id="private-cloud">
+      <h3 style="font-size:15px;font-weight:700;color:var(--gd);margin-bottom:6px"><i class="fa-solid fa-building" style="margin-right:6px"></i>Private Cloud</h3>
+      <p style="font-size:12px;color:var(--mt);margin-bottom:8px">Dedicated to one organization. On-premises or hosted. Full control.</p>
+      <div style="font-size:11px;color:var(--mt);line-height:1.8">
+        <p><span style="color:var(--ac)">✓</span> Full control & customization</p>
+        <p><span style="color:var(--ac)">✓</span> Compliance & security</p>
+        <p><span style="color:var(--wn)">✗</span> High upfront cost</p>
+        <p><span style="color:var(--wn)">✗</span> Limited scalability</p>
+      </div>
+    </div>
+    <div class="card" id="hybrid-cloud">
+      <h3 style="font-size:15px;font-weight:700;color:var(--pu);margin-bottom:6px"><i class="fa-solid fa-code-merge" style="margin-right:6px"></i>Hybrid Cloud</h3>
+      <p style="font-size:12px;color:var(--mt);margin-bottom:8px">Mix of public + private. Workloads move between them. Best of both.</p>
+      <div style="font-size:11px;color:var(--mt);line-height:1.8">
+        <p><span style="color:var(--ac)">✓</span> Flexibility & cost balance</p>
+        <p><span style="color:var(--ac)">✓</span> Burst to public on demand</p>
+        <p><span style="color:var(--wn)">✗</span> Complex networking</p>
+        <p><span style="color:var(--wn)">✗</span> Requires integration skills</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. MAJOR PROVIDERS ===== -->
+<div class="sec" id="providers">
+  <div class="reveal">
+    <div class="sec-badge aws-b"><i class="fa-brands fa-aws"></i> Section 04</div>
+    <h2 class="sec-title">Major Cloud Providers</h2>
+    <p class="sec-desc">The big three cloud platforms compared.</p>
+  </div>
+
+  <div class="tabs reveal" id="prov-tabs">
+    <button class="tbtn active" onclick="switchTab('prov','aws',this)"><i class="fa-brands fa-aws" style="margin-right:4px"></i>AWS</button>
+    <button class="tbtn" onclick="switchTab('prov','azure',this)"><i class="fa-brands fa-microsoft" style="margin-right:4px"></i>Azure</button>
+    <button class="tbtn" onclick="switchTab('prov','gcp',this)"><i class="fa-brands fa-google" style="margin-right:4px"></i>GCP</button>
+  </div>
+
+  <div id="prov-aws" class="tpanel active">
+    <div class="card reveal" id="aws">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <i class="fa-brands fa-aws" style="font-size:32px;color:var(--aws)"></i>
+        <div><h3 style="font-size:18px;font-weight:700;color:var(--aws)">Amazon Web Services</h3><p style="font-size:12px;color:var(--mt)">Market leader — 32% market share</p></div>
+      </div>
+     <div class="imgf img-center" style="margin-bottom:16px; text-align: center;">
+    <img src="https://prod-assets.cosmic.aws.dev/a/3EyRhOnzQ7tprmw5ngJ1q3SAHT2/Chat.webp" alt="AWS Logo" style="max-width:650px; width: 100%; height: auto; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Amazon Web Services</div>
+</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">EC2</span><p style="font-size:11px;color:var(--mt)">Virtual servers</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">S3</span><p style="font-size:11px;color:var(--mt)">Object storage</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">RDS</span><p style="font-size:11px;color:var(--mt)">Managed databases</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">Lambda</span><p style="font-size:11px;color:var(--mt)">Serverless functions</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">VPC</span><p style="font-size:11px;color:var(--mt)">Virtual networks</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--aws)">CloudFront</span><p style="font-size:11px;color:var(--mt)">CDN</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="prov-azure" class="tpanel">
+    <div class="card reveal" id="azure">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <i class="fa-brands fa-microsoft" style="font-size:32px;color:var(--azure)"></i>
+        <div><h3 style="font-size:18px;font-weight:700;color:var(--azure)">Microsoft Azure</h3><p style="font-size:12px;color:var(--mt)">Enterprise favorite — 23% market share</p></div>
+      </div>
+      <div class="imgf img-center" style="margin-bottom:16px">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Microsoft_Azure.svg/1200px-Microsoft_Azure.svg.png" alt="Azure Logo" style="max-width:300px">
+        <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Microsoft Azure</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">Virtual Machines</span><p style="font-size:11px;color:var(--mt)">Windows & Linux VMs</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">Blob Storage</span><p style="font-size:11px;color:var(--mt)">Object storage</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">SQL Database</span><p style="font-size:11px;color:var(--mt)">Managed SQL Server</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">Functions</span><p style="font-size:11px;color:var(--mt)">Serverless compute</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">Active Directory</span><p style="font-size:11px;color:var(--mt)">Identity management</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--azure)">DevOps</span><p style="font-size:11px;color:var(--mt)">CI/CD pipelines</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="prov-gcp" class="tpanel">
+    <div class="card reveal" id="gcp">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <i class="fa-brands fa-google" style="font-size:32px;color:var(--gcp)"></i>
+        <div><h3 style="font-size:18px;font-weight:700;color:var(--gcp)">Google Cloud Platform</h3><p style="font-size:12px;color:var(--mt)">Data & AI leader — 11% market share</p></div>
+      </div>
+      <div class="imgf img-center" style="margin-bottom:16px">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Google_Cloud_logo.svg/1200px-Google_Cloud_logo.svg.png" alt="GCP Logo" style="max-width:300px">
+        <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Google Cloud Platform</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">Compute Engine</span><p style="font-size:11px;color:var(--mt)">Virtual machines</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">Cloud Storage</span><p style="font-size:11px;color:var(--mt)">Object storage</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">Cloud SQL</span><p style="font-size:11px;color:var(--mt)">MySQL / PostgreSQL</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">Cloud Functions</span><p style="font-size:11px;color:var(--mt)">Serverless</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">BigQuery</span><p style="font-size:11px;color:var(--mt)">Data analytics</p></div>
+        <div style="padding:10px;border-radius:8px;background:rgba(0,0,0,.2)"><span class="mono" style="font-size:11px;color:var(--gcp)">Kubernetes Engine</span><p style="font-size:11px;color:var(--mt)">Managed GKE</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Provider Comparison Table -->
+  <div class="card reveal" style="margin-top:16px">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px"><i class="fa-solid fa-table-columns" style="color:var(--ac);margin-right:6px"></i>Provider Comparison</h3>
+    <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Feature</th><th style="color:var(--aws)">AWS</th><th style="color:var(--azure)">Azure</th><th style="color:var(--gcp)">GCP</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Market Share</td><td>32%</td><td>23%</td><td>11%</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Regions</td><td>33</td><td>60+</td><td>40</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">VM Types</td><td>500+</td><td>300+</td><td>100+</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">AI/ML Strength</td><td><span class="st st-y">Strong</span></td><td><span class="st st-y">Strong</span></td><td><span class="st st-g">Best</span></td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Enterprise Integration</td><td><span class="st st-y">Good</span></td><td><span class="st st-g">Best</span></td><td><span class="st st-y">Good</span></td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Pricing</td><td><span class="st st-b">Flexible</span></td><td><span class="st st-y">Moderate</span></td><td><span class="st st-g">Competitive</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5. CORE SERVICES ===== -->
+<div class="sec" id="services">
+  <div class="reveal">
+    <div class="sec-badge"><i class="fa-solid fa-cubes"></i> Section 05</div>
+    <h2 class="sec-title">Core Cloud Services</h2>
+  </div>
+
+  <div class="tabs reveal" id="svc-tabs">
+    <button class="tbtn active" onclick="switchTab('svc','comp',this)">Compute</button>
+    <button class="tbtn" onclick="switchTab('svc','stor',this)">Storage</button>
+    <button class="tbtn" onclick="switchTab('svc','net',this)">Networking</button>
+    <button class="tbtn" onclick="switchTab('svc','db',this)">Databases</button>
+  </div>
+
+  <div id="svc-comp" class="tpanel active">
+    <div class="card reveal" id="compute">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-microchip" style="color:var(--inf);margin-right:6px"></i>Compute Services</h3>
+<div class="imgf img-center" style="text-align: center; margin-bottom: 16px;">
+    <img src="https://media.licdn.com/dms/image/v2/D5612AQEkiYcRrxP5Gw/article-cover_image-shrink_720_1280/B56Zgt2FCRHcAY-/0/1753115808440?e=2147483647&v=beta&t=Za8E1o8WH3-A3El81KxeCa7LTD2Vg0cU4M_8z3Dk34A" alt="EC2 Instances" style="max-width: 650px; width: 100%; height: auto; display: block; margin: 0 auto;">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> AWS EC2 Instance Types</div>
+</div>
+      </div>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">aws-cli — Launch EC2</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># Launch an EC2 instance</span>
+<span class="cp">$</span> <span class="caw">aws ec2 run-instances</span> \
+    <span class="cv">--image-id</span> <span class="cv">ami-0c02fb55956c7d316</span> \
+    <span class="cv">--count</span> <span class="cv">1</span> \
+    <span class="cv">--instance-type</span> <span class="cv">t3.micro</span> \
+    <span class="cv">--key-name</span> <span class="cv">my-key-pair</span> \
+    <span class="cv">--security-group-ids</span> <span class="cv">sg-0123456789abcdef0</span> \
+    <span class="cv">--subnet-id</span> <span class="cv">subnet-0123456789abcdef0</span> \
+    <span class="cv">--tag-specifications</span> <span class="cv">"ResourceType=instance,Tags=[{Key=Name,Value=WebServer}]"</span>
+
+<span class="cc"># Describe running instances</span>
+<span class="cp">$</span> <span class="caw">aws ec2 describe-instances</span> \
+    <span class="cv">--filters</span> <span class="cv">"Name=instance-state-name,Values=running"</span>
+
+<span class="cc"># Stop instance</span>
+<span class="cp">$</span> <span class="caw">aws ec2 stop-instances</span> <span class="cv">--instance-ids</span> <span class="cv">i-0abcd1234efgh5678</span></div></div>
+    </div>
+  </div>
+
+  <div id="svc-stor" class="tpanel">
+    <div class="card reveal" id="storage">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-hard-drive" style="color:var(--gd);margin-right:6px"></i>Storage Services</h3>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">aws-cli — S3 Bucket</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># Create S3 bucket</span>
+<span class="cp">$</span> <span class="caw">aws s3 mb</span> <span class="cv">s3://my-app-bucket-2024</span> \
+    <span class="cv">--region</span> <span class="cv">us-east-1</span>
+
+<span class="cc"># Upload file</span>
+<span class="cp">$</span> <span class="caw">aws s3 cp</span> <span class="cv">index.html</span> <span class="cv">s3://my-app-bucket-2024/</span>
+
+<span class="cc"># Enable versioning</span>
+<span class="cp">$</span> <span class="caw">aws s3api put-bucket-versioning</span> \
+    <span class="cv">--bucket</span> <span class="cv">my-app-bucket-2024</span> \
+    <span class="cv">--versioning-configuration</span> <span class="cv">Status=Enabled</span>
+
+<span class="cc"># Set bucket policy (public read)</span>
+<span class="cp">$</span> <span class="caw">aws s3api put-bucket-policy</span> \
+    <span class="cv">--bucket</span> <span class="cv">my-app-bucket-2024</span> \
+    <span class="cv">--policy</span> <span class="cv">file://policy.json</span>
+
+<span class="cc"># List all buckets</span>
+<span class="cp">$</span> <span class="caw">aws s3 ls</span></div></div>
+    </div>
+  </div>
+
+  <div id="svc-net" class="tpanel">
+    <div class="card reveal" id="networking">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-network-wired" style="color:var(--ac);margin-right:6px"></i>Networking Services</h3>
+      <div class="imgf img-center" style="margin-bottom:16px">
+        <img src="https://docs.aws.amazon.com/vpc/latest/userguide/images/vpc-diagram.png" alt="VPC" style="max-width:500px">
+        <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> AWS VPC Architecture</div>
+      </div>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">aws-cli — VPC Setup</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># Create VPC</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-vpc</span> \
+    <span class="cv">--cidr-block</span> <span class="cv">10.0.0.0/16</span> \
+    <span class="cv">--tag-specifications</span> <span class="cv">"ResourceType=vpc,Tags=[{Key=Name,Value=MyVPC}]"</span>
+
+<span class="cc"># Create public subnet</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-subnet</span> \
+    <span class="cv">--vpc-id</span> <span class="cv">vpc-0123456789abcdef0</span> \
+    <span class="cv">--cidr-block</span> <span class="cv">10.0.1.0/24</span> \
+    <span class="cv">--availability-zone</span> <span class="cv">us-east-1a</span>
+
+<span class="cc"># Create Internet Gateway & attach</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-internet-gateway</span>
+<span class="cp">$</span> <span class="caw">aws ec2 attach-internet-gateway</span> \
+    <span class="cv">--internet-gateway-id</span> <span class="cv">igw-0abcdef1234567890</span> \
+    <span class="cv">--vpc-id</span> <span class="cv">vpc-0123456789abcdef0</span>
+
+<span class="cc"># Create route table with default route</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-route</span> \
+    <span class="cv">--route-table-id</span> <span class="cv">rtb-0123456789abcdef0</span> \
+    <span class="cv">--destination-cidr-block</span> <span class="cv">0.0.0.0/0</span> \
+    <span class="cv">--gateway-id</span> <span class="cv">igw-0abcdef1234567890</span></div></div>
+    </div>
+  </div>
+
+  <div id="svc-db" class="tpanel">
+    <div class="card reveal" id="database">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-database" style="color:var(--pu);margin-right:6px"></i>Database Services</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+        <div style="padding:14px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--bdr)">
+          <p class="mono" style="font-size:12px;color:var(--aws);margin-bottom:4px">Amazon RDS</p>
+          <p style="font-size:11px;color:var(--mt)">MySQL, PostgreSQL, MariaDB, SQL Server, Oracle</p>
+        </div>
+        <div style="padding:14px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--bdr)">
+          <p class="mono" style="font-size:12px;color:var(--aws);margin-bottom:4px">Amazon DynamoDB</p>
+          <p style="font-size:11px;color:var(--mt)">Serverless NoSQL, single-digit ms latency</p>
+        </div>
+        <div style="padding:14px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--bdr)">
+          <p class="mono" style="font-size:12px;color:var(--azure);margin-bottom:4px">Azure Cosmos DB</p>
+          <p style="font-size:11px;color:var(--mt)">Multi-model, global distribution</p>
+        </div>
+        <div style="padding:14px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--bdr)">
+          <p class="mono" style="font-size:12px;color:var(--gcp);margin-bottom:4px">Cloud Spanner</p>
+          <p style="font-size:11px;color:var(--mt)">Globally consistent relational DB</p>
+        </div>
+      </div>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">aws-cli — RDS MySQL</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># Create RDS subnet group</span>
+<span class="cp">$</span> <span class="caw">aws rds create-db-subnet-group</span> \
+    <span class="cv">--db-subnet-group-name</span> <span class="cv">my-db-subnet-group</span> \
+    <span class="cv">--db-subnet-group-description</span> <span class="cv">"My DB Subnet Group"</span> \
+    <span class="cv">--subnet-ids</span> <span class="cv">subnet-abc subnet-def</span>
+
+<span class="cc"># Create MySQL RDS instance</span>
+<span class="cp">$</span> <span class="caw">aws rds create-db-instance</span> \
+    <span class="cv">--db-instance-identifier</span> <span class="cv">my-mysql-db</span> \
+    <span class="cv">--db-instance-class</span> <span class="cv">db.t3.micro</span> \
+    <span class="cv">--engine</span> <span class="cv">mysql</span> \
+    <span class="cv">--master-username</span> <span class="cv">admin</span> \
+    <span class="cv">--master-user-password</span> <span class="cv">MyStr0ngP@ss!</span> \
+    <span class="cv">--allocated-storage</span> <span class="cv">20</span> \
+    <span class="cv">--db-subnet-group-name</span> <span class="cv">my-db-subnet-group</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 6. SECURITY ===== -->
+<div class="sec" id="security">
+  <div class="reveal">
+    <div class="sec-badge sec-b"><i class="fa-solid fa-shield-halved"></i> Section 06</div>
+    <h2 class="sec-title">Security & IAM</h2>
+  </div>
+  <div id="iam" class="card reveal" style="margin-bottom:14px">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-user-shield" style="color:var(--wn);margin-right:6px"></i>IAM Policy Example</h3>
+    <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">iam-policy.json</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body">{
+  <span class="ck">"Version"</span>: <span class="cv">"2012-10-17"</span>,
+  <span class="ck">"Statement"</span>: [
+    {
+      <span class="ck">"Effect"</span>: <span class="cv">"Allow"</span>,
+      <span class="ck">"Action"</span>: [
+        <span class="cv">"ec2:DescribeInstances"</span>,
+        <span class="cv">"ec2:StartInstances"</span>,
+        <span class="cv">"ec2:StopInstances"</span>,
+        <span class="cv">"ec2:RebootInstances"</span>
+      ],
+      <span class="ck">"Resource"</span>: <span class="cv">"arn:aws:ec2:us-east-1:123456789012:instance/*"</span>,
+      <span class="ck">"Condition"</span>: {
+        <span class="ck">"IpAddress"</span>: {
+          <span class="cv">"aws:SourceIp"</span>: [<span class="cv">"203.0.113.0/24"</span>]
+        }
+      }
+    },
+    {
+      <span class="ck">"Effect"</span>: <span class="cv">"Deny"</span>,
+      <span class="ck">"Action"</span>: <span class="cv">"ec2:TerminateInstances"</span>,
+      <span class="ck">"Resource"</span>: <span class="cv">"*"</span>
+    }
+  ]
+}</div></div>
+  </div>
+  <div id="security-bp" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px" class="reveal">
+    <div class="card" style="border-color:rgba(0,229,160,.25)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--ac);margin-bottom:8px"><i class="fa-solid fa-check-circle" style="margin-right:6px"></i>Do</h3>
+      <ul style="font-size:12px;color:var(--mt);list-style:none;line-height:2">
+        <li><span style="color:var(--ac)">✓</span> Use MFA for all users</li>
+        <li><span style="color:var(--ac)">✓</span> Apply least-privilege IAM</li>
+        <li><span style="color:var(--ac)">✓</span> Enable CloudTrail logging</li>
+        <li><span style="color:var(--ac)">✓</span> Encrypt data at rest & in transit</li>
+        <li><span style="color:var(--ac)">✓</span> Use security groups not NACLs for app control</li>
+        <li><span style="color:var(--ac)">✓</span> Rotate access keys every 90 days</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:rgba(255,99,71,.25)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--wn);margin-bottom:8px"><i class="fa-solid fa-xmark-circle" style="margin-right:6px"></i>Don't</h3>
+      <ul style="font-size:12px;color:var(--mt);list-style:none;line-height:2">
+        <li><span style="color:var(--wn)">✗</span> Never use root account for daily tasks</li>
+        <li><span style="color:var(--wn)">✗</span> Never embed credentials in code</li>
+        <li><span style="color:var(--wn)">✗</span> Never open 0.0.0.0/0 to SSH/RDP</li>
+        <li><span style="color:var(--wn)">✗</span> Never store sensitive data in S3 without encryption</li>
+        <li><span style="color:var(--wn)">✗</span> Never skip security group review</li>
+        <li><span style="color:var(--wn)">✗</span> Never ignore IAM Access Analyzer findings</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 7. COST MANAGEMENT ===== -->
+<div class="sec" id="cost">
+  <div class="reveal">
+    <div class="sec-badge" style="background:rgba(240,192,64,.1);color:var(--gd);border-color:rgba(240,192,64,.2)"><i class="fa-solid fa-dollar-sign"></i> Section 07</div>
+    <h2 class="sec-title">Cost Management</h2>
+  </div>
+  <div id="pricing" class="card reveal" style="margin-bottom:14px">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-tags" style="color:var(--gd);margin-right:6px"></i>Pricing Models</h3>
+    <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Model</th><th>Description</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">On-Demand</td><td>Pay per hour/second</td><td>Short-term, unpredictable workloads</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Reserved</td><td>1-3 year commitment, up to 72% off</td><td>Steady-state production</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Spot</td><td>Bid on unused capacity, up to 90% off</td><td>Batch jobs, fault-tolerant work</td></tr>
+          <tr><td style="color:var(--fg);font-family:'Space Grotesk'">Savings Plans</td><span style="font-size:12px">Commit to $/hr for 1-3 years</span><td>Mixed usage across services</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="optimization" class="card reveal">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><i class="fa-solid fa-chart-pie" style="color:var(--gd);margin-right:6px"></i>Cost Optimization Commands</h3>
+    <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">cost-check.sh</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># AWS Cost Explorer — last month summary</span>
+<span class="cp">$</span> <span class="caw">aws ce get-cost-and-usage</span> \
+    <span class="cv">--time-period</span> <span class="cv">Start=2024-01-01,End=2024-01-31</span> \
+    <span class="cv">--granularity</span> <span class="cv">MONTHLY</span> \
+    <span class="cv">--metrics</span> <span class="cv">BlendedCost</span> \
+    <span class="cv">--group-by</span> <span class="cv">Type=DIMENSION,Key=SERVICE</span>
+
+<span class="cc"># List all idle EBS volumes</span>
+<span class="cp">$</span> <span class="caw">aws ec2 describe-volumes</span> \
+    <span class="cv">--filters</span> <span class="cv">"Name=status,Values=available"</span> \
+    <span class="cv">--query</span> <span class="cv">'Volumes[?Size>10].{ID:VolumeId,Size:Size,State:State}'</span>
+
+<span class="cc"># List unattached EIPs (costing $3.60/mo each)</span>
+<span class="cp">$</span> <span class="caw">aws ec2 describe-addresses</span> \
+    <span class="cv">--filters</span> <span class="cv">"Name=association-id,Values=*"</span> \
+    <span class="cv">--query</span> <span class="cv">'Addresses[?AssociationId==null].{IP:PublicIp,AllocId:AllocationId}'</span>
+
+<span class="cc"># Check RightSizing recommendations</span>
+<span class="cp">$</span> <span class="caw">aws compute-optimizer get-recommendations</span> \
+    <span class="cv">--resource-type</span> <span class="cv">Ec2Instance</span></div></div>
+  </div>
+</div>
+
+<!-- ===== 8. HANDS-ON LABS ===== -->
+<div class="sec" id="hands">
+  <div class="reveal">
+    <div class="sec-badge aws-b"><i class="fa-solid fa-terminal"></i> Section 08</div>
+    <h2 class="sec-title">Hands-On Labs</h2>
+  </div>
+
+  <div class="tabs reveal" id="lab-tabs">
+    <button class="tbtn active" onclick="switchTab('lab','ec2',this)">Lab 1: EC2</button>
+    <button class="tbtn" onclick="switchTab('lab','s3',this)">Lab 2: S3</button>
+    <button class="tbtn" onclick="switchTab('lab','vpc',this)">Lab 3: VPC</button>
+  </div>
+
+  <div id="lab-ec2" class="tpanel active">
+    <div class="card reveal" id="lab-ec2">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><span class="st st-aw" style="margin-right:6px">Lab 1</span> Launch a Web Server on EC2</h3>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">lab-ec2-webserver.sh</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc">#!/bin/bash</span>
+<span class="cc"># Step 1: Create key pair</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-key-pair</span> \
+    <span class="cv">--key-name</span> <span class="cv">lab-key</span> \
+    <span class="cv">--query</span> <span class="cv">'KeyMaterial'</span> \
+    <span class="cv">--output</span> <span class="cv">text</span> > <span class="cv">lab-key.pem</span>
+<span class="cp">$</span> <span class="cm">chmod 400 lab-key.pem</span>
+
+<span class="cc"># Step 2: Create security group</span>
+<span class="cp">$</span> <span class="caw">aws ec2 create-security-group</span> \
+    <span class="cv">--group-name</span> <span class="cv">web-sg</span> \
+    <span class="cv">--description</span> <span class="cv">"Web Server SG"</span>
+<span class="cp">$</span> <span class="caw">aws ec2 authorize-security-group-ingress</span> \
+    <span class="cv">--group-name</span> <span class="cv">web-sg</span> \
+    <span class="cv">--protocol</span> <span class="cv">tcp</span> <span class="cv">--port</span> <span class="cv">22</span> <span class="cv">--cidr</span> <span class="cv">0.0.0.0/0</span>
+<span class="cp">$</span> <span class="caw">aws ec2 authorize-security-group-ingress</span> \
+    <span class="cv">--group-name</span> <span class="cv">web-sg</span> \
+    <span class="cv">--protocol</span> <span class="cv">tcp</span> <span class="cv">--port</span> <span class="cv">80</span> <span class="cv">--cidr</span> <span class="cv">0.0.0.0/0</span>
+
+<span class="cc"># Step 3: Launch instance with user data</span>
+<span class="cp">$</span> <span class="caw">aws ec2 run-instances</span> \
+    <span class="cv">--image-id</span> <span class="cv">ami-0c02fb55956c7d316</span> \
+    <span class="cv">--instance-type</span> <span class="cv">t3.micro</span> \
+    <span class="cv">--key-name</span> <span class="cv">lab-key</span> \
+    <span class="cv">--security-groups</span> <span class="cv">web-sg</span> \
+    <span class="cv">--user-data</span> <span class="cv">file://install-web.sh</span>
+
+<span class="cc"># install-web.sh content:</span>
+<span class="ck">#!/bin/bash</span>
+<span class="caw">yum update -y</span>
+<span class="caw">yum install -y httpd</span>
+<span class="caw">systemctl start httpd</span>
+<span class="caw">systemctl enable httpd</span>
+<span class="ck">echo</span> <span class="cv">"&lt;h1&gt;Hello from EC2!&lt;/h1&gt;"</span> > <span class="cv">/var/www/html/index.html</span></div></div>
+    </div>
+  </div>
+
+  <div id="lab-s3" class="tpanel">
+    <div class="card reveal" id="lab-s3">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><span class="st st-aw" style="margin-right:6px">Lab 2</span> Static Website on S3</h3>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">lab-s3-website.sh</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc"># Create bucket (must be globally unique name)</span>
+<span class="cp">$</span> <span class="caw">aws s3 mb</span> <span class="cv">s3://my-static-site-2024-abc</span> \
+    <span class="cv">--region</span> <span class="cv">us-east-1</span>
+
+<span class="cc"># Upload website files</span>
+<span class="cp">$</span> <span class="caw">aws s3 sync</span> <span class="cv">./website/</span> <span class="cv">s3://my-static-site-2024-abc/</span>
+
+<span class="cc"># Enable static website hosting</span>
+<span class="cp">$</span> <span class="caw">aws s3 website</span> <span class="cv">s3://my-static-site-2024-abc/</span> \
+    <span class="cv">--index-document</span> <span class="cv">index.html</span> \
+    <span class="cv">--error-document</span> <span class="cv">error.html</span>
+
+<span class="cc"># Set public read policy</span>
+<span class="cp">$</span> <span class="caw">aws s3api put-bucket-policy</span> \
+    <span class="cv">--bucket</span> <span class="cv">my-static-site-2024-abc</span> \
+    <span class="cv">--policy</span> <span class="cv">'{"Statement":[{"Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::my-static-site-2024-abc/*"}]}'</span>
+
+<span class="cc"># Open website</span>
+<span class="cp">$</span> <span class="cm">echo "Site URL: http://my-static-site-2024-abc.s3-website-us-east-1.amazonaws.com"</span></div></div>
+    </div>
+  </div>
+
+  <div id="lab-vpc" class="tpanel">
+    <div class="card reveal" id="lab-vpc">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px"><span class="st st-aw" style="margin-right:6px">Lab 3</span> Build a Custom VPC</h3>
+      <div class="code"><div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">lab-vpc-custom.sh</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div><div class="code-body"><span class="cc">#!/bin/bash</span>
+<span class="ck">VPC_CIDR=</span><span class="cv">"10.1.0.0/16"</span>
+<span class="ck">REGION=</span><span class="cv">"us-east-1"</span>
+
+<span class="cc"># Create VPC</span>
+<span class="ck">VPC_ID</span>=$(<span class="caw">aws ec2 create-vpc</span> \
+    <span class="cv">--cidr-block</span> <span class="ck">$VPC_CIDR</span> \
+    <span class="cv">--query</span> <span class="cv">'Vpc.VpcId'</span> --output <span class="cv">text</span>)
+<span class="cp">echo</span> <span class="cv">"Created VPC: $VPC_ID"</span>
+
+<span class="cc"># Create public & private subnets</span>
+<span class="ck">PUB_SUB</span>=$(<span class="caw">aws ec2 create-subnet</span> \
+    <span class="cv">--vpc-id</span> <span class="ck">$VPC_ID</span> --cidr-block <span class="cv">"10.1.1.0/24"</span> \
+    --availability-zone <span class="cv">"${REGION}a"</span> \
+    --query <span class="cv">'Subnet.SubnetId'</span> --output <span class="cv">text</span>)
+
+<span class="ck">PRI_SUB</span>=$(<span class="caw">aws ec2 create-subnet</span> \
+    <span class="cv">--vpc-id</span> <span class="ck">$VPC_ID</span> --cidr-block <span class="cv">"10.1.10.0/24"</span> \
+    --availability-zone <span class="cv">"${REGION}a"</span> \
+    --query <span class="cv">'Subnet.SubnetId'</span> --output <span class="cv">text</span>)
+
+<span class="cc"># Enable auto-assign public IP on public subnet</span>
+<span class="cp">$</span> <span class="caw">aws ec2 modify-subnet-attribute</span> \
+    <span class="cv">--subnet-id</span> <span class="ck">$PUB_SUB</span> \
+    <span class="cv">--map-public-ip-on-launch</span>
+
+<span class="cc"># Create IGW, attach, add route</span>
+<span class="ck">IGW_ID</span>=$(<span class="caw">aws ec2 create-internet-gateway</span> \
+    --query <span class="cv">'InternetGateway.InternetGatewayId'</span> --output <span class="cv">text</span>)
+<span class="cp">$</span> <span class="caw">aws ec2 attach-internet-gateway</span> \
+    --internet-gateway-id <span class="ck">$IGW_ID</span> --vpc-id <span class="ck">$VPC_ID</span>
+
+<span class="ck">RT_ID</span>=$(<span class="caw">aws ec2 describe-route-tables</span> \
+    --filters <span class="cv">"Name=vpc-id,Values=${VPC_ID}"</span> \
+    --query <span class="cv">'RouteTables[0].RouteTableId'</span> --output <span class="cv">text</span>)
+<span class="cp">$</span> <span class="caw">aws ec2 create-route</span> \
+    --route-table-id <span class="ck">$RT_ID</span> \
+    --destination-cidr-block <span class="cv">"0.0.0.0/0"</span> \
+    --gateway-id <span class="ck">$IGW_ID</span>
+
+<span class="cp">echo</span> <span class="cv">"Public Subnet:  $PUB_SUB"</span>
+<span class="cp">echo</span> <span class="cv">"Private Subnet: $PRI_SUB"</span>
+<span class="cp">echo</span> <span class="cv">"Internet GW:    $IGW_ID"</span>
+<span class="cp">echo</span> <span class="cv">"VPC complete!"</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 9. QUICK REFERENCE ===== -->
+<div class="sec" id="ref">
+  <div class="reveal"><div class="sec-badge"><i class="fa-solid fa-bookmark"></i> Section 09</div><h2 class="sec-title">CLI Quick Reference</h2></div>
+  <div id="ref-card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px" class="reveal">
+    <div class="card" style="border-color:rgba(255,153,0,.2)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--aws);margin-bottom:12px"><i class="fa-brands fa-aws" style="margin-right:6px"></i>AWS CLI</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Configure</span><span class="mono" style="color:var(--aws)">aws configure</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List S3</span><span class="mono" style="color:var(--aws)">aws s3 ls</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List EC2</span><span class="mono" style="color:var(--aws)">aws ec2 describe-instances</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List VPCs</span><span class="mono" style="color:var(--aws)">aws ec2 describe-vpcs</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">CloudShell</span><span class="mono" style="color:var(--aws)">console.aws.amazon.com/cloudshell</span></div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(0,120,212,.2)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--azure);margin-bottom:12px"><i class="fa-brands fa-microsoft" style="margin-right:6px"></i>Azure CLI</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Login</span><span class="mono" style="color:var(--azure)">az login</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List VMs</span><span class="mono" style="color:var(--azure)">az vm list --output table</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Create VM</span><span class="mono" style="color:var(--azure)">az vm create --resource-group ...</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List Storage</span><span class="mono" style="color:var(--azure)">az storage account list</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Cloud Shell</span><span class="mono" style="color:var(--azure)">shell.azure.com</span></div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(66,133,244,.2)">
+      <h3 style="font-size:14px;font-weight:700;color:var(--gcp);margin-bottom:12px"><i class="fa-brands fa-google" style="margin-right:6px"></i>GCP CLI</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Init</span><span class="mono" style="color:var(--gcp)">gcloud init</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List VMs</span><span class="mono" style="color:var(--gcp)">gcloud compute instances list</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Create VM</span><span class="mono" style="color:var(--gcp)">gcloud compute instances create ...</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">List Buckets</span><span class="mono" style="color:var(--gcp)">gsutil ls</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--mt)">Cloud Shell</span><span class="mono" style="color:var(--gcp)">shell.cloud.google.com</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<div id="toast" class="toast"><i class="fa-solid fa-check-circle" style="color:var(--ac)"></i><span id="toastMsg">Copied!</span></div>
+
+<script>
+function switchTab(g,t,b){const c=b.closest('.sec');c.querySelectorAll('.tbtn').forEach(x=>x.classList.remove('active'));c.querySelectorAll('.tpanel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(g+'-'+t).classList.add('active')}
+function copyCode(btn){const cb=btn.closest('.code').querySelector('.code-body');navigator.clipboard.writeText(cb.innerText).then(()=>showToast('Copied to clipboard!')).catch(()=>{const t=document.createElement('textarea');t.value=cb.innerText;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('Copied to clipboard!')})}
+function showToast(m){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+document.querySelectorAll('.nav-item').forEach(i=>{i.addEventListener('click',()=>{const s=document.querySelector(`[data-sub="${i.dataset.nav}"]`);if(s){i.classList.toggle('open');s.classList.toggle('open')}})});
+const allSecs=document.querySelectorAll('.sec'),subItems=document.querySelectorAll('.sub-item'),navItems=document.querySelectorAll('.nav-item');
+function updateActive(){let cur='';allSecs.forEach(s=>{if(s.getBoundingClientRect().top<140)cur=s.id});subItems.forEach(s=>{s.classList.toggle('active',s.getAttribute('href')==='#'+cur)});navItems.forEach(n=>{const s=document.querySelector(`[data-sub="${n.dataset.nav}"]`);if(s&&s.querySelector('.sub-item.active'))n.classList.add('active')});const h=document.documentElement.scrollHeight-window.innerHeight,pct=h>0?Math.round((window.scrollY/h)*100):0;document.getElementById('progFill').style.width=pct+'%';document.getElementById('progText').textContent=pct+'%'}
+window.addEventListener('scroll',updateActive);
+subItems.forEach(s=>{s.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(s.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});if(window.innerWidth<=900){document.getElementById('sidebar').classList.remove('show');document.getElementById('mobOverlay').classList.remove('show')}})});
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('vis');ro.unobserve(x.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+document.getElementById('mobBtn').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('show');document.getElementById('mobOverlay').classList.toggle('show')});
+document.getElementById('mobOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('show');document.getElementById('mobOverlay').classList.remove('show')});
+updateActive();
+</script>
+</body>
+</html>
