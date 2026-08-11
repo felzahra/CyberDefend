@@ -11,23 +11,6 @@
     <style>
         /* ========== THEME VARIABLES ========== */
         :root {
-            --primary: #00e676; /* الأخضر من الصورة */
-            --primary-fg: #000000;
-            --body-fg: #ffffff;
-            --body-bg: #121212;
-            --body-quiet-color: #b0b0b0;
-            --body-loud-color: #ffffff;
-            --hairline-color: #272727;
-            --border-color: #353535;
-            --darkened-bg: #1e1e1e; /* خلفية الكروت */
-            --selected-bg: #2a2a2a;
-            --selected-row: #242424;
-            --message-warning-bg: #2a251a;
-            --header-bg: #1a1a1a; /* خلفية الشريط العلوي */
-            --link-fg: #00e676;
-        }
-
-        html[data-theme="light"] {
             --primary: #02b3e4;
             --primary-fg: #ffffff;
             --body-fg: #1a2c3e;
@@ -42,6 +25,23 @@
             --message-warning-bg: #fef9e6;
             --header-bg: #ffffff;
             --link-fg: #02b3e4;
+        }
+
+        html[data-theme="dark"] {
+            --primary: #00e676; /* الأخضر من الصورة */
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e; /* خلفية الكروت */
+            --selected-bg: #2a2a2a;
+            --selected-row: #242424;
+            --message-warning-bg: #2a251a;
+            --header-bg: #1a1a1a; /* خلفية الشريط العلوي */
+            --link-fg: #00e676;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,7 +83,7 @@
 
         .content-area { flex: 1; overflow-y: auto; padding: 0 0 40px 0; text-align: center; background: var(--body-bg); }
         
-        /* ========== TOP NAVIGATION BAR (LIKE IMAGE) ========== */
+        /* ========== TOP NAVIGATION BAR & DROPDOWNS ========== */
         .top-nav { display: flex; align-items: center; justify-content: flex-end; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
         .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
@@ -91,6 +91,42 @@
         .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
         .top-nav-links a.login-btn:hover { opacity: 0.9; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         .hero-card { max-width: 900px; margin: 40px auto; background: var(--darkened-bg); border-radius: 32px; padding: 48px; border: 1px solid var(--hairline-color); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); text-align: center; }
         .hero-card h2 { font-size: 2rem; margin-bottom: 16px; color: var(--body-loud-color); }
@@ -129,8 +165,8 @@
     </style>
 </head>
 <body>
-<!-- DEFAULT TO DARK MODE -->
-<script>document.documentElement.setAttribute('data-theme', 'dark');</script>
+<!-- DEFAULT TO LIGHT MODE -->
+<script>document.documentElement.setAttribute('data-theme', 'light');</script>
 
 <div class="sidebar">
     <div class="brand">
@@ -139,7 +175,7 @@
     </div>
     
     <button class="theme-toggle" onclick="toggleTheme()">
-        <span id="themeLabel">Switch to Light Mode</span>
+        <span id="themeLabel">Switch to Dark Mode</span>
     </button>
 
     <div class="about-card">
@@ -149,7 +185,7 @@
     </div>
     <div class="progress-card"><span class="progress-text">📈 Course Progress</span><span class="progress-number">99%</span></div>
 
-    <!-- MAIN TABS (RESTORED) -->
+    <!-- MAIN TABS -->
     <div class="main-tabs">
         <a href="index.html" class="tab-btn active">📘 COURSES</a>
         <a href="projects.html" class="tab-btn">🚀 PROJECTS</a>
@@ -162,13 +198,60 @@
 </div>
 
 <div class="content-area">
-    <!-- TOP NAVIGATION TABS -->
+    <!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
     <nav class="top-nav">
         <div class="top-nav-links">
             <a href="index.html" class="active">Dashboard</a>
-            <a href="courses.html">Courses</a>
+
+            <!-- COURSES DROPDOWN -->
+            <div class="nav-dropdown">
+                <a href="courses.html">Courses ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="2026.html">Summer Lectures</a>
+                    <a href="labs.html">Curriculum</a>
+                    <a href="DPA.html">DPA Summer Training Course</a>
+                    <a href="level3.html">1- Introduction to Cybersecurity</a>
+                    <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                    <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                    <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                    <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                    <a href="#" id="dropAiBtn2">Level2-AI</a>
+                    <a href="networking.html">CyberSecurity Reading Slides</a>
+                    <a href="routing-switching.html">English CyberSecurity Course</a>
+                    <a href="aws foundation.html">AWS Cloud Foundation</a>
+                    <a href="digital comm.html">Digital Comm</a>
+                    <a href="wireless comm.html">Wireless Comm</a>
+                </div>
+            </div>
+
             <a href="messages.html">📝 Tasks & Submissions</a>
-            <a href="labs.html">Labs</a>
+
+            <!-- LABS DROPDOWN -->
+            <div class="nav-dropdown">
+                <a href="labs.html">Labs ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="labs.html">Network Security Overview</a>
+                    <a href="network Roadmap.html">Network Roadmap</a>
+                    <a href="security Roadmap.html">Security Roadmap</a>
+                    <a href="lesson-6.html">Switching Architecture</a>
+                    <a href="lesson-7.html">Firewall Security Architecture</a>
+                    <a href="lesson-3.html">KALI Linux</a>
+                    <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                    <a href="lesson-4.html">Vulnerability Scanners</a>
+                    <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                    <a href="labs2.html">Networking Labs Overview</a>
+                    <a href="lesson-8.html">Wireless Solutions</a>
+                    <a href="lesson-9.html">Cyber Attacks</a>
+                    <a href="lesson-10.html">Troubleshooting</a>
+                    <a href="lesson-11.html">Switch Management</a>
+                    <a href="lesson-12.html">VOIP</a>
+                    <a href="lesson-13.html">Cloud Computing</a>
+                    <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                    <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                    <a href="lesson-16.html">Practice Labs advanced</a>
+                </div>
+            </div>
+
             <a href="login.html" class="login-btn">Login</a>
         </div>
     </nav>
@@ -248,7 +331,7 @@
 </div>
 
 <script>
-    // THEME TOGGLE LOGIC
+    // THEME TOGGLE LOGIC (DEFAULT LIGHT MODE)
     function toggleTheme() {
         let currentTheme = document.documentElement.getAttribute('data-theme');
         let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -335,12 +418,12 @@
         google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
     }
 
-    // Click Listeners for ALL courses
+    // Click Listeners for ALL courses (Cards & Dropdowns)
     document.addEventListener('click', function(event) {
         const loginModal = document.getElementById('loginModal');
         const courseNameText = document.getElementById('modalCourseName');
         
-        if (event.target.closest('#cyberCourseBtn')) {
+        if (event.target.closest('#cyberCourseBtn') || event.target.closest('#dropCyberBtn3')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_3';
             courseNameText.innerText = "Please log in to verify access for Course 3.";
@@ -348,7 +431,7 @@
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
         }
-        if (event.target.closest('#cyberCourseBtn2')) {
+        if (event.target.closest('#cyberCourseBtn2') || event.target.closest('#dropCyberBtn4')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Course_4';
             courseNameText.innerText = "Please log in to verify access for Course 4.";
@@ -356,7 +439,7 @@
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
         }
-        if (event.target.closest('#aiCourseBtn1')) {
+        if (event.target.closest('#aiCourseBtn1') || event.target.closest('#dropAiBtn1')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Level_1_AI';
             courseNameText.innerText = "Please log in to verify access for Level-1 AI.";
@@ -364,7 +447,7 @@
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
         }
-        if (event.target.closest('#aiCourseBtn2')) {
+        if (event.target.closest('#aiCourseBtn2') || event.target.closest('#dropAiBtn2')) {
             event.preventDefault(); event.stopPropagation();
             requestedCourseColumn = 'Level_2_AI';
             courseNameText.innerText = "Please log in to verify access for Level2-AI.";
