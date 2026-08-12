@@ -83,11 +83,19 @@
         /* ========== TOP NAVIGATION BAR ========== */
         .top-nav { display: flex; align-items: center; justify-content: flex-end; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; pointer-events: auto; }
-        .top-nav-links a:hover { color: var(--body-fg); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+        .top-nav-links > a, .top-nav-links .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; pointer-events: auto; cursor: pointer; }
+        .top-nav-links > a:hover, .top-nav-links .nav-dropdown > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active, .top-nav-links .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; border: none; }
         .top-nav-links a.login-btn:hover { opacity: 0.9; }
+
+        /* Dropdown Menu Styles */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; right: 0; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 8px; min-width: 260px; padding: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; animation: fu .35s ease; }
+        @keyframes fu { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown-content a { display: block; padding: 8px 12px; font-size: 0.85rem; border-radius: 5px; border-bottom: none !important; color: var(--body-quiet-color); }
+        .nav-dropdown-content a:hover { background: var(--selected-bg); color: var(--primary); }
 
         .content-wrapper { padding: 32px 40px; flex: 1; }
         .lesson-header { margin-bottom: 20px; }
@@ -191,7 +199,7 @@
         .cmt-empty { text-align: center; padding: 30px 10px; color: var(--body-quiet-color); font-size: 0.82rem; }
         .cmt-empty span { font-size: 1.6rem; display: block; margin-bottom: 6px; }
 
-        @media (max-width: 780px) { .sidebar { width: 280px; } .content-wrapper { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } .nav-buttons { padding: 0 4px; } .quiz-body { padding: 16px 20px; } .quiz-footer { padding: 16px 20px; } .quiz-header { padding: 16px 20px; } .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; } }
+        @media (max-width: 780px) { .sidebar { width: 280px; } .content-wrapper { padding: 20px; } .card-header h2 { font-size: 1.3rem; } .lesson-tabs { margin: 12px 16px 0; } .tab-content { padding: 16px; } .nav-buttons { padding: 0 4px; } .quiz-body { padding: 16px 20px; } .quiz-footer { padding: 16px 20px; } .quiz-header { padding: 16px 20px; } .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; } .top-nav-links { gap: 10px; } .top-nav-links a:not(.login-btn) { display: none; } .nav-dropdown-content { position: static; display: none; max-height: 200px; box-shadow: none; } .nav-dropdown:hover .nav-dropdown-content { display: none; } }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--body-bg); }
         ::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 8px; }
@@ -255,8 +263,80 @@
     <nav class="top-nav">
         <div class="top-nav-links">
             <a href="index.html">Dashboard</a>
-            <a href="courses.html">Courses</a>
+
+            <!-- COURSES DROPDOWN -->
+            <div class="nav-dropdown">
+                <a href="courses.html">Courses ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="2026.html">Summer Lectures</a>
+                    <a href="labs.html">Curriculum</a>
+                    <a href="DPA.html">DPA Summer Training Course</a>
+                    <a href="level3.html">1- Introduction to Cybersecurity</a>
+                    <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                    <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                    <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                    <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                    <a href="#" id="dropAiBtn2">Level2-AI</a>
+                    <a href="networking.html">CyberSecurity Reading Slides</a>
+                    <a href="routing-switching.html">English CyberSecurity Course</a>
+                    <a href="aws foundation.html">AWS Cloud Foundation</a>
+                    <a href="digital comm.html">Digital Comm</a>
+                    <a href="wireless comm.html">Wireless Comm</a>
+                </div>
+            </div>
+
             <a href="messages.html">📝 Tasks & Submissions</a>
+
+            <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
+            <div class="nav-dropdown">
+                <a href="labs.html">Curriculum ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="labs.html">Network Security Overview</a>
+                    <a href="network Roadmap.html">Network Roadmap</a>
+                    <a href="security Roadmap.html">Security Roadmap</a>
+                    <a href="lesson-6.html">Switching Architecture</a>
+                    <a href="lesson-7.html">Firewall Security Architecture</a>
+                    <a href="lesson-3.html">KALI Linux</a>
+                    <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                    <a href="lesson-4.html">Vulnerability Scanners</a>
+                    <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                    <a href="labs2.html">Networking Labs Overview</a>
+                    <a href="lesson-8.html">Wireless Solutions</a>
+                    <a href="lesson-9.html">Cyber Attacks</a>
+                    <a href="lesson-10.html">Troubleshooting</a>
+                    <a href="lesson-11.html">Switch Management</a>
+                    <a href="lesson-12.html">VOIP</a>
+                    <a href="lesson-13.html">Cloud Computing</a>
+                    <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                    <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                    <a href="lesson-16.html">Practice Labs advanced</a>
+                </div>
+            </div>
+
+            <!-- NEW CURRICULUM DROPDOWN (Renamed from Labs) -->
+            <div class="nav-dropdown">
+                <a href="lesson-14.html">Curriculum ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="Switch_Config.html">Basic Switch Configuration</a>
+                    <a href="vlan.html">Basic VLAN</a>
+                    <a href="static_route.html">Static Routing</a>
+                    <a href="ssh.html">SSH Configuration</a>
+                    <a href="trunk.html">VLAN Trunking</a>
+                    <a href="router_stick.html">Router-on-a-Stick</a>
+                    <a href="etherchannel.html">EtherChannel</a>
+                    <a href="dhcp.html">DHCPv4 Configuration</a>
+                    <a href="nat.html">NAT Configuration</a>
+                    <a href="acl.html">Access Control Lists</a>
+                    <a href="ospf.html">OSPF Single Area</a>
+                    <a href="hsrp.html">HSRP Configuration</a>
+                    <a href="stp.html">Spanning Tree Protocol</a>
+                    <a href="mgt.html">Switch Management</a>
+                    <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                    <a href="subnetting.html">Routing & Subnetting</a>
+                    <a href="asa.html">ASA Firewall Configuration</a>
+                </div>
+            </div>
+
             <a href="login.html" class="login-btn">Login</a>
         </div>
     </nav>
