@@ -29,10 +29,49 @@
         .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
         .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
-        .top-nav-links a:hover { color: var(--body-fg); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         /* ========== MAIN CONTENT & LAYOUT ========== */
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
@@ -88,6 +127,17 @@
         .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
         .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
+        
+        /* Pros & Cons Alert Boxes */
+        .alert-pros { background-color: rgba(0, 230, 118, 0.05); border-left: 4px solid #22c55e; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-pros h4 { color: #22c55e; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-pros p, .alert-pros ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-pros ul { padding-left: 20px; margin-top: 10px; }
+
+        .alert-cons { background-color: rgba(239, 68, 68, 0.05); border-left: 4px solid #ef4444; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-cons h4 { color: #ef4444; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-cons p, .alert-cons ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-cons ul { padding-left: 20px; margin-top: 10px; }
 
         /* Previous / Next Buttons CSS */
         .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
@@ -117,13 +167,89 @@
 <body>
 <script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
 
+<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
 <nav class="top-nav">
     <a href="index.html" class="nav-brand">
         <div class="nav-logo-icon">🛡️</div>
         <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
     </a>
     <div class="top-nav-links">
-        <a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks & Submissions</a><a href="labs.html" class="active">Labs</a><a href="login.html" class="login-btn">Login</a>
+        <a href="index.html">Dashboard</a>
+
+        <!-- COURSES DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Curriculum</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+            </div>
+        </div>
+
+        <a href="messages.html">📝 Tasks & Submissions</a>
+
+        <!-- CURRICULUM DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="labs.html">Curriculum ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
+                <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
+        </div>
+
+        <!-- NEW LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+
+        <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
 
@@ -132,7 +258,7 @@
         
         <!-- BACK BUTTONS ADDED HERE -->
         <div class="sidebar-back-btns">
-            <a href="labs.html" class="sidebar-back-btn">← Back to Main Labs</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Page</a>
         </div>
 
         <div class="sidebar-header">
@@ -141,7 +267,7 @@
         <nav class="sidebar-nav">
             <ul>
                 <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html" >Network Security Overview</a></li>
+                <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
                 <li><a href="lesson-6.html"> Switching Architecture </a></li>
@@ -152,13 +278,15 @@
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
                 <li><a href="labs2.html"> Networking Labs Overview</a></li>
 
-                <li><a href="lesson-8.html">Concept</a></li>
-                <li><a href="lesson-9.html">Concept</a></li>
-                <li><a href="lesson-10.html">Concept</a></li>
-                <li><a href="lesson-11.html">Concept</a></li>
-                <li><a href="lesson-12.html">Concept</a></li>
-                <li><a href="lesson-13.html">Concept</a></li>
-
+                <li><a href="lesson-8.html">Wireless Solutions</a></li>
+                <li><a href="lesson-9.html">Cyber Attacks</a></li>
+                <li><a href="lesson-10.html">Troubleshooting</a></li>
+                <li><a href="lesson-11.html">Switch Management</a></li>
+                <li><a href="lesson-12.html">VOIP</a></li>
+                <li><a href="lesson-13.html">Cloud Computing</a></li>
+                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
+                <li><a href="labs2.html">Practice Labs (eve-ng + Gns3)</a></li>
+                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
             </ul>
         </nav>
     </aside>
@@ -184,7 +312,7 @@
                     </div>
                 </div>
                 <div class="figure-card">
-                    <img src="https://cloudsap.io/wp-content/uploads/2024/03/scanning-laptop-for-viruses-1.png" alt="Automated Scanning">
+                    <img src="https://www.ncsc.gov.uk/sites/default/files/styles/large/public/images/vuln-scanning.png?itok=tFp5r2uH" alt="Automated Scanning">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-radar"></i></div>
                         <p class="figure-caption"><strong>Scanning:</strong> Automated process of checking systems against a database of known flaws.</p>
@@ -238,12 +366,12 @@
                     <li><strong>False Negative:</strong> The scanner fails to detect a real vulnerability. This is highly dangerous as it leaves the system exposed.</li>
                 </ul>
             </div>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="https://media.licdn.com/dms/image/v2/D4D22AQGFcOEOCKmIgg/feedshare-shrink_800/B4DZhQtjHMGgAg-/0/1753700776671?e=2147483647&v=beta&t=kLp5XdvNdARBozUfVIg6hZxhnBdvBYisc8kKZJEQ890" alt="Strategic Planning Cycle">
                 <figcaption>Figure 1: The 5 phases of the penetration testing lifecycle, from planning to reporting.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="https://z-cdn-media.chatglm.cn/files/2b08cefc-8939-4942-87be-a06b6ed6c30b.png?auth_key=1886175664-81dd640cb7074d0b840f87660ff3645f-0-a54a6cf3ad9526050581b8d684630432" alt="Strategic Planning Cycle">
                 <figcaption>Figure 1: The 5 phases of the penetration testing lifecycle, from planning to reporting.</figcaption>
             </figure>
@@ -298,13 +426,13 @@
                 </div>
             </div>
         </section>
-		
-		
-		
-		<div class="page-header">
+        
+        
+        
+        <div class="page-header">
             <h1>Reconnaissance & OSINT Tools</h1>
             <p>The first phase of any cyber attack or security assessment is gathering information. Learn how to use Shodan, theHarvester, DNS_lookup, and Google Dorks to map a target's digital footprint.</p>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwaScfHMatbSiI5_SaTSzrld_ZMqrfgdOwPDKtZRiS3O5mVcmbc8wRttk&s=10" alt="Data center servers and network cables">
             </figure>
         </div>
@@ -318,7 +446,7 @@
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfRZxHp2D8e_2RPxmUiH3FGS9r1HaTR4EXvU5hwtQTv61gF7k6v6XpGA59&s=10" alt="Data center servers and network cables">
                 <figcaption>Figure 1: Shodan maps exposed infrastructure across the global internet.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="https://miro.medium.com/v2/resize:fit:1400/1*3sfS_DsXxKvE0nWsVixs9Q.png" alt="Data center servers and network cables">
             </figure>
 
@@ -344,7 +472,7 @@ port:502</code></pre>
                 <img src="https://miro.medium.com/v2/resize:fit:1400/1*nX698hkMSglYgfh9gc_6Ow.jpeg" alt="Data extraction and code">
                 <figcaption>Figure 2: theHarvester automates the collection of public-facing corporate data for phishing and recon.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="https://www.oreilly.com/api/v2/epubs/urn:orm:book:9781789611809/files/assets/8bf9fc69-0596-4cfa-b1af-4eb1d062fc72.png" alt="Data extraction and code">
             </figure>
 
@@ -360,8 +488,8 @@ port:502</code></pre>
             <h2 class="section-title">What is WHOIS?</h2>
             <p class="text-block"><strong>WHOIS</strong> (pronounced "who is") is a query and response protocol widely used for querying databases that store the registered users or assignees of an Internet resource, such as a domain name or an IP address block. It is a fundamental tool for OSINT (Open-Source Intelligence), network troubleshooting, and cybersecurity investigations.</p>
 
-		
-		
+        
+        
 
             <figure class="large-figure">
                 <img src="https://hackercoolmagazine.com/wp-content/uploads/2023/07/WHOIS-Footprinting_5-1.jpg" alt="Network configuration and routing">
@@ -371,7 +499,7 @@ port:502</code></pre>
                 <img src="https://www.ipxo.com/app/uploads/2021/11/example-com-domain-information-1012x1024.png" alt="Network configuration and routing">
                 <figcaption>Figure 3: DNS records reveal the architecture of a target's web presence.</figcaption>
             </figure>
-			
+            
         </section>
 
         <!-- Section 2: Features -->
@@ -415,7 +543,7 @@ port:502</code></pre>
 
         </section>
 
-			
+            
 
 
         <!-- Section 4: Google Dorks -->
@@ -427,14 +555,14 @@ port:502</code></pre>
                 <img src="https://media.geeksforgeeks.org/wp-content/uploads/20260311153729811295/file.webp" alt="Searching for hidden data">
                 <figcaption>Figure 4: Google Dorks leverage search engine indexing to uncover unintentionally public files.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="https://www.hackthebox.com/hubfs/Imported_Blog_Media/1fEZoe21GVzGqkqaIbEdWCDActDzv3HO.jpg" alt="Searching for hidden data">
             </figure>
-			
-						            <figure class="large-figure">
+            
+                                    <figure class="large-figure">
                 <img src="https://www.hackthebox.com/hubfs/Imported_Blog_Media/dMsJsC1gjPTTqvOSRARGwT05N1d5s9rn.png" alt="Searching for hidden data">
             </figure>
-			
+            
 
             <h3 class="tool-title"><i class="fas fa-search-dollar"></i> Common Google Dork Operators</h3>
             <ul>
@@ -459,9 +587,9 @@ inurl:phpmyadmin intitle:"phpMyAdmin"</code></pre>
                 <p>Offensive Security maintains the GHDB, a massive collection of Google Dorks used by penetration testers to find exposed data. Defenders should regularly use these dorks against their own domains to ensure they aren't leaking sensitive files.</p>
             </div>
         </section>
-		
-		
-		 <div class="page-header">
+        
+        
+         <div class="page-header">
             <h1>Bug Bounty Hunting</h1>
             <p>Learn how ethical hackers legally hack organizations to find vulnerabilities, improve global security, and get paid for their discoveries.</p>
         </div>
@@ -497,11 +625,11 @@ inurl:phpmyadmin intitle:"phpMyAdmin"</code></pre>
                 <img src="https://netlas.io/blog/bug_bounty_roadmap/roadmap_hu_8586335303c3ebfe.webp" alt="Analyzing data and reports">
                 <figcaption>Figure 2: Clear documentation and Proof of Concept (PoC) are crucial for a successful bug bounty report.</figcaption>
             </figure>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="https://www.mdpi.com/blockchains/blockchains-02-00010/article_deploy/html/images/blockchains-02-00010-g002.png" alt="Analyzing data and reports">
             </figure>
-			
+            
         </section>
 
         <!-- Section 3: Methodology -->
