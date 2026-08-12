@@ -25,6 +25,14 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
 .top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
 
+/* Dropdown Menu Styles */
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px;cursor:pointer}
+.nav-dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;min-width:260px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:10;max-height:400px;overflow-y:auto}
+.nav-dropdown:hover .nav-dropdown-content{display:block;animation:fu .35s ease}
+.nav-dropdown-content a{display:block;padding:8px 12px;font-size:12px;border-radius:5px}
+.nav-dropdown-content a:hover{background:var(--acD);color:var(--ac)}
+
 .sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
 .sidebar::-webkit-scrollbar{width:3px}
 .sidebar-back-btns{padding:14px 14px 10px;border-bottom:1px solid var(--bdr)}
@@ -125,6 +133,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 @media(max-width:900px){
 .sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
 .top-nav-links a:not(.login-btn):not(.active){display:none}.vs-grid{grid-template-columns:1fr}.vs-badge{margin-top:0;justify-self:center}.content{padding:20px 14px}
+.nav-dropdown-content{position:static;display:none;max-height:300px}
+.nav-dropdown:hover .nav-dropdown-content{display:none}
 }
 @media(max-width:600px){.top-nav-links a{padding:5px 8px;font-size:11px}.back-to-labs span{display:none}.back-to-labs{padding:6px 10px}}
 </style>
@@ -138,9 +148,80 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
   <div class="top-nav-links">
     <a href="index.html">Dashboard</a>
-    <a href="courses.html">Courses</a>
-    <a href="messages.html">📝 Tasks</a>
-    <a href="labs.html" class="active">Labs</a>
+    
+    <!-- COURSES DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="courses.html">Courses ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="2026.html">Summer Lectures</a>
+            <a href="labs.html">Curriculum</a>
+            <a href="DPA.html">DPA Summer Training Course</a>
+            <a href="level3.html">1- Introduction to Cybersecurity</a>
+            <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+            <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropAiBtn1">Level-1 AI</a>
+            <a href="#" id="dropAiBtn2">Level2-AI</a>
+            <a href="networking.html">CyberSecurity Reading Slides</a>
+            <a href="routing-switching.html">English CyberSecurity Course</a>
+            <a href="aws foundation.html">AWS Cloud Foundation</a>
+            <a href="digital comm.html">Digital Comm</a>
+            <a href="wireless comm.html">Wireless Comm</a>
+        </div>
+    </div>
+
+    <a href="messages.html">📝 Tasks & Submissions</a>
+
+    <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
+    <div class="nav-dropdown">
+        <a href="labs.html">Curriculum ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="labs.html">Network Security Overview</a>
+            <a href="network Roadmap.html">Network Roadmap</a>
+            <a href="security Roadmap.html">Security Roadmap</a>
+            <a href="lesson-6.html">Switching Architecture</a>
+            <a href="lesson-7.html">Firewall Security Architecture</a>
+            <a href="lesson-3.html">KALI Linux</a>
+            <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+            <a href="lesson-4.html">Vulnerability Scanners</a>
+            <a href="nessus.html">Nessus Vulnerability Assessment</a>
+            <a href="labs2.html">Networking Labs Overview</a>
+            <a href="lesson-8.html">Wireless Solutions</a>
+            <a href="lesson-9.html">Cyber Attacks</a>
+            <a href="lesson-10.html">Troubleshooting</a>
+            <a href="lesson-11.html">Switch Management</a>
+            <a href="lesson-12.html">VOIP</a>
+            <a href="lesson-13.html">Cloud Computing</a>
+            <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+            <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+            <a href="lesson-16.html">Practice Labs advanced</a>
+        </div>
+    </div>
+
+    <!-- NEW CURRICULUM DROPDOWN (Renamed from Labs) -->
+    <div class="nav-dropdown">
+        <a href="lesson-14.html">Curriculum ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="Switch_Config.html">Basic Switch Configuration</a>
+            <a href="vlan.html">Basic VLAN</a>
+            <a href="static_route.html">Static Routing</a>
+            <a href="ssh.html">SSH Configuration</a>
+            <a href="trunk.html">VLAN Trunking</a>
+            <a href="router_stick.html">Router-on-a-Stick</a>
+            <a href="etherchannel.html">EtherChannel</a>
+            <a href="dhcp.html">DHCPv4 Configuration</a>
+            <a href="nat.html">NAT Configuration</a>
+            <a href="acl.html">Access Control Lists</a>
+            <a href="ospf.html">OSPF Single Area</a>
+            <a href="hsrp.html">HSRP Configuration</a>
+            <a href="stp.html">Spanning Tree Protocol</a>
+            <a href="mgt.html">Switch Management</a>
+            <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+            <a href="subnetting.html">Routing & Subnetting</a>
+            <a href="asa.html">ASA Firewall Configuration</a>
+        </div>
+    </div>
+
     <a href="login.html" class="login-btn">Login</a>
   </div>
 </nav>
@@ -275,7 +356,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
           <li style="margin-bottom:5px"><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>Trustsec integration</li>
           <li><i class="fa-solid fa-check" style="color:var(--cisco);margin-right:6px;font-size:10px"></i>DevNet API automation</li>
         </ul>
-		<div class="imgf" style="height: auto; margin-top: 12px; text-align: center;">
+        <div class="imgf" style="height: auto; margin-top: 12px; text-align: center;">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShKxMLXfgUAcMPgg94Ti6aV3t4hxwnwH-J7x_EfT1wtA&s=10" alt="Avaya Phone" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
     <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya 1608 IP Phone</div>
 </div>
@@ -297,7 +378,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9Hf4WzlIHHsfJO3L8VN1PCfj5Nqbj5hy83Nhitv7Wug&s=10" alt="Avaya Phone" style="max-width: 65%; height: auto; display: block; margin: 0 auto;">
     <div class="il"><i class="fa-solid fa-image" style="margin-right: 4px;"></i> Avaya 1608 IP Phone</div>
 </div>		
-		
+        
       </div>
     </div>
   </div>
@@ -343,8 +424,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
     <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Cat6A Structured Cabling</div>
 </div>
     </div>
-	
-	
+    
+    
   </div>
 </div>
 
@@ -929,7 +1010,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px" class="reveal">
-	
+    
   </div>
   <!-- First Image Container -->
 <!-- First Image Container -->
