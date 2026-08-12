@@ -51,10 +51,49 @@
         .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
         
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
-        .top-nav-links a:hover { color: var(--body-fg); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         /* ========== MAIN CONTENT & LAYOUT ========== */
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
@@ -154,20 +193,88 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
 </script>
 
-<!-- TOP NAVIGATION TABS -->
+<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
 <nav class="top-nav">
     <a href="index.html" class="nav-brand">
         <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-brand-text">
-            <h1>CyberDefend</h1>
-            <span>Modern cybersecurity learning platform</span>
-        </div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
     </a>
     <div class="top-nav-links">
-        <a href="index.html">Dashboard</a>
-        <a href="courses.html">Courses</a>
+        <a href="index.html" class="active">Dashboard</a>
+
+        <!-- COURSES DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Curriculum</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+            </div>
+        </div>
+
         <a href="messages.html">📝 Tasks & Submissions</a>
-        <a href="labs.html" class="active">Labs</a>
+
+        <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
+        <div class="nav-dropdown">
+            <a href="labs.html">Curriculum ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
+                <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
+        </div>
+
+        <!-- NEW LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+
         <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
@@ -179,7 +286,7 @@
         
         <!-- BACK BUTTONS ADDED HERE -->
         <div class="sidebar-back-btns">
-            <a href="labs.html" class="sidebar-back-btn">← Back to Main Labs</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Page</a>
         </div>
 
         <div class="sidebar-header">
@@ -188,7 +295,7 @@
         <nav class="sidebar-nav">
             <ul>
                 <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html" >Network Security Overview</a></li>
+                <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
                 <li><a href="lesson-6.html"> Switching Architecture </a></li>
@@ -199,13 +306,15 @@
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
                 <li><a href="labs2.html"> Networking Labs Overview</a></li>
 
-                <li><a href="lesson-8.html">Concept</a></li>
-                <li><a href="lesson-9.html">Concept</a></li>
-                <li><a href="lesson-10.html">Concept</a></li>
-                <li><a href="lesson-11.html">Concept</a></li>
-                <li><a href="lesson-12.html">Concept</a></li>
-                <li><a href="lesson-13.html">Concept</a></li>
-
+                <li><a href="lesson-8.html">Wireless Solutions</a></li>
+                <li><a href="lesson-9.html">Cyber Attacks</a></li>
+                <li><a href="lesson-10.html">Troubleshooting</a></li>
+                <li><a href="lesson-11.html">Switch Management</a></li>
+                <li><a href="lesson-12.html">VOIP</a></li>
+                <li><a href="lesson-13.html">Cloud Computing</a></li>
+                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
+                <li><a href="labs2.html">Practice Labs (eve-ng + Gns3)</a></li>
+                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
             </ul>
         </nav>
     </aside>
@@ -415,7 +524,7 @@
                 <img src="fw/8-3.png" alt="IDS/IPS Network Topology">
                 <figcaption>Figure 1: Network topology showing Network-Based IPS deployed in Inline mode and Promiscuous mode across Internal Networks and Core Business Units.</figcaption>
             </figure>
-			<figure class="large-figure">
+            <figure class="large-figure">
                 <img src="fw/1_s0U3qNSadcnLY8Dtt94qsw.png" alt="IDS/IPS Network Topology">
                 <figcaption>IDS deployed across Internal Networks.</figcaption>
             </figure>
@@ -445,12 +554,12 @@
             <p class="text-block"><strong>Snort</strong> and <strong>Suricata</strong> are the industry standard open-source network intrusion detection/prevention systems. They use rule-based signatures to detect and block malicious network traffic.</p>
             </figure>
 
-			
+            
             <figure class="large-figure">
                 <img src="fw/9.png" alt="Snort Rule Format">
                 <figcaption>Figure 3: Anatomy of a Snort rule, breaking down Action, Protocol, Source/Destination IPs, Ports, and Rule Options.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="fw/network-graph-01.jpg" alt="Snort Rule Format">
                 <figcaption> Snort Ports.</figcaption>
             </figure>
@@ -510,7 +619,7 @@
                 <img src="fw/dmzfirewall.gif" alt="Cisco ASA DMZ Topology">
                 <figcaption>System Configuration - Firewall Configuration.</figcaption>
             </figure>
-			
+            
             <p class="text-block">Firewalls assign security levels to interfaces. By default, traffic flows from higher security levels (e.g., INSIDE=100) to lower security levels (e.g., DMZ=50, OUTSIDE=0). Traffic from a lower level to a higher level requires an explicit Access Control List (ACL).</p>
             <ul>
                 <li><strong>INSIDE to DMZ:</strong> Allowed (Administrators managing servers).</li>
@@ -529,23 +638,23 @@
                 <img src="fw/types_of_IP_addresses_infographic-1-img.svg" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="fw/images2.jpeg" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
-			<figure class="large-figure">
+            <figure class="large-figure">
                 <img src="fw/images.png" alt="NAT Public vs Private IP">
                 <figcaption>Figure 6: Comparison of Public and Private IPv4 addresses in a home network environment.</figcaption>
             </figure>
-			
+            
             <p class="text-block">There are two main types of IPv4 addresses: <strong>Public</strong> (routable on the internet, e.g., <span class="inline-code">66.94.234.13</span>) and <strong>Private</strong> (used internally, e.g., <span class="inline-code">192.168.1.0/24</span>, <span class="inline-code">10.0.0.0/8</span>). When an internal device requests a webpage, the NAT router intercepts the packet, swaps the private source IP with its own public IP, records the translation in a table, and forwards it.</p>
 
             <figure class="large-figure">
                 <img src="fw/images3.jpeg" alt="NAT Translation Table">
                 <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
             </figure>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="fw/Screenshot 2026-08-08 190424.png" alt="NAT Translation Table">
                 <figcaption>Figure 7: PAT (Port Address Translation) mapping internal private IP addresses to a single public IP address using unique source ports.</figcaption>
             </figure>
@@ -569,19 +678,19 @@
                 <img src="fw/images6.jpeg" alt="VPN Server Routing">
                 <figcaption>Figure 9: Network flow showing traffic securely tunneled from a client workstation to a VPN Server, masking the original IP address.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="fw/images7.jpeg" alt="VPN Server Routing">
                 <figcaption>Types of a VPN </figcaption>
             </figure>
-			
-						            <figure class="large-figure">
+            
+                                    <figure class="large-figure">
                 <img src="fw/images8.jpeg" alt="VPN Server Routing">
                 <figcaption>Types of a VPN </figcaption>
             </figure>
-			
+            
         </section>
-		
-		       <div class="page-header">
+        
+               <div class="page-header">
             <h1>Centralized Logging, SIEM, EDR & XDR</h1>
             <p>Understanding how modern Security Operations Centers (SOC) aggregate logs, detect threats, and automate responses across endpoints and networks.</p>
         </div>
@@ -621,18 +730,18 @@
                 <li><strong>Alerting:</strong> Triggers real-time alerts if a known threat pattern (like a brute-force attack) is detected.</li>
                 <li><strong>Compliance:</strong> Stores logs securely for audits (e.g., GDPR, HIPAA) and generates compliance reports.</li>
             </ul>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="fw/6a020fca21245d64af2c39dc_6735e4a0079ef893e8a21fac_60618622150ebe949eed6e3c_components_2520siem.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
-			
-						            <figure class="large-figure">
+            
+                                    <figure class="large-figure">
                 <img src="fw/6a020fca21245d64af2c39db_6735e4a0079ef893e8a21fa9_6061869fac9d03c417218aff_capabilities_2520siem.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
-			
-						            <figure class="large-figure">
+            
+                                    <figure class="large-figure">
                 <img src="fw/6a020fca21245d64af2c39da_6735e4a0079ef893e8a21fa6_606187955c9d2b5da0403647_siem_2520security.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
@@ -653,19 +762,19 @@
                 <img src="fw/edr-vs-xdr.jpg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
-			
-			
+            
+            
  <figure class="large-figure">
                 <img src="fw/1755542127892.jpeg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
-			
-			 <figure class="large-figure">
+            
+             <figure class="large-figure">
                 <img src="fw/maxresdefault.jpg" alt="HIDS Architecture">
                 <figcaption>Figure 2: HIDS Architecture. Agents installed on endpoints send logs to a Centralized Control server, which feeds a dashboard for the Security Engineer.</figcaption>
             </figure>
-			
-			
+            
+            
             <div class="alert-info-custom">
                 <h4><i class="fas fa-lightbulb"></i> Summary: The Evolution</h4>
                 <p>The progression of security tools generally follows this path:</p>
@@ -677,8 +786,8 @@
                 </ul>
             </div>
         </section>
-		
-		        <!-- Section 1: Antivirus Detection Methods -->
+        
+                <!-- Section 1: Antivirus Detection Methods -->
         <section id="av-mechanisms">
             <h2 class="section-title"> Antivirus Detection Methods</h2>
             <p class="text-block">Antivirus (AV) software is the foundational layer of endpoint security. Historically, AV relied heavily on signatures, but modern threats require behavioral analysis. Understanding the difference between these two detection methods is crucial for a cybersecurity professional.</p>
@@ -690,8 +799,8 @@
                 <img src="fw/12083_2025_2112_Fig1_HTML.png" alt="Signature-based detection code">
                 <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
             </figure>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="fw/Signature-based-methodology-architecture.png" alt="Signature-based detection code">
                 <figcaption>Figure 1: Signature-based detection relies on a database of known malware hashes and code patterns.</figcaption>
             </figure>
@@ -708,8 +817,8 @@
                 <img src="fw/Antivirus-Behavior-Based-Detection-1024x683.jpg" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
             </figure>
-			
-			
+            
+            
             <figure class="large-figure">
                 <img src="hfw/12911_2024_2760_Fig5_HTML.png" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
@@ -717,12 +826,12 @@
             <figure class="large-figure">
                 <img src="fw/41598_2025_21826_Fig1_HTML.png
             </figure>
-			
-			            <figure class="large-figure">
+            
+                        <figure class="large-figure">
                 <img src="fw/12911_2024_2760_Fig4_HTML.png" alt="Anomaly based monitoring">
                 <figcaption>Figure 2: Anomaly-based detection monitors program behavior against a baseline of normal activity.</figcaption>
             </figure>
-			
+            
             <ul>
                 <li><strong>Pros:</strong> Can detect new, previously unknown threats (Zero-days) and stop ransomware in its tracks by detecting mass file encryption.</li>
                 <li><strong>Cons:</strong> Requires more system resources (CPU/RAM) and can generate <strong>False Positives</strong> (flagging legitimate software as malicious).</li>
@@ -732,14 +841,14 @@
                 <h4><i class="fas fa-lightbulb"></i> Modern EDR</h4>
                 <p>Today, traditional AV has evolved into <strong>EDR (Endpoint Detection and Response)</strong>. EDR combines signature-based, anomaly-based, and machine learning engines to provide comprehensive, real-time protection and automated response.</p>
             </div>
-	 <figure class="large-figure">
+     <figure class="large-figure">
                 <img src="fw/EDR-vs-Antivirus-716x1536.png" alt="Malware code analysis">
                 
             </figure>		
-			
+            
         </section>
-		
-		<!-- Section 1: VirusTotal -->
+        
+        <!-- Section 1: VirusTotal -->
         <section id="virustotal">
             <h2 class="section-title">1. VirusTotal</h2>
             <p class="text-block"><strong>VirusTotal</strong> is a free service acquired by Google that analyzes files and URLs for viruses, worms, trojans, and other kinds of malicious content. It is an essential tool for malware analysts and SOC defenders.</p>
@@ -748,7 +857,7 @@
                 <img src="fw/virustotal-file-checker-file-upload-process.avif" alt="Malware code analysis">
                 <figcaption>Figure 1: VirusTotal aggregates the results of dozens of antivirus engines to provide a comprehensive threat verdict.</figcaption>
             </figure>
-			            <figure class="large-figure">
+                        <figure class="large-figure">
                 <img src="fw/MPASXGpB.png" alt="Malware code analysis">
                 <figcaption>web scanners - Sites flagged by Virustotal .</figcaption>
             </figure>
