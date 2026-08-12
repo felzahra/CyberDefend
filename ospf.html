@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSPF Single Area - Labs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff;--cisco:#049fd9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.top-nav-left{display:flex;align-items:center;gap:12px}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
+.top-nav-links{display:flex;align-items:center;gap:4px}
+.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}
+.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}
+.top-nav-links a.active{color:var(--ac);background:var(--acD)}
+.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
+.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px;cursor:pointer}
+.nav-dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;min-width:260px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:10;max-height:400px;overflow-y:auto}
+.nav-dropdown:hover .nav-dropdown-content{display:block;animation:fu .35s ease}
+.nav-dropdown-content a{display:block;padding:8px 12px;font-size:12px;border-radius:5px}
+.nav-dropdown-content a:hover{background:var(--acD);color:var(--ac)}
+
+.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
+.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sidebar-brand i{font-size:18px;color:var(--cisco)}
+.sidebar-brand span{font-weight:700;font-size:13px}
+.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}
+.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}
+
+.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-weight:700;font-size:14px}
+.content{padding:28px;max-width:1100px}
+
+.sec{margin-bottom:48px;scroll-margin-top:120px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
+.sec-badge.cisco-b{background:rgba(4,159,217,.1);color:var(--cisco);border-color:rgba(4,159,217,.2)}
+.sec-badge.l3-b{background:rgba(168,124,255,.1);color:var(--pu);border-color:rgba(168,124,255,.2)}
+.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden;margin-bottom:16px}
+.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH)}
+.card h3{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card p{font-size:13px;color:var(--mt);margin-bottom:12px}
+
+.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}
+.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}
+.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}
+.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cp{color:var(--wn)}.cic{color:var(--cisco)}
+
+.imgf{border-radius:12px;overflow:hidden;border:1px solid var(--bdr);position:relative;background:var(--card);margin:14px 0}
+.imgf img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;filter:grayscale(25%)}
+.imgf:hover img{transform:scale(1.03);filter:grayscale(0%)}
+.imgf .il{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(9,13,20,.92));font-size:11px;color:var(--mt)}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}
+.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+
+.copy-btn{padding:3px 10px;border:1px solid var(--bdr);border-radius:5px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:10px;transition:all .15s;display:flex;align-items:center;gap:4px}
+.copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
+.top-nav-links a:not(.login-btn):not(.active){display:none}.content{padding:20px 14px}
+.nav-dropdown-content{position:static;display:none;max-height:300px;box-shadow:none}
+.nav-dropdown:hover .nav-dropdown-content{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a>
+  </div>
+  <div class="top-nav-links">
+    <a href="index.html">Dashboard</a>
+
+    <!-- COURSES DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="courses.html">Courses ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="2026.html">Summer Lectures</a>
+            <a href="labs.html">Curriculum</a>
+            <a href="DPA.html">DPA Summer Training Course</a>
+            <a href="level3.html">1- Introduction to Cybersecurity</a>
+            <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+            <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropAiBtn1">Level-1 AI</a>
+            <a href="#" id="dropAiBtn2">Level2-AI</a>
+            <a href="networking.html">CyberSecurity Reading Slides</a>
+            <a href="routing-switching.html">English CyberSecurity Course</a>
+            <a href="aws foundation.html">AWS Cloud Foundation</a>
+            <a href="digital comm.html">Digital Comm</a>
+            <a href="wireless comm.html">Wireless Comm</a>
+        </div>
+    </div>
+
+    <a href="messages.html">📝 Tasks & Submissions</a>
+
+    <!-- CURRICULUM DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="labs.html">Curriculum ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="labs.html">Network Security Overview</a>
+            <a href="network Roadmap.html">Network Roadmap</a>
+            <a href="security Roadmap.html">Security Roadmap</a>
+            <a href="lesson-6.html">Switching Architecture</a>
+            <a href="lesson-7.html">Firewall Security Architecture</a>
+            <a href="lesson-3.html">KALI Linux</a>
+            <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+            <a href="lesson-4.html">Vulnerability Scanners</a>
+            <a href="nessus.html">Nessus Vulnerability Assessment</a>
+            <a href="labs2.html">Networking Labs Overview</a>
+            <a href="lesson-8.html">Wireless Solutions</a>
+            <a href="lesson-9.html">Cyber Attacks</a>
+            <a href="lesson-10.html">Troubleshooting</a>
+            <a href="lesson-11.html">Switch Management</a>
+            <a href="lesson-12.html">VOIP</a>
+            <a href="lesson-13.html">Cloud Computing</a>
+            <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+            <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+            <a href="lesson-16.html">Practice Labs advanced</a>
+        </div>
+    </div>
+
+    <!-- NEW LABS DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="lesson-14.html">Labs ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="Switch_Config.html">Basic Switch Configuration</a>
+            <a href="vlan.html">Basic VLAN</a>
+            <a href="static_route.html">Static Routing</a>
+            <a href="ssh.html">SSH Configuration</a>
+            <a href="trunk.html">VLAN Trunking</a>
+            <a href="router_stick.html">Router-on-a-Stick</a>
+            <a href="etherchannel.html">EtherChannel</a>
+            <a href="dhcp.html">DHCPv4 Configuration</a>
+            <a href="nat.html">NAT Configuration</a>
+            <a href="acl.html">Access Control Lists</a>
+            <a href="ospf.html">OSPF Single Area</a>
+            <a href="hsrp.html">HSRP Configuration</a>
+            <a href="stp.html">Spanning Tree Protocol</a>
+            <a href="mgt.html">Switch Management</a>
+            <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+            <a href="subnetting.html">Routing & Subnetting</a>
+            <a href="asa.html">ASA Firewall Configuration</a>
+        </div>
+    </div>
+
+    <a href="login.html" class="login-btn">Login</a>
+  </div>
+</nav>
+<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <i class="fa-solid fa-diagram-project"></i>
+    <span>OSPF Single Area</span>
+  </div>
+  <div class="sidebar-label">Lab Sections</div>
+  <a href="#step1" class="nav-item active"><i class="fa-solid fa-1 icon"></i><span>Step 1: Enable OSPF & Router ID</span></a>
+  <a href="#step2" class="nav-item"><i class="fa-solid fa-2 icon"></i><span>Step 2: Network Statements</span></a>
+  <a href="#step3" class="nav-item"><i class="fa-solid fa-3 icon"></i><span>Step 3: Passive Interfaces</span></a>
+  <a href="#step4" class="nav-item"><i class="fa-solid fa-4 icon"></i><span>Step 4: Verification</span></a>
+  <a href="#commands" class="nav-item"><i class="fa-solid fa-terminal icon"></i><span>All Commands</span></a>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--cisco);margin-right:6px"></i>Dynamic Routing</div>
+    <div style="font-size:12px; color:var(--mt)">OSPF Single Area Configuration Lab</div>
+  </div>
+
+<div class="content">
+
+<!-- HERO -->
+<div style="padding:36px 0 16px;text-align:center;position:relative;">
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cisco);margin-bottom:10px">Link-State Routing Lab</div>
+  <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">OSPF <span style="color:var(--cisco)">Single Area</span></h1>
+  <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">Configure Open Shortest Path First (OSPFv2) in a single Area 0 to dynamically route traffic between networks.</p>
+</div>
+
+<!-- ===== STEP 1 ===== -->
+<div class="sec" id="step1">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 01</div>
+    <h2 class="sec-title">Enable OSPF & Set Router ID</h2>
+    <p class="sec-desc">Start the OSPF process using a local Process ID (locally significant only). Then, manually set the Router ID to identify this router in the OSPF domain.</p>
+  </div>
+  
+  <div class="card">
+    <h3><i class="fa-solid fa-fingerprint" style="color:var(--inf)"></i> R1 Configuration</h3>
+    <p>Best practice is to use a Loopback interface IP or manually assign the Router ID to ensure stability during interface failures.</p>
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">ospf-process.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cc">! Start OSPF process 10 (Local Process ID)</span>
+<span class="cp">R1(config)#</span> <span class="ck">router ospf</span> <span class="cv">10</span>
+
+<span class="cc">! Manually set the Router ID (Format: X.X.X.X)</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">router-id</span> <span class="cv">1.1.1.1</span>
+<span class="cp">R1(config-router)#</span> <span class="cm">exit</span></div>
+    </div>
+  </div>
+  <div class="imgf">
+    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" alt="OSPF Routers">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> OSPF Link-State Router Network</div>
+  </div>
+</div>
+
+<!-- ===== STEP 2 ===== -->
+<div class="sec" id="step2">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 02</div>
+    <h2 class="sec-title">Configure Network Statements</h2>
+    <p class="sec-desc">Tell OSPF which interfaces should participate in OSPF and which area they belong to. Use wildcard masks instead of standard subnet masks.</p>
+  </div>
+  <div class="card">
+    <h3><i class="fa-solid fa-network-wired" style="color:var(--ac)"></i> R1 Interfaces & Wildcards</h3>
+    <p>R1 has a LAN (192.168.1.0/24) and a WAN link (10.0.0.0/30). Both are assigned to Area 0 (Backbone).</p>
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">ospf-networks.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">R1(config)#</span> <span class="ck">router ospf</span> <span class="cv">10</span>
+
+<span class="cc">! Add LAN interface (192.168.1.0/24 -> Wildcard 0.0.0.255) to Area 0</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">192.168.1.0 0.0.0.255 area 0</span>
+
+<span class="cc">! Add WAN interface (10.0.0.0/30 -> Wildcard 0.0.0.3) to Area 0</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.0.0 0.0.0.3 area 0</span>
+<span class="cp">R1(config-router)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Note: R2 must be configured identically with its own IPs in Area 0.</span>
+<span class="cc">! R2(config-router)# network 192.168.2.0 0.0.0.255 area 0</span>
+<span class="cc">! R2(config-router)# network 10.0.0.0 0.0.0.3 area 0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 3 ===== -->
+<div class="sec" id="step3">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 03</div>
+    <h2 class="sec-title">Configure Passive Interfaces</h2>
+    <p class="sec-desc">OSPF sends Hello packets out all OSPF-enabled interfaces. You should make LAN interfaces passive to stop Hello packets from being sent to end-user PCs, which saves CPU and improves security.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">passive-int.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">R1(config)#</span> <span class="ck">router ospf</span> <span class="cv">10</span>
+
+<span class="cc">! Make the LAN interface passive (Keeps adjacency on WAN, silences LAN)</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">passive-interface gigabitEthernet 0/0</span>
+
+<span class="cc">! Alternatively, make ALL interfaces passive, then un-passive the WAN link</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">passive-interface default</span>
+<span class="cp">R1(config-router)#</span> <span class="ck">no passive-interface serial 0/0/0</span>
+<span class="cp">R1(config-router)#</span> <span class="cm">exit</span></div>
+    </div>
+  </div>
+  <div class="imgf">
+    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" alt="Router Configuration">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Securing OSPF Router Interfaces</div>
+  </div>
+</div>
+
+<!-- ===== STEP 4: VERIFICATION ===== -->
+<div class="sec" id="step4">
+  <div>
+    <div class="sec-badge"><i class="fa-solid fa-circle-info"></i> Step 04</div>
+    <h2 class="sec-title">Verify OSPF Neighbors & Routes</h2>
+    <p class="sec-desc">Verify that routers have formed a FULL adjacency and that OSPF routes (designated by 'O') are populating the routing table.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">verify-ospf.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">R1#</span> <span class="cic">show ip ospf neighbor</span>
+
+<span class="cc">Neighbor ID     Pri   State           Dead Time   Address         Interface</span>
+<span class="cc">2.2.2.2           1     FULL/BDR        00:00:33    10.0.0.2        Serial0/0/0</span>
+<span class="cc">! FULL state means the adjacency is established and LSDBs are synced.</span>
+
+<span class="cp">R1#</span> <span class="cic">show ip route ospf</span>
+<span class="cc">Codes: L - local, C - connected, S - static, O - OSPF</span>
+
+<span class="cc">O    192.168.2.0/24 [110/65] via 10.0.0.2, 00:01:15, Serial0/0/0</span>
+<span class="cc">! The 'O' represents a route learned dynamically via OSPF.</span>
+
+<span class="cp">R1#</span> <span class="cic">show ip protocols</span>
+<span class="cc">*** IP Routing is NSF aware ***</span>
+
+<span class="cc">Routing Protocol is "ospf 10"</span>
+<span class="cc">  Outgoing update filter list for all interfaces is not set</span>
+<span class="cc">  Incoming update filter list for all interfaces is not set</span>
+<span class="cc">  Router ID 1.1.1.1</span>
+<span class="cc">  Number of areas in this router is 1. 1 normal 0 stub 0 nssa</span>
+<span class="cc">  Maximum path: 4</span>
+<span class="cc">  Routing for Networks:</span>
+<span class="cc">    192.168.1.0 0.0.0.255 area 0</span>
+<span class="cc">    10.0.0.0 0.0.0.3 area 0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALL COMMANDS REFERENCE ===== -->
+<div class="sec" id="commands">
+  <div>
+    <div class="sec-badge" style="background:rgba(240,192,64,.1);color:var(--gd);border-color:rgba(240,192,64,.2)"><i class="fa-solid fa-book"></i> Reference</div>
+    <h2 class="sec-title">All OSPF Commands</h2>
+    <p class="sec-desc">Complete cheat sheet for OSPFv2 Single Area configuration, passive interfaces, and verification.</p>
+  </div>
+  <div class="card">
+    <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Command</th><th>Description</th><th>Mode</th></tr></thead>
+        <tbody class="mono" style="font-size:12px">
+          <tr><td style="color:var(--cisco)">router ospf [process-id]</td><td style="font-family:'Space Grotesk'">Enable OSPF routing process (Process ID is local only)</td><td>Global Config</td></tr>
+          <tr><td style="color:var(--cisco)">router-id [ip]</td><td style="font-family:'Space Grotesk'">Manually set the unique OSPF Router ID</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">network [ip] [wildcard] area [id]</td><td style="font-family:'Space Grotesk'">Enable OSPF on interfaces in the specified subnet and assign to an Area</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">passive-interface [int]</td><td style="font-family:'Space Grotesk'">Stop sending OSPF Hello packets out of a specific interface</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">passive-interface default</td><td style="font-family:'Space Grotesk'">Make ALL interfaces passive by default</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">no passive-interface [int]</td><td style="font-family:'Space Grotesk'">Re-enable OSPF Hellos on a specific interface (usually WAN links)</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">auto-cost reference-bandwidth [mbps]</td><td style="font-family:'Space Grotesk'">Change default OSPF cost metric for high-speed links (e.g., 1000 for Gigabit)</td><td>Router Config</td></tr>
+          <tr><td style="color:var(--cisco)">show ip ospf neighbor</td><td style="font-family:'Space Grotesk'">View OSPF neighbor adjacencies and their states (FULL, BDR, DR)</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">show ip route ospf</td><td style="font-family:'Space Grotesk'">View only routes learned dynamically via OSPF (marked with 'O')</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">show ip protocols</td><td style="font-family:'Space Grotesk'">View active routing protocols, Router ID, and networks</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">show ip ospf interface [int]</td><td style="font-family:'Space Grotesk'">View detailed OSPF settings (Cost, Timers, DR/BDR) for an interface</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">clear ip ospf process</td><td style="font-family:'Space Grotesk'">Reset the OSPF process (required if changing the Router ID manually)</td><td>Privileged EXEC</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+function copyCode(btn) {
+  const codeBody = btn.closest('.code').querySelector('.code-body');
+  navigator.clipboard.writeText(codeBody.innerText).then(() => {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+  });
+}
+
+document.getElementById('mobBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('show');
+});
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    if(this.getAttribute('href').startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('show'); }
+    }
+  });
+});
+</script>
+</body>
+</html>
