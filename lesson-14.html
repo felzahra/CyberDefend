@@ -12,7 +12,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
 .mono{font-family:'JetBrains Mono',monospace}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px)}
 
 .top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
 .top-nav-left{display:flex;align-items:center;gap:12px}
@@ -94,15 +94,19 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .lab-card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:20px;transition:all .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:var(--fg)}
 .lab-card:hover{border-color:rgba(0,229,160,.3);background:var(--cardH);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
 .lab-card .lc-main-link{position:absolute;inset:0;z-index:1}
-.lab-card .lc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:relative;z-index:2}
+
+/* pointer-events:none allows clicks to fall through to the invisible lc-main-link */
+.lab-card .lc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:relative;z-index:2;pointer-events:none}
 .lab-card .lc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.lab-card .lc-title{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px;position:relative;z-index:2}
-.lab-card .lc-desc{font-size:12px;color:var(--mt);line-height:1.6;flex:1;position:relative;z-index:2}
-.lab-card .lc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;position:relative;z-index:2}
-.lab-card .lc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr);position:relative;z-index:2}
-.lab-card .lc-arrow{width:28px;height:28px;border-radius:8px;background:var(--acD);color:var(--ac);display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:12px}
+.lab-card .lc-title{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px;position:relative;z-index:2;pointer-events:none}
+.lab-card .lc-desc{font-size:12px;color:var(--mt);line-height:1.6;flex:1;position:relative;z-index:2;pointer-events:none}
+.lab-card .lc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;position:relative;z-index:2;pointer-events:none}
+.lab-card .lc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr);position:relative;z-index:2;pointer-events:none}
+.lab-card .lc-arrow{width:28px;height:28px;border-radius:8px;background:var(--acD);color:var(--ac);display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:12px;pointer-events:none}
 .lab-card:hover .lc-arrow{background:var(--ac);color:#000}
-.lab-card .lc-ext{position:relative;z-index:3;font-size:10px;color:var(--mt);display:flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer;background:var(--card);padding:4px 8px;border-radius:6px;border:1px solid var(--bdr)}
+
+/* pointer-events:auto re-enables clicking ONLY on the GitHub button */
+.lab-card .lc-ext{position:relative;z-index:3;font-size:10px;color:var(--mt);display:flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer;background:var(--card);padding:4px 8px;border-radius:6px;border:1px solid var(--bdr);pointer-events:auto}
 .lab-card .lc-ext:hover{color:var(--ac);border-color:var(--ac)}
 
 /* Category header */
