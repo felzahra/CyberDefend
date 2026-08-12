@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic VLAN Configuration - Labs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff;--cisco:#049fd9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.top-nav-left{display:flex;align-items:center;gap:12px}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
+.top-nav-links{display:flex;align-items:center;gap:4px}
+.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}
+.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}
+.top-nav-links a.active{color:var(--ac);background:var(--acD)}
+.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
+.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px;cursor:pointer}
+.nav-dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;min-width:260px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:10;max-height:400px;overflow-y:auto}
+.nav-dropdown:hover .nav-dropdown-content{display:block;animation:fu .35s ease}
+.nav-dropdown-content a{display:block;padding:8px 12px;font-size:12px;border-radius:5px}
+.nav-dropdown-content a:hover{background:var(--acD);color:var(--ac)}
+
+.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
+.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sidebar-brand i{font-size:18px;color:var(--cisco)}
+.sidebar-brand span{font-weight:700;font-size:13px}
+.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}
+.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}
+
+.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-weight:700;font-size:14px}
+.content{padding:28px;max-width:1100px}
+
+.sec{margin-bottom:48px;scroll-margin-top:120px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
+.sec-badge.cisco-b{background:rgba(4,159,217,.1);color:var(--cisco);border-color:rgba(4,159,217,.2)}
+.sec-badge.l3-b{background:rgba(168,124,255,.1);color:var(--pu);border-color:rgba(168,124,255,.2)}
+.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden;margin-bottom:16px}
+.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH)}
+.card h3{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card p{font-size:13px;color:var(--mt);margin-bottom:12px}
+
+.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}
+.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}
+.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}
+.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cp{color:var(--wn)}.cic{color:var(--cisco)}
+
+.imgf{border-radius:12px;overflow:hidden;border:1px solid var(--bdr);position:relative;background:var(--card);margin:14px 0}
+.imgf img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;filter:grayscale(25%)}
+.imgf:hover img{transform:scale(1.03);filter:grayscale(0%)}
+.imgf .il{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(9,13,20,.92));font-size:11px;color:var(--mt)}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}
+.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+
+.copy-btn{padding:3px 10px;border:1px solid var(--bdr);border-radius:5px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:10px;transition:all .15s;display:flex;align-items:center;gap:4px}
+.copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
+.top-nav-links a:not(.login-btn):not(.active){display:none}.content{padding:20px 14px}
+.nav-dropdown-content{position:static;display:none;max-height:300px;box-shadow:none}
+.nav-dropdown:hover .nav-dropdown-content{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a>
+  </div>
+  <div class="top-nav-links">
+    <a href="index.html">Dashboard</a>
+
+    <!-- COURSES DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="courses.html">Courses ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="2026.html">Summer Lectures</a>
+            <a href="labs.html">Curriculum</a>
+            <a href="DPA.html">DPA Summer Training Course</a>
+            <a href="level3.html">1- Introduction to Cybersecurity</a>
+            <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+            <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+            <a href="#" id="dropAiBtn1">Level-1 AI</a>
+            <a href="#" id="dropAiBtn2">Level2-AI</a>
+            <a href="networking.html">CyberSecurity Reading Slides</a>
+            <a href="routing-switching.html">English CyberSecurity Course</a>
+            <a href="aws foundation.html">AWS Cloud Foundation</a>
+            <a href="digital comm.html">Digital Comm</a>
+            <a href="wireless comm.html">Wireless Comm</a>
+        </div>
+    </div>
+
+    <a href="messages.html">📝 Tasks & Submissions</a>
+
+    <!-- CURRICULUM DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="labs.html">Curriculum ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="labs.html">Network Security Overview</a>
+            <a href="network Roadmap.html">Network Roadmap</a>
+            <a href="security Roadmap.html">Security Roadmap</a>
+            <a href="lesson-6.html">Switching Architecture</a>
+            <a href="lesson-7.html">Firewall Security Architecture</a>
+            <a href="lesson-3.html">KALI Linux</a>
+            <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+            <a href="lesson-4.html">Vulnerability Scanners</a>
+            <a href="nessus.html">Nessus Vulnerability Assessment</a>
+            <a href="labs2.html">Networking Labs Overview</a>
+            <a href="lesson-8.html">Wireless Solutions</a>
+            <a href="lesson-9.html">Cyber Attacks</a>
+            <a href="lesson-10.html">Troubleshooting</a>
+            <a href="lesson-11.html">Switch Management</a>
+            <a href="lesson-12.html">VOIP</a>
+            <a href="lesson-13.html">Cloud Computing</a>
+            <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+            <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+            <a href="lesson-16.html">Practice Labs advanced</a>
+        </div>
+    </div>
+
+    <!-- NEW LABS DROPDOWN -->
+    <div class="nav-dropdown">
+        <a href="lesson-14.html">Labs ▾</a>
+        <div class="nav-dropdown-content">
+            <a href="Switch_Config.html">Basic Switch Configuration</a>
+            <a href="vlan.html">Basic VLAN</a>
+            <a href="static_route.html">Static Routing</a>
+            <a href="ssh.html">SSH Configuration</a>
+            <a href="trunk.html">VLAN Trunking</a>
+            <a href="router_stick.html">Router-on-a-Stick</a>
+            <a href="etherchannel.html">EtherChannel</a>
+            <a href="dhcp.html">DHCPv4 Configuration</a>
+            <a href="nat.html">NAT Configuration</a>
+            <a href="acl.html">Access Control Lists</a>
+            <a href="ospf.html">OSPF Single Area</a>
+            <a href="hsrp.html">HSRP Configuration</a>
+            <a href="stp.html">Spanning Tree Protocol</a>
+            <a href="mgt.html">Switch Management</a>
+            <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+            <a href="subnetting.html">Routing & Subnetting</a>
+            <a href="asa.html">ASA Firewall Configuration</a>
+        </div>
+    </div>
+
+    <a href="login.html" class="login-btn">Login</a>
+  </div>
+</nav>
+<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <i class="fa-solid fa-layer-group"></i>
+    <span>VLAN Configuration</span>
+  </div>
+  <div class="sidebar-label">Lab Sections</div>
+  <a href="#step1" class="nav-item active"><i class="fa-solid fa-1 icon"></i><span>Step 1: Create VLANs</span></a>
+  <a href="#step2" class="nav-item"><i class="fa-solid fa-2 icon"></i><span>Step 2: Access Ports</span></a>
+  <a href="#step3" class="nav-item"><i class="fa-solid fa-3 icon"></i><span>Step 3: Voice VLAN</span></a>
+  <a href="#step4" class="nav-item"><i class="fa-solid fa-4 icon"></i><span>Step 4: Trunking</span></a>
+  <a href="#step5" class="nav-item"><i class="fa-solid fa-5 icon"></i><span>Step 5: Verification</span></a>
+  <a href="#step6" class="nav-item"><i class="fa-solid fa-route icon"></i><span>Step 6: Router-on-a-Stick</span></a>
+  <a href="#step7" class="nav-item"><i class="fa-solid fa-network-wired icon"></i><span>Step 7: L3 Switch SVI</span></a>
+  <a href="#commands" class="nav-item"><i class="fa-solid fa-terminal icon"></i><span>All Commands</span></a>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--cisco);margin-right:6px"></i>VLANs & Inter-VLAN Routing</div>
+    <div style="font-size:12px; color:var(--mt)">Basic VLAN Configuration Lab</div>
+  </div>
+
+<div class="content">
+
+<!-- HERO -->
+<div style="padding:36px 0 16px;text-align:center;position:relative;">
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cisco);margin-bottom:10px">Network Segmentation Lab</div>
+  <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">Basic VLAN <span style="color:var(--cisco)">Configuration</span></h1>
+  <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">Learn how to create Virtual LANs (VLANs), assign ports, configure trunks, and route between them.</p>
+</div>
+
+<!-- ===== STEP 1 ===== -->
+<div class="sec" id="step1">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 01</div>
+    <h2 class="sec-title">Create VLANs</h2>
+    <p class="sec-desc">VLANs logically segment a physical network into multiple broadcast domains. First, create the VLANs and assign them names.</p>
+  </div>
+  
+  <div class="card">
+    <h3><i class="fa-solid fa-sitemap" style="color:var(--inf)"></i> VLAN Database Configuration</h3>
+    <p>By default, all ports are in VLAN 1. We will create VLAN 10 (Sales) and VLAN 20 (IT).</p>
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">create-vlan.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">SW1(config)#</span> <span class="ck">vlan</span> <span class="cv">10</span>
+<span class="cp">SW1(config-vlan)#</span> <span class="cm">name</span> <span class="cv">SALES</span>
+<span class="cp">SW1(config-vlan)#</span> <span class="cm">exit</span>
+
+<span class="cp">SW1(config)#</span> <span class="ck">vlan</span> <span class="cv">20</span>
+<span class="cp">SW1(config-vlan)#</span> <span class="cm">name</span> <span class="cv">IT</span>
+<span class="cp">SW1(config-vlan)#</span> <span class="cm">exit</span></div>
+    </div>
+  </div>
+  <div class="imgf">
+    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" alt="Network Cabling">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Logical vs Physical Network Segmentation</div>
+  </div>
+</div>
+
+<!-- ===== STEP 2 ===== -->
+<div class="sec" id="step2">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 02</div>
+    <h2 class="sec-title">Assign Access Ports</h2>
+    <p class="sec-desc">Assign specific switch ports to the VLANs you created so end devices can communicate within their respective domains.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">access-ports.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cc">! Assign Ports 1-5 to VLAN 10</span>
+<span class="cp">SW1(config)#</span> <span class="ck">interface range</span> <span class="cv">gi0/1 - 5</span>
+<span class="cp">SW1(config-if-range)#</span> <span class="ck">switchport mode access</span>
+<span class="cp">SW1(config-if-range)#</span> <span class="ck">switchport access vlan</span> <span class="cv">10</span>
+<span class="cp">SW1(config-if-range)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Assign Ports 6-10 to VLAN 20</span>
+<span class="cp">SW1(config)#</span> <span class="ck">interface range</span> <span class="cv">gi0/6 - 10</span>
+<span class="cp">SW1(config-if-range)#</span> <span class="ck">switchport mode access</span>
+<span class="cp">SW1(config-if-range)#</span> <span class="ck">switchport access vlan</span> <span class="cv">20</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 3 ===== -->
+<div class="sec" id="step3">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 03</div>
+    <h2 class="sec-title">Configure Voice VLAN</h2>
+    <p class="sec-desc">IP Phones require a special Voice VLAN to keep voice traffic separate from data traffic on the same physical port.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">voice-vlan.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cc">! Configure port for PC (Data VLAN 10) + Phone (Voice VLAN 100)</span>
+<span class="cp">SW1(config)#</span> <span class="ck">interface gigabitEthernet 0/1</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">switchport mode access</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">switchport access vlan</span> <span class="cv">10</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">switchport voice vlan</span> <span class="cv">100</span>
+<span class="cp">SW1(config-if)#</span> <span class="cm">spanning-tree portfast</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 4 ===== -->
+<div class="sec" id="step4">
+  <div>
+    <div class="sec-badge cisco-b"><i class="fa-solid fa-circle-info"></i> Step 04</div>
+    <h2 class="sec-title">Configure Trunk Ports</h2>
+    <p class="sec-desc">Trunks allow multiple VLANs to travel over a single link between switches or from a switch to a router.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">trunk-port.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">SW1(config)#</span> <span class="ck">interface gigabitEthernet 0/24</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">switchport mode trunk</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">switchport trunk allowed vlan</span> <span class="cv">10,20,100</span></div>
+    </div>
+  </div>
+  <div class="imgf">
+    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" alt="Network Rack">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> 802.1Q Trunk Link Configuration</div>
+  </div>
+</div>
+
+<!-- ===== STEP 5 ===== -->
+<div class="sec" id="step5">
+  <div>
+    <div class="sec-badge"><i class="fa-solid fa-circle-info"></i> Step 05</div>
+    <h2 class="sec-title">Verify VLANs</h2>
+    <p class="sec-desc">Always verify your configuration to ensure VLANs and ports are assigned correctly.</p>
+  </div>
+  <div class="card">
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">verify-vlans.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">SW1#</span> <span class="cic">show vlan brief</span>
+
+<span class="cc">VLAN Name                             Status    Ports</span>
+<span class="cc">---- -------------------------------- --------- -------------------------------</span>
+<span class="cc">1    default                          active    Gi0/11, Gi0/12, Gi0/13</span>
+<span class="cc">10   SALES                            active    Gi0/1, Gi0/2, Gi0/3, Gi0/4, Gi0/5</span>
+<span class="cc">20   IT                               active    Gi0/6, Gi0/7, Gi0/8, Gi0/9, Gi0/10</span>
+<span class="cc">100  VOICE                            active    </span>
+
+<span class="cp">SW1#</span> <span class="cic">show interfaces trunk</span>
+
+<span class="cc">Port        Mode         Encapsulation  Status        Native vlan</span>
+<span class="cc">Gi0/24      trunk        802.1q         trunking      1</span>
+
+<span class="cc">Port        Vlans allowed on trunk</span>
+<span class="cc">Gi0/24      10,20,100</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP 6: ROUTER-ON-A-STICK ===== -->
+<div class="sec" id="step6">
+  <div>
+    <div class="sec-badge l3-b"><i class="fa-solid fa-route"></i> Layer 3 Routing</div>
+    <h2 class="sec-title">Inter-VLAN Routing: Router-on-a-Stick</h2>
+    <p class="sec-desc">To allow VLAN 10 and VLAN 20 to talk to each other, configure sub-interfaces on a router connected to a switch trunk port.</p>
+  </div>
+  <div class="card">
+    <h3><i class="fa-solid fa-router" style="color:var(--pu)"></i> Router Configuration</h3>
+    <p>Configure 802.1Q encapsulation on the router interface for each VLAN.</p>
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">router-on-a-stick.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cp">Router(config)#</span> <span class="ck">interface gigabitEthernet 0/0</span>
+<span class="cp">Router(config-if)#</span> <span class="cm">no shutdown</span>
+
+<span class="cc">! Sub-interface for VLAN 10</span>
+<span class="cp">Router(config)#</span> <span class="ck">interface gigabitEthernet 0/0.10</span>
+<span class="cp">Router(config-subif)#</span> <span class="ck">encapsulation dot1Q</span> <span class="cv">10</span>
+<span class="cp">Router(config-subif)#</span> <span class="ck">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span>
+
+<span class="cc">! Sub-interface for VLAN 20</span>
+<span class="cp">Router(config)#</span> <span class="ck">interface gigabitEthernet 0/0.20</span>
+<span class="cp">Router(config-subif)#</span> <span class="ck">encapsulation dot1Q</span> <span class="cv">20</span>
+<span class="cp">Router(config-subif)#</span> <span class="ck">ip address</span> <span class="cv">192.168.20.1 255.255.255.0</span></div>
+    </div>
+  </div>
+  <div class="imgf">
+    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" alt="Router and Switch">
+    <div class="il"><i class="fa-solid fa-image" style="margin-right:4px"></i> Router-on-a-Stick Topology</div>
+  </div>
+</div>
+
+<!-- ===== STEP 7: L3 SWITCH SVI ===== -->
+<div class="sec" id="step7">
+  <div>
+    <div class="sec-badge l3-b"><i class="fa-solid fa-network-wired"></i> Layer 3 Routing</div>
+    <h2 class="sec-title">Inter-VLAN Routing: L3 Switch SVI</h2>
+    <p class="sec-desc">For modern networks, use a Layer 3 switch with Switch Virtual Interfaces (SVIs) to route between VLANs at hardware speeds.</p>
+  </div>
+  <div class="card">
+    <h3><i class="fa-solid fa-microchip" style="color:var(--pu)"></i> Layer 3 Switch Configuration</h3>
+    <p>Enable IP routing globally, then assign an IP address to the VLAN interface.</p>
+    <div class="code">
+      <div class="code-top"><div class="dots"><span style="background:var(--wn)"></span><span style="background:var(--gd)"></span><span style="background:var(--ac)"></span></div><span class="mono">l3-switch-svi.conf</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button></div>
+      <div class="code-body"><span class="cc">! Enable Layer 3 routing globally on the switch</span>
+<span class="cp">SW1(config)#</span> <span class="ck">ip routing</span>
+
+<span class="cc">! Configure SVI for VLAN 10</span>
+<span class="cp">SW1(config)#</span> <span class="ck">interface vlan 10</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span>
+<span class="cp">SW1(config-if)#</span> <span class="cm">no shutdown</span>
+<span class="cp">SW1(config-if)#</span> <span class="cm">exit</span>
+
+<span class="cc">! Configure SVI for VLAN 20</span>
+<span class="cp">SW1(config)#</span> <span class="ck">interface vlan 20</span>
+<span class="cp">SW1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.20.1 255.255.255.0</span>
+<span class="cp">SW1(config-if)#</span> <span class="cm">no shutdown</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALL COMMANDS REFERENCE ===== -->
+<div class="sec" id="commands">
+  <div>
+    <div class="sec-badge" style="background:rgba(240,192,64,.1);color:var(--gd);border-color:rgba(240,192,64,.2)"><i class="fa-solid fa-book"></i> Reference</div>
+    <h2 class="sec-title">All VLAN Commands</h2>
+    <p class="sec-desc">Complete cheat sheet for VLAN, Trunking, and Inter-VLAN routing commands.</p>
+  </div>
+  <div class="card">
+    <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Command</th><th>Description</th><th>Mode</th></tr></thead>
+        <tbody class="mono" style="font-size:12px">
+          <tr><td style="color:var(--cisco)">vlan [id]</td><td style="font-family:'Space Grotesk'">Create a VLAN and enter VLAN config mode</td><td>Global Config</td></tr>
+          <tr><td style="color:var(--cisco)">name [name]</td><td style="font-family:'Space Grotesk'">Assign a name to the VLAN</td><td>VLAN Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport mode access</td><td style="font-family:'Space Grotesk'">Set port to end-device mode (access)</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport access vlan [id]</td><td style="font-family:'Space Grotesk'">Assign access port to a VLAN</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport voice vlan [id]</td><td style="font-family:'Space Grotesk'">Configure voice VLAN for IP Phones</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport mode trunk</td><td style="font-family:'Space Grotesk'">Set port to carry multiple VLANs</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport trunk allowed vlan [list]</td><td style="font-family:'Space Grotesk'">Specify which VLANs are allowed on the trunk</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">switchport trunk encapsulation dot1q</td><td style="font-family:'Space Grotesk'">Set 802.1Q tagging (Required on some L3 switches)</td><td>Interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">ip routing</td><td style="font-family:'Space Grotesk'">Enable Layer 3 routing globally on a switch</td><td>Global Config</td></tr>
+          <tr><td style="color:var(--cisco)">interface vlan [id]</td><td style="font-family:'Space Grotesk'">Create SVI for L3 routing</td><td>Global Config</td></tr>
+          <tr><td style="color:var(--cisco)">encapsulation dot1Q [id]</td><td style="font-family:'Space Grotesk'">Assign VLAN ID to router sub-interface</td><td>Sub-interface Config</td></tr>
+          <tr><td style="color:var(--cisco)">show vlan brief</td><td style="font-family:'Space Grotesk'">Verify VLAN database and port assignments</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">show interfaces trunk</td><td style="font-family:'Space Grotesk'">View trunk port configurations and allowed VLANs</td><td>Privileged EXEC</td></tr>
+          <tr><td style="color:var(--cisco)">show ip route</td><td style="font-family:'Space Grotesk'">View Layer 3 routing table</td><td>Privileged EXEC</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+function copyCode(btn) {
+  const codeBody = btn.closest('.code').querySelector('.code-body');
+  navigator.clipboard.writeText(codeBody.innerText).then(() => {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+  });
+}
+
+document.getElementById('mobBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('show');
+});
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    if(this.getAttribute('href').startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('show'); }
+    }
+  });
+});
+</script>
+</body>
+</html>
