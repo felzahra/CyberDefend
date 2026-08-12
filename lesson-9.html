@@ -29,10 +29,49 @@
         .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
         .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
-        .top-nav-links a:hover { color: var(--body-fg); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
         .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
@@ -171,40 +210,121 @@
 <body>
 <script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
 
+<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
 <nav class="top-nav">
     <a href="index.html" class="nav-brand">
         <div class="nav-logo-icon">🛡️</div>
         <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
     </a>
     <div class="top-nav-links">
-        <a href="index.html">Dashboard</a><a href="courses.html">Courses</a><a href="messages.html">📝 Tasks</a><a href="labs.html">Labs</a><a href="lesson-9.html" class="active">Attacks</a><a href="login.html" class="login-btn">Login</a>
+        <a href="index.html" class="active">Dashboard</a>
+
+        <!-- COURSES DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Curriculum</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+            </div>
+        </div>
+
+        <a href="messages.html">📝 Tasks & Submissions</a>
+
+        <!-- CURRICULUM DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="labs.html">Curriculum ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
+                <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
+        </div>
+
+        <!-- NEW LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+
+        <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
 
 <div class="main-content">
     <aside class="sidebar">
         <div class="sidebar-back-btns">
-            <a href="labs.html" class="sidebar-back-btn">← Back to Labs</a>
+            <a href="labs.html" class="sidebar-back-btn">← Back to Main Page</a>
         </div>
         <div class="sidebar-header"><h3>Course Lessons</h3></div>
         <nav class="sidebar-nav">
             <ul>
+                <!-- It is best practice to remove spaces in HTML filenames -->
                 <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
-                <li><a href="lesson-6.html">Switching Architecture</a></li>
-                <li><a href="lesson-7.html">Firewall Security Architecture</a></li>
-                <li><a href="lesson-3.html">KALI Linux</a></li>
-                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
-                <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
-                <li><a href="nessus.html">Nessus Assessment</a></li>
-                <li><a href="labs2.html">Networking Labs</a></li>
+                <li><a href="lesson-6.html"> Switching Architecture </a></li>
+                <li><a href="lesson-7.html"> Firewall Security Architecture</a></li>
+                <li><a href="lesson-3.html"> KALI Linux</a></li>
+                <li><a href="kali-tools.html"> Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-4.html"> Vulnerability Scanners</a></li>
+                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
+                <li><a href="labs2.html"> Networking Labs Overview</a></li>
+
                 <li><a href="lesson-8.html">Wireless Solutions</a></li>
                 <li><a href="lesson-9.html" class="active">Cyber Attacks</a></li>
                 <li><a href="lesson-10.html">Troubleshooting</a></li>
-                <li><a href="lesson-11.html">Incident Response</a></li>
-                <li><a href="lesson-12.html">Digital Forensics</a></li>
-                <li><a href="lesson-13.html">Concept</a></li>
+                <li><a href="lesson-11.html">Switch Management</a></li>
+                <li><a href="lesson-12.html">VOIP</a></li>
+                <li><a href="lesson-13.html">Cloud Computing</a></li>
+                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
+                <li><a href="labs2.html">Practice Labs (eve-ng + Gns3)</a></li>
+                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
             </ul>
         </nav>
     </aside>
@@ -219,10 +339,10 @@
             <img src="fw/Capture.PNG" alt="Overview of cyber attack types">
         </div>
 
-		        <div class="attack-overview-img">
+                <div class="attack-overview-img">
             <img src="https://miro.medium.com/v2/resize:fit:1400/0*1U_1OaMLxlCHBBWF" alt="Overview of cyber attack types">
         </div>
-		
+        
 
         <div class="stats-row">
             <div class="stat-card"><div class="stat-number red">$4.45M</div><div class="stat-label">Average data breach cost (2023)</div></div>
@@ -387,7 +507,7 @@ Switch(config)# ip dhcp snooping</code></pre>
                         <div class="attack-card-title">DNS Spoofing / Cache Poisoning</div>
                     </div>
                     <span class="attack-card-severity severity-badge-high">HIGH</span>
-                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c41cb_67b432ca4535ad5635f47fb1_60c35205a08c01989ab2f764_DNS%252520Spoofing.jpeg" alt="DNS cache poisoning attack redirecting a user to a malicious site">
+                    <img class="attack-card-img" src="https://cdn.prod.website-fields.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c41cb_67b432ca4535ad5635f47fb1_60c35205a08c01989ab2f764_DNS%252520Spoofing.jpeg" alt="DNS cache poisoning attack redirecting a user to a malicious site">
                     <p>Injecting falsified DNS records into a DNS resolver's cache, causing victims to be redirected to malicious websites.</p>
                     <ul>
                         <li>Victim types "bank.com" but resolves to attacker's IP</li>
@@ -420,7 +540,7 @@ Switch(config)# ip dhcp snooping</code></pre>
                         <div class="attack-card-title">Rogue Access Point</div>
                     </div>
                     <span class="attack-card-severity severity-badge-medium">MEDIUM</span>
-										<img class="attack-card-img" src="https://www.researchgate.net/publication/327264581/figure/fig1/AS:664585870786560@1535461027087/Attack-model-of-rogue-APs.png" alt="Session hijacking attack stealing a session token from a user">
+                                        <img class="attack-card-img" src="https://www.researchgate.net/publication/327264581/figure/fig1/AS:664585870786560@1535461027087/Attack-model-of-rogue-APs.png" alt="Session hijacking attack stealing a session token from a user">
 
                     <p>An unauthorized wireless access point set up within an organization's range to intercept wireless traffic.</p>
                     <ul>
@@ -557,7 +677,7 @@ Switch(config-if-range)# no negotiate auto</code></pre>
                 <div class="attack-card-title">Directory Traversal / Path Traversal</div>
             </div>
             <span class="attack-card-severity severity-badge-high">HIGH</span>
-            <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3fe0_67b4314e84d1854611ff5494_6255a39a3945c916f6685f36_path%252520traversal%252520example.jpeg" alt="Directory traversal attack navigating through filesystem folders">
+            <img class="attack-card-img" src="https://cdn.prod.website-fields.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3fe0_67b4314e84d1854611ff5494_6255a39a3945c916f6685f36_path%252520traversal%252520example.jpeg" alt="Directory traversal attack navigating through filesystem folders">
             <p>Exploiting insufficient input validation to access files and directories outside the intended folder. Uses dot-dot-slash sequences to traverse the filesystem.</p>
             <ul>
                 <li><span class="inline-code">../../../../etc/passwd</span></li>
@@ -597,7 +717,7 @@ Switch(config-if-range)# no negotiate auto</code></pre>
                         <div class="attack-card-title">Ransomware</div>
                     </div>
                     <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
-                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c2e62_Ransomware%20Attack%20preview.png" alt="Ransomware lock screen demanding payment to decrypt files">
+                    <img class="attack-card-img" src="https://cdn.prod.website-fields.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c2e62_Ransomware%20Attack%20preview.png" alt="Ransomware lock screen demanding payment to decrypt files">
                     <p>Encrypts the victim's files or locks the entire system, then demands payment for the decryption key. Modern ransomware also exfiltrates data for double extortion.</p>
                     <ul>
                         <li><strong>Encrypting:</strong> Locky, Ryuk, LockBit, BlackCat/ALPHV</li>
@@ -613,7 +733,7 @@ Switch(config-if-range)# no negotiate auto</code></pre>
                         <div class="attack-card-title">Trojans / Remote Access Trojans (RATs)</div>
                     </div>
                     <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
-                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3033_Trojans%20Preview.png
+                    <img class="attack-card-img" src="https://cdn.prod.website-fields.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c3033_Trojans%20Preview.png
 " alt="Trojan horse malware disguised as legitimate software">
                     <p>Malware disguised as legitimate software that creates a backdoor. RATs provide full remote control over the compromised machine.</p>
                     <ul>
@@ -719,7 +839,7 @@ Switch(config-if-range)# no negotiate auto</code></pre>
                         <div class="attack-card-title">Zero-Day Exploits</div>
                     </div>
                     <span class="attack-card-severity severity-badge-critical">CRITICAL</span>
-                    <img class="attack-card-img" src="https://cdn.prod.website-files.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c303c_zero-day%20vulnerability%20Preview.png" alt="Zero day exploit being discovered in software code">
+                    <img class="attack-card-img" src="https://cdn.prod.website-fields.com/6a020fca21245d64af2c19d8/6a020fca21245d64af2c303c_zero-day%20vulnerability%20Preview.png" alt="Zero day exploit being discovered in software code">
                     <p>Exploiting a software vulnerability unknown to the vendor with no patch available. Zero-day exploits can sell for $100K-$2M+.</p>
                     <ul>
                         <li>Used heavily in APT campaigns and targeted attacks</li>
