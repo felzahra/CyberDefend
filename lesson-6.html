@@ -51,10 +51,49 @@
         .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
         
         .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
-        .top-nav-links a:hover { color: var(--body-fg); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         /* ========== MAIN CONTENT & LAYOUT ========== */
         .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
@@ -149,20 +188,88 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
 </script>
 
-<!-- TOP NAVIGATION TABS -->
+<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
 <nav class="top-nav">
     <a href="index.html" class="nav-brand">
         <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-brand-text">
-            <h1>CyberDefend</h1>
-            <span>Modern cybersecurity learning platform</span>
-        </div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
     </a>
     <div class="top-nav-links">
-        <a href="index.html">Dashboard</a>
-        <a href="courses.html">Courses</a>
+        <a href="index.html" class="active">Dashboard</a>
+
+        <!-- COURSES DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Curriculum</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+            </div>
+        </div>
+
         <a href="messages.html">📝 Tasks & Submissions</a>
-        <a href="labs.html" class="active">Labs</a>
+
+        <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
+        <div class="nav-dropdown">
+            <a href="labs.html">Curriculum ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
+                <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
+        </div>
+
+        <!-- NEW LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+
         <a href="login.html" class="login-btn">Login</a>
     </div>
 </nav>
@@ -183,7 +290,7 @@
         <nav class="sidebar-nav">
             <ul>
                 <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html" >Network Security Overview</a></li>
+                <li><a href="labs.html">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
                 <li><a href="lesson-6.html" class="active"> Switching Architecture </a></li>
@@ -194,13 +301,15 @@
                 <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
                 <li><a href="labs2.html"> Networking Labs Overview</a></li>
 
-                <li><a href="lesson-8.html">Concept</a></li>
-                <li><a href="lesson-9.html">Concept</a></li>
-                <li><a href="lesson-10.html">Concept</a></li>
-                <li><a href="lesson-11.html">Concept</a></li>
-                <li><a href="lesson-12.html">Concept</a></li>
-                <li><a href="lesson-13.html">Concept</a></li>
-
+                <li><a href="lesson-8.html">Wireless Solutions</a></li>
+                <li><a href="lesson-9.html">Cyber Attacks</a></li>
+                <li><a href="lesson-10.html">Troubleshooting</a></li>
+                <li><a href="lesson-11.html">Switch Management</a></li>
+                <li><a href="lesson-12.html">VOIP</a></li>
+                <li><a href="lesson-13.html">Cloud Computing</a></li>
+                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
+                <li><a href="labs2.html">Practice Labs (eve-ng + Gns3)</a></li>
+                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
             </ul>
         </nav>
     </aside>
@@ -219,12 +328,12 @@
             <p class="text-block">The Damietta Port Authority requires a highly available, scalable, and secure network to manage ship traffic, cargo logistics, and administrative operations. Given the massive geographical scale of the port, network design must account for long-distance connectivity and harsh outdoor environments.</p>
             
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/e18be2a6-09f5-4f58-a1ec-6505c8a68566.png?auth_key=1886102701-213497e28d3d40dc9e08483607d65959-0-960df9188e338ea5250b58088590dea8" alt="Port Aerial View">
+                <img src="sw/Screenshot 2026-08-08 173946.png" alt="Port Aerial View">
                 <figcaption>Figure 1: Aerial view showing the massive geographical scale and distances (up to 12.5km) covered by the port network.</figcaption>
             </figure>
 
             <figure class="large-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/439cad78-7044-4f46-9489-c48dca2b6f32.png?auth_key=1886102701-00e2d2d428aa4dc69586de04f4d8ba05-0-52b19064f8ef2c48227af719ad3c5a59" alt="Port Layout Map">
+                <img src="sw/Picture8.png" alt="Port Layout Map">
                 <figcaption>Figure 2: Detailed layout of docks, water basins, berths (BR01-BR30), and waiting areas requiring dense network coverage.</figcaption>
             </figure>
         </section>
@@ -236,28 +345,28 @@
             
             <div class="image-grid">
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/a4d4106c-69fb-43b6-a2d5-e3c21e3f9919.png?auth_key=1886102701-3da9a3e414d0416e84ce3661cbb359a2-0-0a2cbfd4ef231369db90cafaca4b12c7" class="figure-img" alt="Cisco 891F Router" style="object-fit: contain;">
+                    <img src="sw/Picture9.png" class="figure-img" alt="Cisco 891F Router" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-router"></i></div>
                         <p class="figure-caption">Cisco 891F Router: Used for secure routing between different port zones and external networks.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/0c83a42b-4cba-4113-a023-74d7eb7f49f7.png?auth_key=1886102701-84d7e4f7babb4f3ea143ee88748cd64c-0-39e86d0fe901e945c3fbe1825a135781" class="figure-img" alt="Access Switch" style="object-fit: contain;">
+                    <img src="sw/Picture10.png" class="figure-img" alt="Access Switch" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
                         <p class="figure-caption">Edge/Access Switch: Connects end users, cameras, and sensors at the docks.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/3f9084fd-a34e-47b2-a61f-754ac1614180.png?auth_key=1886102701-d528699247124365bee775c7df9a4dd6-0-0f703559232599550cbcaaebd6f2aa08" class="figure-img" alt="Distribution Switch" style="object-fit: contain;">
+                    <img src="sw/Picture11.png" class="figure-img" alt="Distribution Switch" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-network-wired"></i></div>
                         <p class="figure-caption">Distribution Switch: Aggregates traffic from access switches and provides routing between VLANs.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/4bcf9359-b889-4bf4-b06a-582caa16a2c5.png?auth_key=1886102701-b7d29a0e1833407ea456745f14b726b5-0-8c1f780cadfe4994406ee4ee4c486aa0" class="figure-img" alt="Core Switch" style="object-fit: contain;">
+                    <img src="sw/Picture12.png" class="figure-img" alt="Core Switch" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-server"></i></div>
                         <p class="figure-caption">HP 10504 Core Switch: The high-capacity backbone of the port network, handling all major traffic routing.</p>
@@ -280,21 +389,21 @@
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/b62089c5-a56a-40be-82e5-5ab047252b9d.png?auth_key=1886105636-f9ef4270e1444ee28843bb9755878a98-0-2d3f54d89be7970e2ffd59fc53e70b5e" class="figure-img" alt="Avaya IP Phone" style="object-fit: contain;">
+                    <img src="Picture14.jpg" class="figure-img" alt="Avaya IP Phone" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-phone"></i></div>
                         <p class="figure-caption">Avaya IP Phone: Acts as a bridge to connect the PC to the network using a single drop cable.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/15c2e437-9d28-4276-857a-be774e10f78d.png?auth_key=1886105636-d080120563884bae9bf186ffa0538ccd-0-92c16088b14f3f714575be78851624f5" class="figure-img" alt="IP Phone Cabling" style="object-fit: contain;">
+                    <img src="sw/Picture15.jpg" class="figure-img" alt="IP Phone Cabling" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-plug"></i></div>
                         <p class="figure-caption">Connecting the button module and network cables to the Avaya IP Phone.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/9f55554a-a9ca-48ff-86e7-cbe0d01b153a.png?auth_key=1886103527-c85069a98fae4642ab69fce69582de99-0-17b76ed178e2db7b83427bbddf7cbe49" class="figure-img" alt="Switch Port Cabling" style="object-fit: cover;">
+                    <img src="sw/Picture16.jpg" class="figure-img" alt="Switch Port Cabling" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
                         <p class="figure-caption">Physical switch ports connected with labeled UTP cables for organized network access.</p>
@@ -310,28 +419,28 @@
             
             <div class="image-grid">
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/05b978c2-acbf-4333-9316-876ec989d68e.png?auth_key=1886103849-640dc6368fad453794d1a819b42a4ee2-0-c1babd29a932ec7497636f3883dcbc4b" class="figure-img" alt="UTP Cable" style="object-fit: contain;">
+                    <img src="sw/Picture17.png" class="figure-img" alt="UTP Cable" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-plug"></i></div>
                         <p class="figure-caption">RJ-45 UTP Cable: Standard copper cable for local area network connections.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/1203afa7-16fb-49b9-8415-a536647cdb3e.png?auth_key=1886103849-43f2f73318974186a82a865b966c27a2-0-b66a35d59737145b93e19be35fc3f950" class="figure-img" alt="Console Cable" style="object-fit: contain;">
+                    <img src="sw/Picture18.jpg" class="figure-img" alt="Console Cable" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-terminal"></i></div>
                         <p class="figure-caption">Console Cable (RS232 to RJ45): Used for direct terminal access to configure routers and switches.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/1cd90966-1d0f-4eab-b036-a85d885a9882.png?auth_key=1886103849-f81ce9242b104557ae1f3271229b48c0-0-22fe462815e6903bb70d1af73b471bb0" class="figure-img" alt="Cable Tester" style="object-fit: contain;">
+                    <img src="sw/Picture19.jpg" class="figure-img" alt="Cable Tester" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-toolbox"></i></div>
                         <p class="figure-caption">Cable Tester: Handheld tool used to verify the pinouts and continuity of UTP cables.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/f4a58c33-5d7f-439f-9e28-b5f81706f3bb.png?auth_key=1886103849-1a1eada2505048c2b40f53af0ce7fc22-0-39b44ccec833c2d11cc9217659b8b8f4" class="figure-img" alt="Fiber Optic Strands" style="object-fit: cover;">
+                    <img src="sw/Picture20.png" class="figure-img" alt="Fiber Optic Strands" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-bolt"></i></div>
                         <p class="figure-caption">Fiber Optic Strands: Transmitting data via light for high-speed, long-distance links.</p>
@@ -354,36 +463,36 @@
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/3a7f94ff-7ebc-41c7-96ac-c20597928094.png?auth_key=1886103527-f9a7f3da11814acbbf7b9f7795ce8204-0-82b1557bcce6dbd15f631d2845365c52" class="figure-img" alt="Fiber Switch Connections" style="object-fit: cover;">
+                    <img src="sw/Picture21.png" class="figure-img" alt="Fiber Switch Connections" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-ethernet"></i></div>
                         <p class="figure-caption">Active Fiber Connections: Yellow fiber patch cords connected to SFP ports.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d45fc191-da68-475b-86e4-3a0af1ef5f44.png?auth_key=1886103527-d1e3824aaaf8440db668662605388b5d-0-563ceca240805297a7c93c9a4be6ed9d" class="figure-img" alt="Fiber Splicing Machine" style="object-fit: cover;">
+                    <img src="sw/Picture22.png" class="figure-img" alt="Fiber Splicing Machine" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-wrench"></i></div>
                         <p class="figure-caption">Fiber Splicing: Fusing two fiber ends together permanently to create a continuous cable run.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/29639231-8edf-4810-934b-9a9a904a134e.png?auth_key=1886105636-296b8c0c48924698a747740a1299a239-0-8063f2bf65dd92f85daf4fbe53e35a2e" class="figure-img" alt="3D Infrastructure Map" style="object-fit: cover;">
+                    <img src="sw/Picture23.png" class="figure-img" alt="3D Infrastructure Map" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-city"></i></div>
                         <p class="figure-caption">3D visualization of the port's buildings and communication network lines.</p>
                     </div>
                 </figure>
-				
-				 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/122f351e-eb52-4de4-9b19-2acdd53cd2e8.png?auth_key=1886105636-048ccf8c8c414d58803e779977f210da-0-8a6715b7130e18896ed8f976207ebb68" class="figure-img" alt="Network Node Map" style="object-fit: cover;">
+                
+                 <figure class="figure">
+                    <img src="sw/Picture24.png" class="figure-img" alt="Network Node Map" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-city"></i></div>
                         <p class="figure-caption">Detailed map of network nodes and transport hubs across different port areas.</p>
                     </div>
                 </figure>
-				
-				
+                
+                
 
             </div>
         </section>
@@ -395,28 +504,28 @@
             
             <div class="image-grid">
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/b5217a69-ce97-48ab-a114-ec9db71ec84a.png?auth_key=1886105636-4cb8c6dcf36b48588f6bbf351d9a3173-0-f932463fe68c7d560c461dc728e1d7f5" class="figure-img" alt="Underground Work" style="object-fit: cover;">
+                    <img src="sw/Picture25.png" class="figure-img" alt="Underground Work" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-road"></i></div>
                         <p class="figure-caption">Underground infrastructure work: Excavating and laying protective conduits for network cables.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/8b3f7f36-d1ce-4db0-aa25-736db3b102cb.png?auth_key=1886105636-fe5707a4450c4d8590ebfbeb478a3d10-0-eb18b59e35e2faeb4c754ac57f2bdd29" class="figure-img" alt="Infrastructure Map" style="object-fit: cover;">
+                    <img src="sw/Picture26.png" class="figure-img" alt="Infrastructure Map" style="object-fit: cover;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-map-marked-alt"></i></div>
                         <p class="figure-caption">Underground Infrastructure Map: Used to trace fiber paths in case of a cable cut.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d45fc191-da68-475b-86e4-3a0af1ef5f44.png?auth_key=1886103527-d1e3824aaaf8440db668662605388b5d-0-563ceca240805297a7c93c9a4be6ed9d" class="figure-img" alt="OTDR Device" style="object-fit: contain;">
+                    <img src="sw/Picture22.png" class="figure-img" alt="OTDR Device" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-satellite-dish"></i></div>
                         <p class="figure-caption">OTDR / Optical Fiber Identifier: Calculates exact cut location using Speed = Distance / Time.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/ff55a57b-3714-40f2-b96d-de742a1206a7.png?auth_key=1886105636-4430d25466c24b25ac044d5f3607f094-0-fc3024d7c2f61cb3418aab95563de3b2" class="figure-img" alt="Dynamic Routing Map" style="object-fit: contain;">
+                    <img src="sw/Picture27.png" class="figure-img" alt="Dynamic Routing Map" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-project-diagram"></i></div>
                         <p class="figure-caption">Dynamic Routing Topology: Rerouting traffic logically while physical fiber paths are repaired.</p>
@@ -432,14 +541,14 @@
             
             <div class="image-grid">
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/d58149d1-e80a-4d1a-9c21-886de4f0bffd.png?auth_key=1886105636-f393e92f685f48ad8a379186427724d4-0-7889aae29daeaf7d8d28e210dbf72676" class="figure-img" alt="Zabbix Topology Map" style="object-fit: contain;">
+                    <img src="sw/Picture28.png" class="figure-img" alt="Zabbix Topology Map" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-tachometer-alt"></i></div>
                         <p class="figure-caption">Zabbix Network Map: Showing core switches, area switches, and devices with 'OK' or 'Ping timeout' alerts.</p>
                     </div>
                 </figure>
                 <figure class="figure">
-                    <img src="https://z-cdn-media.chatglm.cn/files/82fe73c3-7ad3-413b-8d15-a7da6519713b.png?auth_key=1886105636-eb4c58dfb7044877aabb3bf9dca20a9a-0-6db22f32ac4c99c251b66a9e97cd34c4" class="figure-img" alt="Zabbix Device Alerts" style="object-fit: contain;">
+                    <img src="sw/Picture29.png" class="figure-img" alt="Zabbix Device Alerts" style="object-fit: contain;">
                     <div class="figure-body">
                         <div class="figure-icon"><i class="fas fa-bell"></i></div>
                         <p class="figure-caption">Device-level Monitoring: RFID and switch status alerts, highlighting down devices in red.</p>
@@ -464,7 +573,7 @@
             </div>
             
             <figure class="center-figure">
-                <img src="https://z-cdn-media.chatglm.cn/files/07890010-ddde-4ff5-b237-e31c4b797ecb.png?auth_key=1886102701-578d8b945da34a8cb8d6904454ecdc56-0-a98dc8ba8e26dfe492e7b048cfa1195d" alt="Hierarchical Network Topology" style="object-fit: contain; max-height: 400px;">
+                <img src="sw/Picture30.png" alt="Hierarchical Network Topology" style="object-fit: contain; max-height: 400px;">
                 <figcaption>Figure 8: Logical topology showing Access nodes (grey) connecting to Distribution nodes (red/green), which uplink to the Core (blue).</figcaption>
             </figure>
         </section>
