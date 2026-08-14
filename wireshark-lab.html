@@ -82,6 +82,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100
 .card-body ul li{padding:4px 0;padding-left:18px;position:relative}
 .card-body ul li::before{content:'?';position:absolute;left:0;color:var(--accent);font-weight:700}
 
+.filter-hint-grid{display:flex;flex-wrap:wrap;gap:8px}
+.filter-hint-btn{
+  background:var(--bg-terminal); border:1px solid var(--border-light); color:var(--cyan);
+  padding:6px 12px; border-radius:6px; font-family:var(--mono); font-size:.72rem; cursor:pointer; transition:0.2s;
+}
+.filter-hint-btn:hover{border-color:var(--cyan); background:var(--cyan-dim)}
+
 /* Wireshark GUI Specific Styles */
 .ws-topology{
   background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius);
@@ -228,15 +235,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100
 
 <script>
 // ============================================================
-// LAB DEFINITIONS — Wireshark GUI Scenarios
+// LAB DEFINITIONS — Wireshark GUI Scenarios (Expanded)
 // ============================================================
 const LABS = [
   {
-    id:'http_cred', name:'HTTP Credential Harvest', category:'Web Traffic Analysis', icon:'fa-key', color:'orange',
-    description:'Analyze a packet capture to identify stolen HTTP login credentials and trace the C2 connection.',
+    id:'http_cred', name:'HTTP Credentials & C2', category:'Web/HTTP Traffic', icon:'fa-key', color:'orange',
+    description:'Analyze HTTP, DNS, ICMP, and ARP traffic to identify stolen login credentials and trace a C2 connection.',
     scenario:'A user on the LAN reported their account was compromised shortly after logging into a web portal. You are given a pcap file of their session.',
-    objectives:['Select the HTTP POST packet containing the stolen login credentials','Select the packet showing the DNS query to the attacker\'s C2 domain','Select the packet showing the initial TCP connection to the C2 server'],
-    solution:'Packet 9 contains the HTTP POST with credentials. Packet 12 shows the DNS query to malware.evil.com. Packet 14 shows the TCP SYN to the C2 IP 198.51.100.66.',
+    objectives:['Filter for HTTP POST requests and select the packet containing the stolen login credentials','Filter for DNS traffic and select the packet showing the query to the attacker\'s C2 domain','Filter for ICMP traffic and select the packet pinging the attacker\'s IP'],
+    solution:'Packet 8 contains the HTTP POST with credentials. Packet 11 shows the DNS query to malware.evil.com. Packet 14 shows the ICMP ping to 198.51.100.66.',
     nodes:{ left:{ip:"192.168.1.10", label:"Victim"}, middle:{ip:"203.0.113.15", label:"Web Server"}, right:{ip:"198.51.100.66", label:"C2 Server"} },
     packets:[
       { id:1, time:"0.000000", src:"192.168.1.10", dst:"192.168.1.1", proto:"ARP", len:42, info:"Who has 192.168.1.1? Tell 192.168.1.10", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f c0a8 010a 0000 0000 0000 c0a8 0101", highlight:"" },
@@ -245,20 +252,22 @@ const LABS = [
       { id:4, time:"0.004500", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:415, info:"GET /login.php HTTP/1.1", details:"Hypertext Transfer Protocol", bytes:"4745 5420 2f6c 6f67 696e 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"GET" },
       { id:5, time:"0.005820", src:"203.0.113.15", dst:"192.168.1.10", proto:"HTTP", len:890, info:"HTTP/1.1 200 OK (text/html)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2032 3030 204f 4b0d 0a43 6f6e 7465 6e74 2d54 7970 653a 2074", highlight:"HTTP" },
       { id:6, time:"0.008100", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:54, info:"443 ? 51842 [ACK] Seq=362 Ack=837 Win=63403 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 5152 5e1a 9e6c 5010 f7a3 1234 0000", highlight:"" },
-      { id:7, time:"0.009450", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:520, info:"POST /auth.php HTTP/1.1 (application/x-www-form-urlencoded)", details:"Hypertext Transfer Protocol", bytes:"504f 5354 202f 6175 7468 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"POST" },
-      { id:8, time:"0.010200", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:1454, info:"443 ? 51842 [PSH, ACK] Seq=362 Ack=837 Win=63403 Len=1400", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 5152 5e1a 9e6c 5018 f7a3 1234 0000 7573 6572", highlight:"user" },
-      { id:9, time:"0.010210", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:340, info:"HTTP/1.1 302 Found (Location: /dashboard.php)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2033 3032 2046 6f75 6e64 0d0a 4c6f 6361 7469 6f6e 3a20 2f64", highlight:"302" },
+      { id:7, time:"0.009450", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:54, info:"443 ? 51842 [PSH, ACK] Seq=362 Ack=837 Win=63403 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 5152 5e1a 9e6c 5018 f7a3 1234 0000", highlight:"" },
+      { id:8, time:"0.010200", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:520, info:"POST /auth.php HTTP/1.1 (application/x-www-form-urlencoded)", details:"Hypertext Transfer Protocol", bytes:"504f 5354 202f 6175 7468 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"POST" },
+      { id:9, time:"0.010210", src:"203.0.113.15", dst:"192.168.1.10", proto:"HTTP", len:340, info:"HTTP/1.1 302 Found (Location: /dashboard.php)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2033 3032 2046 6f75 6e64 0d0a 4c6f 6361 7469 6f6e 3a20 2f64", highlight:"302" },
       { id:10, time:"0.012000", src:"192.168.1.10", dst:"8.8.8.8", proto:"DNS", len:82, info:"Standard query 0x1a2b A malware.evil.com", details:"Domain Name System", bytes:"1a2b 0100 0001 0000 0000 0000 066d 616c 7761 7265 0465 7669 6c03 636f 6d00 0001", highlight:"evil" },
       { id:11, time:"0.013100", src:"8.8.8.8", dst:"192.168.1.10", proto:"DNS", len:98, info:"Standard query response 0x1a2b A malware.evil.com A 198.51.100.66", details:"Domain Name System", bytes:"1a2b 8180 0001 0001 0000 0000 066d 616c 7761 7265 0465 7669 6c03 636f 6d00 0001", highlight:"198" },
-      { id:12, time:"0.014500", src:"192.168.1.10", dst:"198.51.100.66", proto:"TCP", len:74, info:"4444 ? 51920 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a c633 6442 115c 4f12 3abc 9012 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" }
+      { id:12, time:"0.014000", src:"192.168.1.10", dst:"203.0.113.15", proto:"TLS", len:512, info:"Client Hello", details:"Transport Layer Security", bytes:"1603 0100 c801 0000 c403 0312 3456 7890 abcd ef12 3456 7890 abcd ef12 3456 7890", highlight:"" },
+      { id:13, time:"0.014100", src:"192.168.1.10", dst:"198.51.100.66", proto:"TCP", len:74, info:"4444 ? 51920 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a c633 6442 115c 4f12 3abc 9012 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" },
+      { id:14, time:"0.014500", src:"192.168.1.10", dst:"198.51.100.66", proto:"ICMP", len:74, info:"Echo (ping) request id=0x0001, seq=1/256, ttl=64", details:"Internet Control Message Protocol", bytes:"0800 4d5a 0001 0001 6162 6364 6566 6768 696a 6b6c 6d6e 6f70 7172 7374 7576 7778", highlight:"" }
     ],
-    solutionIds:[7, 10, 12]
+    solutionIds:[8, 10, 14]
   },
   {
     id:'syn_flood', name:'TCP SYN Flood DoS', category:'Network Attack', icon:'fa-bolt', color:'red',
     description:'Analyze a packet capture under a Denial of Service attack. Identify the attack type and target.',
     scenario:'The company\'s primary web server is unresponsive. You capture traffic on the server\'s switch port and need to identify the type of attack and the targeted port.',
-    objectives:['Select a packet representing the malicious SYN request','Select a packet showing the server trying to respond (SYN-ACK)'],
+    objectives:['Filter for TCP SYN packets and select a packet representing the malicious SYN request','Select a packet showing the server trying to respond (SYN-ACK)'],
     solution:'The capture is flooded with TCP SYN packets (Packet 3, 4, 5) from random IPs to 10.0.0.5. Packet 6 shows the server responding with SYN-ACK, exhausting its resources.',
     nodes:{ left:{ip:"45.1.1.9", label:"Botnet/Attacker"}, middle:{ip:"10.0.0.5", label:"Web Server"}, right:{ip:"N/A", label:"N/A"} },
     packets:[
@@ -274,21 +283,24 @@ const LABS = [
     solutionIds:[3, 6]
   },
   {
-    id:'arp_spoof', name:'ARP Spoofing MitM', category:'L2 Attack', icon:'fa-user-secret', color:'purple',
-    description:'Analyze a packet capture where an attacker is performing a Man-in-the-Middle attack via ARP poisoning.',
+    id:'arp_dhcp', name:'ARP Spoofing & DHCP', category:'L2/L3 Attack', icon:'fa-user-secret', color:'purple',
+    description:'Analyze a packet capture where an attacker is performing a Man-in-the-Middle attack via ARP poisoning alongside rogue DHCP behavior.',
     scenario:'Users are reporting that their internet is slow and they are getting SSL certificate warnings. You suspect an ARP spoofing attack on the local network.',
-    objectives:['Select the malicious ARP packet where the attacker claims to be the gateway'],
-    solution:'Packet 4 is an unsolicited ARP reply from 192.168.1.99 claiming that 192.168.1.1 (the gateway) is at the attacker\'s MAC address.',
+    objectives:['Filter for ARP traffic and select the malicious packet where the attacker claims to be the gateway','Filter for DHCP traffic and select the DHCP Offer packet sent by the attacker'],
+    solution:'Packet 4 is an unsolicited ARP reply from 192.168.1.99 claiming that 192.168.1.1 (the gateway) is at the attacker\'s MAC address. Packet 8 is the rogue DHCP Offer from the attacker.',
     nodes:{ left:{ip:"192.168.1.50", label:"Victim"}, middle:{ip:"192.168.1.99", label:"Attacker"}, right:{ip:"192.168.1.1", label:"Gateway"} },
     packets:[
-      { id:1, time:"0.000000", src:"192.168.1.50", dst:"192.168.1.1", proto:"ARP", len:42, info:"Who has 192.168.1.1? Tell 192.168.1.50", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f c0a8 0132 0000 0000 0000 c0a8 0101", highlight:"" },
-      { id:2, time:"0.000124", src:"192.168.1.1", dst:"192.168.1.50", proto:"ARP", len:42, info:"192.168.1.1 is at 00:1c:2b:3a:44:55", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0002 1c2b 3a44 5512 c0a8 0101 1a2b 3c4d 5e6f c0a8 0132", highlight:"" },
-      { id:3, time:"0.001000", src:"192.168.1.50", dst:"203.0.113.15", proto:"TCP", len:74, info:"443 ? 51842 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 0132 cb00 710f 04d2 8051 2bc8 4f32 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" },
+      { id:1, time:"0.000000", src:"0.0.0.0", dst:"255.255.255.255", proto:"DHCP", len:300, info:"DHCP Discover - Transaction ID 0x1234", details:"Dynamic Host Configuration Protocol", bytes:"0101 0600 1234 0000 0000 0000 0000 0000 0000 c0a8 0132 0000 0000 0000 0000", highlight:"" },
+      { id:2, time:"0.000124", src:"192.168.1.1", dst:"192.168.1.50", proto:"DHCP", len:340, info:"DHCP Offer - Transaction ID 0x1234", details:"Dynamic Host Configuration Protocol", bytes:"0201 0600 1234 0000 c0a8 0101 c0a8 0132 0000 0000 1c2b 3a44 5512 0000 0000", highlight:"" },
+      { id:3, time:"0.001000", src:"192.168.1.50", dst:"192.168.1.1", proto:"ARP", len:42, info:"Who has 192.168.1.1? Tell 192.168.1.50", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f c0a8 0132 0000 0000 0000 c0a8 0101", highlight:"" },
       { id:4, time:"0.002140", src:"192.168.1.99", dst:"192.168.1.50", proto:"ARP", len:42, info:"192.168.1.1 is at de:ad:be:ef:00:01", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0002 dead beef 0001 c0a8 0163 1a2b 3c4d 5e6f c0a8 0132", highlight:"dead" },
-      { id:5, time:"0.003120", src:"192.168.1.50", dst:"203.0.113.15", proto:"HTTP", len:415, info:"GET /login.php HTTP/1.1", details:"Hypertext Transfer Protocol", bytes:"4745 5420 2f6c 6f67 696e 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"GET" },
-      { id:6, time:"0.004500", src:"203.0.113.15", dst:"192.168.1.50", proto:"HTTP", len:890, info:"HTTP/1.1 200 OK (text/html)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2032 3030 204f 4b0d 0a43 6f6e 7465 6e74 2d54 7970 653a 2074", highlight:"HTTP" }
+      { id:5, time:"0.003120", src:"192.168.1.50", dst:"203.0.113.15", proto:"TCP", len:74, info:"443 ? 51842 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 0132 cb00 710f 04d2 8051 2bc8 4f32 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" },
+      { id:6, time:"0.004500", src:"192.168.1.50", dst:"203.0.113.15", proto:"HTTP", len:415, info:"GET /login.php HTTP/1.1", details:"Hypertext Transfer Protocol", bytes:"4745 5420 2f6c 6f67 696e 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"GET" },
+      { id:7, time:"0.005100", src:"192.168.1.50", dst:"255.255.255.255", proto:"DHCP", len:300, info:"DHCP Request - Transaction ID 0x1234", details:"Dynamic Host Configuration Protocol", bytes:"0101 0600 1234 0000 0000 0000 0000 0000 0000 c0a8 0132 0000 0000 0000 0000", highlight:"" },
+      { id:8, time:"0.005120", src:"192.168.1.99", dst:"192.168.1.50", proto:"DHCP", len:340, info:"DHCP Ack - Transaction ID 0x1234 (Rogue)", details:"Dynamic Host Configuration Protocol", bytes:"0201 0600 1234 0000 c0a8 0163 c0a8 0132 0000 0000 dead beef 0001 0000 0000", highlight:"dead" },
+      { id:9, time:"0.005820", src:"203.0.113.15", dst:"192.168.1.50", proto:"HTTP", len:890, info:"HTTP/1.1 200 OK (text/html)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2032 3030 204f 4b0d 0a43 6f6e 7465 6e74 2d54 7970 653a 2074", highlight:"HTTP" }
     ],
-    solutionIds:[4]
+    solutionIds:[4, 8]
   }
 ];
 
@@ -374,6 +386,29 @@ function renderLab(){
       </div>
     </div>
 
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon yellow"><i class="fas fa-lightbulb"></i></div>
+        <div class="card-title">Filter Cheatsheet (Click to apply)</div>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom:10px; font-size:.8rem;">Use these filters in the Wireshark display filter bar below to isolate specific protocols and traffic types.</p>
+        <div class="filter-hint-grid">
+          <button class="filter-hint-btn" onclick="setFilter('http')">http</button>
+          <button class="filter-hint-btn" onclick="setFilter('http.request.method == &quot;POST&quot;')">http.request.method == "POST"</button>
+          <button class="filter-hint-btn" onclick="setFilter('http.request.method == &quot;GET&quot;')">http.request.method == "GET"</button>
+          <button class="filter-hint-btn" onclick="setFilter('dns')">dns</button>
+          <button class="filter-hint-btn" onclick="setFilter('arp')">arp</button>
+          <button class="filter-hint-btn" onclick="setFilter('icmp')">icmp</button>
+          <button class="filter-hint-btn" onclick="setFilter('dhcp')">dhcp</button>
+          <button class="filter-hint-btn" onclick="setFilter('tcp')">tcp</button>
+          <button class="filter-hint-btn" onclick="setFilter('tcp.flags.syn == 1')">tcp.flags.syn == 1</button>
+          <button class="filter-hint-btn" onclick="setFilter('tls')">tls</button>
+          <button class="filter-hint-btn" onclick="setFilter('udp')">udp</button>
+        </div>
+      </div>
+    </div>
+
     <div class="ws-topology">
       <div class="network-title" style="font-size:.7rem; font-weight:700; color:var(--fg-dim); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><i class="fas fa-diagram-project"></i> Network Topology (Live)</div>
       <svg viewBox="0 0 800 140">
@@ -456,6 +491,12 @@ function renderLab(){
   renderPacketTable(lab.packets);
 }
 
+function setFilter(text) {
+  const input = document.getElementById('filterInput');
+  input.value = text;
+  applyFilter();
+}
+
 function renderPacketTable(packets) {
   const tbody = document.getElementById('packetTableBody');
   tbody.innerHTML = '';
@@ -485,14 +526,44 @@ function applyFilter() {
   }
   
   let filtered = lab.packets.filter(p => {
-    if (filter === 'http') return p.proto === 'HTTP';
-    if (filter === 'tcp') return p.proto === 'TCP';
-    if (filter === 'dns') return p.proto === 'DNS';
-    if (filter === 'arp') return p.proto === 'ARP';
+    // Basic protocol filters
+    if (filter === 'http' && p.proto === 'HTTP') return true;
+    if (filter === 'tcp' && p.proto === 'TCP') return true;
+    if (filter === 'dns' && p.proto === 'DNS') return true;
+    if (filter === 'arp' && p.proto === 'ARP') return true;
+    if (filter === 'icmp' && p.proto === 'ICMP') return true;
+    if (filter === 'udp' && p.proto === 'UDP') return true;
+    if (filter === 'dhcp' && p.proto === 'DHCP') return true;
+    if (filter === 'tls' && p.proto === 'TLS') return true;
+
+    // Advanced HTTP filters
+    if (filter === 'http.request.method == "post"' && p.proto === 'HTTP' && p.info.startsWith('POST')) return true;
+    if (filter === 'http.request.method == "get"' && p.proto === 'HTTP' && p.info.startsWith('GET')) return true;
+    
+    // Advanced TCP filters
+    if (filter === 'tcp.flags.syn == 1' && p.proto === 'TCP' && p.info.includes('[SYN]')) return true;
+    if (filter === 'tcp.flags.syn == 1 && tcp.flags.ack == 0' && p.proto === 'TCP' && p.info.includes('[SYN]') && !p.info.includes('ACK')) return true;
+    
+    // IP filters
     if (filter.startsWith('ip.addr ==')) {
       let ip = filter.split('==')[1].trim();
       return p.src === ip || p.dst === ip;
     }
+    if (filter.startsWith('ip.src ==')) {
+      let ip = filter.split('==')[1].trim();
+      return p.src === ip;
+    }
+    if (filter.startsWith('ip.dst ==')) {
+      let ip = filter.split('==')[1].trim();
+      return p.dst === ip;
+    }
+
+    // Port filters
+    if (filter.startsWith('tcp.port ==')) {
+      let port = filter.split('==')[1].trim();
+      return p.info.includes(`:${port} `) || p.info.includes(` ${port} `);
+    }
+
     return p.info.toLowerCase().includes(filter) || p.proto.toLowerCase().includes(filter);
   });
   
