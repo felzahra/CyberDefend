@@ -431,9 +431,7 @@
 <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-back-btns">
-                    <a href="index.html" class="sidebar-back-btn">&larr; Back to Dashboard</a>
-                </div>
+
             </div>
 
             <div class="sidebar-label">Attack Phases</div>
@@ -758,7 +756,13 @@ function initLab() {
 // ============================================================
 function renderSidebar() {
     const sb = document.getElementById('sidebar');
-    let html = '<div class="sidebar-label">Attack Phases</div>';
+    // Added the Back to Dashboard button at the top of the sidebar
+    let html = `
+        <a href="index.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <div class="sidebar-label">Attack Phases</div>
+    `;
     PHASES.forEach((p, i) => {
         let cls = '';
         if (i === currentPhase) cls = 'active';
