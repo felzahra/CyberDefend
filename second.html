@@ -647,9 +647,17 @@ let historyIdx = -1;
 // ============================================================
 // SIDEBAR RENDER
 // ============================================================
+// ============================================================
+// SIDEBAR RENDER
+// ============================================================
 function renderSidebar(){
   const sb = document.getElementById('sidebar');
-  let html = '<div class="sidebar-section"><div class="sidebar-label">Attack Labs</div>';
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Attack Labs</div>
+  `;
   LABS.forEach((lab,i)=>{
     const done = completedLabs.has(i);
     const active = i===currentLab;
