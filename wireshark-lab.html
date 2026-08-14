@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireshark GUI · Interactive Traffic Analysis Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0e14; --bg-raised:#0f1419; --bg-card:#131920; --bg-terminal:#080c10;
+  --fg:#c5cdd8; --fg-bright:#e8edf3; --fg-dim:#5a6678;
+  --accent:#00d4ff; --accent-dim:rgba(0,212,255,.12); --accent-mid:rgba(0,212,255,.3);
+  --red:#ff3b5c; --red-dim:rgba(255,59,92,.12);
+  --orange:#ff9f43; --orange-dim:rgba(255,159,67,.12);
+  --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,.12);
+  --yellow:#ffd93d; --yellow-dim:rgba(255,217,61,.12);
+  --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+  --border:#1e2733; --border-light:#2a3544;
+  --radius:10px; --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
+  background-size:60px 60px}
+.bg-glow{position:fixed;z-index:0;pointer-events:none;width:600px;height:600px;border-radius:50%;filter:blur(150px);opacity:.08}
+.bg-glow-1{top:-200px;right:-100px;background:var(--accent)}
+.bg-glow-2{bottom:-200px;left:-100px;background:var(--purple)}
+.app{position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+  background:rgba(10,14,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800}
+.title{font-size:1rem;font-weight:700;color:var(--fg-bright)}
+.subtitle{font-size:.65rem;color:var(--fg-dim);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card)}
+.stat-pill i{color:var(--accent)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:var(--bg-raised);border-right:1px solid var(--border);padding:20px 0;
+  overflow-y:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.sidebar-section{margin-bottom:18px}
+.sidebar-label{font-size:.62rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1.5px;
+  padding:0 20px;margin-bottom:10px}
+.lab-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;
+  transition:.15s;border-left:3px solid transparent;position:relative}
+.lab-item:hover{background:rgba(255,255,255,.025)}
+.lab-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.lab-item.done .lab-icon{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-mid)}
+.lab-icon{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border-light);transition:.3s}
+.lab-item.active .lab-icon{background:var(--accent);color:#000;border-color:var(--accent)}
+.lab-info{flex:1;min-width:0}
+.lab-name{font-size:.8rem;font-weight:600;color:var(--fg-bright);line-height:1.2}
+.lab-item.active .lab-name{color:var(--accent)}
+.lab-cat{font-size:.65rem;color:var(--fg-dim);margin-top:2px}
+.content{padding:24px 28px;max-width:1400px}
+.lab-header{margin-bottom:24px}
+.lab-tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:var(--mono)}
+.lab-tag::before{content:'';width:24px;height:2px;background:var(--accent);border-radius:1px}
+.lab-header h1{font-size:1.8rem;font-weight:800;color:var(--fg-bright);line-height:1.2;margin-bottom:10px}
+.lab-header p{font-size:.9rem;color:var(--fg-dim);line-height:1.7;max-width:800px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card-icon.green{background:var(--accent-dim);color:var(--accent)}
+.card-icon.cyan{background:var(--cyan-dim);color:var(--cyan)}
+.card-icon.orange{background:var(--orange-dim);color:var(--orange)}
+.card-icon.red{background:var(--red-dim);color:var(--red)}
+.card-icon.yellow{background:var(--yellow-dim);color:var(--yellow)}
+.card-icon.purple{background:var(--purple-dim);color:var(--purple)}
+.card-title{font-size:.92rem;font-weight:700;color:var(--fg-bright)}
+.card-body{font-size:.84rem;color:var(--fg);line-height:1.7}
+.card-body ul{list-style:none;padding:0}
+.card-body ul li{padding:4px 0;padding-left:18px;position:relative}
+.card-body ul li::before{content:'?';position:absolute;left:0;color:var(--accent);font-weight:700}
+
+/* Wireshark GUI Specific Styles */
+.ws-topology{
+  background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; margin-bottom:18px; position:relative; overflow:hidden;
+}
+.ws-topology svg{width:100%; height:140px; display:block}
+.ws-topology .node{transition:0.3s}
+.ws-topology .node.active circle{fill:var(--accent); stroke:#fff}
+.ws-topology .node.active text.ip{fill:var(--accent)}
+.ws-topology .link{stroke:var(--border-light); stroke-width:2; transition:0.3s}
+.ws-topology .link.active{stroke:var(--red); stroke-width:3; animation:dash 1s linear infinite}
+@keyframes dash { to { stroke-dashoffset: -20; } }
+
+.ws-toolbar{
+  display:flex; align-items:center; gap:10px; padding:10px 16px;
+  background:#0d1117; border:1px solid var(--border); border-bottom:none;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.ws-toolbar-btn{
+  width:32px; height:32px; border-radius:6px; border:1px solid var(--border-light);
+  background:var(--bg-card); color:var(--fg-dim); cursor:pointer; transition:0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.ws-toolbar-btn:hover{border-color:var(--accent); color:var(--accent)}
+.ws-filter-bar{
+  flex:1; display:flex; align-items:center; gap:8px; background:var(--bg-card);
+  border:1px solid var(--border-light); padding:6px 12px; border-radius:6px;
+}
+.ws-filter-bar i{color:var(--accent)}
+.ws-filter-input{
+  flex:1; background:transparent; border:none; outline:none; color:var(--fg-bright);
+  font-family:var(--mono); font-size:.8rem;
+}
+.ws-filter-btn{
+  padding:4px 12px; border-radius:4px; border:1px solid var(--accent-mid);
+  background:var(--accent-dim); color:var(--accent); cursor:pointer; font-family:var(--mono); font-size:.72rem; font-weight:700;
+}
+.ws-filter-btn:hover{background:var(--accent); color:#000}
+
+.ws-panes{
+  background:var(--bg-terminal); border:1px solid var(--border); border-top:none;
+  border-radius:0 0 var(--radius) var(--radius); overflow:hidden;
+}
+
+/* Pane 1: Packet List */
+.ws-pane-list{
+  height:240px; overflow-y:auto; background:var(--bg-terminal); font-family:var(--mono); font-size:.75rem;
+}
+.ws-pane-list::-webkit-scrollbar{width:6px; height:6px}
+.ws-pane-list::-webkit-scrollbar-thumb{background:var(--border-light); border-radius:10px}
+.ws-table{width:100%; border-collapse:collapse}
+.ws-table th{
+  position:sticky; top:0; background:#0d1117; text-align:left; padding:6px 10px;
+  color:var(--fg-dim); font-weight:600; border-bottom:1px solid var(--border); font-size:.72rem;
+  cursor:pointer;
+}
+.ws-table th:hover{color:var(--accent)}
+.ws-table td{padding:5px 10px; border-bottom:1px solid rgba(30,39,51,0.5); color:var(--fg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ws-table tr{cursor:pointer; transition:0.1s}
+.ws-table tr:hover{background:rgba(0,212,255,0.05)}
+.ws-table tr.selected{background:rgba(0,212,255,0.15); color:var(--fg-bright)}
+.ws-table tr.selected td{border-bottom:1px solid var(--accent-mid)}
+
+/* Pane 2: Packet Details */
+.ws-pane-details{
+  height:180px; overflow-y:auto; border-top:2px solid var(--border); padding:10px;
+  font-family:var(--mono); font-size:.75rem; line-height:1.6;
+}
+.ws-tree-node{cursor:pointer; padding:2px 0}
+.ws-tree-node:hover{color:var(--accent)}
+.ws-tree-toggle{display:inline-block; width:12px; text-align:center; margin-right:4px; color:var(--fg-dim)}
+.ws-tree-label{color:var(--cyan)}
+.ws-tree-value{color:var(--fg)}
+.ws-tree-children{margin-left:20px; display:block}
+.ws-tree-children.hidden{display:none}
+
+/* Pane 3: Packet Bytes */
+.ws-pane-bytes{
+  height:140px; overflow-y:auto; border-top:2px solid var(--border); padding:10px;
+  font-family:var(--mono); font-size:.72rem; line-height:1.5; color:var(--fg-dim);
+}
+.ws-byte-line{display:flex; gap:15px; margin-bottom:2px}
+.ws-byte-offset{color:var(--purple)}
+.ws-byte-hex{color:var(--fg); letter-spacing:1px}
+.ws-byte-ascii{color:var(--accent); margin-left:auto; white-space:pre}
+.ws-highlight-byte{background:var(--accent); color:#000; padding:0 2px; border-radius:2px}
+
+.complete-banner{display:none; align-items:center; gap:12px; padding:16px 20px; border-radius:var(--radius);
+  background:var(--accent-dim); border:1px solid var(--accent-mid); margin-bottom:18px}
+.complete-banner.show{display:flex}
+.complete-banner i{color:var(--accent); font-size:1.2rem}
+.complete-banner span{color:var(--accent); font-weight:600; font-size:.88rem}
+
+.solution-banner{display:none; align-items:flex-start; gap:12px; padding:16px 20px; border-radius:var(--radius);
+  background:var(--yellow-dim); border:1px solid rgba(255,217,61,.3); margin-bottom:18px}
+.solution-banner.show{display:flex}
+.solution-banner i{color:var(--yellow); font-size:1.2rem; margin-top:2px}
+.solution-banner div span{color:var(--yellow); font-weight:700; display:block; margin-bottom:4px}
+.solution-banner div p{color:var(--fg); font-size:.84rem; line-height:1.5}
+
+.btn{padding:11px 22px; border-radius:var(--radius); font-size:.85rem; font-weight:700; cursor:pointer;
+  border:1px solid var(--border-light); background:var(--bg-card); color:var(--fg); font-family:var(--sans);
+  transition:.2s; display:inline-flex; align-items:center; gap:8px}
+.btn:hover{border-color:var(--accent); color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#00aacc); color:#000; border:none;
+  box-shadow:0 4px 20px rgba(0,212,255,.2)}
+.btn.primary:hover{transform:translateY(-2px); box-shadow:0 6px 30px rgba(0,212,255,.3)}
+
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative; top:0; max-height:none; display:flex; overflow-x:auto; padding:12px; gap:4px;
+    border-right:none; border-bottom:1px solid var(--border)}
+  .sidebar-section{margin-bottom:0; flex:1}
+  .sidebar-label{display:none}
+  .lab-item{padding:8px 12px; white-space:nowrap; border-left:none; border-bottom:2px solid transparent; flex-shrink:0}
+  .lab-item.active{border-bottom-color:var(--accent); border-left:none}
+  .lab-cat{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><i class="fas fa-network-wired"></i></div>
+      <div>
+        <div class="title">Wireshark GUI Labs</div>
+        <div class="subtitle">Interactive Packet Analysis</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-pill"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / <span id="totalCount">0</span> Labs</div>
+      <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// LAB DEFINITIONS — Wireshark GUI Scenarios
+// ============================================================
+const LABS = [
+  {
+    id:'http_cred', name:'HTTP Credential Harvest', category:'Web Traffic Analysis', icon:'fa-key', color:'orange',
+    description:'Analyze a packet capture to identify stolen HTTP login credentials and trace the C2 connection.',
+    scenario:'A user on the LAN reported their account was compromised shortly after logging into a web portal. You are given a pcap file of their session.',
+    objectives:['Select the HTTP POST packet containing the stolen login credentials','Select the packet showing the DNS query to the attacker\'s C2 domain','Select the packet showing the initial TCP connection to the C2 server'],
+    solution:'Packet 9 contains the HTTP POST with credentials. Packet 12 shows the DNS query to malware.evil.com. Packet 14 shows the TCP SYN to the C2 IP 198.51.100.66.',
+    nodes:{ left:{ip:"192.168.1.10", label:"Victim"}, middle:{ip:"203.0.113.15", label:"Web Server"}, right:{ip:"198.51.100.66", label:"C2 Server"} },
+    packets:[
+      { id:1, time:"0.000000", src:"192.168.1.10", dst:"192.168.1.1", proto:"ARP", len:42, info:"Who has 192.168.1.1? Tell 192.168.1.10", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f c0a8 010a 0000 0000 0000 c0a8 0101", highlight:"" },
+      { id:2, time:"0.001000", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:74, info:"443 ? 51842 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 4f32 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" },
+      { id:3, time:"0.002140", src:"203.0.113.15", dst:"192.168.1.10", proto:"TCP", len:66, info:"51842 ? 443 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0", details:"Transmission Control Protocol", bytes:"cb00 710f c0a8 010a 8051 04d2 5e1a 9b2c 2bc8 4f33 8012 ffff 3c12 0000 0204 fffa", highlight:"" },
+      { id:4, time:"0.004500", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:415, info:"GET /login.php HTTP/1.1", details:"Hypertext Transfer Protocol", bytes:"4745 5420 2f6c 6f67 696e 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"GET" },
+      { id:5, time:"0.005820", src:"203.0.113.15", dst:"192.168.1.10", proto:"HTTP", len:890, info:"HTTP/1.1 200 OK (text/html)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2032 3030 204f 4b0d 0a43 6f6e 7465 6e74 2d54 7970 653a 2074", highlight:"HTTP" },
+      { id:6, time:"0.008100", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:54, info:"443 ? 51842 [ACK] Seq=362 Ack=837 Win=63403 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 5152 5e1a 9e6c 5010 f7a3 1234 0000", highlight:"" },
+      { id:7, time:"0.009450", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:520, info:"POST /auth.php HTTP/1.1 (application/x-www-form-urlencoded)", details:"Hypertext Transfer Protocol", bytes:"504f 5354 202f 6175 7468 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"POST" },
+      { id:8, time:"0.010200", src:"192.168.1.10", dst:"203.0.113.15", proto:"TCP", len:1454, info:"443 ? 51842 [PSH, ACK] Seq=362 Ack=837 Win=63403 Len=1400", details:"Transmission Control Protocol", bytes:"c0a8 010a cb00 710f 04d2 8051 2bc8 5152 5e1a 9e6c 5018 f7a3 1234 0000 7573 6572", highlight:"user" },
+      { id:9, time:"0.010210", src:"192.168.1.10", dst:"203.0.113.15", proto:"HTTP", len:340, info:"HTTP/1.1 302 Found (Location: /dashboard.php)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2033 3032 2046 6f75 6e64 0d0a 4c6f 6361 7469 6f6e 3a20 2f64", highlight:"302" },
+      { id:10, time:"0.012000", src:"192.168.1.10", dst:"8.8.8.8", proto:"DNS", len:82, info:"Standard query 0x1a2b A malware.evil.com", details:"Domain Name System", bytes:"1a2b 0100 0001 0000 0000 0000 066d 616c 7761 7265 0465 7669 6c03 636f 6d00 0001", highlight:"evil" },
+      { id:11, time:"0.013100", src:"8.8.8.8", dst:"192.168.1.10", proto:"DNS", len:98, info:"Standard query response 0x1a2b A malware.evil.com A 198.51.100.66", details:"Domain Name System", bytes:"1a2b 8180 0001 0001 0000 0000 066d 616c 7761 7265 0465 7669 6c03 636f 6d00 0001", highlight:"198" },
+      { id:12, time:"0.014500", src:"192.168.1.10", dst:"198.51.100.66", proto:"TCP", len:74, info:"4444 ? 51920 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 010a c633 6442 115c 4f12 3abc 9012 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" }
+    ],
+    solutionIds:[7, 10, 12]
+  },
+  {
+    id:'syn_flood', name:'TCP SYN Flood DoS', category:'Network Attack', icon:'fa-bolt', color:'red',
+    description:'Analyze a packet capture under a Denial of Service attack. Identify the attack type and target.',
+    scenario:'The company\'s primary web server is unresponsive. You capture traffic on the server\'s switch port and need to identify the type of attack and the targeted port.',
+    objectives:['Select a packet representing the malicious SYN request','Select a packet showing the server trying to respond (SYN-ACK)'],
+    solution:'The capture is flooded with TCP SYN packets (Packet 3, 4, 5) from random IPs to 10.0.0.5. Packet 6 shows the server responding with SYN-ACK, exhausting its resources.',
+    nodes:{ left:{ip:"45.1.1.9", label:"Botnet/Attacker"}, middle:{ip:"10.0.0.5", label:"Web Server"}, right:{ip:"N/A", label:"N/A"} },
+    packets:[
+      { id:1, time:"0.000000", src:"10.0.0.5", dst:"10.0.0.1", proto:"ARP", len:42, info:"Who has 10.0.0.1? Tell 10.0.0.5", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f 0a00 0005 0000 0000 0000 0a00 0001", highlight:"" },
+      { id:2, time:"0.001000", src:"10.0.0.1", dst:"10.0.0.5", proto:"ARP", len:42, info:"10.0.0.1 is at 00:1c:2b:3a:44:55", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0002 1c2b 3a44 5512 0a00 0001 1a2b 3c4d 5e6f 0a00 0005", highlight:"" },
+      { id:3, time:"0.002000", src:"45.1.1.9", dst:"10.0.0.5", proto:"TCP", len:54, info:"33441 ? 80 [SYN] Seq=0 Win=1024 Len=0", details:"Transmission Control Protocol", bytes:"2d01 0109 0a00 0005 82a1 0050 1234 5678 0000 0000 8002 0400 0000 0000", highlight:"SYN" },
+      { id:4, time:"0.002010", src:"198.51.100.23", dst:"10.0.0.5", proto:"TCP", len:54, info:"55120 ? 80 [SYN] Seq=0 Win=1024 Len=0", details:"Transmission Control Protocol", bytes:"c633 6417 0a00 0005 d730 0050 8765 4321 0000 0000 8002 0400 0000 0000", highlight:"SYN" },
+      { id:5, time:"0.002020", src:"203.0.113.45", dst:"10.0.0.5", proto:"TCP", len:54, info:"44312 ? 80 [SYN] Seq=0 Win=1024 Len=0", details:"Transmission Control Protocol", bytes:"cb00 712d 0a00 0005 ad38 0050 abcd ef12 0000 0000 8002 0400 0000 0000", highlight:"SYN" },
+      { id:6, time:"0.002025", src:"10.0.0.5", dst:"45.1.1.9", proto:"TCP", len:54, info:"80 ? 33441 [SYN, ACK] Seq=0 Ack=1 Win=29200 Len=0", details:"Transmission Control Protocol", bytes:"0a00 0005 2d01 0109 0050 82a1 1234 5679 0000 0000 8012 7210 0000 0000", highlight:"SYN" },
+      { id:7, time:"0.003000", src:"45.1.1.9", dst:"10.0.0.5", proto:"TCP", len:54, info:"33442 ? 80 [SYN] Seq=0 Win=1024 Len=0", details:"Transmission Control Protocol", bytes:"2d01 0109 0a00 0005 82a2 0050 1234 5678 0000 0000 8002 0400 0000 0000", highlight:"SYN" },
+      { id:8, time:"0.003010", src:"192.168.50.12", dst:"10.0.0.5", proto:"TCP", len:54, info:"60231 ? 80 [SYN] Seq=0 Win=1024 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 320c 0a00 0005 eb47 0050 1234 5678 0000 0000 8002 0400 0000 0000", highlight:"SYN" }
+    ],
+    solutionIds:[3, 6]
+  },
+  {
+    id:'arp_spoof', name:'ARP Spoofing MitM', category:'L2 Attack', icon:'fa-user-secret', color:'purple',
+    description:'Analyze a packet capture where an attacker is performing a Man-in-the-Middle attack via ARP poisoning.',
+    scenario:'Users are reporting that their internet is slow and they are getting SSL certificate warnings. You suspect an ARP spoofing attack on the local network.',
+    objectives:['Select the malicious ARP packet where the attacker claims to be the gateway'],
+    solution:'Packet 4 is an unsolicited ARP reply from 192.168.1.99 claiming that 192.168.1.1 (the gateway) is at the attacker\'s MAC address.',
+    nodes:{ left:{ip:"192.168.1.50", label:"Victim"}, middle:{ip:"192.168.1.99", label:"Attacker"}, right:{ip:"192.168.1.1", label:"Gateway"} },
+    packets:[
+      { id:1, time:"0.000000", src:"192.168.1.50", dst:"192.168.1.1", proto:"ARP", len:42, info:"Who has 192.168.1.1? Tell 192.168.1.50", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0001 1a2b 3c4d 5e6f c0a8 0132 0000 0000 0000 c0a8 0101", highlight:"" },
+      { id:2, time:"0.000124", src:"192.168.1.1", dst:"192.168.1.50", proto:"ARP", len:42, info:"192.168.1.1 is at 00:1c:2b:3a:44:55", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0002 1c2b 3a44 5512 c0a8 0101 1a2b 3c4d 5e6f c0a8 0132", highlight:"" },
+      { id:3, time:"0.001000", src:"192.168.1.50", dst:"203.0.113.15", proto:"TCP", len:74, info:"443 ? 51842 [SYN] Seq=0 Win=64240 Len=0", details:"Transmission Control Protocol", bytes:"c0a8 0132 cb00 710f 04d2 8051 2bc8 4f32 0000 0000 8002 ffff fe34 0000 0204 fffa", highlight:"" },
+      { id:4, time:"0.002140", src:"192.168.1.99", dst:"192.168.1.50", proto:"ARP", len:42, info:"192.168.1.1 is at de:ad:be:ef:00:01", details:"Address Resolution Protocol", bytes:"0001 0800 0604 0002 dead beef 0001 c0a8 0163 1a2b 3c4d 5e6f c0a8 0132", highlight:"dead" },
+      { id:5, time:"0.003120", src:"192.168.1.50", dst:"203.0.113.15", proto:"HTTP", len:415, info:"GET /login.php HTTP/1.1", details:"Hypertext Transfer Protocol", bytes:"4745 5420 2f6c 6f67 696e 2e70 6870 2048 5454 502f 312e 310d 0a48 6f73 743a 2032", highlight:"GET" },
+      { id:6, time:"0.004500", src:"203.0.113.15", dst:"192.168.1.50", proto:"HTTP", len:890, info:"HTTP/1.1 200 OK (text/html)", details:"Hypertext Transfer Protocol", bytes:"4854 5450 2f31 2e31 2032 3030 204f 4b0d 0a43 6f6e 7465 6e74 2d54 7970 653a 2074", highlight:"HTTP" }
+    ],
+    solutionIds:[4]
+  }
+];
+
+// ============================================================
+// STATE & ENGINE
+// ============================================================
+let currentLab = 0;
+let completedLabs = new Set();
+
+// ============================================================
+// SIDEBAR RENDER (With requested Back button)
+// ============================================================
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Wireshark Labs</div>
+  `;
+  LABS.forEach((lab,i)=>{
+    const done = completedLabs.has(i);
+    const active = i===currentLab;
+    html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="selectLab(${i})">
+      <div class="lab-icon"><i class="fas ${lab.icon}"></i></div>
+      <div class="lab-info">
+        <div class="lab-name">${lab.name}</div>
+        <div class="lab-cat">${lab.category}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  sb.innerHTML = html;
+  document.getElementById('completedCount').textContent = completedLabs.size;
+  document.getElementById('totalCount').textContent = LABS.length;
+}
+
+// Helper to convert hex string to spaced hex and ASCII for the bottom pane
+function formatBytes(hexStr, highlight) {
+  if(!hexStr) return "";
+  let lines = [];
+  for (let i = 0; i < hexStr.length; i += 32) {
+    let chunk = hexStr.substring(i, i + 32);
+    let hex = chunk.match(/.{1,2}/g).join(' ');
+    let ascii = chunk.replace(/.{1,2}/g, h => {
+      let c = parseInt(h, 16);
+      return (c >= 32 && c <= 126) ? String.fromCharCode(c) : '.';
+    });
+    
+    if(highlight) {
+      let hlHex = highlight.match(/.{1,2}/g).join(' ');
+      hex = hex.replace(hlHex, `<span class="ws-highlight-byte">${hlHex}</span>`);
+      ascii = ascii.replace(highlight, `<span class="ws-highlight-byte">${highlight}</span>`);
+    }
+    
+    lines.push(`<div class="ws-byte-line"><span class="ws-byte-offset">${(i/2).toString(16).padStart(4, '0')}</span><span class="ws-byte-hex">${hex}</span><span class="ws-byte-ascii">${ascii}</span></div>`);
+  }
+  return lines.join('');
+}
+
+// ============================================================
+// LAB RENDER
+// ============================================================
+function renderLab(){
+  const lab = LABS[currentLab];
+  const area = document.getElementById('content');
+  area.innerHTML = `
+    <div class="lab-header">
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} · ${lab.category}</div>
+      <h1>${lab.name}</h1>
+      <p>${lab.description}</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon green"><i class="fas fa-bullseye"></i></div>
+        <div class="card-title">Lab Objectives</div>
+      </div>
+      <div class="card-body">
+        <ul id="objectiveList">
+          ${lab.objectives.map((o,i)=>`<li id="obj-${i}" style="color:var(--fg-dim)">${o}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+
+    <div class="ws-topology">
+      <div class="network-title" style="font-size:.7rem; font-weight:700; color:var(--fg-dim); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><i class="fas fa-diagram-project"></i> Network Topology (Live)</div>
+      <svg viewBox="0 0 800 140">
+        <line id="link-1" class="link" x1="100" y1="60" x2="400" y2="60" />
+        <line id="link-2" class="link" x1="400" y1="60" x2="700" y2="60" />
+        
+        <g id="node-left" class="node" transform="translate(100, 60)">
+          <circle cx="0" cy="0" r="12" fill="var(--bg-terminal)" stroke="var(--orange)" stroke-width="2"/>
+          <text x="0" y="35" text-anchor="middle" fill="var(--orange)" font-family="var(--mono)" font-size="11" class="ip">${lab.nodes.left.ip}</text>
+          <text x="0" y="50" text-anchor="middle" fill="var(--fg-dim)" font-family="var(--sans)" font-size="10">${lab.nodes.left.label}</text>
+        </g>
+        <g id="node-middle" class="node" transform="translate(400, 60)">
+          <circle cx="0" cy="0" r="12" fill="var(--bg-terminal)" stroke="var(--cyan)" stroke-width="2"/>
+          <text x="0" y="35" text-anchor="middle" fill="var(--cyan)" font-family="var(--mono)" font-size="11" class="ip">${lab.nodes.middle.ip}</text>
+          <text x="0" y="50" text-anchor="middle" fill="var(--fg-dim)" font-family="var(--sans)" font-size="10">${lab.nodes.middle.label}</text>
+        </g>
+        <g id="node-right" class="node" transform="translate(700, 60)">
+          <circle cx="0" cy="0" r="12" fill="var(--bg-terminal)" stroke="var(--red)" stroke-width="2"/>
+          <text x="0" y="35" text-anchor="middle" fill="var(--red)" font-family="var(--mono)" font-size="11" class="ip">${lab.nodes.right.ip}</text>
+          <text x="0" y="50" text-anchor="middle" fill="var(--fg-dim)" font-family="var(--sans)" font-size="10">${lab.nodes.right.label}</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="complete-banner" id="completeBanner">
+      <i class="fas fa-circle-check"></i>
+      <span>Lab completed! You successfully identified all objectives.</span>
+    </div>
+
+    <div class="solution-banner" id="solutionBanner">
+      <i class="fas fa-lightbulb"></i>
+      <div>
+        <span>Solution Revealed</span>
+        <p id="solutionText"></p>
+      </div>
+    </div>
+
+    <div class="terminal-wrap" style="margin-bottom:18px;">
+      <div class="ws-toolbar">
+        <div class="ws-toolbar-btn"><i class="fas fa-play"></i></div>
+        <div class="ws-toolbar-btn"><i class="fas fa-stop"></i></div>
+        <div class="ws-toolbar-btn"><i class="fas fa-save"></i></div>
+        <div class="ws-filter-bar">
+          <i class="fas fa-filter"></i>
+          <input type="text" class="ws-filter-input" id="filterInput" placeholder="Apply a display filter (e.g., http, tcp, arp)..." oninput="applyFilter()">
+          <button class="ws-filter-btn" onclick="applyFilter()">Apply</button>
+        </div>
+      </div>
+      <div class="ws-panes">
+        <div class="ws-pane-list" id="paneList">
+          <table class="ws-table" id="packetTable">
+            <thead>
+              <tr>
+                <th style="width:50px">No.</th>
+                <th style="width:100px">Time</th>
+                <th style="width:130px">Source</th>
+                <th style="width:130px">Destination</th>
+                <th style="width:60px">Protocol</th>
+                <th style="width:50px">Length</th>
+                <th>Info</th>
+              </tr>
+            </thead>
+            <tbody id="packetTableBody"></tbody>
+          </table>
+        </div>
+        <div class="ws-pane-details" id="paneDetails">
+          <div style="color:var(--fg-dim); text-align:center; padding:40px 0;">Select a packet to view protocol details...</div>
+        </div>
+        <div class="ws-pane-bytes" id="paneBytes">
+          <div style="color:var(--fg-dim); text-align:center; padding:40px 0;">Select a packet to view hex dump...</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+      <button class="btn" onclick="revealSolution()"><i class="fas fa-eye"></i> Reveal Solution</button>
+      <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+    </div>
+  `;
+  renderPacketTable(lab.packets);
+}
+
+function renderPacketTable(packets) {
+  const tbody = document.getElementById('packetTableBody');
+  tbody.innerHTML = '';
+  packets.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.id = `pkt-${p.id}`;
+    tr.onclick = () => selectPacket(p.id);
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.time}</td>
+      <td>${p.src}</td>
+      <td>${p.dst}</td>
+      <td><span style="color:var(--cyan)">${p.proto}</span></td>
+      <td>${p.len}</td>
+      <td>${p.info}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function applyFilter() {
+  const filter = document.getElementById('filterInput').value.toLowerCase().trim();
+  const lab = LABS[currentLab];
+  if (!filter) {
+    renderPacketTable(lab.packets);
+    return;
+  }
+  
+  let filtered = lab.packets.filter(p => {
+    if (filter === 'http') return p.proto === 'HTTP';
+    if (filter === 'tcp') return p.proto === 'TCP';
+    if (filter === 'dns') return p.proto === 'DNS';
+    if (filter === 'arp') return p.proto === 'ARP';
+    if (filter.startsWith('ip.addr ==')) {
+      let ip = filter.split('==')[1].trim();
+      return p.src === ip || p.dst === ip;
+    }
+    return p.info.toLowerCase().includes(filter) || p.proto.toLowerCase().includes(filter);
+  });
+  
+  renderPacketTable(filtered);
+}
+
+function selectPacket(id) {
+  const lab = LABS[currentLab];
+  
+  document.querySelectorAll('#packetTableBody tr').forEach(tr => tr.classList.remove('selected'));
+  const row = document.getElementById(`pkt-${id}`);
+  if(row) row.classList.add('selected');
+  
+  const p = lab.packets.find(x => x.id === id);
+  if(!p) return;
+  
+  updateTopology(p, lab);
+  
+  const detailsDiv = document.getElementById('paneDetails');
+  detailsDiv.innerHTML = `
+    <div class="ws-tree-node" onclick="this.nextElementSibling.classList.toggle('hidden')">
+      <span class="ws-tree-toggle">?</span><span class="ws-tree-label">Frame ${p.id}:</span> <span class="ws-tree-value">${p.len} bytes on wire, ${p.len} bytes captured</span>
+    </div>
+    <div class="ws-tree-children">
+      <div class="ws-tree-node" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        <span class="ws-tree-toggle">?</span><span class="ws-tree-label">Ethernet II:</span> <span class="ws-tree-value">Src: 00:1a:2b:3c:4d:5e, Dst: 00:1c:2b:3a:44:55</span>
+      </div>
+      <div class="ws-tree-children">
+        <div class="ws-tree-node" onclick="this.nextElementSibling.classList.toggle('hidden')">
+          <span class="ws-tree-toggle">?</span><span class="ws-tree-label">Internet Protocol Version 4:</span> <span class="ws-tree-value">Src: ${p.src}, Dst: ${p.dst}</span>
+        </div>
+        <div class="ws-tree-children">
+          <div class="ws-tree-node" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            <span class="ws-tree-toggle">?</span><span class="ws-tree-label">${p.details}:</span> <span class="ws-tree-value">${p.info}</span>
+          </div>
+          <div class="ws-tree-children">
+            <div class="ws-tree-node" style="color:var(--fg-dim)">Source Port: 443</div>
+            <div class="ws-tree-node" style="color:var(--fg-dim)">Destination Port: 51842</div>
+            <div class="ws-tree-node" style="color:var(--fg-dim)">Sequence Number: 1</div>
+            <div class="ws-tree-node" style="color:var(--fg-dim)">Acknowledgment Number: 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  const bytesDiv = document.getElementById('paneBytes');
+  bytesDiv.innerHTML = formatBytes(p.bytes, p.highlight);
+  
+  checkObjectives(id);
+}
+
+function updateTopology(p, lab) {
+  document.querySelectorAll('.ws-topology .node').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.ws-topology .link').forEach(l => l.classList.remove('active'));
+  
+  // Highlight nodes based on matching IPs
+  if (p.src === lab.nodes.left.ip || p.dst === lab.nodes.left.ip) document.getElementById('node-left').classList.add('active');
+  if (p.src === lab.nodes.middle.ip || p.dst === lab.nodes.middle.ip) document.getElementById('node-middle').classList.add('active');
+  if (p.src === lab.nodes.right.ip || p.dst === lab.nodes.right.ip) {
+    document.getElementById('node-right').classList.add('active');
+    document.getElementById('node-left').classList.add('active');
+    document.getElementById('link-2').classList.add('active');
+  }
+}
+
+function checkObjectives(packetId) {
+  const lab = LABS[currentLab];
+  let allComplete = true;
+  
+  lab.objectives.forEach((obj, i) => {
+    if (lab.solutionIds[i] === packetId) {
+      document.getElementById(`obj-${i}`).style.color = 'var(--accent)';
+      document.getElementById(`obj-${i}`).innerHTML = '? ' + obj;
+    }
+    if (lab.solutionIds[i] && !document.getElementById(`obj-${i}`).innerHTML.startsWith('?')) {
+      allComplete = false;
+    }
+  });
+  
+  if (allComplete) {
+    document.getElementById('completeBanner').classList.add('show');
+    completedLabs.add(currentLab);
+    renderSidebar();
+  }
+}
+
+function revealSolution() {
+  const lab = LABS[currentLab];
+  document.getElementById('solutionText').textContent = lab.solution;
+  document.getElementById('solutionBanner').classList.add('show');
+  
+  // Highlight the first solution packet to guide the user
+  if (lab.solutionIds.length > 0) {
+    selectPacket(lab.solutionIds[0]);
+  }
+}
+
+function selectLab(idx){
+  if(idx === currentLab) return;
+  currentLab = idx;
+  renderSidebar();
+  renderLab();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function resetCurrent(){
+  renderLab();
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderSidebar();
+  renderLab();
+});
+</script>
+</body>
+</html>
