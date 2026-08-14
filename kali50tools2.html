@@ -98,23 +98,34 @@ body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-he
 
 /* --- BURP SUITE GUI FIXES --- */
 .burp-container { display: flex; flex-direction: column; flex: 1; min-height: 500px; background: var(--burp-bg); color: #1a1a1a; border: 1px solid #1a1a1a; border-radius: 8px; overflow: hidden; }
+.burp-top-bar { background: #1a1a1a; color: white; padding: 5px 15px; display: flex; align-items: center; gap: 20px; border-bottom: 2px solid var(--burp-orange); }
+.burp-top-bar i { color: var(--burp-orange); font-size: 1.2rem; }
+.burp-top-bar h1 { font-size: 0.9rem; font-weight: 400; }
 .burp-tab-bar { display: flex; background: #1a1a1a; padding-left: 10px; }
 .burp-tab { padding: 8px 15px; color: #aaa; cursor: pointer; font-size: 0.85rem; }
 .burp-tab.active { background: var(--burp-bg); color: var(--burp-orange); border-top: 2px solid var(--burp-orange); }
-.burp-tab-content { flex: 1; display: flex; flex-direction: column; padding: 15px; gap: 10px; overflow: hidden; }
-.burp-intercept-btn { padding: 8px 20px; border: 2px solid #f44336; background: #d6d6d6; color: #f44336; font-weight: 700; cursor: pointer; align-self: flex-start; }
+.burp-tab.disabled { color: #555; cursor: not-allowed; }
+.burp-content-area { flex: 1; background: var(--burp-bg); padding: 15px; overflow: hidden; display: flex; flex-direction: column; }
+.burp-tab-content { display: none; flex: 1; background: var(--burp-panel); border: 1px solid #1a1a1a; flex-direction: column; }
+.burp-tab-content.active { display: flex; }
+.burp-sub-tabs { display: flex; background: #333; padding: 0 10px; border-bottom: 1px solid #1a1a1a; }
+.burp-sub-tab { padding: 6px 12px; color: #ccc; cursor: pointer; font-size: 0.8rem; }
+.burp-sub-tab.active { background: var(--burp-panel); color: white; border: 1px solid #1a1a1a; border-bottom: 1px solid var(--burp-panel); }
+.burp-intercept { padding: 15px; display: flex; flex-direction: column; align-items: center; flex: 1; gap: 15px; }
+.burp-intercept-btn { padding: 8px 20px; border: 2px solid #f44336; background: #d6d6d6; color: #f44336; font-weight: 700; cursor: pointer; }
 .burp-intercept-btn.on { border-color: #4caf50; color: #4caf50; }
-.burp-request-box { flex: 1; width: 100%; background: #fff; border: 1px solid #000; padding: 10px; overflow-y: auto; white-space: pre-wrap; font-family: var(--mono); font-size: 0.8rem; }
-
-.burp-repeater-controls { display: flex; gap: 15px; align-items: center; background: #3c3c3c; padding: 10px; border-radius: 4px; }
+.burp-request-box { width: 100%; flex: 1; background: #fff; border: 1px solid #000; padding: 10px; overflow-y: auto; white-space: pre-wrap; font-family: var(--mono); font-size: 0.8rem; }
+.burp-history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.burp-history-table th { background: #333; color: white; text-align: left; padding: 5px 10px; border-bottom: 1px solid #1a1a1a; font-weight: 500; }
+.burp-history-table td { padding: 5px 10px; border-bottom: 1px solid #444; color: #ddd; cursor: pointer; }
+.burp-repeater-layout { flex: 1; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
+.burp-repeater-controls { display: flex; gap: 10px; align-items: center; background: #3c3c3c; padding: 10px; border-radius: 4px; }
 .burp-repeater-btn { padding: 6px 15px; background: var(--burp-orange); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.85rem; }
-.burp-target-input { background: #fff; border: 1px solid #000; padding: 6px 10px; font-family: var(--mono); font-size: 0.85rem; flex: 1; }
+.burp-repeater-btn:disabled { background: #555; cursor: not-allowed; }
 .burp-panels { flex: 1; display: flex; gap: 10px; min-height: 300px; }
 .burp-panel { flex: 1; display: flex; flex-direction: column; background: #1a1a1a; border: 1px solid #444; overflow: hidden; }
 .burp-panel-header { padding: 5px 10px; background: #333; color: #aaa; font-size: 0.75rem; border-bottom: 1px solid #444; }
 .burp-panel-body { flex: 1; background: #ffffff; color: #333; padding: 10px; font-family: var(--mono); font-size: 0.8rem; overflow-y: auto; white-space: pre-wrap; outline: none; }
-.burp-success-msg { background: #4caf50; color: white; padding: 10px; text-align: center; font-weight: 700; border-radius: 4px; display: none; }
-.burp-success-msg.show { display: block; }
 
 .gui-hint-box { margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--cyan); border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; }
 .gui-hint-box span { font-size: 0.85rem; color: var(--fg-dm); }
@@ -210,9 +221,11 @@ const LABS = [
     {i:"Send a SYN packet to port 80 to see if it's open.", h:"Use <code>-S</code> for SYN, <code>-p</code> for port. Command: <code>hping3 -S 10.10.10.5 -p 80</code>", v:c=>/hping3\s+-S\s+10\.10\.10\.5\s+-p\s+80/i.test(c), o:"HPING 10.10.10.5: S 1 packets transmitted, 1 received", s:"SYN packet sent."},
     {i:"Send a UDP packet to port 161 (SNMP).", h:"Use <code>--udp</code> and <code>-p</code> for port. Command: <code>hping3 --udp 10.10.10.5 -p 161</code>", v:c=>/hping3\s+--udp\s+10\.10\.10\.5\s+-p\s+161/i.test(c), o:"HPING 10.10.10.5: UDP 1 packets transmitted, 0 received", s:"UDP packet sent."}
   ], gui:"generic"},
-  { t:"6. Burp Suite", d:"Web vulnerability scanner and proxy.", o:["Launch Burp","Send request via CLI"], s:[
+  { t:"6. Burp Suite", d:"Web vulnerability scanner and proxy.", o:["Launch Burp","Send request via CLI","Intercept traffic","Exploit via Repeater"], s:[
     {i:"Launch Burp Suite GUI from the terminal.", h:"Run the binary in the background. Command: <code>burpsuite &</code>", v:c=>/^burpsuite\s*&$/i.test(c), o:"Starting Burp Suite Community Edition...", s:"Burp Suite launched. Use the GUI below!"},
-    {i:"Use curl to send traffic through Burp proxy (port 8080).", h:"Use <code>-x</code> to set the proxy. Command: <code>curl -x 127.0.0.1:8080 http://10.10.10.5</code>", v:c=>/curl\s+-x\s+127\.0\.0\.1:8080\s+http:\/\/10\.10\.10\.5/i.test(c), o:"<html><body>Welcome!</body></html>", s:"Traffic routed through proxy. Check the GUI history!"}
+    {i:"Use curl to send traffic through Burp proxy (port 8080).", h:"Use <code>-x</code> to set the proxy. Command: <code>curl -x 127.0.0.1:8080 http://10.10.10.5</code>", v:c=>/curl\s+-x\s+127\.0\.0\.1:8080\s+http:\/\/10\.10\.10\.5/i.test(c), o:"<html><body>Welcome!</body></html>", s:"Traffic routed through proxy. Check the GUI history!"},
+    {i:"Go to the GUI Proxy tab, turn Intercept ON, view HTTP history, and send the request to Repeater.", h:"GUI Action: 1. Click 'Intercept is off' to turn it ON. 2. Click 'HTTP history' sub-tab. 3. Click 'Send to Repeater'. 4. Click the 'Repeater' tab at the top.", v:c=>c.includes('GUI_STEP_3_DONE'), o:"[*] Waiting for GUI action...", s:"Request sent to Repeater!"},
+    {i:"In the Repeater tab, change the username parameter to <code>admin'--</code> and click Send.", h:"GUI Action: Edit the Request panel to contain <code>username=admin'--&password=123</code> and click the 'Send' button.", v:c=>c.includes('GUI_STEP_4_DONE'), o:"[*] Waiting for GUI action...", s:"SQL Injection successful! You bypassed the login."}
   ], gui:"burp"},
   { t:"7. OWASP ZAP", d:"Web app scanner.", o:["Run quick scan","Run active scan"], s:[
     {i:"Run a quick scan on a URL via CLI.", h:"Use <code>zap-cli quick-scan</code>. Command: <code>zap-cli quick-scan http://10.10.10.5</code>", v:c=>/zap-cli\s+quick-scan\s+http:\/\/10\.10\.10\.5/i.test(c), o:"[*] Starting scan...\n[+] Scan complete. Found 2 alerts.", s:"Quick scan complete."},
@@ -372,6 +385,17 @@ let currentStep = 0;
 let history = [];
 let histIdx = -1;
 let completedLabs = new Set();
+
+// Burp State Variables
+let interceptOn = false;
+let requestSentToRepeater = false;
+const interceptReq = `POST /login.php HTTP/1.1
+Host: target.local
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 34
+
+username=admin&password=password123`;
 
 const T = document.getElementById('term');
 const Hint = document.getElementById('hint');
@@ -592,43 +616,68 @@ function renderGUI(lab) {
         <div class="gui-output" id="msfOutput">msf6 > ready...</div>
       </div>`;
   } else if (type === 'burp') {
+    // Exact HTML provided by the user
     html = `
-      <div class="burp-container">
+      <div class="burp-container" id="burpGui">
+        <div class="burp-top-bar">
+          <i class="fas fa-bug"></i>
+          <h1>Burp Suite Community Edition v2024.1</h1>
+        </div>
         <div class="burp-tab-bar">
-          <div class="burp-tab active" onclick="burpTab('proxy')">Proxy</div>
-          <div class="burp-tab" onclick="burpTab('repeater')">Repeater</div>
+          <div class="burp-tab" onclick="burpSwitchTab(this, 'burp-dashboard')">Dashboard</div>
+          <div class="burp-tab" onclick="burpSwitchTab(this, 'burp-target')">Target</div>
+          <div class="burp-tab active" onclick="burpSwitchTab(this, 'burp-proxy')">Proxy</div>
+          <div class="burp-tab disabled" id="repeater-tab" onclick="burpSwitchTab(this, 'burp-repeater')">Repeater</div>
         </div>
-        
-        <!-- Proxy Tab -->
-        <div class="burp-tab-content" id="burpProxy">
-          <button class="burp-intercept-btn" id="burpBtn" onclick="burpToggle()">Intercept is off</button>
-          <div class="burp-request-box" id="burpReqBox">Request appears here when intercept is ON.</div>
-        </div>
-
-        <!-- Repeater Tab -->
-        <div class="burp-tab-content" id="burpRepeater" style="display:none;">
-          <div class="burp-repeater-controls">
-            <button class="burp-repeater-btn" onclick="sendBurpRequest()">Send <i class="fas fa-paper-plane"></i></button>
-            <input type="text" class="burp-target-input" value="http://10.10.10.5/login.php">
-          </div>
-          <div class="burp-panels">
-            <div class="burp-panel">
-              <div class="burp-panel-header">Request</div>
-              <div class="burp-panel-body" contenteditable="true" id="reqPanel">POST /login.php HTTP/1.1
-Host: target.local
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 34
-
-username=admin&password=password123</div>
-            </div>
-            <div class="burp-panel">
-              <div class="burp-panel-header">Response</div>
-              <div class="burp-panel-body" id="respPanel" style="background: #f0f0f0;">No response yet.</div>
+        <div class="burp-content-area">
+          <div class="burp-tab-content" id="burp-dashboard">
+            <div style="padding: 20px; color: white; text-align: center; margin-top: 50px;">
+              <i class="fas fa-tachometer-alt" style="font-size: 3rem; color: var(--burp-orange);"></i>
+              <h2>Dashboard</h2>
             </div>
           </div>
-          <div class="burp-success-msg" id="burpSuccessMsg"><i class="fas fa-check-circle"></i> SQL Injection successful! You bypassed the login.</div>
+          <div class="burp-tab-content" id="burp-target">
+             <div style="padding:20px; color:white; text-align:center;">
+               <p>Target site map simulation goes here.</p>
+             </div>
+          </div>
+          <div class="burp-tab-content active" id="burp-proxy">
+            <div class="burp-sub-tabs">
+              <div class="burp-sub-tab active" onclick="burpSwitchSubTab(this, 'intercept')">Intercept</div>
+              <div class="burp-sub-tab" onclick="burpSwitchSubTab(this, 'history')">HTTP history</div>
+            </div>
+            <div id="intercept" class="burp-intercept" style="flex:1; display:flex;">
+              <button class="burp-intercept-btn" id="interceptBtn" onclick="toggleIntercept()">Intercept is off</button>
+              <div class="burp-request-box" id="requestBox"></div>
+            </div>
+            <div id="history" style="display:none; flex:1; overflow-y:auto;">
+              <table class="burp-history-table">
+                <thead><tr><th>#</th><th>Host</th><th>Method</th><th>URL</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="burp-tab-content" id="burp-repeater">
+            <div class="burp-repeater-layout">
+              <div class="burp-repeater-controls">
+                <button class="burp-repeater-btn" id="sendBtn" onclick="sendRequest()">Send <i class="fas fa-paper-plane"></i></button>
+                <span style="color: white; font-size: 0.8rem;" id="repeaterStatus">Waiting for request...</span>
+              </div>
+              <div class="burp-panels">
+                <div class="burp-panel">
+                  <div class="burp-panel-header">Request</div>
+                  <div class="burp-panel-body" contenteditable="true" id="reqPanel"></div>
+                </div>
+                <div class="burp-panel">
+                  <div class="burp-panel-header">Response</div>
+                  <div class="burp-panel-body" id="respPanel">No response yet.</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>`;
+    initBurp(); // Initialize state variables and empty containers
   } else {
     const toolName = lab.t.split('. ')[1];
     html = `
@@ -656,6 +705,10 @@ username=admin&password=password123</div>
     </div>`;
     
   GuiContent.innerHTML = html + guiHintHtml;
+  
+  if (type === 'burp') {
+    updateGuiGuide("Launch Burp Suite via CLI, then run the curl command to generate traffic.");
+  }
 }
 
 function updateGuiState(idx, step) {
@@ -666,6 +719,10 @@ function updateGuiState(idx, step) {
       let portData = step === 1 ? '<tr><td colspan="3">Host is up. No ports scanned.</td></tr>' : '<tr><td>22</td><td>open</td><td>ssh</td></tr><tr><td>80</td><td>open</td><td>http</td></tr>';
       out.innerHTML = `<table style="width:100%"><tr><th>PORT</th><th>STATE</th><th>SERVICE</th></tr>${portData}</table>`;
     }
+  }
+  if (lab.gui === 'burp' && step === 2) {
+    loadHistory();
+    updateGuiGuide("Traffic captured! Go to the GUI 'Proxy' tab, click 'Intercept is off' to turn it ON, then check 'HTTP history'.");
   }
 }
 
@@ -695,14 +752,14 @@ function revealGuiSolution() {
     }
   } else if (type === 'burp') {
     if (step.h.includes('Intercept is off')) {
-      if(document.getElementById('burpBtn').innerText.includes('off')) burpToggle();
+      if(document.getElementById('interceptBtn').innerText.includes('off')) toggleIntercept();
       hintText = "Intercept turned ON! Check the proxy history.";
     } else if (step.h.includes('proxy')) {
-      burpTab('proxy');
-      hintText = "Switched to Proxy tab.";
+      burpSwitchSubTab(document.querySelector('.burp-sub-tab:nth-child(2)'), 'history');
+      hintText = "Switched to HTTP history. Click 'Send to Repeater'.";
     } else if (step.h.includes('Repeater')) {
-      burpTab('repeater');
-      hintText = "Switched to Repeater tab. Click 'Send'!";
+      burpSwitchTab(document.getElementById('repeater-tab'), 'burp-repeater');
+      hintText = "Switched to Repeater tab. Edit the Request payload to admin'-- and click Send!";
     }
   } else if (type === 'generic') {
     const cmd = cmdHint ? cmdHint[1] : '';
@@ -742,42 +799,136 @@ function runMsfUseGui() {
   document.getElementById('in').value = cmd;
   exec(cmd);
 }
-function burpTab(tab) {
-  document.querySelectorAll('.burp-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('burpProxy').style.display = tab === 'proxy' ? 'flex' : 'none';
-  document.getElementById('burpRepeater').style.display = tab === 'repeater' ? 'flex' : 'none';
+
+// --- BURP SUITE GUI LOGIC ---
+function initBurp() {
+  interceptOn = false; 
+  requestSentToRepeater = false;
+  setTimeout(() => {
+    const btn = document.getElementById('interceptBtn');
+    if(btn) {
+      btn.classList.remove('on');
+      btn.innerText = 'Intercept is off';
+    }
+    const reqBox = document.getElementById('requestBox');
+    if(reqBox) reqBox.innerText = '';
+    
+    const repTab = document.getElementById('repeater-tab');
+    if(repTab) repTab.classList.add('disabled');
+    
+    const reqPanel = document.getElementById('reqPanel');
+    if(reqPanel) reqPanel.innerText = '';
+    
+    const respPanel = document.getElementById('respPanel');
+    if(respPanel) respPanel.innerText = 'No response yet.';
+    
+    const historyBody = document.getElementById('historyBody');
+    if(historyBody) historyBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#777;">No traffic captured yet.</td></tr>';
+  }, 50);
 }
-function burpToggle() {
-  const btn = document.getElementById('burpBtn');
-  const box = document.getElementById('burpReqBox');
-  if (btn.innerText.includes('off')) {
+
+function burpSwitchTab(el, tabId) {
+  if (document.getElementById(tabId).classList.contains('disabled')) return;
+  document.querySelectorAll('.burp-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.burp-tab-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+function burpSwitchSubTab(el, subId) {
+  document.querySelectorAll('.burp-sub-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (subId === 'intercept') {
+    document.getElementById('intercept').style.display = 'flex';
+    document.getElementById('history').style.display = 'none';
+  } else {
+    document.getElementById('intercept').style.display = 'none';
+    document.getElementById('history').style.display = 'block';
+  }
+}
+
+function toggleIntercept() {
+  interceptOn = !interceptOn;
+  const btn = document.getElementById('interceptBtn');
+  const reqBox = document.getElementById('requestBox');
+  if (interceptOn) {
     btn.classList.add('on');
     btn.innerText = 'Intercept is on';
-    box.innerText = `POST /login.php HTTP/1.1\nHost: target.local\n\nusername=admin&password=123`;
+    reqBox.innerText = interceptReq;
   } else {
     btn.classList.remove('on');
     btn.innerText = 'Intercept is off';
-    box.innerText = 'Request appears here when intercept is ON.';
+    reqBox.innerText = '';
   }
 }
-function sendBurpRequest() {
+
+function loadHistory() {
+  const tbody = document.getElementById('historyBody');
+  if(!tbody) return;
+  tbody.innerHTML = `
+    <tr>
+      <td>1</td><td>target.local</td><td>POST</td><td>/login.php</td><td>302 Found</td>
+      <td><button style="background:var(--burp-orange); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="sendToRepeater()">Send to Repeater</button></td>
+    </tr>
+  `;
+}
+
+function sendToRepeater() {
+  requestSentToRepeater = true;
+  document.getElementById('repeater-tab').classList.remove('disabled');
+  document.getElementById('reqPanel').innerText = interceptReq;
+  
+  // Complete CLI Step 3 if we are on it
+  if (currentLab === 5 && currentStep === 2) {
+    const i = document.getElementById('in');
+    if(i) {
+      i.value = 'GUI_STEP_3_DONE';
+      exec('GUI_STEP_3_DONE');
+    }
+  }
+  updateGuiGuide("Request sent! Click on the 'Repeater' tab at the top.");
+}
+
+function sendRequest() {
+  if (!requestSentToRepeater) return;
   const reqText = document.getElementById('reqPanel').innerText;
   const respPanel = document.getElementById('respPanel');
-  const successMsg = document.getElementById('burpSuccessMsg');
+  const sendBtn = document.getElementById('sendBtn');
   
-  respPanel.innerText = "Sending...";
-  successMsg.classList.remove('show');
+  sendBtn.disabled = true;
+  document.getElementById('repeaterStatus').innerText = 'Sending...';
   
   setTimeout(() => {
+    sendBtn.disabled = false;
+    document.getElementById('repeaterStatus').innerText = 'Request sent.';
+    
     if (reqText.includes("admin'--") || reqText.includes("' OR 1=1")) {
-      respPanel.innerText = "HTTP/1.1 302 Found\nLocation: /dashboard.php\nSet-Cookie: session=admin_authenticated;\n\n<html><body>Loading dashboard...</body></html>";
-      successMsg.classList.add('show');
+      respPanel.innerText = `HTTP/1.1 302 Found\nLocation: /dashboard.php\nSet-Cookie: session=admin_authenticated;\n\n<html><body>Loading dashboard...</body></html>`;
+      updateGuiGuide("SQL Injection successful! You bypassed the login.");
+      
+      // Complete CLI Step 4 if we are on it
+      if (currentLab === 5 && currentStep === 3) {
+        const i = document.getElementById('in');
+        if(i) {
+          i.value = 'GUI_STEP_4_DONE';
+          exec('GUI_STEP_4_DONE');
+        }
+      }
     } else {
-      respPanel.innerText = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n<html><body><h1>Login Failed</h1><p>Invalid username or password.</p></body></html>";
+      respPanel.innerText = `HTTP/1.1 200 OK\nContent-Type: text/html\n\n<html><body><h1>Login Failed</h1><p>Invalid username or password.</p></body></html>`;
+      updateGuiGuide("Login failed. Try editing the username parameter in the Request panel to admin'-- and click Send again.");
     }
   }, 1000);
 }
+
+function updateGuiGuide(text) {
+  const guide = document.getElementById('guiHintText');
+  if(guide) {
+    guide.innerText = text;
+    guide.style.color = 'var(--cyan)';
+  }
+}
+
 function runGenericGui() {
   const args = document.getElementById('genericArgs').value;
   const lab = LABS[currentLab];
