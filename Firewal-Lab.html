@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firewall Security Lab · Interactive Configuration</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0e14; --bg-card: #131920; --bg-term: #080c10; --fg: #c5cdd8; --fg-br: #e8edf3; --fg-dm: #5a6678;
+  --acc: #ff9f43; --acc-dm: rgba(255,159,67,.12); --red: #ff3b5c; --cyan: #00d4ff; --purple: #a855f7; --green: #00ff9c;
+  --border: #1e2733; --mono: 'JetBrains Mono', monospace; --sans: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; }
+.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(255,159,67,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,159,67,.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+.topbar { height: 60px; width: calc(100% - 280px); position: fixed; top: 0; left: 280px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; }
+.topbar h2 { font-size: 1.1rem; color: var(--fg-br); font-weight: 500; }
+.topbar .status { color: var(--acc); font-family: var(--mono); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.reset-btn { background: var(--bg); border: 1px solid var(--border); color: var(--red); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+.reset-btn:hover { background: rgba(255,59,92,0.1); border-color: var(--red); }
+
+.sidebar { width: 280px; background: #0f1419; border-right: 1px solid var(--border); padding: 0 0 20px 0; overflow-y: auto; height: 100vh; position: fixed; top: 0; left: 0; z-index: 90; }
+.sidebar-title { padding: 20px 20px; font-size: 1rem; font-weight: 800; color: var(--fg-br); border-bottom: 1px solid var(--border); margin-bottom: 15px; line-height: 1.4; background: linear-gradient(90deg, rgba(255,159,67,0.05), transparent); }
+.sidebar-title span { color: var(--acc); }
+.back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-card); color: var(--cyan); padding: 12px; margin: 0 15px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border); transition: 0.2s; }
+.back-btn:hover { border-color: var(--cyan); }
+.cat-label { padding: 15px 20px 5px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-dm); font-weight: 700; }
+.lab-item { padding: 8px 20px 8px 30px; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; color: var(--fg-dm); font-size: 0.8rem; }
+.lab-item:hover { background: rgba(255,255,255,0.03); color: var(--fg); }
+.lab-item.active { background: var(--acc-dm); border-left-color: var(--acc); color: var(--fg-br); }
+.lab-item.done { color: var(--acc); }
+
+.content { flex: 1; padding: 80px 30px 30px 30px; position: relative; z-index: 1; max-width: 1400px; margin-left: 280px; display: flex; flex-direction: column; gap: 30px; }
+.cli-section { background: rgba(19,25,32,0.5); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+.header { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.header h1 { font-size: 2rem; color: var(--fg-br); margin-bottom: 10px; display: flex; align-items: center; gap: 20px; }
+.header h1 i { color: var(--acc); font-size: 2rem; }
+.header p { color: var(--fg-dm); line-height: 1.6; font-size: 1.1rem; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+.card h3 { color: var(--acc); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+.card ul { list-style: none; padding-left: 5px; }
+.card ul li { margin-bottom: 5px; color: var(--fg); }
+.card ul li::before { content: '▸ '; color: var(--acc); }
+
+.steps { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.step-dot { height: 6px; width: 40px; background: var(--border); border-radius: 3px; transition: 0.3s; }
+.step-dot.active { background: var(--acc); box-shadow: 0 0 8px var(--acc); }
+.step-dot.done { background: var(--acc); opacity: 0.5; }
+
+.term-bar { background: #0d1117; border: 1px solid var(--border); border-bottom: none; border-radius: 10px 10px 0 0; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
+.term-dots { display: flex; gap: 6px; }
+.term-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.term-dots span:nth-child(1) { background: #ff5f57; }
+.term-dots span:nth-child(2) { background: #febc2e; }
+.term-dots span:nth-child(3) { background: #28c840; }
+.term-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--fg-dm); padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; font-family: var(--mono); margin-left: 5px; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
+.term-btn:hover { border-color: var(--acc); color: var(--acc); }
+.term-body { background: var(--bg-term); border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; height: 200px; overflow-y: auto; padding: 15px; font-family: var(--mono); font-size: 0.8rem; line-height: 1.5; }
+.t-line { white-space: pre-wrap; word-break: break-all; }
+.t-prompt { color: var(--acc); }
+.t-cmd { color: var(--fg-br); }
+.t-out { color: var(--fg-dm); }
+.t-err { color: var(--red); }
+.t-suc { color: var(--green); }
+.input-line { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.input-line input { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-br); font-family: var(--mono); font-size: 0.8rem; caret-color: var(--acc); }
+.hint-box { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid #ffd93d; border-radius: 10px; padding: 15px; margin-top: 20px; }
+.hint-box strong { color: #ffd93d; display: block; margin-bottom: 5px; }
+.hint-box code { background: var(--bg-term); padding: 3px 6px; border-radius: 4px; color: var(--acc); }
+
+/* --- GUI & TOPOLOGY --- */
+.gui-section { background: rgba(19,25,32,0.5); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+.gui-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.gui-header h2 { font-size: 1.2rem; color: var(--cyan); }
+
+/* Network Visual */
+.fw-topology { background: #05070a; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; height: 300px; position: relative; display: flex; justify-content: space-between; align-items: center; }
+.fw-node { display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2; width: 120px; text-align: center; }
+.fw-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--fg-dm); transition: 0.3s; }
+.fw-icon.fw-core { width: 80px; height: 80px; font-size: 2rem; border-color: var(--acc); color: var(--acc); box-shadow: 0 0 20px rgba(255,159,67,0.2); }
+.fw-node.active .fw-icon { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.1); }
+.fw-node.blocked .fw-icon { border-color: var(--red); color: var(--red); }
+.fw-label { font-size: 0.7rem; font-weight: 700; color: var(--fg-br); text-transform: uppercase; }
+.fw-ip { font-family: var(--mono); font-size: 0.65rem; color: var(--cyan); opacity: 0; transition: 0.3s; }
+.fw-node.active .fw-ip { opacity: 1; }
+
+/* SVG Links */
+.fw-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.fw-link { stroke: var(--border-light); stroke-width: 2; transition: 0.3s; }
+.fw-link.active { stroke: var(--cyan); stroke-dasharray: 10; animation: dash 1s linear infinite; }
+.fw-link.blocked { stroke: var(--red); }
+@keyframes dash { to { stroke-dashoffset: -20; } }
+
+/* GUI Dashboard */
+.gui-tabs { display: flex; gap: 5px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.gui-tab { padding: 10px 20px; color: var(--fg-dm); cursor: pointer; font-size: 0.85rem; font-weight: 600; border-bottom: 2px solid transparent; transition: 0.2s; }
+.gui-tab:hover { color: var(--fg); }
+.gui-tab.active { color: var(--acc); border-bottom-color: var(--acc); }
+
+.gui-panel { display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; min-height: 300px; }
+.gui-panel.active { display: block; }
+
+.gui-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
+.gui-row:last-child { border-bottom: none; }
+.gui-row-label { font-weight: 600; color: var(--fg-br); font-size: 0.9rem; }
+.gui-row-desc { font-size: 0.75rem; color: var(--fg-dm); margin-top: 3px; }
+.gui-input { background: var(--bg); border: 1px solid var(--border-light); color: var(--fg-br); padding: 8px 12px; border-radius: 4px; font-family: var(--mono); font-size: 0.85rem; outline: none; width: 180px; text-align: right; }
+.gui-input:focus { border-color: var(--acc); }
+.gui-btn { padding: 8px 16px; background: var(--acc); color: #000; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 0.8rem; margin-left: 15px; }
+.gui-btn.green { background: var(--green); }
+.gui-btn.red { background: var(--red); color: #fff; }
+.gui-btn:hover { opacity: 0.9; }
+
+.log-viewer { background: #000; color: #0f0; padding: 15px; border-radius: 4px; font-family: var(--mono); font-size: 0.75rem; height: 200px; overflow-y: auto; }
+.log-entry { margin-bottom: 5px; }
+.log-time { color: #555; }
+
+.gui-hint-box { margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--cyan); border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; }
+.gui-hint-box span { font-size: 0.85rem; color: var(--fg-dm); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header class="topbar">
+  <h2>Interactive Firewall Lab</h2>
+  <div style="display:flex; align-items:center; gap: 20px;">
+    <div class="status"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / 7 Modules</div>
+    <button class="reset-btn" onclick="resetLab()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+  </div>
+</header>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-title">Firewall <span>Security Lab</span></div>
+  <a href="paid-cybersecurity-course.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Attack Labs</a>
+  <div class="cat-label">Configuration Modules</div>
+  <div class="lab-item active" onclick="loadLab(0)"><i class="fas fa-network-wired"></i> 1. Interfaces & Zones</div>
+  <div class="lab-item" onclick="loadLab(1)"><i class="fas fa-route"></i> 2. Routing</div>
+  <div class="lab-item" onclick="loadLab(2)"><i class="fas fa-shield-halved"></i> 3. Security Policies</div>
+  <div class="lab-item" onclick="loadLab(3)"><i class="fas fa-exchange-alt"></i> 4. NAT Rules</div>
+  <div class="lab-item" onclick="loadLab(4)"><i class="fas fa-tachometer-alt"></i> 5. Bandwidth (QoS)</div>
+  <div class="lab-item" onclick="loadLab(5)"><i class="fas fa-lock"></i> 6. VPN Configuration</div>
+  <div class="lab-item" onclick="loadLab(6)"><i class="fas fa-list"></i> 7. Logging & Alerts</div>
+</aside>
+
+<main class="content">
+  <!-- CLI SECTION -->
+  <div class="cli-section">
+    <div class="header">
+      <h1 id="labTitle"><i class="fas fa-fire-flame-curved"></i> Loading Lab...</h1>
+      <p id="labDesc"></p>
+    </div>
+    <div class="steps" id="steps"></div>
+    <div class="card">
+      <h3><i class="fas fa-bullseye"></i> Objectives</h3>
+      <ul id="objectives"></ul>
+    </div>
+    <div class="term-bar">
+      <div class="term-dots"><span></span><span></span><span></span></div>
+      <div>
+        <button class="term-btn" onclick="showSol()"><i class="fas fa-lightbulb"></i> Reveal CLI Solution</button>
+        <button class="term-btn" onclick="clr()"><i class="fas fa-eraser"></i> Clear</button>
+      </div>
+    </div>
+    <div class="term-body" id="term"></div>
+    <div class="hint-box" id="hint"></div>
+  </div>
+
+  <!-- GUI & VISUAL SECTION -->
+  <div class="gui-section">
+    <div class="gui-header">
+      <i class="fas fa-window-restore" style="color:var(--cyan); font-size:1.5rem;"></i>
+      <h2>Firewall Topology & Dashboard</h2>
+    </div>
+    
+    <!-- Dynamic Topology -->
+    <div class="fw-topology">
+      <div class="fw-node" id="node-inside">
+        <div class="fw-icon"><i class="fas fa-users"></i></div>
+        <div class="fw-label">Inside LAN</div>
+        <div class="fw-ip" id="ip-inside">10.0.0.1/24</div>
+      </div>
+      
+      <div class="fw-node active" id="node-fw">
+        <div class="fw-icon fw-core"><i class="fas fa-fire-flame-curved"></i></div>
+        <div class="fw-label">Firewall</div>
+      </div>
+      
+      <div class="fw-node" id="node-outside">
+        <div class="fw-icon"><i class="fas fa-globe"></i></div>
+        <div class="fw-label">Outside WAN</div>
+        <div class="fw-ip" id="ip-outside">203.0.113.1/24</div>
+      </div>
+      
+      <svg class="fw-svg" id="topoSvg">
+        <line id="link-in-out" class="fw-link" x1="15%" y1="50%" x2="85%" y2="50%" />
+      </svg>
+    </div>
+
+    <!-- GUI Dashboard Tabs -->
+    <div class="gui-tabs" id="guiTabs">
+      <div class="gui-tab active" onclick="switchGuiTab('interfaces', this)">Interfaces</div>
+      <div class="gui-tab" onclick="switchGuiTab('routing', this)">Routing</div>
+      <div class="gui-tab" onclick="switchGuiTab('policies', this)">Policies</div>
+      <div class="gui-tab" onclick="switchGuiTab('nat', this)">NAT</div>
+      <div class="gui-tab" onclick="switchGuiTab('qos', this)">QoS</div>
+      <div class="gui-tab" onclick="switchGuiTab('vpn', this)">VPN</div>
+      <div class="gui-tab" onclick="switchGuiTab('logs', this)">Logs</div>
+    </div>
+
+    <div id="guiContent" style="min-height: 300px;">
+      <!-- Dynamic GUI Content injected here -->
+    </div>
+    
+    <div class="gui-hint-box">
+      <span id="guiHintText">Need help with the GUI? Click to reveal the next step.</span>
+      <button class="term-btn" style="border-color: var(--cyan); color: var(--cyan);" onclick="revealGuiSolution()"><i class="fas fa-eye"></i> Reveal GUI Solution</button>
+    </div>
+  </div>
+</main>
+
+<script>
+// State Management
+const state = {
+  insideIp: '', outsideIp: '', routing: false, 
+  policyInsideToOut: false, policyOutToIn: false,
+  natPat: false, qos: false, vpn: false
+};
+
+const LABS = [
+  {
+    t: "1. Interfaces & Zones", d: "Configure the Inside and Outside interfaces with IP addresses and assign security zones.", o:["Assign Inside IP","Assign Outside IP","Enable interfaces"],
+    s: [
+      {i:"Assign an IP address to the Inside interface (LAN).", h:"Use ASA syntax: <code>ip address inside 10.0.0.1 255.255.255.0</code>", v:c=>/ip\s+address\s+inside\s+10\.0\.0\.1\s+255\.255\.255\.0/i.test(c), o:"Interface inside IP set to 10.0.0.1.", s:"Inside interface configured."},
+      {i:"Assign an IP address to the Outside interface (WAN).", h:"Use ASA syntax: <code>ip address outside 203.0.113.1 255.255.255.0</code>", v:c=>/ip\s+address\s+outside\s+203\.0\.113\.1\s+255\.255\.255\.0/i.test(c), o:"Interface outside IP set to 203.0.113.1.", s:"Outside interface configured."},
+      {i:"Bring both interfaces online.", h:"Use <code>no shutdown</code> on both interfaces.", v:c=>/no\s+shutdown/i.test(c), o:"Interfaces are now active.", s:"Interfaces are up."}
+    ]
+  },
+  {
+    t: "2. Routing Configuration", d: "Add a default route so internal traffic knows how to reach the internet.", o:["Add default route"],
+    s: [
+      {i:"Add a default route pointing to the ISP gateway (203.0.113.254).", h:"Use ASA syntax: <code>route outside 0.0.0.0 0.0.0.0 203.0.113.254</code>", v:c=>/route\s+outside\s+0\.0\.0\.0\s+0\.0\.0\.0\s+203\.0\.113\.254/i.test(c), o:"Default route added.", s:"Routing configured."}
+    ]
+  },
+  {
+    t: "3. Security Policies", d: "Create access control lists (ACLs) to permit outbound traffic and block inbound traffic.", o:["Permit inside to outside","Deny outside to inside"],
+    s: [
+      {i:"Allow internal users to access the internet.", h:"Use ASA syntax: <code>access-list OUTBOUND extended permit ip any any</code>", v:c=>/access-list\s+OUTBOUND\s+extended\s+permit\s+ip\s+any\s+any/i.test(c), o:"Access-list OUTBOUND created.", s:"Outbound traffic permitted."},
+      {i:"Block uninvited inbound traffic from the internet.", h:"Use ASA syntax: <code>access-list INBOUND extended deny ip any any</code>", v:c=>/access-list\s+INBOUND\s+extended\s+deny\s+ip\s+any\s+any/i.test(c), o:"Access-list INBOUND created.", s:"Inbound traffic blocked."}
+    ]
+  },
+  {
+    t: "4. Network Address Translation (NAT)", d: "Configure PAT (Port Address Translation) so internal IPs can share the public IP.", o:["Configure Dynamic PAT"],
+    s: [
+      {i:"Create a network object for the internal subnet.", h:"Use ASA syntax: <code>object network INSIDE_NET</code> followed by <code>subnet 10.0.0.0 255.255.255.0</code>", v:c=>/object\s+network\s+INSIDE_NET/i.test(c), o:"Network object created.", s:"Object defined."},
+      {i:"Configure dynamic PAT to translate internal IPs to the Outside interface IP.", h:"Use ASA syntax: <code>nat (inside,outside) dynamic interface</code>", v:c=>/nat\s+\(inside,outside\)\s+dynamic\s+interface/i.test(c), o:"Dynamic PAT configured.", s:"NAT rule applied."}
+    ]
+  },
+  {
+    t: "5. Bandwidth & QoS", d: "Limit the bandwidth for the guest network or specific internal users to 10Mbps.", o:["Configure QoS policy"],
+    s: [
+      {i:"Create a policy-map to shape traffic to 10Mbps.", h:"Use ASA syntax: <code>policy-map QOS_POLICY</code> followed by <code>class class-default</code> and <code>police output 10000000</code>", v:c=>/policy-map\s+QOS_POLICY/i.test(c), o:"Policy-map created.", s:"QoS Policy defined."},
+      {i:"Apply the QoS policy to the outside interface.", h:"Use ASA syntax: <code>service-policy QOS_POLICY interface outside</code>", v:c=>/service-policy\s+QOS_POLICY\s+interface\s+outside/i.test(c), o:"Service-policy applied.", s:"Bandwidth limited to 10Mbps."}
+    ]
+  },
+  {
+    t: "6. VPN Configuration", d: "Enable a Site-to-Site VPN (IPsec) to connect a branch office securely.", o:["Enable ISAKMP","Configure IPsec Transform Set"],
+    s: [
+      {i:"Enable ISAKMP (IKEv1) on the outside interface.", h:"Use ASA syntax: <code>crypto isakmp enable outside</code>", v:c=>/crypto\s+isakmp\s+enable\s+outside/i.test(c), o:"ISAKMP enabled on outside.", s:"IKEv1 enabled."},
+      {i:"Create an IPsec transform set for AES-256 and SHA.", h:"Use ASA syntax: <code>crypto ipsec transform-set TS esp-aes-256 esp-sha-hmac</code>", v:c=>/crypto\s+ipsec\s+transform-set\s+TS\s+esp-aes-256\s+esp-sha-hmac/i.test(c), o:"Transform-set TS created.", s:"IPsec parameters set."}
+    ]
+  },
+  {
+    t: "7. Logging & Alerts", d: "Enable system logging to a syslog server to capture firewall events and blocked traffic.", o:["Enable logging","Set trap level"],
+    s: [
+      {i:"Enable logging globally.", h:"Use ASA syntax: <code>logging enable</code>", v:c=>/logging\s+enable/i.test(c), o:"Logging enabled.", s:"Logs are now active."},
+      {i:"Set logging trap level to Informational (level 6).", h:"Use ASA syntax: <code>logging trap informational</code>", v:c=>/logging\s+trap\s+informational/i.test(c), o:"Trap level set to 6.", s:"Syslog configured. Check the GUI Logs tab!"}
+    ]
+  }
+];
+
+let currentLab = 0;
+let currentStep = 0;
+let history = [];
+let histIdx = -1;
+let completedLabs = new Set();
+
+const T = document.getElementById('term');
+const Hint = document.getElementById('hint');
+const Steps = document.getElementById('steps');
+const LabTitle = document.getElementById('labTitle');
+const LabDesc = document.getElementById('labDesc');
+const ObjList = document.getElementById('objectives');
+const CompletedCount = document.getElementById('completedCount');
+const GuiContent = document.getElementById('guiContent');
+
+function loadLab(idx) {
+  currentLab = idx;
+  currentStep = 0; history = []; histIdx = -1;
+  const lab = LABS[idx];
+  LabTitle.innerHTML = `<i class="fas fa-fire-flame-curved"></i> ${lab.t}`;
+  LabDesc.innerText = lab.d;
+  ObjList.innerHTML = lab.o.map(o => `<li>${o}</li>`).join('');
+  
+  document.querySelectorAll('.lab-item').forEach((el, i) => {
+    el.classList.remove('active');
+    if(completedLabs.has(i)) el.classList.add('done');
+    if(i === idx) el.classList.add('active');
+  });
+  
+  switchGuiTab(['interfaces','routing','policies','nat','qos','vpn','logs'][idx], document.querySelectorAll('.gui-tab')[idx]);
+  initTerminal();
+}
+
+function initTerminal() {
+  const lab = LABS[currentLab];
+  Steps.innerHTML = lab.s.map((_, i) => `<div class="step-dot ${i===0?'active':''}"></div>`).join('');
+  renderHint();
+  T.innerHTML = `<div class="t-line t-out"># Welcome to ${lab.t}. Type commands and press Enter.</div>`;
+  addInput();
+}
+
+function renderHint() {
+  const step = LABS[currentLab].s[currentStep];
+  Hint.innerHTML = `<strong style="color:#ffd93d">Hint:</strong> ${step.h}`;
+}
+
+function addInput() {
+  const d = document.createElement('div');
+  d.className = 'input-line';
+  d.innerHTML = `<span class="t-prompt">fw(config)#</span><input type="text" id="in" autocomplete="off">`;
+  T.appendChild(d);
+  const i = document.getElementById('in');
+  i.focus();
+  i.addEventListener('keydown', e => {
+    if (e.key === 'Enter') exec(i.value);
+    else if (e.key === 'ArrowUp' && histIdx > 0) { e.preventDefault(); histIdx--; i.value = history[histIdx]; }
+    else if (e.key === 'ArrowDown' && histIdx < history.length - 1) { e.preventDefault(); histIdx++; i.value = history[histIdx]; }
+  });
+}
+
+function exec(c) {
+  if (!c.trim()) return;
+  history.push(c); histIdx = history.length;
+  const i = document.getElementById('in'); i.remove();
+  const e = document.createElement('div');
+  e.className = 't-line';
+  e.innerHTML = `<span class="t-prompt">fw(config)#</span> <span class="t-cmd">${c}</span>`;
+  T.appendChild(e);
+
+  const step = LABS[currentLab].s[currentStep];
+  if (step.v(c)) {
+    typeOut(step.o, () => {
+      const s = document.createElement('div');
+      s.className = 't-line t-suc';
+      s.textContent = '[+] ' + step.s;
+      T.appendChild(s);
+      currentStep++;
+      updateGuiState(currentLab, currentStep);
+      if (currentStep < LABS[currentLab].s.length) {
+        Steps.innerHTML = LABS[currentLab].s.map((_, i) => `<div class="step-dot ${i===currentStep?'active':''} ${i<currentStep?'done':''}"></div>`).join('');
+        renderHint();
+        addInput();
+      } else {
+        completeLab();
+      }
+    });
+  } else {
+    const er = document.createElement('div');
+    er.className = 't-line t-err';
+    er.textContent = '[-] Invalid command. Check the hint.';
+    T.appendChild(er);
+    addInput();
+  }
+  T.scrollTop = T.scrollHeight;
+}
+
+function typeOut(t, cb) {
+  let lines = t.split('\n'); let l = 0;
+  function nxt() {
+    if (l >= lines.length) { setTimeout(cb, 100); return; }
+    const d = document.createElement('div');
+    d.className = 't-line t-out';
+    d.textContent = lines[l];
+    T.appendChild(d); T.scrollTop = T.scrollHeight; l++;
+    setTimeout(nxt, 50);
+  }
+  nxt();
+}
+
+function completeLab() {
+  T.innerHTML += '<div class="t-line t-suc" style="margin-top:10px;">[!!!] MODULE COMPLETE!</div>';
+  Hint.innerHTML = '<strong style="color:#00ff9c">Module Complete! Proceed to the next lab.</strong>';
+  completedLabs.add(currentLab);
+  document.querySelectorAll('.lab-item')[currentLab].classList.add('done');
+  CompletedCount.innerText = completedLabs.size;
+}
+
+function showSol() {
+  const i = document.getElementById('in');
+  if (i) {
+    const m = LABS[currentLab].s[currentStep].h.match(/<code>([^<]+)<\/code>/);
+    if (m) i.value = m[1];
+    i.focus();
+  }
+}
+
+function clr() { initTerminal(); }
+function resetLab() {
+  if (confirm('Reset current lab?')) {
+    completedLabs.delete(currentLab);
+    loadLab(currentLab);
+  }
+}
+
+// --- GUI ENGINE ---
+function switchGuiTab(tabId, el) {
+  document.querySelectorAll('.gui-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  
+  let html = '';
+  if (tabId === 'interfaces') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Inside Interface (LAN)</div>
+          <div class="gui-row-desc">Security Level: 100</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <input type="text" class="gui-input" id="gui_in_ip" placeholder="10.0.0.1/24" value="${state.insideIp}">
+          <button class="gui-btn green" onclick="applyInterface('inside')">Assign</button>
+        </div>
+      </div>
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Outside Interface (WAN)</div>
+          <div class="gui-row-desc">Security Level: 0</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <input type="text" class="gui-input" id="gui_out_ip" placeholder="203.0.113.1/24" value="${state.outsideIp}">
+          <button class="gui-btn green" onclick="applyInterface('outside')">Assign</button>
+        </div>
+      </div>`;
+  } else if (tabId === 'routing') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Default Route (0.0.0.0/0)</div>
+          <div class="gui-row-desc">Destination: 0.0.0.0/0, Gateway: 203.0.113.254</div>
+        </div>
+        <button class="gui-btn ${state.routing ? 'red' : 'green'}" onclick="toggleRouting()">${state.routing ? 'Remove Route' : 'Add Route'}</button>
+      </div>`;
+  } else if (tabId === 'policies') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Outbound Traffic (Inside to Outside)</div>
+          <div class="gui-row-desc">Permit HTTP/HTTPS/DNS from LAN to WAN</div>
+        </div>
+        <button class="gui-btn ${state.policyInsideToOut ? 'red' : 'green'}" onclick="togglePolicy('insideToOut')">${state.policyInsideToOut ? 'Disable' : 'Enable'}</button>
+      </div>
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Inbound Traffic (Outside to Inside)</div>
+          <div class="gui-row-desc">Deny all uninvited inbound connections</div>
+        </div>
+        <button class="gui-btn ${state.policyOutToIn ? 'red' : 'green'}" onclick="togglePolicy('outToIn')">${state.policyOutToIn ? 'Disable' : 'Enable'}</button>
+      </div>`;
+  } else if (tabId === 'nat') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Dynamic PAT</div>
+          <div class="gui-row-desc">Translate 10.0.0.0/24 to Outside Interface IP</div>
+        </div>
+        <button class="gui-btn ${state.natPat ? 'red' : 'green'}" onclick="toggleNat()">${state.natPat ? 'Disable NAT' : 'Enable NAT'}</button>
+      </div>`;
+  } else if (tabId === 'qos') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Bandwidth Limit (Guest Network)</div>
+          <div class="gui-row-desc">Limit outbound speed to 10 Mbps</div>
+        </div>
+        <button class="gui-btn ${state.qos ? 'red' : 'green'}" onclick="toggleQos()">${state.qos ? 'Remove Limit' : 'Apply Limit'}</button>
+      </div>`;
+  } else if (tabId === 'vpn') {
+    html = `
+      <div class="gui-row">
+        <div>
+          <div class="gui-row-label">Site-to-Site VPN (IPsec)</div>
+          <div class="gui-row-desc">Connect Branch Office (172.16.0.0/24)</div>
+        </div>
+        <button class="gui-btn ${state.vpn ? 'red' : 'green'}" onclick="toggleVpn()">${state.vpn ? 'Tear Down VPN' : 'Establish VPN'}</button>
+      </div>`;
+  } else if (tabId === 'logs') {
+    html = `
+      <div class="log-viewer" id="logViewer">
+        <div class="log-entry"><span class="log-time">[00:00:01]</span> Firewall initialized.</div>
+        <div class="log-entry"><span class="log-time">[00:00:05]</span> Interfaces configured.</div>
+      </div>`;
+  }
+  GuiContent.innerHTML = html;
+}
+
+function applyInterface(zone) {
+  if (zone === 'inside') {
+    let val = document.getElementById('gui_in_ip').value;
+    if(val.includes('10.0.0.1')) {
+      state.insideIp = val;
+      document.getElementById('node-inside').classList.add('active');
+      document.getElementById('ip-inside').innerText = val;
+      execCLIStep('ip address inside 10.0.0.1 255.255.255.0');
+    } else { alert('Invalid IP for Inside. Use 10.0.0.1/24'); }
+  } else {
+    let val = document.getElementById('gui_out_ip').value;
+    if(val.includes('203.0.113.1')) {
+      state.outsideIp = val;
+      document.getElementById('node-outside').classList.add('active');
+      document.getElementById('ip-outside').innerText = val;
+      execCLIStep('ip address outside 203.0.113.1 255.255.255.0');
+    } else { alert('Invalid IP for Outside. Use 203.0.113.1/24'); }
+  }
+}
+
+function toggleRouting() { state.routing = !state.routing; switchGuiTab('routing', document.querySelectorAll('.gui-tab')[1]); if(state.routing) execCLIStep('route outside 0.0.0.0 0.0.0.0 203.0.113.254'); updateGuiState(1, 1); }
+function togglePolicy(dir) {
+  if(dir === 'insideToOut') state.policyInsideToOut = !state.policyInsideToOut;
+  if(dir === 'outToIn') state.policyOutToIn = !state.policyOutToIn;
+  switchGuiTab('policies', document.querySelectorAll('.gui-tab')[2]);
+  if(state.policyInsideToOut) execCLIStep('access-list OUTBOUND extended permit ip any any');
+  if(state.policyOutToIn) execCLIStep('access-list INBOUND extended deny ip any any');
+}
+function toggleNat() { state.natPat = !state.natPat; switchGuiTab('nat', document.querySelectorAll('.gui-tab')[3]); if(state.natPat) execCLIStep('nat (inside,outside) dynamic interface'); }
+function toggleQos() { state.qos = !state.qos; switchGuiTab('qos', document.querySelectorAll('.gui-tab')[4]); if(state.qos) execCLIStep('service-policy QOS_POLICY interface outside'); }
+function toggleVpn() { state.vpn = !state.vpn; switchGuiTab('vpn', document.querySelectorAll('.gui-tab')[5]); if(state.vpn) { execCLIStep('crypto isakmp enable outside'); document.getElementById('link-in-out').classList.add('active'); } else { document.getElementById('link-in-out').classList.remove('active'); } }
+
+function execCLIStep(cmd) {
+  const i = document.getElementById('in');
+  if(i) {
+    i.value = cmd;
+    exec(cmd);
+  }
+}
+
+function updateGuiState(idx, step) {
+  // Update topology links based on state
+  if(state.insideIp && state.outsideIp) {
+    document.getElementById('link-in-out').classList.add('active');
+  }
+  if(state.policyOutToIn) {
+    document.getElementById('link-in-out').classList.remove('active');
+    document.getElementById('link-in-out').classList.add('blocked');
+  }
+}
+
+function revealGuiSolution() {
+  const lab = LABS[currentLab];
+  const step = lab.s[currentStep];
+  const cmdHint = step.h.match(/<code>([^<]+)<\/code>/);
+  const cmd = cmdHint ? cmdHint[1] : '';
+  let hintText = "Check the CLI hint for the exact command to type.";
+
+  if(currentLab === 0) {
+    if(cmd.includes('inside')) document.getElementById('gui_in_ip').value = '10.0.0.1/24';
+    if(cmd.includes('outside')) document.getElementById('gui_out_ip').value = '203.0.113.1/24';
+    hintText = "IP filled in the GUI! Click 'Assign'.";
+  } else if(currentLab === 1) {
+    if(!state.routing) toggleRouting();
+    hintText = "Route added in GUI!";
+  } else if(currentLab === 2) {
+    if(cmd.includes('OUTBOUND') && !state.policyInsideToOut) togglePolicy('insideToOut');
+    if(cmd.includes('INBOUND') && !state.policyOutToIn) togglePolicy('outToIn');
+    hintText = "Policy toggled in GUI!";
+  } else if(currentLab === 3) {
+    if(!state.natPat) toggleNat();
+    hintText = "NAT enabled in GUI!";
+  } else if(currentLab === 4) {
+    if(!state.qos) toggleQos();
+    hintText = "QoS applied in GUI!";
+  } else if(currentLab === 5) {
+    if(!state.vpn) toggleVpn();
+    hintText = "VPN established in GUI!";
+  } else if(currentLab === 6) {
+    hintText = "Check the Logs tab in the GUI to see the simulated events.";
+  }
+
+  document.getElementById('guiHintText').innerText = hintText;
+  document.getElementById('guiHintText').style.color = 'var(--cyan)';
+}
+
+// Init
+loadLab(0);
+</script>
+</body>
+</html>
