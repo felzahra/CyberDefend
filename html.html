@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NetDefend � Switching & Wireshark Simulation Labs</title>
+<title>NetDefend · Switching & Wireshark Simulation Labs</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -80,7 +80,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100
 .card-body{font-size:.84rem;color:var(--fg);line-height:1.7}
 .card-body ul{list-style:none;padding:0}
 .card-body ul li{padding:4px 0;padding-left:18px;position:relative}
-.card-body ul li::before{content:'?';position:absolute;left:0;color:var(--accent);font-weight:700}
+.card-body ul li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-weight:700}
 .tool-pill{display:inline-block;padding:4px 11px;border-radius:5px;font-size:.74rem;font-weight:600;
   background:var(--purple-dim);color:var(--purple);border:1px solid rgba(168,85,247,.2);font-family:var(--mono);margin:2px}
 .lab-progress{display:flex;align-items:center;gap:12px;margin-bottom:18px;
@@ -225,41 +225,77 @@ body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100
 
 <script>
 // ============================================================
-// LAB DEFINITIONS � Switching & Wireshark Scenarios
+// LAB DEFINITIONS — Switching & Wireshark Scenarios
+// Each command is a separate step to make it easy!
 // ============================================================
 const LABS = [
   {
     id:'vlan_trunk', name:'VLANs & 802.1Q Trunking', category:'Layer 2 Switching', icon:'fa-sitemap', color:'cyan',
     description:'Configure Layer 2 VLANs, assign access ports, and establish an 802.1Q trunk between two switches.',
     scenario:'You are provisioning a new floor switch (SW1). HR is on VLAN 10, and IT is on VLAN 20. You need to create the VLANs, assign ports Fa0/1 and Fa0/2 to them, and configure port Gi0/1 as a trunk to the core switch.',
-    objectives:['Enter global configuration mode','Create VLAN 10 (HR) and VLAN 20 (IT)','Configure Fa0/1 as an access port in VLAN 10','Configure Gi0/1 as an 802.1Q trunk port','Verify the VLAN and trunk configuration'],
+    objectives:['Enter Privileged EXEC mode','Enter Global Configuration Mode','Create VLAN 10 and name it HR','Select interface Fa0/1','Configure Fa0/1 as an access port','Assign Fa0/1 to VLAN 10','Select interface Gi0/1','Configure Gi0/1 as an 802.1Q trunk','Verify the VLAN configuration'],
     tools:['cisco ios','vlan','switchport mode'],
     network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
     steps:[
-      {instruction:'Enter Privileged EXEC mode, then Global Configuration Mode.',
-       hint:'Type <code>enable</code> then <code>configure terminal</code>',
-       validate:c=>/enable/i.test(c)&&/configure\s+terminal/i.test(c),
-       output:'SW1>enable\nSW1#configure terminal\nEnter configuration commands, one per line. End with CNTL/Z.\nSW1(config)#',
+      {instruction:'Enter Privileged EXEC mode.',
+       hint:'Type <code>enable</code>',
+       validate:c=>/^enable$/i.test(c.trim()),
+       output:'SW1>enable\nSW1#',
+       success:'Entered Privileged EXEC mode'},
+      {instruction:'Enter Global Configuration Mode.',
+       hint:'Type <code>configure terminal</code>',
+       validate:c=>/^configure terminal$/i.test(c.trim()),
+       output:'Enter configuration commands, one per line. End with CNTL/Z.\nSW1(config)#',
        success:'Entered Global Configuration Mode'},
-      {instruction:'Create VLAN 10 and name it HR.',
-       hint:'<code>vlan 10</code> then <code>name HR</code>',
-       validate:c=>/vlan\s+10/i.test(c)&&/name\s+HR/i.test(c),
-       output:'SW1(config)#vlan 10\nSW1(config-vlan)#name HR\nSW1(config-vlan)#',
-       success:'VLAN 10 created and named HR'},
-      {instruction:'Select interface Fa0/1 and configure it as an access port for VLAN 10.',
-       hint:'<code>interface fa0/1</code>, <code>switchport mode access</code>, <code>switchport access vlan 10</code>',
-       validate:c=>/interface\s+fa0\/1/i.test(c)&&/switchport\s+mode\s+access/i.test(c)&&/switchport\s+access\s+vlan\s+10/i.test(c),
-       output:'SW1(config)#interface fa0/1\nSW1(config-if)#switchport mode access\nSW1(config-if)#switchport access vlan 10\nSW1(config-if)#',
-       success:'Fa0/1 configured as access port in VLAN 10'},
-      {instruction:'Select interface Gi0/1 and configure it as an 802.1Q trunk.',
-       hint:'<code>interface gi0/1</code>, <code>switchport mode trunk</code>, <code>switchport trunk encapsulation dot1q</code>',
-       validate:c=>/interface\s+gi0\/1/i.test(c)&&/switchport\s+mode\s+trunk/i.test(c)&&/switchport\s+trunk\s+encapsulation\s+dot1q/i.test(c),
-       output:'SW1(config)#interface gi0/1\nSW1(config-if)#switchport trunk encapsulation dot1q\nSW1(config-if)#switchport mode trunk\nSW1(config-if)#',
-       success:'Gi0/1 configured as 802.1Q trunk'},
-      {instruction:'Return to privileged mode and verify the VLAN configuration.',
-       hint:'Type <code>end</code> then <code>show vlan brief</code>',
-       validate:c=>/end/i.test(c)&&/show\s+vlan\s+brief/i.test(c),
-       output:'SW1#show vlan brief\n\nVLAN Name                             Status    Ports\n---- -------------------------------- --------- -------------------------------\n1    default                          active    Gi0/2, Gi0/3\n10   HR                               active    Fa0/1\n20   IT                               active    \n1002 fddi-default                     act/unsup \n\nSW1#',
+      {instruction:'Create VLAN 10.',
+       hint:'Type <code>vlan 10</code>',
+       validate:c=>/^vlan 10$/i.test(c.trim()),
+       output:'SW1(config-vlan)#',
+       success:'VLAN 10 created'},
+      {instruction:'Name the VLAN "HR".',
+       hint:'Type <code>name HR</code>',
+       validate:c=>/^name HR$/i.test(c.trim()),
+       output:'SW1(config-vlan)#',
+       success:'VLAN 10 named HR'},
+      {instruction:'Select interface Fa0/1.',
+       hint:'Type <code>interface fa0/1</code>',
+       validate:c=>/^interface fa0\/1$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Interface Fa0/1 selected'},
+      {instruction:'Set the port mode to access.',
+       hint:'Type <code>switchport mode access</code>',
+       validate:c=>/^switchport mode access$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Port mode set to access'},
+      {instruction:'Assign the port to VLAN 10.',
+       hint:'Type <code>switchport access vlan 10</code>',
+       validate:c=>/^switchport access vlan 10$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Port assigned to VLAN 10'},
+      {instruction:'Select interface Gi0/1.',
+       hint:'Type <code>interface gi0/1</code>',
+       validate:c=>/^interface gi0\/1$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Interface Gi0/1 selected'},
+      {instruction:'Set trunk encapsulation to 802.1Q.',
+       hint:'Type <code>switchport trunk encapsulation dot1q</code>',
+       validate:c=>/^switchport trunk encapsulation dot1q$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Trunk encapsulation set to 802.1Q'},
+      {instruction:'Set the port mode to trunk.',
+       hint:'Type <code>switchport mode trunk</code>',
+       validate:c=>/^switchport mode trunk$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Port mode set to trunk'},
+      {instruction:'Return to privileged mode.',
+       hint:'Type <code>end</code>',
+       validate:c=>/^end$/i.test(c.trim()),
+       output:'SW1#',
+       success:'Returned to privileged mode'},
+      {instruction:'Verify the VLAN configuration.',
+       hint:'Type <code>show vlan brief</code>',
+       validate:c=>/^show vlan brief$/i.test(c.trim()),
+       output:'VLAN Name                             Status    Ports\n---- -------------------------------- --------- -------------------------------\n1    default                          active    Gi0/2, Gi0/3\n10   HR                               active    Fa0/1\n20   IT                               active    \n1002 fddi-default                     act/unsup',
        success:'VLANs successfully configured and verified'}
     ]
   },
@@ -267,34 +303,64 @@ const LABS = [
     id:'intervlan_routing', name:'Inter-VLAN Routing (ROAS)', category:'Layer 3 Routing', icon:'fa-route', color:'orange',
     description:'Configure Router-on-a-Stick (ROAS) to allow traffic to route between different VLANs.',
     scenario:'VLAN 10 (HR) and VLAN 20 (IT) are segmented on the switch. You need to configure the router connected to the trunk port to route traffic between them so HR can reach the IT printer.',
-    objectives:['Enable the physical router interface','Create a subinterface for VLAN 10','Configure 802.1Q encapsulation and IP on the subinterface','Create a subinterface for VLAN 20','Verify routing table and connectivity'],
+    objectives:['Enter Global Configuration Mode','Select the physical interface Gi0/0','Enable the physical interface','Create subinterface Gi0/0.10 for VLAN 10','Configure 802.1Q encapsulation for VLAN 10','Assign IP 192.168.10.1/24 to the subinterface','Create subinterface Gi0/0.20 for VLAN 20','Configure 802.1Q encapsulation for VLAN 20','Assign IP 192.168.20.1/24 to the subinterface','Verify routing table and connectivity'],
     tools:['cisco ios','subinterfaces','encapsulation dot1q'],
     network:{a:true,a1:true,t:true,t2:true,i:false,i3:false,e:false},
     steps:[
-      {instruction:'Enter the physical interface Gi0/0 and enable it.',
-       hint:'<code>interface gi0/0</code> then <code>no shutdown</code>',
-       validate:c=>/interface\s+gi0\/0/i.test(c)&&/no\s+shutdown/i.test(c),
-       output:'Router(config)#interface gi0/0\nRouter(config-if)#no shutdown\nRouter(config-if)#',
-       success:'Physical interface Gi0/0 enabled'},
+      {instruction:'Enter Global Configuration Mode.',
+       hint:'Type <code>configure terminal</code>',
+       validate:c=>/^configure terminal$/i.test(c.trim()),
+       output:'Enter configuration commands, one per line. End with CNTL/Z.\nRouter(config)#',
+       success:'Entered Global Config Mode'},
+      {instruction:'Select the physical interface Gi0/0.',
+       hint:'Type <code>interface gi0/0</code>',
+       validate:c=>/^interface gi0\/0$/i.test(c.trim()),
+       output:'Router(config-if)#',
+       success:'Interface Gi0/0 selected'},
+      {instruction:'Enable the physical interface.',
+       hint:'Type <code>no shutdown</code>',
+       validate:c=>/^no shutdown$/i.test(c.trim()),
+       output:'Router(config-if)#',
+       success:'Physical interface enabled'},
       {instruction:'Create subinterface Gi0/0.10 for VLAN 10.',
-       hint:'<code>interface gi0/0.10</code>',
-       validate:c=>/interface\s+gi0\/0\.10/i.test(c),
-       output:'Router(config)#interface gi0/0.10\nRouter(config-subif)#',
+       hint:'Type <code>interface gi0/0.10</code>',
+       validate:c=>/^interface gi0\/0\.10$/i.test(c.trim()),
+       output:'Router(config-subif)#',
        success:'Subinterface .10 created'},
-      {instruction:'Configure 802.1Q encapsulation for VLAN 10 and assign IP 192.168.10.1/24.',
-       hint:'<code>encapsulation dot1q 10</code> then <code>ip address 192.168.10.1 255.255.255.0</code>',
-       validate:c=>/encapsulation\s+dot1q\s+10/i.test(c)&&/ip\s+address\s+192\.168\.10\.1\s+255\.255\.255\.0/i.test(c),
-       output:'Router(config-subif)#encapsulation dot1q 10\nRouter(config-subif)#ip address 192.168.10.1 255.255.255.0\nRouter(config-subif)#',
-       success:'VLAN 10 gateway configured'},
-      {instruction:'Create subinterface Gi0/0.20, set encapsulation for VLAN 20, and assign IP 192.168.20.1/24.',
-       hint:'<code>interface gi0/0.20</code>, <code>encapsulation dot1q 20</code>, <code>ip address 192.168.20.1 255.255.255.0</code>',
-       validate:c=>/interface\s+gi0\/0\.20/i.test(c)&&/encapsulation\s+dot1q\s+20/i.test(c)&&/ip\s+address\s+192\.168\.20\.1\s+255\.255\.255\.0/i.test(c),
-       output:'Router(config-subif)#interface gi0/0.20\nRouter(config-subif)#encapsulation dot1q 20\nRouter(config-subif)#ip address 192.168.20.1 255.255.255.0\nRouter(config-subif)#',
-       success:'VLAN 20 gateway configured'},
-      {instruction:'Exit to privileged mode and verify the routing table shows connected routes.',
-       hint:'Type <code>end</code> then <code>show ip route brief</code> (or <code>show ip route</code>)',
-       validate:c=>/end/i.test(c)&&/show\s+ip\s+route/i.test(c),
-       output:'Router#show ip route\nCodes: L - local, C - connected\n\n     192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks\nC       192.168.10.0/24 is directly connected, GigabitEthernet0/0.10\nL       192.168.10.1/32 is directly connected, GigabitEthernet0/0.10\n     192.168.20.0/24 is variably subnetted, 2 subnets, 2 masks\nC       192.168.20.0/24 is directly connected, GigabitEthernet0/0.20\nL       192.168.20.1/32 is directly connected, GigabitEthernet0/0.20',
+      {instruction:'Configure 802.1Q encapsulation for VLAN 10.',
+       hint:'Type <code>encapsulation dot1q 10</code>',
+       validate:c=>/^encapsulation dot1q 10$/i.test(c.trim()),
+       output:'Router(config-subif)#',
+       success:'Encapsulation set for VLAN 10'},
+      {instruction:'Assign IP 192.168.10.1/24 to the subinterface.',
+       hint:'Type <code>ip address 192.168.10.1 255.255.255.0</code>',
+       validate:c=>/^ip address 192\.168\.10\.1 255\.255\.255\.0$/i.test(c.trim()),
+       output:'Router(config-subif)#',
+       success:'IP address assigned to VLAN 10'},
+      {instruction:'Create subinterface Gi0/0.20 for VLAN 20.',
+       hint:'Type <code>interface gi0/0.20</code>',
+       validate:c=>/^interface gi0\/0\.20$/i.test(c.trim()),
+       output:'Router(config-subif)#',
+       success:'Subinterface .20 created'},
+      {instruction:'Configure 802.1Q encapsulation for VLAN 20.',
+       hint:'Type <code>encapsulation dot1q 20</code>',
+       validate:c=>/^encapsulation dot1q 20$/i.test(c.trim()),
+       output:'Router(config-subif)#',
+       success:'Encapsulation set for VLAN 20'},
+      {instruction:'Assign IP 192.168.20.1/24 to the subinterface.',
+       hint:'Type <code>ip address 192.168.20.1 255.255.255.0</code>',
+       validate:c=>/^ip address 192\.168\.20\.1 255\.255\.255\.0$/i.test(c.trim()),
+       output:'Router(config-subif)#',
+       success:'IP address assigned to VLAN 20'},
+      {instruction:'Return to privileged mode.',
+       hint:'Type <code>end</code>',
+       validate:c=>/^end$/i.test(c.trim()),
+       output:'Router#',
+       success:'Returned to privileged mode'},
+      {instruction:'Verify the routing table shows connected routes.',
+       hint:'Type <code>show ip route</code>',
+       validate:c=>/^show ip route$/i.test(c.trim()),
+       output:'Codes: L - local, C - connected\n\nC 192.168.10.0/24 is directly connected, GigabitEthernet0/0.10\nC 192.168.20.0/24 is directly connected, GigabitEthernet0/0.20',
        success:'Inter-VLAN routing verified and active'}
     ]
   },
@@ -302,39 +368,54 @@ const LABS = [
     id:'port_security', name:'Switch Port Security', category:'Network Security', icon:'fa-shield-halved', color:'red',
     description:'Mitigate rogue device access by enforcing MAC address limits and sticky MAC learning on access ports.',
     scenario:'An attacker keeps plugging unauthorized laptops into the lobby network. You must configure port security on interface Fa0/5 to limit it to a single MAC address and shut down if violated.',
-    objectives:['Enable port security on the access port','Limit the maximum MAC addresses to 1','Configure the violation mode to restrict','Enable sticky MAC learning','Verify port security status'],
+    objectives:['Enter Global Configuration Mode','Enter interface configuration mode for Fa0/5','Set port to access mode (required for port-security)','Enable port security on the interface','Limit the port to learn only 1 MAC address','Set the violation mode to restrict','Enable sticky MAC learning','Verify port security status'],
     tools:['cisco ios','switchport port-security'],
     network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
     steps:[
+      {instruction:'Enter Global Configuration Mode.',
+       hint:'Type <code>configure terminal</code>',
+       validate:c=>/^configure terminal$/i.test(c.trim()),
+       output:'Enter configuration commands, one per line. End with CNTL/Z.\nSW1(config)#',
+       success:'Entered Global Config Mode'},
       {instruction:'Enter interface configuration mode for Fa0/5.',
-       hint:'<code>configure terminal</code> then <code>interface fa0/5</code>',
-       validate:c=>/configure\s+terminal/i.test(c)&&/interface\s+fa0\/5/i.test(c),
-       output:'SW1#configure terminal\nSW1(config)#interface fa0/5\nSW1(config-if)#',
+       hint:'Type <code>interface fa0/5</code>',
+       validate:c=>/^interface fa0\/5$/i.test(c.trim()),
+       output:'SW1(config-if)#',
        success:'Entered interface config for Fa0/5'},
+      {instruction:'Set port to access mode (required for port-security).',
+       hint:'Type <code>switchport mode access</code>',
+       validate:c=>/^switchport mode access$/i.test(c.trim()),
+       output:'SW1(config-if)#',
+       success:'Port mode set to access'},
       {instruction:'Enable port security on the interface.',
-       hint:'<code>switchport port-security</code>',
-       validate:c=>/switchport\s+port-security/i.test(c)&&!/maximum|violation|mac-address/i.test(c),
-       output:'SW1(config-if)#switchport port-security\nSW1(config-if)#',
+       hint:'Type <code>switchport port-security</code>',
+       validate:c=>/^switchport port-security$/i.test(c.trim()),
+       output:'SW1(config-if)#',
        success:'Port security enabled'},
       {instruction:'Limit the port to learn only 1 MAC address.',
-       hint:'<code>switchport port-security maximum 1</code>',
-       validate:c=>/switchport\s+port-security\s+maximum\s+1/i.test(c),
-       output:'SW1(config-if)#switchport port-security maximum 1\nSW1(config-if)#',
+       hint:'Type <code>switchport port-security maximum 1</code>',
+       validate:c=>/^switchport port-security maximum 1$/i.test(c.trim()),
+       output:'SW1(config-if)#',
        success:'Max MAC addresses set to 1'},
-      {instruction:'Set the violation mode to restrict (drops illegal frames but keeps port up).',
-       hint:'<code>switchport port-security violation restrict</code>',
-       validate:c=>/switchport\s+port-security\s+violation\s+restrict/i.test(c),
-       output:'SW1(config-if)#switchport port-security violation restrict\nSW1(config-if)#',
+      {instruction:'Set the violation mode to restrict.',
+       hint:'Type <code>switchport port-security violation restrict</code>',
+       validate:c=>/^switchport port-security violation restrict$/i.test(c.trim()),
+       output:'SW1(config-if)#',
        success:'Violation mode set to restrict'},
-      {instruction:'Enable sticky MAC learning to dynamically learn and save the MAC.',
-       hint:'<code>switchport port-security mac-address sticky</code>',
-       validate:c=>/switchport\s+port-security\s+mac-address\s+sticky/i.test(c),
-       output:'SW1(config-if)#switchport port-security mac-address sticky\nSW1(config-if)#',
+      {instruction:'Enable sticky MAC learning.',
+       hint:'Type <code>switchport port-security mac-address sticky</code>',
+       validate:c=>/^switchport port-security mac-address sticky$/i.test(c.trim()),
+       output:'SW1(config-if)#',
        success:'Sticky MAC learning enabled'},
-      {instruction:'Return to privileged mode and verify the configuration.',
-       hint:'<code>end</code> then <code>show port-security interface fa0/5</code>',
-       validate:c=>/end/i.test(c)&&/show\s+port-security\s+interface\s+fa0\/5/i.test(c),
-       output:'SW1#show port-security interface fa0/5\nPort Security              : Enabled\nPort Status                : Secure-up\nViolation Mode             : Restrict\nAging Time                 : 0 mins\nAging Type                 : Absolute\nMaximum MAC Addresses      : 1\nTotal MAC Addresses        : 1\nConfigured MAC Addresses   : 0\nSticky MAC Addresses       : 1\nLast Source Address:Vlan   : 00:1C:2B:3A:44:55:10\nSecurity Violation Count   : 0',
+      {instruction:'Return to privileged mode.',
+       hint:'Type <code>end</code>',
+       validate:c=>/^end$/i.test(c.trim()),
+       output:'SW1#',
+       success:'Returned to privileged mode'},
+      {instruction:'Verify the configuration.',
+       hint:'Type <code>show port-security interface fa0/5</code>',
+       validate:c=>/^show port-security interface fa0\/5$/i.test(c.trim()),
+       output:'Port Security              : Enabled\nPort Status                : Secure-up\nViolation Mode             : Restrict\nMaximum MAC Addresses      : 1\nSticky MAC Addresses       : 1',
        success:'Port security successfully configured and verified'}
     ]
   },
@@ -342,29 +423,29 @@ const LABS = [
     id:'wireshark_arp', name:'Wireshark: ARP Spoofing Analysis', category:'Traffic Analysis', icon:'fa-magnifying-glass-chart', color:'purple',
     description:'Use Wireshark/tshark display filters to identify an ARP spoofing (Man-in-the-Middle) attack.',
     scenario:'Users are reporting certificate warnings and slow internet. You suspect an ARP poisoning attack. You capture traffic on the gateway interface and need to analyze it using tshark to find the duplicate IP claims.',
-    objectives:['Start a capture on the eth0 interface','Apply a display filter to view only ARP traffic','Identify the ARP packets where two different MACs claim the same IP','Extract the attacker\'s MAC address from the packet'],
+    objectives:['Start a capture on the eth0 interface','Apply a display filter to view only ARP traffic','Filter for the specific source MAC address of the attacker','Extract the attacker IP address from the packet'],
     tools:['tshark','wireshark','tcpdump','arp'],
     network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
     steps:[
       {instruction:'Start tshark to capture traffic on interface eth0.',
-       hint:'<code>tshark -i eth0</code>',
-       validate:c=>/tshark\s+-i\s+eth0/i.test(c),
-       output:'Capturing on \'eth0\'\n ** (tshark:1234) Warning: eth0 has no captures\n1   0.000000  192.168.1.1 ? 192.168.1.255 ARP Who has 192.168.1.50?  Tell 192.168.1.1\n2   0.001245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n[...]',
+       hint:'Type <code>tshark -i eth0</code>',
+       validate:c=>/^tshark -i eth0$/i.test(c.trim()),
+       output:'Capturing on \'eth0\'\n1   0.000000  192.168.1.1 → 192.168.1.255 ARP Who has 192.168.1.50?  Tell 192.168.1.1\n2   0.001245  192.168.1.50 → 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 → 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01',
        success:'Capture started, traffic is flowing'},
       {instruction:'Filter the capture to only show ARP traffic.',
-       hint:'Type <code>arp</code> or <code>tshark -r capture.pcap -Y "arp"</code>',
-       validate:c=>/^arp$/i.test(c.trim())||/tshark\s+-r\s+capture\.pcap\s+-Y\s+["']arp["']/i.test(c),
-       output:'Applying display filter: arp\n\n2   0.001245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n4   0.003100  192.168.1.1  ? 192.168.1.255 ARP Who has 192.168.1.50?  Tell 192.168.1.1\n5   0.003245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n6   0.003389  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n\n[!] ANOMALY DETECTED: Two different MAC addresses are claiming to be 192.168.1.50',
-       success:'ARP filter applied � anomaly identified'},
+       hint:'Type <code>arp</code> as the display filter',
+       validate:c=>/^arp$/i.test(c.trim()),
+       output:'Applying display filter: arp\n\n2   0.001245  192.168.1.50 → 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 → 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n\n[!] ANOMALY DETECTED: Two different MAC addresses are claiming to be 192.168.1.50',
+       success:'ARP filter applied — anomaly identified'},
       {instruction:'Filter for the specific source MAC address of the attacker to see all their malicious packets.',
-       hint:'<code>eth.src == "de:ad:be:ef:00:01"</code>',
-       validate:c=>/eth\.src\s*==\s*["']de:ad:be:ef:00:01["']/i.test(c),
-       output:'Applying display filter: eth.src == "de:ad:be:ef:00:01"\n\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n6   0.003389  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n9   0.005120  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.1 is at de:ad:be:ef:00:01\n12  0.007890  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.1 is at de:ad:be:ef:00:01\n\n[!] Attacker MAC de:ad:be:ef:00:01 is spoofing both the gateway (.1) and victim (.50)',
+       hint:'Type <code>eth.src == "de:ad:be:ef:00:01"</code>',
+       validate:c=>/^eth\.src == "de:ad:be:ef:00:01"$/i.test(c.trim()),
+       output:'Applying display filter: eth.src == "de:ad:be:ef:00:01"\n\n3   0.002345  192.168.1.99 → 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n9   0.005120  192.168.1.99 → 192.168.1.1  ARP 192.168.1.1 is at de:ad:be:ef:00:01\n\n[!] Attacker MAC is spoofing both the gateway and victim',
        success:'Attacker activity isolated via MAC filter'},
       {instruction:'Extract the IP of the device sending the spoofed packets.',
-       hint:'<code>tshark -r capture.pcap -Y "eth.src == de:ad:be:ef:00:01" -T fields -e arp.src.proto_ipv4</code>',
-       validate:c=>/tshark\s+-r.*-Y\s+["']eth\.src\s*==\s*de:ad:be:ef:00:01["'].*-T\s+fields\s+-e\s+arp\.src\.proto_ipv4/i.test(c),
-       output:'192.168.1.99\n192.168.1.99\n192.168.1.99\n192.168.1.99\n\n[+] Attacker IP identified: 192.168.1.99. Ready to block at the switch level.',
+       hint:'Type <code>tshark -r capture.pcap -Y "eth.src == de:ad:be:ef:00:01" -T fields -e arp.src.proto_ipv4</code>',
+       validate:c=>/^tshark -r capture\.pcap -Y "eth\.src == de:ad:be:ef:00:01" -T fields -e arp\.src\.proto_ipv4$/i.test(c.trim()),
+       output:'192.168.1.99\n192.168.1.99\n192.168.1.99\n\n[+] Attacker IP identified: 192.168.1.99. Ready to block at the switch level.',
        success:'Attacker IP successfully extracted from packet capture'}
     ]
   },
@@ -372,30 +453,30 @@ const LABS = [
     id:'wireshark_dns', name:'Wireshark: DNS Exfiltration Analysis', category:'Traffic Analysis', icon:'fa-filter', color:'yellow',
     description:'Uncover data exfiltration by analyzing anomalous DNS query lengths and subdomain patterns with Wireshark.',
     scenario:'The IDS flagged abnormal DNS traffic from a database server (10.0.0.15). You suspect sensitive data is being tunneled out via DNS queries. You must use tshark to analyze the pcap and extract the stolen data.',
-    objectives:['Filter DNS traffic originating from the database server','Identify anomalous DNS query names','Extract the long subdomains from the queries','Decode the base64 payload to confirm data exfiltration'],
+    objectives:['Filter DNS traffic originating from the database server','Extract only the DNS query names to a text file','View the contents of the extracted queries','Parse out the base64 string and decode it to confirm exfiltration'],
     tools:['tshark','wireshark','dns','base64'],
     network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:true},
     steps:[
       {instruction:'Filter the capture to show DNS queries from the database server (10.0.0.15).',
-       hint:'<code>ip.src == 10.0.0.15 and dns</code>',
-       validate:c=>/ip\.src\s*==\s*10\.0\.0\.15\s*and\s*dns/i.test(c),
-       output:'Applying display filter: ip.src == 10.0.0.15 and dns\n\n1   0.000000  10.0.0.15 ? 8.8.8.8    DNS Standard query 0x0001  A SGVsbG8gV29ybGQ.evil.com\n2   0.012034  10.0.0.15 ? 8.8.8.8    DNS Standard query x1234  A dGhpcyBpcyBzdG9sZW4.evil.com\n3   0.024189  10.0.0.15 ? 8.8.8.8    DNS Standard query 0x5678  A ZGF0YSBleGZpbC5wbGno.evil.com\n\n[!] Notice the unusually long, base64-looking subdomains. This is indicative of DNS tunneling.',
+       hint:'Type <code>ip.src == 10.0.0.15 and dns</code> as the display filter',
+       validate:c=>/^ip\.src == 10\.0\.0\.15 and dns$/i.test(c.trim()),
+       output:'Applying display filter: ip.src == 10.0.0.15 and dns\n\n1   0.000000  10.0.0.15 → 8.8.8.8    DNS Standard query 0x0001  A SGVsbG8gV29ybGQ.evil.com\n2   0.012034  10.0.0.15 → 8.8.8.8    DNS Standard query x1234  A dGhpcyBpcyBzdG9sZW4.evil.com\n\n[!] Notice the unusually long, base64-looking subdomains. This is indicative of DNS tunneling.',
        success:'Suspicious DNS queries isolated'},
       {instruction:'Extract only the DNS query names to a text file for analysis.',
-       hint:'<code>tshark -r capture.pcap -Y "ip.src == 10.0.0.15 and dns" -T fields -e dns.qry.name > queries.txt</code>',
-       validate:c=>/tshark\s+-r\s+capture\.pcap\s+-Y\s+["']ip\.src\s*==\s*10\.0\.0\.15\s*and\s*dns["']\s+-T\s+fields\s+-e\s+dns\.qry\.name\s*>\s*queries\.txt/i.test(c),
+       hint:'Type <code>tshark -r capture.pcap -Y "ip.src == 10.0.0.15 and dns" -T fields -e dns.qry.name > queries.txt</code>',
+       validate:c=>/^tshark -r capture\.pcap -Y "ip\.src == 10\.0\.0\.15 and dns" -T fields -e dns\.qry\.name > queries\.txt$/i.test(c.trim()),
        output:'[*] Extracted 3 query names to queries.txt\n[*] Use cat or grep to view the contents.',
        success:'DNS subdomains extracted to queries.txt'},
       {instruction:'View the contents of the extracted queries.',
-       hint:'<code>cat queries.txt</code>',
-       validate:c=>/^cat\s+queries\.txt$/i.test(c.trim()),
+       hint:'Type <code>cat queries.txt</code>',
+       validate:c=>/^cat queries\.txt$/i.test(c.trim()),
        output:'SGVsbG8gV29ybGQ.evil.com\ndGhpcyBpcyBzdG9sZW4.evil.com\nZGF0YSBleGZpbC5wbGno.evil.com\n\n[*] The strings before ".evil.com" appear to be base64 encoded.',
        success:'Extracted queries displayed'},
       {instruction:'Parse out the base64 string (everything before ".evil.com") and decode it.',
-       hint:'<code>cat queries.txt | cut -d. -f1 | base64 -d</code>',
-       validate:c=>/cat\s+queries\.txt\s*\|\s*cut\s+-d\.\s+-f1\s*\|\s*base64\s+-d/i.test(c),
+       hint:'Type <code>cat queries.txt | cut -d. -f1 | base64 -d</code>',
+       validate:c=>/^cat queries\.txt \| cut -d\. -f1 \| base64 -d$/i.test(c.trim()),
        output:'Hello World\nthis is stolen\ndata exfil.plop\n\n[!!!] CRITICAL ALERT: Sensitive text data successfully decoded from DNS queries. Exfiltration confirmed.',
-       success:'Payload decoded � data exfiltration confirmed'}
+       success:'Payload decoded — data exfiltration confirmed'}
     ]
   }
 ];
@@ -483,7 +564,7 @@ function renderLab(){
 
   area.innerHTML = `
     <div class="lab-header">
-      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} � ${lab.category}</div>
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} · ${lab.category}</div>
       <h1>${lab.name}</h1>
       <p>${lab.description}</p>
     </div>
@@ -495,7 +576,7 @@ function renderLab(){
 
     <div class="complete-banner ${isComplete?'show':''}" id="completeBanner">
       <i class="fas fa-circle-check"></i>
-      <span>Lab completed � all steps executed successfully. Move to the next lab when ready.</span>
+      <span>Lab completed — all steps executed successfully. Move to the next lab when ready.</span>
     </div>
 
     <div class="lab-progress">
@@ -536,10 +617,10 @@ function renderLab(){
         </div>
       </div>
       <div class="terminal-body" id="terminalBody">
-        <div class="t-line t-output"># ${lab.name} � Interactive CLI Lab</div>
+        <div class="t-line t-output"># ${lab.name} — Interactive CLI Lab</div>
         <div class="t-line t-output"># Type the appropriate command for each step, then press Enter.</div>
         <div class="t-line t-output"># Use the up/down arrow keys to browse command history.</div>
-        <div class="t-line t-separator">${'-'.repeat(60)}</div>
+        <div class="t-line t-separator">${'─'.repeat(60)}</div>
         ${currentStep < lab.steps.length ? `
         <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>
         ` : `<div class="t-success">>> Lab complete! All steps executed.</div>`}
@@ -594,7 +675,7 @@ function bindInput(input){
     } else if(e.key === 'Tab'){
       e.preventDefault();
       const partial = input.value;
-      const suggestions = ['enable','configure terminal','vlan','interface','switchport','ip address','tshark','show','end','encapsulation','no shutdown','cat','base64'];
+      const suggestions = ['enable','configure terminal','vlan','interface','switchport','ip address','tshark','show','end','encapsulation','no shutdown','cat','base64','arp'];
       const match = suggestions.find(s=>s.startsWith(partial) && s !== partial);
       if(match) input.value = match;
     }
@@ -624,7 +705,7 @@ function executeCommand(cmd){
       
       const sepLine = document.createElement('div');
       sepLine.className = 't-line t-separator';
-      sepLine.textContent = '-'.repeat(60);
+      sepLine.textContent = '─'.repeat(60);
       tb.insertBefore(sepLine, document.querySelector('.term-input-line'));
       
       currentStep++;
@@ -640,7 +721,7 @@ function executeCommand(cmd){
         renderSidebar();
         const finalLine = document.createElement('div');
         finalLine.className = 't-line t-success';
-        finalLine.innerHTML = '\n[!!!] LAB COMPLETE � All objectives achieved!\n[!!!] Use the "Next Lab" button below to continue.';
+        finalLine.innerHTML = '\n[!!!] LAB COMPLETE — All objectives achieved!\n[!!!] Use the "Next Lab" button below to continue.';
         tb.insertBefore(finalLine, document.querySelector('.term-input-line'));
         document.querySelector('.term-input-line').remove();
         document.getElementById('completeBanner').classList.add('show');
@@ -703,7 +784,7 @@ function clearTerminal(){
   const tb = document.getElementById('terminalBody');
   const lab = LABS[currentLab];
   tb.innerHTML = `<div class="t-line t-output"># Terminal cleared</div>
-    <div class="t-line t-separator">${'-'.repeat(60)}</div>
+    <div class="t-line t-separator">${'─'.repeat(60)}</div>
     <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>`;
   const inputLine = document.createElement('div');
   inputLine.className = 'term-input-line';
