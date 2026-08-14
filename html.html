@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetDefend · Switching & Wireshark Simulation Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0e14; --bg-raised:#0f1419; --bg-card:#131920; --bg-terminal:#080c10;
+  --fg:#c5cdd8; --fg-bright:#e8edf3; --fg-dim:#5a6678;
+  --accent:#00d4ff; --accent-dim:rgba(0,212,255,.12); --accent-mid:rgba(0,212,255,.3);
+  --red:#ff3b5c; --red-dim:rgba(255,59,92,.12);
+  --orange:#ff9f43; --orange-dim:rgba(255,159,67,.12);
+  --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,.12);
+  --yellow:#ffd93d; --yellow-dim:rgba(255,217,61,.12);
+  --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+  --border:#1e2733; --border-light:#2a3544;
+  --radius:10px; --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
+  background-size:60px 60px}
+.bg-glow{position:fixed;z-index:0;pointer-events:none;width:600px;height:600px;border-radius:50%;filter:blur(150px);opacity:.08}
+.bg-glow-1{top:-200px;right:-100px;background:var(--accent)}
+.bg-glow-2{bottom:-200px;left:-100px;background:var(--purple)}
+.app{position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+  background:rgba(10,14,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800}
+.title{font-size:1rem;font-weight:700;color:var(--fg-bright)}
+.subtitle{font-size:.65rem;color:var(--fg-dim);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card)}
+.stat-pill i{color:var(--accent)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:var(--bg-raised);border-right:1px solid var(--border);padding:20px 0;
+  overflow-y:auto;max-height:calc(100vh - 65px);position:sticky;top:65px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.sidebar-section{margin-bottom:18px}
+.sidebar-label{font-size:.62rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1.5px;
+  padding:0 20px;margin-bottom:10px}
+.lab-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;
+  transition:.15s;border-left:3px solid transparent;position:relative}
+.lab-item:hover{background:rgba(255,255,255,.025)}
+.lab-item.active{background:var(--accent-dim);border-left-color:var(--accent)}
+.lab-item.done .lab-icon{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-mid)}
+.lab-icon{width:30px;height:30px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border-light);transition:.3s}
+.lab-item.active .lab-icon{background:var(--accent);color:#000;border-color:var(--accent)}
+.lab-info{flex:1;min-width:0}
+.lab-name{font-size:.8rem;font-weight:600;color:var(--fg-bright);line-height:1.2}
+.lab-item.active .lab-name{color:var(--accent)}
+.lab-cat{font-size:.65rem;color:var(--fg-dim);margin-top:2px}
+.content{padding:24px 28px;max-width:1400px}
+.lab-header{margin-bottom:24px}
+.lab-tag{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:var(--mono)}
+.lab-tag::before{content:'';width:24px;height:2px;background:var(--accent);border-radius:1px}
+.lab-header h1{font-size:1.8rem;font-weight:800;color:var(--fg-bright);line-height:1.2;margin-bottom:10px}
+.lab-header p{font-size:.9rem;color:var(--fg-dim);line-height:1.7;max-width:800px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card-icon.green{background:var(--accent-dim);color:var(--accent)}
+.card-icon.cyan{background:var(--cyan-dim);color:var(--cyan)}
+.card-icon.orange{background:var(--orange-dim);color:var(--orange)}
+.card-icon.red{background:var(--red-dim);color:var(--red)}
+.card-icon.yellow{background:var(--yellow-dim);color:var(--yellow)}
+.card-icon.purple{background:var(--purple-dim);color:var(--purple)}
+.card-title{font-size:.92rem;font-weight:700;color:var(--fg-bright)}
+.card-body{font-size:.84rem;color:var(--fg);line-height:1.7}
+.card-body ul{list-style:none;padding:0}
+.card-body ul li{padding:4px 0;padding-left:18px;position:relative}
+.card-body ul li::before{content:'?';position:absolute;left:0;color:var(--accent);font-weight:700}
+.tool-pill{display:inline-block;padding:4px 11px;border-radius:5px;font-size:.74rem;font-weight:600;
+  background:var(--purple-dim);color:var(--purple);border:1px solid rgba(168,85,247,.2);font-family:var(--mono);margin:2px}
+.lab-progress{display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px}
+.step-dots{display:flex;gap:6px;flex:1}
+.step-dot{height:6px;flex:1;border-radius:3px;background:var(--border-light);transition:.3s}
+.step-dot.active{background:var(--accent);box-shadow:0 0 8px var(--accent-mid)}
+.step-dot.done{background:var(--accent);opacity:.5}
+.step-text{font-size:.78rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);white-space:nowrap}
+.step-text span{color:var(--accent)}
+.scenario{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(168,85,247,.05));
+  border:1px solid rgba(0,212,255,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;
+  display:flex;gap:12px;align-items:flex-start}
+.scenario i{color:var(--accent);font-size:1rem;padding-top:2px}
+.scenario-text{font-size:.82rem;color:var(--fg);line-height:1.6}
+.scenario-text strong{color:var(--purple)}
+.terminal-wrap{margin-bottom:18px}
+.terminal-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;
+  background:#0d1117;border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0}
+.term-left{display:flex;align-items:center;gap:12px}
+.term-dots{display:flex;gap:6px}
+.term-dots span{width:11px;height:11px;border-radius:50%}
+.term-dots span:nth-child(1){background:#ff5f57}
+.term-dots span:nth-child(2){background:#febc2e}
+.term-dots span:nth-child(3){background:#28c840}
+.term-tab{font-size:.72rem;font-weight:600;color:var(--fg-dim);font-family:var(--mono);
+  padding:4px 11px;background:var(--bg-card);border-radius:5px;border:1px solid var(--border)}
+.term-actions{display:flex;gap:6px}
+.term-btn{padding:4px 10px;border-radius:5px;font-size:.68rem;font-weight:600;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg-dim);cursor:pointer;
+  font-family:var(--mono);transition:.2s;display:flex;align-items:center;gap:5px}
+.term-btn:hover{border-color:var(--accent);color:var(--accent)}
+.terminal-body{background:var(--bg-terminal);border:1px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);padding:16px;height:440px;overflow-y:auto;
+  font-family:var(--mono);font-size:.8rem;line-height:1.65}
+.terminal-body::-webkit-scrollbar{width:4px}
+.terminal-body::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:10px}
+.t-line{white-space:pre-wrap;word-break:break-all}
+.t-prompt{color:var(--accent)}
+.t-cmd{color:var(--fg-bright)}
+.t-output{color:var(--fg-dim)}
+.t-highlight{color:var(--cyan)}
+.t-warning{color:var(--orange)}
+.t-error{color:var(--red)}
+.t-success{color:var(--accent)}
+.t-info{color:var(--yellow)}
+.t-step{color:var(--purple);font-weight:600}
+.t-separator{color:var(--border-light)}
+.t-hint{color:var(--yellow);font-style:italic}
+.term-input-line{display:flex;align-items:center;gap:6px;margin-top:4px}
+.term-input-line .t-prompt{white-space:nowrap}
+.term-input{flex:1;background:transparent;border:none;outline:none;color:var(--fg-bright);
+  font-family:var(--mono);font-size:.8rem;caret-color:var(--accent)}
+.hint-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px}
+.hint-icon{width:32px;height:32px;border-radius:7px;flex-shrink:0;background:var(--yellow-dim);color:var(--yellow);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.hint-content{flex:1}
+.hint-label{font-size:.7rem;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.hint-text{font-size:.84rem;color:var(--fg);line-height:1.6}
+.hint-text code{background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:var(--mono)}
+.network-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;margin-bottom:18px;position:relative;overflow:hidden}
+.network-card::before{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:.4}
+.network-title{font-size:.7rem;font-weight:700;color:var(--fg-dim);text-transform:uppercase;
+  letter-spacing:1.5px;margin-bottom:16px;position:relative;display:flex;align-items:center;gap:8px}
+.network-nodes{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;position:relative}
+.net-node{display:flex;flex-direction:column;align-items:center;gap:6px}
+.net-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;border:2px solid var(--border-light);transition:.5s}
+.net-icon.attacker{background:var(--red-dim);color:var(--red);border-color:rgba(255,59,92,.3)}
+.net-icon.target{background:var(--orange-dim);color:var(--orange);border-color:rgba(255,159,67,.3)}
+.net-icon.internal{background:var(--cyan-dim);color:var(--cyan);border-color:rgba(0,212,255,.3)}
+.net-icon.exfil{background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)}
+.net-icon.pulsing{animation:npulse 2s infinite}
+@keyframes npulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.4)}50%{box-shadow:0 0 0 10px rgba(0,212,255,0)}}
+.net-label{font-size:.7rem;font-weight:600;color:var(--fg-dim);text-align:center}
+.net-ip{font-size:.62rem;color:var(--fg-dim);font-family:var(--mono);opacity:.7}
+.net-arrow{color:var(--fg-dim);font-size:1rem;opacity:.4;position:relative}
+.net-arrow.active{color:var(--accent);opacity:1;animation:arrowflow 1.5s infinite}
+@keyframes arrowflow{0%,100%{opacity:1}50%{opacity:.3}}
+.complete-banner{display:none;align-items:center;gap:12px;padding:16px 20px;border-radius:var(--radius);
+  background:var(--accent-dim);border:1px solid var(--accent-mid);margin-bottom:18px}
+.complete-banner.show{display:flex}
+.complete-banner i{color:var(--accent);font-size:1.2rem}
+.complete-banner span{color:var(--accent);font-weight:600;font-size:.88rem}
+.btn{padding:11px 22px;border-radius:var(--radius);font-size:.85rem;font-weight:700;cursor:pointer;
+  border:1px solid var(--border-light);background:var(--bg-card);color:var(--fg);font-family:var(--sans);
+  transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#00aacc);color:#000;border:none;
+  box-shadow:0 4px 20px rgba(0,212,255,.2)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,212,255,.3)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.final-screen{text-align:center;padding:50px 20px}
+.final-icon{width:80px;height:80px;border-radius:50%;background:var(--accent-dim);
+  border:2px solid var(--accent-mid);display:inline-flex;align-items:center;justify-content:center;
+  font-size:2rem;color:var(--accent);margin-bottom:24px}
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative;top:0;max-height:none;display:flex;overflow-x:auto;padding:12px;gap:4px;
+    border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-section{margin-bottom:0;flex:1}
+  .sidebar-label{display:none}
+  .lab-item{padding:8px 12px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent;flex-shrink:0}
+  .lab-item.active{border-bottom-color:var(--accent);border-left:none}
+  .lab-cat{display:none}
+}
+@media(max-width:600px){
+  .topbar{padding:12px 16px}
+  .content{padding:20px 16px}
+  .lab-header h1{font-size:1.4rem}
+  .network-nodes{gap:14px}
+  .net-icon{width:42px;height:42px;font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><i class="fas fa-network-wired"></i></div>
+      <div>
+        <div class="title">NetDefend Labs</div>
+        <div class="subtitle">Switching & Wireshark Simulations</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-pill"><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> / <span id="totalCount">0</span> Labs</div>
+      <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// LAB DEFINITIONS — Switching & Wireshark Scenarios
+// ============================================================
+const LABS = [
+  {
+    id:'vlan_trunk', name:'VLANs & 802.1Q Trunking', category:'Layer 2 Switching', icon:'fa-sitemap', color:'cyan',
+    description:'Configure Layer 2 VLANs, assign access ports, and establish an 802.1Q trunk between two switches.',
+    scenario:'You are provisioning a new floor switch (SW1). HR is on VLAN 10, and IT is on VLAN 20. You need to create the VLANs, assign ports Fa0/1 and Fa0/2 to them, and configure port Gi0/1 as a trunk to the core switch.',
+    objectives:['Enter global configuration mode','Create VLAN 10 (HR) and VLAN 20 (IT)','Configure Fa0/1 as an access port in VLAN 10','Configure Gi0/1 as an 802.1Q trunk port','Verify the VLAN and trunk configuration'],
+    tools:['cisco ios','vlan','switchport mode'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Enter Privileged EXEC mode, then Global Configuration Mode.',
+       hint:'Type <code>enable</code> then <code>configure terminal</code>',
+       validate:c=>/enable/i.test(c)&&/configure\s+terminal/i.test(c),
+       output:'SW1>enable\nSW1#configure terminal\nEnter configuration commands, one per line. End with CNTL/Z.\nSW1(config)#',
+       success:'Entered Global Configuration Mode'},
+      {instruction:'Create VLAN 10 and name it HR.',
+       hint:'<code>vlan 10</code> then <code>name HR</code>',
+       validate:c=>/vlan\s+10/i.test(c)&&/name\s+HR/i.test(c),
+       output:'SW1(config)#vlan 10\nSW1(config-vlan)#name HR\nSW1(config-vlan)#',
+       success:'VLAN 10 created and named HR'},
+      {instruction:'Select interface Fa0/1 and configure it as an access port for VLAN 10.',
+       hint:'<code>interface fa0/1</code>, <code>switchport mode access</code>, <code>switchport access vlan 10</code>',
+       validate:c=>/interface\s+fa0\/1/i.test(c)&&/switchport\s+mode\s+access/i.test(c)&&/switchport\s+access\s+vlan\s+10/i.test(c),
+       output:'SW1(config)#interface fa0/1\nSW1(config-if)#switchport mode access\nSW1(config-if)#switchport access vlan 10\nSW1(config-if)#',
+       success:'Fa0/1 configured as access port in VLAN 10'},
+      {instruction:'Select interface Gi0/1 and configure it as an 802.1Q trunk.',
+       hint:'<code>interface gi0/1</code>, <code>switchport mode trunk</code>, <code>switchport trunk encapsulation dot1q</code>',
+       validate:c=>/interface\s+gi0\/1/i.test(c)&&/switchport\s+mode\s+trunk/i.test(c)&&/switchport\s+trunk\s+encapsulation\s+dot1q/i.test(c),
+       output:'SW1(config)#interface gi0/1\nSW1(config-if)#switchport trunk encapsulation dot1q\nSW1(config-if)#switchport mode trunk\nSW1(config-if)#',
+       success:'Gi0/1 configured as 802.1Q trunk'},
+      {instruction:'Return to privileged mode and verify the VLAN configuration.',
+       hint:'Type <code>end</code> then <code>show vlan brief</code>',
+       validate:c=>/end/i.test(c)&&/show\s+vlan\s+brief/i.test(c),
+       output:'SW1#show vlan brief\n\nVLAN Name                             Status    Ports\n---- -------------------------------- --------- -------------------------------\n1    default                          active    Gi0/2, Gi0/3\n10   HR                               active    Fa0/1\n20   IT                               active    \n1002 fddi-default                     act/unsup \n\nSW1#',
+       success:'VLANs successfully configured and verified'}
+    ]
+  },
+  {
+    id:'intervlan_routing', name:'Inter-VLAN Routing (ROAS)', category:'Layer 3 Routing', icon:'fa-route', color:'orange',
+    description:'Configure Router-on-a-Stick (ROAS) to allow traffic to route between different VLANs.',
+    scenario:'VLAN 10 (HR) and VLAN 20 (IT) are segmented on the switch. You need to configure the router connected to the trunk port to route traffic between them so HR can reach the IT printer.',
+    objectives:['Enable the physical router interface','Create a subinterface for VLAN 10','Configure 802.1Q encapsulation and IP on the subinterface','Create a subinterface for VLAN 20','Verify routing table and connectivity'],
+    tools:['cisco ios','subinterfaces','encapsulation dot1q'],
+    network:{a:true,a1:true,t:true,t2:true,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Enter the physical interface Gi0/0 and enable it.',
+       hint:'<code>interface gi0/0</code> then <code>no shutdown</code>',
+       validate:c=>/interface\s+gi0\/0/i.test(c)&&/no\s+shutdown/i.test(c),
+       output:'Router(config)#interface gi0/0\nRouter(config-if)#no shutdown\nRouter(config-if)#',
+       success:'Physical interface Gi0/0 enabled'},
+      {instruction:'Create subinterface Gi0/0.10 for VLAN 10.',
+       hint:'<code>interface gi0/0.10</code>',
+       validate:c=>/interface\s+gi0\/0\.10/i.test(c),
+       output:'Router(config)#interface gi0/0.10\nRouter(config-subif)#',
+       success:'Subinterface .10 created'},
+      {instruction:'Configure 802.1Q encapsulation for VLAN 10 and assign IP 192.168.10.1/24.',
+       hint:'<code>encapsulation dot1q 10</code> then <code>ip address 192.168.10.1 255.255.255.0</code>',
+       validate:c=>/encapsulation\s+dot1q\s+10/i.test(c)&&/ip\s+address\s+192\.168\.10\.1\s+255\.255\.255\.0/i.test(c),
+       output:'Router(config-subif)#encapsulation dot1q 10\nRouter(config-subif)#ip address 192.168.10.1 255.255.255.0\nRouter(config-subif)#',
+       success:'VLAN 10 gateway configured'},
+      {instruction:'Create subinterface Gi0/0.20, set encapsulation for VLAN 20, and assign IP 192.168.20.1/24.',
+       hint:'<code>interface gi0/0.20</code>, <code>encapsulation dot1q 20</code>, <code>ip address 192.168.20.1 255.255.255.0</code>',
+       validate:c=>/interface\s+gi0\/0\.20/i.test(c)&&/encapsulation\s+dot1q\s+20/i.test(c)&&/ip\s+address\s+192\.168\.20\.1\s+255\.255\.255\.0/i.test(c),
+       output:'Router(config-subif)#interface gi0/0.20\nRouter(config-subif)#encapsulation dot1q 20\nRouter(config-subif)#ip address 192.168.20.1 255.255.255.0\nRouter(config-subif)#',
+       success:'VLAN 20 gateway configured'},
+      {instruction:'Exit to privileged mode and verify the routing table shows connected routes.',
+       hint:'Type <code>end</code> then <code>show ip route brief</code> (or <code>show ip route</code>)',
+       validate:c=>/end/i.test(c)&&/show\s+ip\s+route/i.test(c),
+       output:'Router#show ip route\nCodes: L - local, C - connected\n\n     192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks\nC       192.168.10.0/24 is directly connected, GigabitEthernet0/0.10\nL       192.168.10.1/32 is directly connected, GigabitEthernet0/0.10\n     192.168.20.0/24 is variably subnetted, 2 subnets, 2 masks\nC       192.168.20.0/24 is directly connected, GigabitEthernet0/0.20\nL       192.168.20.1/32 is directly connected, GigabitEthernet0/0.20',
+       success:'Inter-VLAN routing verified and active'}
+    ]
+  },
+  {
+    id:'port_security', name:'Switch Port Security', category:'Network Security', icon:'fa-shield-halved', color:'red',
+    description:'Mitigate rogue device access by enforcing MAC address limits and sticky MAC learning on access ports.',
+    scenario:'An attacker keeps plugging unauthorized laptops into the lobby network. You must configure port security on interface Fa0/5 to limit it to a single MAC address and shut down if violated.',
+    objectives:['Enable port security on the access port','Limit the maximum MAC addresses to 1','Configure the violation mode to restrict','Enable sticky MAC learning','Verify port security status'],
+    tools:['cisco ios','switchport port-security'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Enter interface configuration mode for Fa0/5.',
+       hint:'<code>configure terminal</code> then <code>interface fa0/5</code>',
+       validate:c=>/configure\s+terminal/i.test(c)&&/interface\s+fa0\/5/i.test(c),
+       output:'SW1#configure terminal\nSW1(config)#interface fa0/5\nSW1(config-if)#',
+       success:'Entered interface config for Fa0/5'},
+      {instruction:'Enable port security on the interface.',
+       hint:'<code>switchport port-security</code>',
+       validate:c=>/switchport\s+port-security/i.test(c)&&!/maximum|violation|mac-address/i.test(c),
+       output:'SW1(config-if)#switchport port-security\nSW1(config-if)#',
+       success:'Port security enabled'},
+      {instruction:'Limit the port to learn only 1 MAC address.',
+       hint:'<code>switchport port-security maximum 1</code>',
+       validate:c=>/switchport\s+port-security\s+maximum\s+1/i.test(c),
+       output:'SW1(config-if)#switchport port-security maximum 1\nSW1(config-if)#',
+       success:'Max MAC addresses set to 1'},
+      {instruction:'Set the violation mode to restrict (drops illegal frames but keeps port up).',
+       hint:'<code>switchport port-security violation restrict</code>',
+       validate:c=>/switchport\s+port-security\s+violation\s+restrict/i.test(c),
+       output:'SW1(config-if)#switchport port-security violation restrict\nSW1(config-if)#',
+       success:'Violation mode set to restrict'},
+      {instruction:'Enable sticky MAC learning to dynamically learn and save the MAC.',
+       hint:'<code>switchport port-security mac-address sticky</code>',
+       validate:c=>/switchport\s+port-security\s+mac-address\s+sticky/i.test(c),
+       output:'SW1(config-if)#switchport port-security mac-address sticky\nSW1(config-if)#',
+       success:'Sticky MAC learning enabled'},
+      {instruction:'Return to privileged mode and verify the configuration.',
+       hint:'<code>end</code> then <code>show port-security interface fa0/5</code>',
+       validate:c=>/end/i.test(c)&&/show\s+port-security\s+interface\s+fa0\/5/i.test(c),
+       output:'SW1#show port-security interface fa0/5\nPort Security              : Enabled\nPort Status                : Secure-up\nViolation Mode             : Restrict\nAging Time                 : 0 mins\nAging Type                 : Absolute\nMaximum MAC Addresses      : 1\nTotal MAC Addresses        : 1\nConfigured MAC Addresses   : 0\nSticky MAC Addresses       : 1\nLast Source Address:Vlan   : 00:1C:2B:3A:44:55:10\nSecurity Violation Count   : 0',
+       success:'Port security successfully configured and verified'}
+    ]
+  },
+  {
+    id:'wireshark_arp', name:'Wireshark: ARP Spoofing Analysis', category:'Traffic Analysis', icon:'fa-magnifying-glass-chart', color:'purple',
+    description:'Use Wireshark/tshark display filters to identify an ARP spoofing (Man-in-the-Middle) attack.',
+    scenario:'Users are reporting certificate warnings and slow internet. You suspect an ARP poisoning attack. You capture traffic on the gateway interface and need to analyze it using tshark to find the duplicate IP claims.',
+    objectives:['Start a capture on the eth0 interface','Apply a display filter to view only ARP traffic','Identify the ARP packets where two different MACs claim the same IP','Extract the attacker\'s MAC address from the packet'],
+    tools:['tshark','wireshark','tcpdump','arp'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:false},
+    steps:[
+      {instruction:'Start tshark to capture traffic on interface eth0.',
+       hint:'<code>tshark -i eth0</code>',
+       validate:c=>/tshark\s+-i\s+eth0/i.test(c),
+       output:'Capturing on \'eth0\'\n ** (tshark:1234) Warning: eth0 has no captures\n1   0.000000  192.168.1.1 ? 192.168.1.255 ARP Who has 192.168.1.50?  Tell 192.168.1.1\n2   0.001245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n[...]',
+       success:'Capture started, traffic is flowing'},
+      {instruction:'Filter the capture to only show ARP traffic.',
+       hint:'Type <code>arp</code> or <code>tshark -r capture.pcap -Y "arp"</code>',
+       validate:c=>/^arp$/i.test(c.trim())||/tshark\s+-r\s+capture\.pcap\s+-Y\s+["']arp["']/i.test(c),
+       output:'Applying display filter: arp\n\n2   0.001245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n4   0.003100  192.168.1.1  ? 192.168.1.255 ARP Who has 192.168.1.50?  Tell 192.168.1.1\n5   0.003245  192.168.1.50 ? 192.168.1.1  ARP 192.168.1.50 is at 00:1a:2b:3c:4d:5e\n6   0.003389  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n\n[!] ANOMALY DETECTED: Two different MAC addresses are claiming to be 192.168.1.50',
+       success:'ARP filter applied — anomaly identified'},
+      {instruction:'Filter for the specific source MAC address of the attacker to see all their malicious packets.',
+       hint:'<code>eth.src == "de:ad:be:ef:00:01"</code>',
+       validate:c=>/eth\.src\s*==\s*["']de:ad:be:ef:00:01["']/i.test(c),
+       output:'Applying display filter: eth.src == "de:ad:be:ef:00:01"\n\n3   0.002345  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n6   0.003389  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.50 is at de:ad:be:ef:00:01\n9   0.005120  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.1 is at de:ad:be:ef:00:01\n12  0.007890  192.168.1.99 ? 192.168.1.1  ARP 192.168.1.1 is at de:ad:be:ef:00:01\n\n[!] Attacker MAC de:ad:be:ef:00:01 is spoofing both the gateway (.1) and victim (.50)',
+       success:'Attacker activity isolated via MAC filter'},
+      {instruction:'Extract the IP of the device sending the spoofed packets.',
+       hint:'<code>tshark -r capture.pcap -Y "eth.src == de:ad:be:ef:00:01" -T fields -e arp.src.proto_ipv4</code>',
+       validate:c=>/tshark\s+-r.*-Y\s+["']eth\.src\s*==\s*de:ad:be:ef:00:01["'].*-T\s+fields\s+-e\s+arp\.src\.proto_ipv4/i.test(c),
+       output:'192.168.1.99\n192.168.1.99\n192.168.1.99\n192.168.1.99\n\n[+] Attacker IP identified: 192.168.1.99. Ready to block at the switch level.',
+       success:'Attacker IP successfully extracted from packet capture'}
+    ]
+  },
+  {
+    id:'wireshark_dns', name:'Wireshark: DNS Exfiltration Analysis', category:'Traffic Analysis', icon:'fa-filter', color:'yellow',
+    description:'Uncover data exfiltration by analyzing anomalous DNS query lengths and subdomain patterns with Wireshark.',
+    scenario:'The IDS flagged abnormal DNS traffic from a database server (10.0.0.15). You suspect sensitive data is being tunneled out via DNS queries. You must use tshark to analyze the pcap and extract the stolen data.',
+    objectives:['Filter DNS traffic originating from the database server','Identify anomalous DNS query names','Extract the long subdomains from the queries','Decode the base64 payload to confirm data exfiltration'],
+    tools:['tshark','wireshark','dns','base64'],
+    network:{a:true,a1:true,t:true,t2:false,i:false,i3:false,e:true},
+    steps:[
+      {instruction:'Filter the capture to show DNS queries from the database server (10.0.0.15).',
+       hint:'<code>ip.src == 10.0.0.15 and dns</code>',
+       validate:c=>/ip\.src\s*==\s*10\.0\.0\.15\s*and\s*dns/i.test(c),
+       output:'Applying display filter: ip.src == 10.0.0.15 and dns\n\n1   0.000000  10.0.0.15 ? 8.8.8.8    DNS Standard query 0x0001  A SGVsbG8gV29ybGQ.evil.com\n2   0.012034  10.0.0.15 ? 8.8.8.8    DNS Standard query x1234  A dGhpcyBpcyBzdG9sZW4.evil.com\n3   0.024189  10.0.0.15 ? 8.8.8.8    DNS Standard query 0x5678  A ZGF0YSBleGZpbC5wbGno.evil.com\n\n[!] Notice the unusually long, base64-looking subdomains. This is indicative of DNS tunneling.',
+       success:'Suspicious DNS queries isolated'},
+      {instruction:'Extract only the DNS query names to a text file for analysis.',
+       hint:'<code>tshark -r capture.pcap -Y "ip.src == 10.0.0.15 and dns" -T fields -e dns.qry.name > queries.txt</code>',
+       validate:c=>/tshark\s+-r\s+capture\.pcap\s+-Y\s+["']ip\.src\s*==\s*10\.0\.0\.15\s*and\s*dns["']\s+-T\s+fields\s+-e\s+dns\.qry\.name\s*>\s*queries\.txt/i.test(c),
+       output:'[*] Extracted 3 query names to queries.txt\n[*] Use cat or grep to view the contents.',
+       success:'DNS subdomains extracted to queries.txt'},
+      {instruction:'View the contents of the extracted queries.',
+       hint:'<code>cat queries.txt</code>',
+       validate:c=>/^cat\s+queries\.txt$/i.test(c.trim()),
+       output:'SGVsbG8gV29ybGQ.evil.com\ndGhpcyBpcyBzdG9sZW4.evil.com\nZGF0YSBleGZpbC5wbGno.evil.com\n\n[*] The strings before ".evil.com" appear to be base64 encoded.',
+       success:'Extracted queries displayed'},
+      {instruction:'Parse out the base64 string (everything before ".evil.com") and decode it.',
+       hint:'<code>cat queries.txt | cut -d. -f1 | base64 -d</code>',
+       validate:c=>/cat\s+queries\.txt\s*\|\s*cut\s+-d\.\s+-f1\s*\|\s*base64\s+-d/i.test(c),
+       output:'Hello World\nthis is stolen\ndata exfil.plop\n\n[!!!] CRITICAL ALERT: Sensitive text data successfully decoded from DNS queries. Exfiltration confirmed.',
+       success:'Payload decoded — data exfiltration confirmed'}
+    ]
+  }
+];
+
+// ============================================================
+// STATE & ENGINE
+// ============================================================
+let currentLab = 0;
+let currentStep = 0;
+let completedLabs = new Set();
+let commandHistory = [];
+let historyIdx = -1;
+
+// ============================================================
+// SIDEBAR RENDER
+// ============================================================
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `
+    <a href="paid-cybersecurity-course.html" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--cyan); padding:10px 20px; margin-bottom:15px; font-size:0.85rem; font-weight:700; border-bottom:1px solid var(--border);">
+      <i class="fas fa-arrow-left"></i> Back to Attack Labs
+    </a>
+    <div class="sidebar-section"><div class="sidebar-label">Attack Labs</div>
+  `;
+  LABS.forEach((lab,i)=>{
+    const done = completedLabs.has(i);
+    const active = i===currentLab;
+    html += `<div class="lab-item ${active?'active':''} ${done?'done':''}" onclick="selectLab(${i})">
+      <div class="lab-icon"><i class="fas ${lab.icon}"></i></div>
+      <div class="lab-info">
+        <div class="lab-name">${lab.name}</div>
+        <div class="lab-cat">${lab.category}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  sb.innerHTML = html;
+  document.getElementById('completedCount').textContent = completedLabs.size;
+  document.getElementById('totalCount').textContent = LABS.length;
+}
+
+// ============================================================
+// LAB RENDER
+// ============================================================
+function renderLab(){
+  const lab = LABS[currentLab];
+  const area = document.getElementById('content');
+  const n = lab.network;
+  
+  const netHTML = `
+    <div class="network-nodes">
+      <div class="net-node">
+        <div class="net-icon attacker ${n.a?'pulsing':''}"><i class="fas fa-desktop"></i></div>
+        <div class="net-label">Admin</div>
+        <div class="net-ip">Client</div>
+      </div>
+      <div class="net-arrow ${n.a1?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon target ${n.t?'pulsing':''}"><i class="fas fa-network-wired"></i></div>
+        <div class="net-label">Switch</div>
+        <div class="net-ip">L2/L3</div>
+      </div>
+      <div class="net-arrow ${n.t2?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon internal ${n.i?'pulsing':''}"><i class="fas fa-server"></i></div>
+        <div class="net-label">Gateway</div>
+        <div class="net-ip">Router</div>
+      </div>
+      <div class="net-arrow ${n.i3?'active':''}"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="net-node">
+        <div class="net-icon exfil ${n.e?'pulsing':''}"><i class="fas fa-globe"></i></div>
+        <div class="net-label">WAN</div>
+        <div class="net-ip">Internet</div>
+      </div>
+    </div>`;
+
+  let dotsHTML = '';
+  lab.steps.forEach((_,i)=>{
+    dotsHTML += `<div class="step-dot ${i===currentStep?'active':''} ${i<currentStep?'done':''}"></div>`;
+  });
+
+  const objHTML = lab.objectives.map(o=>`<li>${o}</li>`).join('');
+  const toolsHTML = lab.tools.map(t=>`<span class="tool-pill">${t}</span>`).join('');
+  const isComplete = currentStep >= lab.steps.length;
+
+  area.innerHTML = `
+    <div class="lab-header">
+      <div class="lab-tag"><i class="fas ${lab.icon}"></i> Lab ${currentLab+1} of ${LABS.length} · ${lab.category}</div>
+      <h1>${lab.name}</h1>
+      <p>${lab.description}</p>
+    </div>
+
+    <div class="scenario">
+      <i class="fas fa-triangle-exclamation"></i>
+      <div class="scenario-text"><strong>Scenario:</strong> ${lab.scenario}</div>
+    </div>
+
+    <div class="complete-banner ${isComplete?'show':''}" id="completeBanner">
+      <i class="fas fa-circle-check"></i>
+      <span>Lab completed — all steps executed successfully. Move to the next lab when ready.</span>
+    </div>
+
+    <div class="lab-progress">
+      <div class="step-dots">${dotsHTML}</div>
+      <div class="step-text">Step <span>${Math.min(currentStep+1, lab.steps.length)}</span> / ${lab.steps.length}</div>
+    </div>
+
+    <div class="network-card">
+      <div class="network-title"><i class="fas fa-diagram-project"></i> Network Topology</div>
+      ${netHTML}
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon green"><i class="fas fa-bullseye"></i></div>
+        <div class="card-title">Objectives</div>
+      </div>
+      <div class="card-body"><ul>${objHTML}</ul></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon purple"><i class="fas fa-wrench"></i></div>
+        <div class="card-title">Tools Used</div>
+      </div>
+      <div class="card-body">${toolsHTML}</div>
+    </div>
+
+    <div class="terminal-wrap">
+      <div class="terminal-bar">
+        <div class="term-left">
+          <div class="term-dots"><span></span><span></span><span></span></div>
+          <div class="term-tab">admin@netlab: ~/${lab.id}</div>
+        </div>
+        <div class="term-actions">
+          <button class="term-btn" onclick="clearTerminal()"><i class="fas fa-eraser"></i> Clear</button>
+          <button class="term-btn" onclick="showSolution()"><i class="fas fa-lightbulb"></i> Solution</button>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="t-line t-output"># ${lab.name} — Interactive CLI Lab</div>
+        <div class="t-line t-output"># Type the appropriate command for each step, then press Enter.</div>
+        <div class="t-line t-output"># Use the up/down arrow keys to browse command history.</div>
+        <div class="t-line t-separator">${'-'.repeat(60)}</div>
+        ${currentStep < lab.steps.length ? `
+        <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>
+        ` : `<div class="t-success">>> Lab complete! All steps executed.</div>`}
+      </div>
+    </div>
+
+    ${currentStep < lab.steps.length ? `
+    <div class="hint-panel">
+      <div class="hint-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="hint-content">
+        <div class="hint-label">Hint for current step</div>
+        <div class="hint-text">${lab.steps[currentStep].hint}</div>
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+      ${currentStep >= lab.steps.length ? `
+        <button class="btn primary" onclick="nextLab()"><i class="fas fa-arrow-right"></i> Next Lab</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Retry Lab</button>
+      ` : `
+        <button class="btn" onclick="showSolution()"><i class="fas fa-eye"></i> Reveal Solution</button>
+        <button class="btn" onclick="resetCurrent()"><i class="fas fa-rotate-left"></i> Reset Lab</button>
+      `}
+    </div>
+  `;
+
+  if (currentStep < lab.steps.length) {
+    const tb = document.getElementById('terminalBody');
+    const inputLine = document.createElement('div');
+    inputLine.className = 'term-input-line';
+    inputLine.innerHTML = `<span class="t-prompt">admin@netlab</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+    tb.appendChild(inputLine);
+    setTimeout(()=>{ const inp = document.getElementById('termInput'); if(inp){ inp.focus(); bindInput(inp); } },50);
+  }
+}
+
+// ============================================================
+// INPUT HANDLING
+// ============================================================
+function bindInput(input){
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      const cmd = input.value;
+      executeCommand(cmd);
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      if(historyIdx > 0){ historyIdx--; input.value = commandHistory[historyIdx]; }
+    } else if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      if(historyIdx < commandHistory.length - 1){ historyIdx++; input.value = commandHistory[historyIdx]; }
+      else { historyIdx = commandHistory.length; input.value = ''; }
+    } else if(e.key === 'Tab'){
+      e.preventDefault();
+      const partial = input.value;
+      const suggestions = ['enable','configure terminal','vlan','interface','switchport','ip address','tshark','show','end','encapsulation','no shutdown','cat','base64'];
+      const match = suggestions.find(s=>s.startsWith(partial) && s !== partial);
+      if(match) input.value = match;
+    }
+  });
+}
+
+function executeCommand(cmd){
+  if(!cmd.trim()) return;
+  const lab = LABS[currentLab];
+  const step = lab.steps[currentStep];
+  const tb = document.getElementById('terminalBody');
+
+  commandHistory.push(cmd);
+  historyIdx = commandHistory.length;
+
+  const echoLine = document.createElement('div');
+  echoLine.className = 't-line';
+  echoLine.innerHTML = `<span class="t-prompt">admin@netlab</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><span class="t-cmd">${escapeHtml(cmd)}</span>`;
+  tb.insertBefore(echoLine, document.querySelector('.term-input-line'));
+
+  if(step.validate(cmd)){
+    typeOutput(step.output, ()=>{
+      const succLine = document.createElement('div');
+      succLine.className = 't-line t-success';
+      succLine.textContent = '[+] ' + step.success;
+      tb.insertBefore(succLine, document.querySelector('.term-input-line'));
+      
+      const sepLine = document.createElement('div');
+      sepLine.className = 't-line t-separator';
+      sepLine.textContent = '-'.repeat(60);
+      tb.insertBefore(sepLine, document.querySelector('.term-input-line'));
+      
+      currentStep++;
+      
+      document.querySelectorAll('.step-dot').forEach((d,i)=>{
+        d.classList.remove('active');
+        if(i < currentStep) d.classList.add('done');
+        if(i === currentStep) d.classList.add('active');
+      });
+      
+      if(currentStep >= lab.steps.length){
+        completedLabs.add(currentLab);
+        renderSidebar();
+        const finalLine = document.createElement('div');
+        finalLine.className = 't-line t-success';
+        finalLine.innerHTML = '\n[!!!] LAB COMPLETE — All objectives achieved!\n[!!!] Use the "Next Lab" button below to continue.';
+        tb.insertBefore(finalLine, document.querySelector('.term-input-line'));
+        document.querySelector('.term-input-line').remove();
+        document.getElementById('completeBanner').classList.add('show');
+        renderLab();
+      } else {
+        const nextStepLine = document.createElement('div');
+        nextStepLine.className = 't-line t-step';
+        nextStepLine.textContent = `>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}`;
+        tb.insertBefore(nextStepLine, document.querySelector('.term-input-line'));
+        document.querySelector('.hint-text').innerHTML = lab.steps[currentStep].hint;
+        document.querySelector('.step-text').innerHTML = `Step <span>${currentStep+1}</span> / ${lab.steps.length}`;
+        const inp = document.getElementById('termInput');
+        if(inp){ inp.value = ''; inp.focus(); }
+      }
+      tb.scrollTop = tb.scrollHeight;
+    });
+  } else {
+    const errLine = document.createElement('div');
+    errLine.className = 't-line t-error';
+    errLine.textContent = '[-] Command not recognized or incomplete. Check the hint and try again.';
+    tb.insertBefore(errLine, document.querySelector('.term-input-line'));
+    
+    const hintLine = document.createElement('div');
+    hintLine.className = 't-line t-hint';
+    hintLine.innerHTML = '[?] Hint: ' + step.hint;
+    tb.insertBefore(hintLine, document.querySelector('.term-input-line'));
+    
+    const inp = document.getElementById('termInput');
+    if(inp){ inp.value = ''; inp.focus(); }
+    tb.scrollTop = tb.scrollHeight;
+  }
+}
+
+function typeOutput(text, cb){
+  const tb = document.getElementById('terminalBody');
+  const lines = text.split('\n');
+  let lineIdx = 0;
+  
+  function nextLine(){
+    if(lineIdx >= lines.length){
+      setTimeout(cb, 100);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 't-line t-output';
+    div.textContent = lines[lineIdx];
+    tb.insertBefore(div, document.querySelector('.term-input-line'));
+    tb.scrollTop = tb.scrollHeight;
+    lineIdx++;
+    setTimeout(nextLine, 25 + Math.random()*20);
+  }
+  nextLine();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function clearTerminal(){
+  const tb = document.getElementById('terminalBody');
+  const lab = LABS[currentLab];
+  tb.innerHTML = `<div class="t-line t-output"># Terminal cleared</div>
+    <div class="t-line t-separator">${'-'.repeat(60)}</div>
+    <div class="t-line t-step">>> Step ${currentStep+1}: ${lab.steps[currentStep].instruction}</div>`;
+  const inputLine = document.createElement('div');
+  inputLine.className = 'term-input-line';
+  inputLine.innerHTML = `<span class="t-prompt">admin@netlab</span><span class="t-output">:</span><span class="t-highlight">~/${lab.id}</span><span class="t-output">$ </span><input type="text" class="term-input" id="termInput" autocomplete="off" spellcheck="false">`;
+  tb.appendChild(inputLine);
+  const inp = document.getElementById('termInput');
+  if(inp){ inp.focus(); bindInput(inp); }
+}
+
+function showSolution(){
+  const lab = LABS[currentLab];
+  if(currentStep >= lab.steps.length) return;
+  const step = lab.steps[currentStep];
+  const inp = document.getElementById('termInput');
+  if(inp){
+    const match = step.hint.match(/<code>([^<]+)<\/code>/);
+    if(match){
+      inp.value = match[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+      inp.focus();
+    }
+  }
+}
+
+function selectLab(idx){
+  if(idx === currentLab) return;
+  currentLab = idx;
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderSidebar();
+  renderLab();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function nextLab(){
+  if(currentLab < LABS.length - 1){
+    currentLab++;
+    currentStep = 0;
+    commandHistory = [];
+    historyIdx = -1;
+    renderSidebar();
+    renderLab();
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else {
+    showFinalScreen();
+  }
+}
+
+function resetCurrent(){
+  currentStep = 0;
+  commandHistory = [];
+  historyIdx = -1;
+  renderLab();
+}
+
+function showFinalScreen(){
+  const area = document.getElementById('content');
+  area.innerHTML = `
+    <div class="final-screen">
+      <div class="final-icon"><i class="fas fa-flag-checkered"></i></div>
+      <h1 style="font-size:2rem;color:var(--fg-bright);margin-bottom:12px;">All Labs Complete</h1>
+      <p style="color:var(--fg-dim);max-width:600px;margin:0 auto 32px;line-height:1.7;">
+        You've completed all ${LABS.length} network switching and Wireshark traffic analysis labs.
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;max-width:700px;margin:0 auto 32px;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--accent);font-family:var(--mono);">${LABS.length}</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Labs Completed</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--cyan);font-family:var(--mono);">${LABS.reduce((a,l)=>a+l.steps.length,0)}</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Commands Practiced</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--orange);font-family:var(--mono);">4</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Technologies</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;font-weight:800;color:var(--purple);font-family:var(--mono);">20+</div>
+          <div style="font-size:.75rem;color:var(--fg-dim);margin-top:4px;">Skills Learned</div>
+        </div>
+      </div>
+      <button class="btn primary" onclick="currentLab=0;currentStep=0;renderSidebar();renderLab();">
+        <i class="fas fa-rotate-left"></i> Start Over
+      </button>
+    </div>
+  `;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderSidebar();
+  renderLab();
+});
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('.terminal-body') && !e.target.closest('.term-btn')){
+    const inp = document.getElementById('termInput');
+    if(inp) inp.focus();
+  }
+});
+</script>
+</body>
+</html>
