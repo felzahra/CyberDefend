@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberDefend Academy - Network Threat Analyzer</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent-blue: #38bdf8;
+      --accent-red: #f87171;
+      --accent-green: #4ade80;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); padding: 20px; }
+
+    .header { margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .header h1 { font-size: 1.5rem; color: var(--accent-blue); }
+    .header p { font-size: 0.9rem; color: var(--text-muted); }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Controls */
+    .btn {
+      background-color: var(--accent-blue);
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-danger { background-color: var(--accent-red); color: #fff; }
+    .btn-success { background-color: var(--accent-green); color: #000; }
+    .btn:hover { opacity: 0.9; }
+
+    /* Packet Table */
+    .table-container { max-height: 350px; overflow-y: auto; font-family: monospace; font-size: 0.85rem; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background-color: #0f172a; position: sticky; top: 0; padding: 8px; color: var(--accent-blue); }
+    td { padding: 8px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+    tr:hover { background-color: #334155; }
+    tr.alert { color: var(--accent-red); font-weight: bold; background-color: rgba(248, 113, 113, 0.1); }
+
+    /* Inspector & Response */
+    .packet-details { font-family: monospace; font-size: 0.85rem; line-height: 1.5; color: var(--text-muted); background: #0f172a; padding: 10px; border-radius: 4px; }
+    .packet-details span { color: var(--accent-blue); }
+
+    .action-panel { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+    .log-box {
+      margin-top: 10px;
+      background: #000;
+      color: var(--accent-green);
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      height: 120px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🛡️ CyberDefend Academy — Live Threat Monitor</h1>
+    <p>Simulating packet capture, deep-packet inspection, and active incident response execution.</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Main Packet Capture Window -->
+    <div class="card">
+      <div class="card-title">
+        <span>Captured Network Traffic</span>
+        <div>
+          <button class="btn" id="toggleCaptureBtn" onclick="toggleCapture()">Pause Feed</button>
+          <button class="btn btn-danger" onclick="clearPackets()">Clear</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Proto</th>
+              <th>Info</th>
+            </tr>
+          </thead>
+          <tbody id="packetTableBody">
+            <!-- Packets render dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Details & Incident Response Control -->
+    <div class="card">
+      <div class="card-title">Packet Inspector</div>
+      <div id="inspector" class="packet-details">
+        Select a packet from the capture list to inspect full frame headers and payload attributes.
+      </div>
+
+      <div class="action-panel">
+        <div class="card-title">Incident Mitigation</div>
+        <button class="btn btn-danger" style="width: 100%; margin-bottom: 8px;" onclick="mitigate('block_ip')">🚫 Block Source IP (Firewall)</button>
+        <button class="btn btn-success" style="width: 100%;" onclick="mitigate('reset_conn')">🔄 Reset TCP Connection (RST)</button>
+      </div>
+
+      <div class="log-box" id="systemLogs">
+        [SYSTEM] Threat Monitor Initialized...<br>
+        [SYSTEM] Listening on interfaces (eth0, wlan0)...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let capturing = true;
+    let selectedPacket = null;
+
+    const sampleIPs = ["192.168.1.45", "10.0.0.12", "172.16.0.5", "192.168.1.105", "45.33.32.156"];
+    const protocols = ["TCP", "UDP", "HTTP", "DNS", "SSH"];
+
+    function logAction(msg) {
+      const logs = document.getElementById("systemLogs");
+      const time = new Date().toLocaleTimeString();
+      logs.innerHTML += `<br>[${time}] ${msg}`;
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function generatePacket() {
+      if (!capturing) return;
+
+      const time = new Date().toLocaleTimeString();
+      const src = sampleIPs[Math.floor(Math.random() * sampleIPs.length)];
+      const dst = "10.0.0.1 (Gateway)";
+      const proto = protocols[Math.floor(Math.random() * protocols.length)];
+      
+      const isMalicious = Math.random() < 0.25; // 25% chance of threat
+      let info = "Standard Data Payload";
+      
+      if (proto === "HTTP") info = "GET /index.html HTTP/1.1";
+      if (proto === "DNS") info = "Standard query A example.com";
+      if (proto === "SSH") info = "Encrypted SSH Control Traffic";
+
+      if (isMalicious) {
+        const threats = [
+          "ALERT: Potential SYN Flood Attempt",
+          "ALERT: Plain-text Auth Detected (FTP)",
+          "ALERT: Port Scan Signature Detected",
+          "ALERT: Outbound Malicious C2 Beacon"
+        ];
+        info = threats[Math.floor(Math.random() * threats.length)];
+      }
+
+      const packet = { time, src, dst, proto, info, isMalicious };
+      addPacketToTable(packet);
+    }
+
+    function addPacketToTable(packet) {
+      const tbody = document.getElementById("packetTableBody");
+      const tr = document.createElement("tr");
+      
+      if (packet.isMalicious) tr.classList.add("alert");
+
+      tr.innerHTML = `
+        <td>${packet.time}</td>
+        <td>${packet.src}</td>
+        <td>${packet.dst}</td>
+        <td>${packet.proto}</td>
+        <td>${packet.info}</td>
+      `;
+
+      tr.onclick = () => inspectPacket(packet);
+
+      tbody.insertBefore(tr, tbody.firstChild);
+
+      // Maintain max row limit for performance
+      if (tbody.children.length > 25) {
+        tbody.removeChild(tbody.lastChild);
+      }
+    }
+
+    function inspectPacket(p) {
+      selectedPacket = p;
+      const inspector = document.getElementById("inspector");
+      inspector.innerHTML = `
+        <span>[Frame Summary]</span><br>
+        Timestamp: ${p.time}<br>
+        Source Address: <span>${p.src}</span><br>
+        Destination Address: <span>${p.dst}</span><br>
+        Transport Protocol: ${p.proto}<br>
+        Payload Flags: ${p.isMalicious ? '<b style="color:var(--accent-red)">MALICIOUS</b>' : 'CLEAN'}<br><br>
+        <span>[Raw Header Info]</span><br>
+        ${p.info}
+      `;
+    }
+
+    function toggleCapture() {
+      capturing = !capturing;
+      const btn = document.getElementById("toggleCaptureBtn");
+      btn.textContent = capturing ? "Pause Feed" : "Resume Feed";
+      logAction(capturing ? "Capture resumed." : "Capture paused.");
+    }
+
+    function clearPackets() {
+      document.getElementById("packetTableBody").innerHTML = "";
+      document.getElementById("inspector").innerHTML = "Select a packet from the capture list to inspect full frame headers and payload attributes.";
+      selectedPacket = null;
+      logAction("Capture buffer cleared.");
+    }
+
+    function mitigate(action) {
+      if (!selectedPacket) {
+        alert("Please select a packet from the capture table first.");
+        return;
+      }
+
+      if (action === 'block_ip') {
+        logAction(`FIREWALL RULE ADDED: Blocked traffic from ${selectedPacket.src}`);
+      } else if (action === 'reset_conn') {
+        logAction(`TCP RESET: Sent RST packet to disconnect ${selectedPacket.src}`);
+      }
+    }
+
+    // Auto-generate packets every 1.5 seconds
+    setInterval(generatePacket, 1500);
+  </script>
+</body>
+</html>
