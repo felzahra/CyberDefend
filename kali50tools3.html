@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kali Linux & PenTest Tool Suite</title>
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-bg: #131b2e;
+      --card-bg: #1c273e;
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+      --accent-red: #f87171;
+      --accent-purple: #c084fc;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #2e3d5c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fira Code', 'Segoe UI', Tahoma, monospace; }
+    body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 280px;
+      background-color: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 18px;
+      border-bottom: 1px solid var(--border-color);
+      background: #0d1424;
+    }
+    .sidebar-header h2 { font-size: 1.1rem; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
+    .search-box {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .tool-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    .category-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 12px 8px 6px 8px;
+      letter-spacing: 1px;
+    }
+    .tool-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      transition: background 0.2s;
+    }
+    .tool-item:hover { background-color: var(--card-bg); }
+    .tool-item.active { background-color: var(--accent-blue); color: #000; font-weight: bold; }
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Main Content Workspace */
+    .workspace {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .tool-header {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .tool-header h1 { font-size: 1.6rem; color: var(--accent-blue); margin-bottom: 8px; }
+    .tool-header p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Control Panel Section */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .panel-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .panel-card h3 { font-size: 1rem; color: var(--accent-purple); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .btn-execute {
+      width: 100%;
+      background: var(--accent-green);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+    .btn-execute:hover { opacity: 0.9; }
+
+    /* Terminal Console */
+    .terminal-container {
+      background: #000;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      min-height: 250px;
+      max-height: 350px;
+      overflow-y: auto;
+      color: var(--accent-green);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+    .terminal-line { margin-bottom: 4px; line-height: 1.4; white-space: pre-wrap; }
+    .cmd-prompt { color: var(--accent-blue); }
+    .cmd-error { color: var(--accent-red); }
+    .cmd-warn { color: #facc15; }
+  </style>
+</head>
+<body>
+
+  <!-- Left Navigation Panel -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🐉 Kali Toolset Console</h2>
+    </div>
+    <div class="search-box">
+      <input type="text" id="toolSearch" placeholder="Filter tools..." onkeyup="filterTools()">
+    </div>
+    <div class="tool-list" id="toolList">
+      <!-- Tool items dynamically generated -->
+    </div>
+  </div>
+
+  <!-- Dynamic Tool Workbench -->
+  <div class="workspace" id="workspace">
+    <div class="tool-header">
+      <h1 id="toolTitle">Select a Tool</h1>
+      <p id="toolDesc">Choose a security utility from the sidebar to launch its interface and execution sandbox.</p>
+    </div>
+
+    <div class="controls-grid" id="controlsGrid" style="display: none;">
+      <!-- Parameter Input Options -->
+      <div class="panel-card">
+        <h3>Execution Parameters</h3>
+        <div id="dynamicInputs"></div>
+        <button class="btn-execute" onclick="runTool()">▶ Run Execution</button>
+      </div>
+
+      <!-- Quick Syntax & Info -->
+      <div class="panel-card">
+        <h3>Tool Reference & Syntax</h3>
+        <div id="toolInfo" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <!-- Terminal Output -->
+    <div class="panel-card" id="terminalCard" style="display: none; flex: 1;">
+      <h3>Console Output</h3>
+      <div class="terminal-container" id="terminal">
+        <div class="terminal-line"><span class="cmd-prompt">root@kali:~#</span> System ready. Click "Run Execution" to send command...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tool Database Definition
+    const toolsDatabase = [
+      {
+        id: 'nmap',
+        name: 'Nmap',
+        category: 'Information Gathering',
+        badge: 'Network',
+        description: 'Network Mapper used for network discovery, port scanning, and OS/service fingerprinting.',
+        syntax: 'nmap [Scan Type] [Options] {target}',
+        inputs: [
+          { id: 'target', label: 'Target IP / Domain', type: 'text', default: '192.168.1.1' },
+          { id: 'scanType', label: 'Scan Type', type: 'select', options: ['-sS (SYN Stealth)', '-sT (TCP Connect)', '-sU (UDP Scan)', '-A (Aggressive Inspection)'] }
+        ],
+        execute: (params) => [
+          `Starting Nmap 7.94 ( https://nmap.org ) at ${new Date().toLocaleTimeString()}`,
+          `Nmap scan report for ${params.target}`,
+          `Host is up (0.0012s latency).`,
+          `Not shown: 997 closed tcp ports (reset)`,
+          `PORT     STATE SERVICE  VERSION`,
+          `22/tcp   open  ssh      OpenSSH 8.9p1 Ubuntu`,
+          `80/tcp   open  http     Apache httpd 2.4.52`,
+          `443/tcp  open  ssl/http Apache httpd 2.4.52`,
+          `Nmap done: 1 IP address (1 host up) scanned in 2.14 seconds`
+        ]
+      },
+      {
+        id: 'nikto',
+        name: 'Nikto',
+        category: 'Vulnerability Analysis',
+        badge: 'Web',
+        description: 'Web server scanner that tests web servers for dangerous files, outdated versions, and specific misconfigurations.',
+        syntax: 'nikto -h [Host/IP] -p [Port]',
+        inputs: [
+          { id: 'target', label: 'Target Host URL', type: 'text', default: 'http://target-app.local' },
+          { id: 'port', label: 'Target Port', type: 'text', default: '80' }
+        ],
+        execute: (params) => [
+          `- Nikto v2.5.0`,
+          `+ Target IP: ${params.target}`,
+          `+ Target Port: ${params.port}`,
+          `+ Server: Apache/2.4.41 (Unix)`,
+          `+ [WARN] The Anti-Clickjacking X-Frame-Options header is not present.`,
+          `+ [WARN] The X-Content-Type-Options header is not set.`,
+          `+ Server leaks inodes via ETags, header found: "2d-5b3a1a9e"`,
+          `+ OSVDB-3092: /admin/: Admin directory indexed and browsable.`,
+          `+ 7815 items checked: 0 error(s) and 4 item(s) reported.`
+        ]
+      },
+      {
+        id: 'sqlmap',
+        name: 'SQLmap',
+        category: 'Web Applications',
+        badge: 'Database',
+        description: 'Automatic SQL injection tool that automates detecting and exploiting SQL injection flaws and taking over database servers.',
+        syntax: 'sqlmap -u [URL] --dbs',
+        inputs: [
+          { id: 'url', label: 'Vulnerable URL', type: 'text', default: 'http://example.com/item.php?id=1' },
+          { id: 'risk', label: 'Risk Level (1-3)', type: 'select', options: ['1', '2', '3'] }
+        ],
+        execute: (params) => [
+          `[11:02:15] [INFO] testing connection to the target URL: ${params.url}`,
+          `[11:02:16] [INFO] testing if the target URL is vulnerable to DBMS injection`,
+          `[11:02:17] [INFO] GET parameter 'id' is vulnerable to 'Boolean-based blind' SQLi`,
+          `[11:02:18] [INFO] the back-end DBMS is MySQL`,
+          `available databases [3]:`,
+          `[*] information_schema`,
+          `[*] mysql`,
+          `[*] production_db`
+        ]
+      },
+      {
+        id: 'hydra',
+        name: 'THC Hydra',
+        category: 'Password Attacks',
+        badge: 'BruteForce',
+        description: 'Parallelized login cracker supporting numerous protocols like SSH, FTP, HTTP, and SMB.',
+        syntax: 'hydra -l [user] -P [wordlist] [target] [service]',
+        inputs: [
+          { id: 'target', label: 'Target IP', type: 'text', default: '10.0.0.5' },
+          { id: 'service', label: 'Protocol', type: 'select', options: ['ssh', 'ftp', 'rdp', 'http-post-form'] },
+          { id: 'username', label: 'Username', type: 'text', default: 'admin' }
+        ],
+        execute: (params) => [
+          `Hydra v9.5 (c) 2026 by van Hauser / THC - for legal use only`,
+          `[DATA] max 16 tasks per 1 server, 1 login, 1000 passwords in list`,
+          `[ATTACK] attacking ${params.service}://${params.target}:22/`,
+          `[22][ssh] host: ${params.target}   login: ${params.username}   password: password123`,
+          `1 of 1 target successfully completed, 1 password found.`
+        ]
+      },
+      {
+        id: 'wireshark',
+        name: 'Wireshark / TShark',
+        category: 'Sniffing & Spoofing',
+        badge: 'Packets',
+        description: 'Network packet analyzer capturing live traffic and inspecting frame fields in detail.',
+        syntax: 'tshark -i [interface] -f [filter]',
+        inputs: [
+          { id: 'iface', label: 'Interface', type: 'select', options: ['eth0', 'wlan0', 'lo'] },
+          { id: 'filter', label: 'Capture Filter', type: 'text', default: 'tcp port 80' }
+        ],
+        execute: (params) => [
+          `Capturing on '${params.iface}' with filter '${params.filter}'`,
+          `1 0.000000 192.168.1.10 -> 10.0.0.1 TCP 74 54321 → 80 [SYN] Seq=0`,
+          `2 0.001201 10.0.0.1 -> 192.168.1.10 TCP 74 80 → 54321 [SYN, ACK] Seq=0 Ack=1`,
+          `3 0.001420 192.168.1.10 -> 10.0.0.1 TCP 66 54321 → 80 [ACK] Seq=1 Ack=1`,
+          `4 0.002100 192.168.1.10 -> 10.0.0.1 HTTP 180 GET /login.php HTTP/1.1`,
+          `4 packets captured.`
+        ]
+      }
+    ];
+
+    let currentTool = null;
+
+    // Load Sidebar Items
+    function initSidebar() {
+      const toolList = document.getElementById('toolList');
+      toolList.innerHTML = '';
+
+      let lastCategory = '';
+      toolsDatabase.forEach(tool => {
+        if (tool.category !== lastCategory) {
+          const cat = document.createElement('div');
+          cat.className = 'category-title';
+          cat.innerText = tool.category;
+          toolList.appendChild(cat);
+          lastCategory = tool.category;
+        }
+
+        const item = document.createElement('div');
+        item.className = 'tool-item';
+        item.id = `item-${tool.id}`;
+        item.innerHTML = `<span>${tool.name}</span> <span class="badge">${tool.badge}</span>`;
+        item.onclick = () => selectTool(tool.id);
+        toolList.appendChild(item);
+      });
+    }
+
+    // Select Tool Workbench
+    function selectTool(id) {
+      currentTool = toolsDatabase.find(t => t.id === id);
+
+      // Active state styling
+      document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(`item-${id}`).classList.add('active');
+
+      // Update workspace views
+      document.getElementById('toolTitle').innerText = currentTool.name;
+      document.getElementById('toolDesc').innerText = currentTool.description;
+
+      document.getElementById('controlsGrid').style.display = 'grid';
+      document.getElementById('terminalCard').style.display = 'block';
+
+      // Build Dynamic Form Inputs
+      const inputsContainer = document.getElementById('dynamicInputs');
+      inputsContainer.innerHTML = '';
+      currentTool.inputs.forEach(inp => {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        group.innerHTML = `<label>${inp.label}</label>`;
+
+        if (inp.type === 'select') {
+          let optionsHtml = inp.options.map(o => `<option value="${o}">${o}</option>`).join('');
+          group.innerHTML += `<select id="input-${inp.id}">${optionsHtml}</select>`;
+        } else {
+          group.innerHTML += `<input type="text" id="input-${inp.id}" value="${inp.default}">`;
+        }
+        inputsContainer.appendChild(group);
+      });
+
+      // Render Info
+      document.getElementById('toolInfo').innerHTML = `
+        <p><strong>Command Template:</strong></p>
+        <code style="color:var(--accent-blue);">${currentTool.syntax}</code>
+        <p style="margin-top:10px;"><strong>Category:</strong> ${currentTool.category}</p>
+      `;
+
+      // Clear terminal
+      document.getElementById('terminal').innerHTML = `<div class="terminal-line"><span class="cmd-prompt">root@kali:~#</span> Workbench loaded for ${currentTool.name}.</div>`;
+    }
+
+    // Execute Tool Simulation
+    function runTool() {
+      if (!currentTool) return;
+
+      const params = {};
+      currentTool.inputs.forEach(inp => {
+        params[inp.id] = document.getElementById(`input-${inp.id}`).value;
+      });
+
+      const term = document.getElementById('terminal');
+      term.innerHTML += `<div class="terminal-line"><span class="cmd-prompt">root@kali:~#</span> Executing ${currentTool.name.toLowerCase()}...</div>`;
+
+      const outputs = currentTool.execute(params);
+      outputs.forEach((line, index) => {
+        setTimeout(() => {
+          const isErr = line.includes('WARN') || line.includes('ALERT');
+          const cssClass = isErr ? 'cmd-warn' : '';
+          term.innerHTML += `<div class="terminal-line ${cssClass}">${line}</div>`;
+          term.scrollTop = term.scrollHeight;
+        }, index * 200);
+      });
+    }
+
+    // Sidebar Tool Search Filter
+    function filterTools() {
+      const q = document.getElementById('toolSearch').value.toLowerCase();
+      document.querySelectorAll('.tool-item').forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    // Initialize layout
+    initSidebar();
+  </script>
+</body>
+</html>
