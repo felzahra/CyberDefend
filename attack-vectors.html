@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefend - Modern Cybersecurity Learning Platform</title>
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --panel-bg: #131b2e;
+            --card-bg: #1c273e;
+            --card-hover: #24324f;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --accent-purple: #c084fc;
+            --accent-yellow: #facc15;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #2e3d5c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* Top Navbar */
+        .navbar {
+            height: 60px;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; color: var(--accent-blue); }
+        .nav-links { display: flex; gap: 20px; align-items: center; font-size: 0.9rem; }
+        .nav-item { color: var(--text-muted); cursor: pointer; text-decoration: none; transition: color 0.2s; }
+        .nav-item:hover { color: var(--text-main); }
+        .btn-login { background: var(--accent-blue); color: #000; font-weight: bold; padding: 6px 16px; border-radius: 4px; border: none; cursor: pointer; }
+
+        /* Main Container Layout */
+        .main-container { flex: 1; display: flex; overflow: hidden; }
+
+        /* Sidebar Navigation Panel */
+        .sidebar {
+            width: 300px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        .nav-menu { list-style: none; padding: 10px; }
+        .nav-menu li {
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s, color 0.2s;
+        }
+		 .sidebar-back-btns{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--hairline)}
+        .sidebar-back-btn{display:block;text-align:center;background:var(--selected);color:var(--body-fg);padding:10px;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:600;border:1px solid var(--hairline);transition:.2s}
+        .sidebar-back-btn:hover{border-color:var(--primary);color:var(--primary)}
+       
+        .nav-menu li:hover { background-color: var(--card-bg); color: var(--text-main); }
+        .nav-menu li.active { background-color: var(--accent-blue); color: #000; font-weight: bold; }
+
+        /* Main Workspace View */
+        .content-area { flex: 1; overflow-y: auto; padding: 30px; }
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+
+        /* Typography & Headers */
+        h1 { font-size: 1.8rem; color: var(--accent-blue); margin-bottom: 8px; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        h2 { font-size: 1.3rem; color: var(--accent-purple); margin: 20px 0 12px 0; }
+
+        /* Reusable Card Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 25px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; transition: transform 0.2s, border-color 0.2s; }
+        .card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+        .card-title { font-weight: bold; font-size: 1rem; color: var(--accent-green); margin-bottom: 8px; }
+        .card-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* Data Tables */
+        .table-container { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        th { background: #0f1626; color: var(--accent-blue); padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+        tr:hover { background: var(--card-bg); }
+
+        /* Command Box Styles */
+        .cmd-box { background: #000; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 0.85rem; margin-bottom: 12px; color: var(--accent-green); }
+        .cmd-box div { margin-bottom: 4px; }
+        .cmd-comment { color: var(--text-muted); }
+
+        /* Badges & Tags */
+        .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); display: inline-block; }
+        .tag-red { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+        .tag-purple { background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); }
+
+        /* Timeline & Learning Roadmap */
+        .roadmap-step { background: var(--panel-bg); border-left: 3px solid var(--accent-blue); padding: 15px; margin-bottom: 12px; border-radius: 0 6px 6px 0; }
+        .roadmap-step h4 { color: var(--accent-blue); margin-bottom: 6px; }
+
+        /* Footer */
+        .footer { text-align: center; padding: 20px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <div class="navbar">
+        <div class="brand">🛡️ CyberDefend</div>
+        <div class="nav-links">
+            <span class="nav-item">Dashboard</span>
+            <span class="nav-item">Courses ▼</span>
+            <span class="nav-item">📝 Tasks</span>
+            <span class="nav-item">Curriculum ▾</span>
+            <span class="nav-item">Labs ▾</span>
+            <button class="btn-login">Login</button>
+        </div>
+    </div>
+
+    <!-- Application Body -->
+    <div class="main-container">
+        <!-- Sidebar Selection Panel -->
+        <div class="sidebar">
+    <div class="sidebar-back-btns"><a href="labs.html" class="sidebar-back-btn">← Back to Main Page</a></div>
+	
+			<div class="sidebar-header">Reference Sections</div>
+            <ul class="nav-menu" id="menu">
+                <li onclick="showSection('osi')" class="active">OSI Model Threats</li>
+                <li onclick="showSection('essential-tools')">Essential Hacking Tools</li>
+                <li onclick="showSection('internet-threats')">Internet Threats</li>
+                <li onclick="showSection('linux-defense')">Linux Defense Tools</li>
+                <li onclick="showSection('blue-red')">Blue vs Red Team</li>
+                <li onclick="showSection('attack-vectors')">How Hackers Access</li>
+                <li onclick="showSection('linux-forensics')">Linux Forensics</li>
+                <li onclick="showSection('anti-phishing')">Anti-Phishing Tools</li>
+                <li onclick="showSection('security-master')">Security Tools Master</li>
+                <li onclick="showSection('steganography')">Steganography</li>
+                <li onclick="showSection('roadmap')">Cybersecurity Roadmap</li>
+                <li onclick="showSection('top-sites')">Top 10 Websites</li>
+                <li onclick="showSection('pentest-types')">Penetration Testing</li>
+                <li onclick="showSection('bugbounty-cheatsheet')">Bug Bounty Cheatsheet</li>
+                <li onclick="showSection('soc-tools')">20 SOC Tools</li>
+                <li onclick="showSection('malware-types')">Types of Malware</li>
+                <li onclick="showSection('terms')">Cyber Terms</li>
+                <li onclick="showSection('soc-logs')">SOC Logs</li>
+                <li onclick="showSection('soc-plan')">30 Days SOC Plan</li>
+                <li onclick="showSection('offensive-linux')">Offensive Linux Security</li>
+            </ul>
+        </div>
+
+        <!-- Dynamic Content Display -->
+        <div class="content-area">
+
+            <!-- OSI Model Threats -->
+            <div id="osi" class="section-view active">
+                <h1>📚 Cybersecurity Threats in OSI Model</h1>
+                <div class="subtitle">A comprehensive mapping of attack vectors to each layer. | By Dan Nanni · study-notes.org</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>OSI Layer</th>
+                                <th>⚙️ Functions</th>
+                                <th>🥷 Attack Vectors</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Application Layer</strong> (Layer 7)</td>
+                                <td>User interface & app-level service, Web browsing, email, file transfer (HTTP, SMTP, DNS)</td>
+                                <td>1. Malware injection<br>2. Phishing attacks<br>3. App-level DDoS attacks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Presentation Layer</strong> (Layer 6)</td>
+                                <td>Data encryption/decryption, compression, expansion, format conversion</td>
+                                <td>1. Exploiting weak encryption<br>2. File format exploits<br>3. Malicious code injection</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Session Layer</strong> (Layer 5)</td>
+                                <td>Create & terminate app sessions, session state, video conferencing</td>
+                                <td>1. Session hijacking & replay<br>2. Session fixation attack<br>3. TLS/SSL renegotiation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transport Layer</strong> (Layer 4)</td>
+                                <td>End-to-end data delivery, TCP/UDP protocols, error correction, congestion control</td>
+                                <td>1. TCP/SYN & UDP flood attack<br>2. TCP hijacking & MITM<br>3. Port scan for vulnerability</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Network Layer</strong> (Layer 3)</td>
+                                <td>Routing, IP addressing (IPv4/IPv6), packet filtering configuration</td>
+                                <td>1. IP spoofing & fragmentation<br>2. Ping of death & ICMP flood<br>3. Route poisoning attacks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Link Layer</strong> (Layer 2)</td>
+                                <td>Frames, physical addressing, error detection, switching & VLAN configuration</td>
+                                <td>1. ARP spoofing & poisoning<br>2. STP attack & MAC spoofing<br>3. Wireless vulnerability attacks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Physical Layer</strong> (Layer 1)</td>
+                                <td>Ethernet/fiber optic cabling, signaling, hardware configurations</td>
+                                <td>1. Data interception & tampering<br>2. Signal jamming<br>3. Unauthorized device install</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Essential Hacking Tools -->
+            <div id="essential-tools" class="section-view">
+                <h1>🛠️ Essential Ethical Hacking Tools</h1>
+                <div class="subtitle">Master these core tools for professional penetration testing.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">NMAP</div><div class="card-desc">Network discovery and security auditing for port scanning and OS detection.</div></div>
+                    <div class="card"><div class="card-title">Kali Linux</div><div class="card-desc">Debian-based penetration testing platform with 600+ pre-installed security tools.</div></div>
+                    <div class="card"><div class="card-title">Wireshark</div><div class="card-desc">World's foremost network protocol analyzer for deep packet inspection.</div></div>
+                    <div class="card"><div class="card-title">Metasploit</div><div class="card-desc">Powerful exploitation framework for developing and executing exploit code.</div></div>
+                    <div class="card"><div class="card-title">Burp Suite</div><div class="card-desc">Integrated web application proxy and vulnerability testing platform.</div></div>
+                    <div class="card"><div class="card-title">John the Ripper</div><div class="card-desc">Fast offline password cracker supporting dictionary and brute-force attacks.</div></div>
+                    <div class="card"><div class="card-title">Aircrack-ng</div><div class="card-desc">Complete tool suite for assessing WiFi network security and cracking keys.</div></div>
+                    <div class="card"><div class="card-title">Hydra</div><div class="card-desc">Fast parallelized online password cracking supporting multi-protocol logins.</div></div>
+                    <div class="card"><div class="card-title">SQLmap</div><div class="card-desc">Automated SQL injection discovery and database engine takeover tool.</div></div>
+                    <div class="card"><div class="card-title">Nikto</div><div class="card-desc">Web server scanner testing for dangerous files, versions, and misconfigurations.</div></div>
+                    <div class="card"><div class="card-title">Netcat</div><div class="card-desc">"Swiss Army knife" of networking for arbitrary TCP/UDP connections and ports.</div></div>
+                    <div class="card"><div class="card-title">Hashcat</div><div class="card-desc">World's fastest rule-based password recovery engine leveraging GPU acceleration.</div></div>
+                </div>
+            </div>
+
+            <!-- Internet Threats -->
+            <div id="internet-threats" class="section-view">
+                <h1>🌐 Types of Internet Threats</h1>
+                <div class="subtitle">12 major categories of cyber threats. Think before you click.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Virus</div><div class="card-desc">Attaches to clean host files and replicates when executed.</div></div>
+                    <div class="card"><div class="card-title">Malware</div><div class="card-desc">Umbrella term for all intrusive or harmful software.</div></div>
+                    <div class="card"><div class="card-title">Spyware</div><div class="card-desc">Secretly monitors user activity, capturing keystrokes and data.</div></div>
+                    <div class="card"><div class="card-title">Adware</div><div class="card-desc">Delivers unwanted advertisements while tracking behavior.</div></div>
+                    <div class="card"><div class="card-title">Ransomware</div><div class="card-desc">Encrypts files and demands ransom payment for decryption key.</div></div>
+                    <div class="card"><div class="card-title">Trojan Horse</div><div class="card-desc">Disguised as legitimate software to deceive users into execution.</div></div>
+                    <div class="card"><div class="card-title">Worms</div><div class="card-desc">Self-replicating malware spreading across networks without interaction.</div></div>
+                    <div class="card"><div class="card-title">Phishing</div><div class="card-desc">Deceptive emails and websites engineered to steal credentials.</div></div>
+                    <div class="card"><div class="card-title">Botnet</div><div class="card-desc">Network of compromised devices controlled remotely for malicious tasks.</div></div>
+                    <div class="card"><div class="card-title">Rootkit</div><div class="card-desc">Hides malware deep inside OS kernel maintaining stealth access.</div></div>
+                    <div class="card"><div class="card-title">Keylogger</div><div class="card-desc">Records every hardware/software keystroke to steal input.</div></div>
+                    <div class="card"><div class="card-title">DDoS Attack</div><div class="card-desc">Overwhelms targets with traffic floods to exhaust availability.</div></div>
+                </div>
+            </div>
+
+            <!-- Defensive Linux Tools -->
+            <div id="linux-defense" class="section-view">
+                <h1>🐧 Defensive Linux Security Tools</h1>
+                <div class="subtitle">Categorized defensive tooling for securing Linux systems and enterprise infrastructures. | By Dan Nanni</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">🔥 Firewalls</div><div class="card-desc">nftables, firewalld, iptables, UFW, Shorewall, VyOS, OpenSnitch, Gufw / CSF</div></div>
+                    <div class="card"><div class="card-title">📦 Sandboxing</div><div class="card-desc">Firejail, Bubblewrap, AppArmor, SELinux, seccomp, gVisor, NsJail</div></div>
+                    <div class="card"><div class="card-title">📊 Log Monitoring</div><div class="card-desc">Logwatch, Logcheck, rsyslog, journald, Graylog, ELK Stack, Grafana Loki, Auditbeat</div></div>
+                    <div class="card"><div class="card-title">🔍 Security Auditing</div><div class="card-desc">Lynis, OpenSCAP, Tiger, Vuls, CIS Benchmarks</div></div>
+                    <div class="card"><div class="card-title">🚨 Intrusion Detection</div><div class="card-desc">Snort, Suricata, OSSEC, Wazuh, Fail2Ban, Zeek, Security Onion</div></div>
+                    <div class="card"><div class="card-title">🌐 Network Security</div><div class="card-desc">tcpdump, ngrep, BandwidthD, Ntopng, Zeek</div></div>
+                    <div class="card"><div class="card-title">📁 File Integrity</div><div class="card-desc">AIDE, Tripwire, Samhain, inotify</div></div>
+                    <div class="card"><div class="card-title">🔑 Password & Secrets</div><div class="card-desc">Bitwarden, KeePassXC, Vault, Passbolt, Pass</div></div>
+                    <div class="card"><div class="card-title">🐳 Container Security</div><div class="card-desc">Calico, Clair, Anchore Engine, Docker Bench, Trivy, Falco, Sysdig</div></div>
+                </div>
+            </div>
+
+            <!-- Blue vs Red Team -->
+            <div id="blue-red" class="section-view">
+                <h1>⚔️ Blue Team vs Red Team</h1>
+                <div class="subtitle">Defense and offense working together to strengthen overall security posture. | By @sameerforge</div>
+                <div class="grid">
+                    <div class="card" style="border-top: 3px solid var(--accent-blue);">
+                        <div class="card-title" style="color:var(--accent-blue)">🛡️ Blue Team (Defensive Security)</div>
+                        <div class="card-desc">
+                            <p><strong>Network Security:</strong> Firewalls, VPN, IDS/IPS, NAC</p><br>
+                            <p><strong>Incident Response:</strong> SIEM, SOAR, Ticketing, Playbooks</p><br>
+                            <p><strong>Endpoint Security:</strong> EDR, Antivirus, DLP, Patch Mgmt</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--accent-red);">
+                        <div class="card-title" style="color:var(--accent-red)">🗡️ Red Team (Offensive Security)</div>
+                        <div class="card-desc">
+                            <p><strong>Penetration Testing:</strong> Kali Linux, Metasploit, Cobalt Strike, Burp Suite</p><br>
+                            <p><strong>Red Team Ops:</strong> Empire, Covenant, Sliver, Mythic</p><br>
+                            <p><strong>Vulnerability Mgmt:</strong> Nessus, OpenVAS, Qualys, Nuclei</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How Hackers Access -->
+            <div id="attack-vectors" class="section-view">
+                <h1>🎯 How Hackers Get Access</h1>
+                <div class="subtitle">12 major attack vectors used by threat actors. | By SpyRiot Security Cyber Hub</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Web Application Attacks</div><div class="card-desc">SQL Injection, XSS, CSRF, SSRF, File Inclusion</div></div>
+                    <div class="card"><div class="card-title">Network Attacks</div><div class="card-desc">Man-in-the-Middle (MITM), ARP Poisoning, DNS Spoofing</div></div>
+                    <div class="card"><div class="card-title">Social Engineering</div><div class="card-desc">Phishing, Pretexting, Baiting, Vishing, Spear Phishing</div></div>
+                    <div class="card"><div class="card-title">Password Attacks</div><div class="card-desc">Brute Force, Credential Stuffing, Password Spraying</div></div>
+                    <div class="card"><div class="card-title">Malware Delivery</div><div class="card-desc">Trojans, Ransomware, Rootkits, Worms, Malvertising</div></div>
+                    <div class="card"><div class="card-title">Physical Attacks</div><div class="card-desc">Tailgating, USB Drop Attacks, Dumpster Diving</div></div>
+                    <div class="card"><div class="card-title">Wireless Attacks</div><div class="card-desc">Evil Twin AP, KRACK, WiFi Pineapple Interception</div></div>
+                    <div class="card"><div class="card-title">Cloud Attacks</div><div class="card-desc">Misconfigurations, API Exploits, Container Escapes</div></div>
+                    <div class="card"><div class="card-title">Supply Chain Attacks</div><div class="card-desc">Third-party Compromise, Poisoned Software Updates</div></div>
+                    <div class="card"><div class="card-title">Insider Threats</div><div class="card-desc">Negligence, Privilege Abuse, Data Exfiltration</div></div>
+                    <div class="card"><div class="card-title">Zero-Day Exploits</div><div class="card-desc">Unpatched Unknown Vulnerabilities, Exploit Kits</div></div>
+                    <div class="card"><div class="card-title">DDoS Attacks</div><div class="card-desc">Volumetric Floods, Amplification, Reflection Attacks</div></div>
+                </div>
+            </div>
+
+            <!-- Linux Forensics -->
+            <div id="linux-forensics" class="section-view">
+                <h1>🔎 Linux Forensic Artifacts</h1>
+                <div class="subtitle">Key files and commands for digital forensics on Linux. | By Dan Nanni · study-notes.org</div>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-title">System & Kernel Artifacts</div>
+                        <div class="card-desc"><code>/var/log/syslog</code><br><code>/var/log/messages</code><br><code>/var/log/kern.log</code><br><code>/var/log/dmesg</code><br><code>/proc/</code> | <code>/sys/</code></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Network Evidence</div>
+                        <div class="card-desc"><code>/etc/hosts</code><br><code>ss -tulpn</code> | <code>netstat -anp</code><br><code>/etc/resolv.conf</code><br><code>/var/log/auth.log</code><br><code>arp -a</code></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">User Activity Evidence</div>
+                        <div class="card-desc"><code>~/.bash_history</code> | <code>~/.zsh_history</code><br><code>/home/*/.ssh/</code><br><code>last</code> | <code>lastlog</code><br><code>/var/log/wtmp</code> | <code>/var/log/btmp</code></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Artifacts of Intrusion</div>
+                        <div class="card-desc"><code>/etc/cron*</code><br><code>/etc/systemd/system/</code><br><code>/tmp/</code> | <code>/dev/shm/</code><br><code>~/.ssh/authorized_keys</code><br><code>/etc/passwd</code> | <code>/etc/shadow</code></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">File System & Storage</div>
+                        <div class="card-desc"><code>stat</code> | <code>debugfs</code><br><code>/dev/</code> | <code>mount</code><br><code>df -hl</code> | <code>lsof</code><br><code>find / -mtime</code></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Forensic Imaging Tools</div>
+                        <div class="card-desc"><code>dd</code> | <code>dc3dd</code><br><code>guymager</code> | <code>FTK Imager</code><br><code>foremost</code> | <code>volatility</code><br><code>autopsy</code> | <code>sleuth-kit</code></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anti-Phishing Tools -->
+            <div id="anti-phishing" class="section-view">
+                <h1>🎣 Anti-Phishing Tools</h1>
+                <div class="subtitle">Toolkit for detecting, analyzing, and defending against phishing attacks.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">ThePhish</div><div class="card-desc">Automated phishing email analysis tool.</div></div>
+                    <div class="card"><div class="card-title">PhishTank</div><div class="card-desc">Collaborative clearinghouse for phishing data and verification.</div></div>
+                    <div class="card"><div class="card-title">MISP</div><div class="card-desc">Open Source Threat Intelligence and sharing platform.</div></div>
+                    <div class="card"><div class="card-title">OpenPhish</div><div class="card-desc">Automated phishing threat intelligence feed.</div></div>
+                    <div class="card"><div class="card-title">GoPhish</div><div class="card-desc">Open-source phishing simulation framework for training.</div></div>
+                    <div class="card"><div class="card-title">SpamAssassin</div><div class="card-desc">Mail filter using text analysis and spam filtering rules.</div></div>
+                    <div class="card"><div class="card-title">PhishTool</div><div class="card-desc">Combines email security technology with threat intelligence.</div></div>
+                    <div class="card"><div class="card-title">URLscan.io</div><div class="card-desc">Free service to scan and analyze websites/URLs safely.</div></div>
+                    <div class="card"><div class="card-title">Oletools</div><div class="card-desc">python tools to analyze MS OLE2 files and malicious macros.</div></div>
+                    <div class="card"><div class="card-title">VirusTotal</div><div class="card-desc">Analyze suspicious files and URLs across 70+ AV engines.</div></div>
+                    <div class="card"><div class="card-title">Authentication Records</div><div class="card-desc">SPF (Sender Policy Framework), DKIM, and DMARC verification.</div></div>
+                </div>
+            </div>
+
+            <!-- Security Tools Master -->
+            <div id="security-master" class="section-view">
+                <h1>⚡ Attack Today. Defend Forever.</h1>
+                <div class="subtitle">Master tools across every domain of cybersecurity.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">🌐 Network Security</div><div class="card-desc">Wireshark, Nmap, tcpdump, Zeek, Suricata, Snort</div></div>
+                    <div class="card"><div class="card-title">💻 Application Security</div><div class="card-desc">Burp Suite, OWASP ZAP, SonarQube, Nikto, SQLmap</div></div>
+                    <div class="card"><div class="card-title">☁️ Cloud Security</div><div class="card-desc">Prisma Cloud, ScoutSuite, Prowler, CloudSploit</div></div>
+                    <div class="card"><div class="card-title">🚨 Incident Response</div><div class="card-desc">TheHive, Cortex, MISP, DFIR-IRIS</div></div>
+                    <div class="card"><div class="card-title">🖥️ Endpoint Security</div><div class="card-desc">OSSEC, Wazuh, osquery, CrowdStrike</div></div>
+                    <div class="card"><div class="card-title">📊 Vulnerability Management</div><div class="card-desc">Nessus, OpenVAS, Nuclei, Qualys, Trivy</div></div>
+                    <div class="card"><div class="card-title">📡 Wireless Security</div><div class="card-desc">Aircrack-ng, Kismet, Wifite, Fluxion</div></div>
+                    <div class="card"><div class="card-title">🔬 Digital Forensics</div><div class="card-desc">Volatility, Autopsy, Sleuth Kit, FTK Imager</div></div>
+                </div>
+            </div>
+
+            <!-- Steganography -->
+            <div id="steganography" class="section-view">
+                <h1>🖼️ Free Steganography Tools</h1>
+                <div class="subtitle">Tools for hiding and detecting hidden data within files. | By Dan Nanni</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Cloakify</div><div class="card-desc">Transforms files into everyday strings to evade detection.</div></div>
+                    <div class="card"><div class="card-title">DeepSound</div><div class="card-desc">Hides data inside audio files with AES-256 encryption.</div></div>
+                    <div class="card"><div class="card-title">Jsteg</div><div class="card-desc">Open-source steganography for JPEG images.</div></div>
+                    <div class="card"><div class="card-title">OpenStego</div><div class="card-desc">Java-based LSB steganography with watermarking capabilities.</div></div>
+                    <div class="card"><div class="card-title">Steghide</div><div class="card-desc">Hides data in BMP, WAV, and AU files using passphrase.</div></div>
+                    <div class="card"><div class="card-title">SilentEye</div><div class="card-desc">Cross-platform GUI for encoding/decoding hidden messages.</div></div>
+                    <div class="card"><div class="card-title">Steganography Online</div><div class="card-desc">Web-based tool for quick steganography operations.</div></div>
+                    <div class="card"><div class="card-title">SSuite Picsel</div><div class="card-desc">Lightweight portable image steganography tool.</div></div>
+                    <div class="card"><div class="card-title">Xiao Steganography</div><div class="card-desc">Free Windows tool with integrated AES encryption.</div></div>
+                    <div class="card"><div class="card-title">Stegano</div><div class="card-desc">Python module supporting multiple steganography techniques.</div></div>
+                </div>
+            </div>
+
+            <!-- Cybersecurity Roadmap -->
+            <div id="roadmap" class="section-view">
+                <h1>🗺️ Cybersecurity Skills Roadmap</h1>
+                <div class="subtitle">Essential resources to guide your journey from beginner to advanced.</div>
+                
+                <div class="roadmap-step">
+                    <h4>1. Foundations</h4>
+                    <p>Networking Basics (TCP/IP, DNS, HTTP) • Operating Systems (Windows, Linux, File Systems) • Computer Basics (Hardware, Virtualization) • Scripting (Bash, PowerShell, Python)</p>
+                </div>
+                <div class="roadmap-step">
+                    <h4>2. Core Concepts</h4>
+                    <p>InfoSec Fundamentals (CIA Triad, Risk) • Authentication (MFA, Tokens, OAuth) • Cryptography (Symmetric, Asymmetric, Hashes) • Security Principles (Least Privilege, Zero Trust)</p>
+                </div>
+                <div class="roadmap-step">
+                    <h4>3. Security Domains</h4>
+                    <p>Network Security (Firewalls, IDS/IPS, VPN) • Application Security (OWASP Top 10, Injection) • Endpoint Security (EDR, Patching) • Cloud Security (AWS/Azure, IAM)</p>
+                </div>
+                <div class="roadmap-step">
+                    <h4>4. Offensive Skills</h4>
+                    <p>Penetration Testing (Kali, Recon, Exploitation) • Vulnerability Assessment (Nmap, Nessus) • Web App Testing (Burp Suite, ZAP) • Exploitation Frameworks (Metasploit)</p>
+                </div>
+                <div class="roadmap-step">
+                    <h4>5. Defensive Skills</h4>
+                    <p>Security Monitoring (SIEM, Splunk, ELK) • Incident Response (Triage, Containment, Eradication) • Digital Forensics & Static/Dynamic Malware Analysis</p>
+                </div>
+                <div class="roadmap-step">
+                    <h4>6. Continuous Learning</h4>
+                    <p>Certifications (Security+, CEH, eJPT, OSCP) • Practice Platforms (TryHackMe, Hack The Box, CTFs) • Build Home Lab & Automate Tasks</p>
+                </div>
+            </div>
+
+            <!-- Top 10 Websites -->
+            <div id="top-sites" class="section-view">
+                <h1>🌟 Top 10 Cybersecurity Platforms</h1>
+                <div class="subtitle">Learn • Practice • Improve • Repeat</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Platform</th>
+                                <th>Description</th>
+                                <th>Key Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>01</td><td><strong>TryHackMe</strong></td><td>Beginner-friendly hands-on labs and structured learning paths.</td><td><span class="tag">GREAT FOR BEGINNERS</span></td></tr>
+                            <tr><td>02</td><td><strong>Hack The Box</strong></td><td>Advanced penetration testing labs and real-world vulnerable machines.</td><td><span class="tag tag-red">LEVEL UP HACKING</span></td></tr>
+                            <tr><td>03</td><td><strong>PortSwigger Academy</strong></td><td>Official free Burp Suite web security training.</td><td><span class="tag">BEST FOR WEB SEC</span></td></tr>
+                            <tr><td>04</td><td><strong>OWASP</strong></td><td>Web application security resources, tools, and documentation.</td><td><span class="tag tag-purple">SECURE THE WEB</span></td></tr>
+                            <tr><td>05</td><td><strong>Blue Team Labs Online</strong></td><td>Hands-on defense training, SIEM, and Incident Response.</td><td><span class="tag">DEFEND & PROTECT</span></td></tr>
+                            <tr><td>06</td><td><strong>OverTheWire</strong></td><td>Wargames designed to build Linux command line and security skills.</td><td><span class="tag">LINUX PRACTICE</span></td></tr>
+                            <tr><td>07</td><td><strong>PicoCTF</strong></td><td>Capture The Flag challenges for all skill levels.</td><td><span class="tag">PRACTICE & COMPETE</span></td></tr>
+                            <tr><td>08</td><td><strong>VulnHub</strong></td><td>Downloadable vulnerable VMs to build offline local pentesting labs.</td><td><span class="tag">PRACTICE OFFLINE</span></td></tr>
+                            <tr><td>09</td><td><strong>NIST</strong></td><td>Global cybersecurity frameworks, guidelines, and standards.</td><td><span class="tag">STANDARDS</span></td></tr>
+                            <tr><td>10</td><td><strong>MITRE ATT&CK</strong></td><td>Comprehensive matrix of adversary tactics, techniques, and procedures.</td><td><span class="tag tag-red">KNOW YOUR ENEMY</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Penetration Testing Fundamentals -->
+            <div id="pentest-types" class="section-view">
+                <h1>🎯 Penetration Testing Fundamentals</h1>
+                <div class="subtitle">Simulating cyberattacks to identify weaknesses before malicious actors exploit them.</div>
+                <h2>Testing Methodologies</h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-title">Black Box</div>
+                        <div class="card-desc">Zero prior knowledge of IT infrastructure. Simulates external attacker.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Grey Box</div>
+                        <div class="card-desc">Partial/limited knowledge of infrastructure (e.g., standard user credentials).</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">White Box</div>
+                        <div class="card-desc">Full knowledge of infrastructure, internal access, source code, and configs.</div>
+                    </div>
+                </div>
+                <h2>Primary Scopes</h2>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Network Services</div><div class="card-desc">Infrastructure, switches, firewalls, routers, protocols, and ports.</div></div>
+                    <div class="card"><div class="card-title">Web Application</div><div class="card-desc">OWASP Top 10 vulnerabilities, API security, client-server setups.</div></div>
+                    <div class="card"><div class="card-title">Client Side</div><div class="card-desc">Software vulnerabilities on workstations (browsers, PDF readers, etc.).</div></div>
+                </div>
+            </div>
+
+            <!-- Bug Bounty Cheatsheet -->
+            <div id="bugbounty-cheatsheet" class="section-view">
+                <h1>⚡ Bug Bounty & Recon Cheatsheet</h1>
+                <div class="subtitle">Essential Command-Line Tools & Usage Guides</div>
+                
+                <h2>1. Burp Suite</h2>
+                <div class="cmd-box">
+                    <div>$ burpsuite <span class="cmd-comment"># Launch GUI</span></div>
+                    <div>$ burpsuite --project-file &lt;file&gt; <span class="cmd-comment"># Specify project file</span></div>
+                    <div>$ burpsuite --config-file &lt;file&gt; <span class="cmd-comment"># Load specific config</span></div>
+                </div>
+
+                <h2>2. Nuclei</h2>
+                <div class="cmd-box">
+                    <div>$ nuclei -u https://target.com <span class="cmd-comment"># Fast single scan</span></div>
+                    <div>$ nuclei -l list.txt -t cves/ -severity high,critical <span class="cmd-comment"># Scan list using template tags</span></div>
+                    <div>$ nuclei -u https://target.com -o output.txt <span class="cmd-comment"># Output results</span></div>
+                </div>
+
+                <h2>3. Subfinder</h2>
+                <div class="cmd-box">
+                    <div>$ subfinder -d example.com <span class="cmd-comment"># Basic passive enumeration</span></div>
+                    <div>$ subfinder -dL domains.txt -all -silent -oJ <span class="cmd-comment"># Multi-domain JSON output</span></div>
+                </div>
+
+                <h2>4. FFUF</h2>
+                <div class="cmd-box">
+                    <div>$ ffuf -u https://target/FUZZ -w wordlist.txt <span class="cmd-comment"># Basic fuzzing</span></div>
+                    <div>$ ffuf -u https://target/FUZZ -w wordlist.txt -e .php,.bak -mc 200,302 <span class="cmd-comment"># Match status codes</span></div>
+                </div>
+
+                <h2>5. SQLmap</h2>
+                <div class="cmd-box">
+                    <div>$ sqlmap -u "http://target/page.php?id=1" --batch <span class="cmd-comment"># Automated default scan</span></div>
+                    <div>$ sqlmap -u "http://target/page.php?id=1" --dbs <span class="cmd-comment"># Enumerate databases</span></div>
+                    <div>$ sqlmap -D appdb -T users --columns --dump <span class="cmd-comment"># Extract target tables</span></div>
+                </div>
+
+                <h2>6. OWASP Amass</h2>
+                <div class="cmd-box">
+                    <div>$ amass enum -d example.com <span class="cmd-comment"># Standard enumeration</span></div>
+                    <div>$ amass enum -passive -d example.com <span class="cmd-comment"># Passive subdomains</span></div>
+                    <div>$ amass enum -brute -w wordlist.txt -d example.com <span class="cmd-comment"># Brute force scan</span></div>
+                </div>
+
+                <h2>7. HTTPX</h2>
+                <div class="cmd-box">
+                    <div>$ cat hosts.txt | httpx <span class="cmd-comment"># Probe live HTTP hosts</span></div>
+                    <div>$ httpx -l hosts.txt -status-code -title -ip -tech-detect <span class="cmd-comment"># Extract titles & technologies</span></div>
+                </div>
+
+                <h2>8. Katana</h2>
+                <div class="cmd-box">
+                    <div>$ katana -u https://example.com <span class="cmd-comment"># Web crawling engine</span></div>
+                    <div>$ katana -u https://example.com -d 2 -jc <span class="cmd-comment"># Depth 2 + JS file parsing</span></div>
+                </div>
+            </div>
+
+            <!-- 20 Essential SOC Tools -->
+            <div id="soc-tools" class="section-view">
+                <h1>🛡️ 20 Essential SOC Tools</h1>
+                <div class="subtitle">Tools every SOC analyst needs for monitoring, detection, and response.</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Tool</th><th>Type</th><th>Function</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Splunk Enterprise</td><td>SIEM</td><td>Log analysis, threat detection, custom dashboards</td></tr>
+                            <tr><td>2</td><td>Microsoft Sentinel</td><td>Cloud SIEM</td><td>Cloud-native SIEM and Azure native integration</td></tr>
+                            <tr><td>3</td><td>IBM QRadar</td><td>SIEM</td><td>Network monitoring, behavioral analytics</td></tr>
+                            <tr><td>4</td><td>Elastic Security</td><td>SIEM</td><td>Flexible log collection, ELK stack searching</td></tr>
+                            <tr><td>5</td><td>Defender for Endpoint</td><td>EDR</td><td>Endpoint protection and automated threat analysis</td></tr>
+                            <tr><td>6</td><td>CrowdStrike Falcon</td><td>EDR/XDR</td><td>Real-time endpoint prevention & threat hunting</td></tr>
+                            <tr><td>7</td><td>SentinelOne</td><td>EDR/XDR</td><td>AI-powered autonomous endpoint protection</td></tr>
+                            <tr><td>8</td><td>Snort</td><td>IDS</td><td>Network packet analysis & rule-based detection</td></tr>
+                            <tr><td>9</td><td>Suricata</td><td>IDS/IPS</td><td>Intrusion prevention and protocol inspection</td></tr>
+                            <tr><td>10</td><td>Zeek</td><td>NSM</td><td>Connection parsing & detailed network logging</td></tr>
+                            <tr><td>11</td><td>Wazuh</td><td>SIEM/XDR</td><td>Open source host monitoring and FIM</td></tr>
+                            <tr><td>12</td><td>TheHive</td><td>IR</td><td>Security incident case management</td></tr>
+                            <tr><td>13</td><td>Cortex</td><td>Orchestration</td><td>Automated observable analysis engine</td></tr>
+                            <tr><td>14</td><td>MISP</td><td>Threat Intel</td><td>IOC sharing platform and threat correlation</td></tr>
+                            <tr><td>15</td><td>Nessus</td><td>Vuln Scanner</td><td>Vulnerability assessment and risk reporting</td></tr>
+                            <tr><td>16</td><td>Wireshark</td><td>Packet Analyzer</td><td>Traffic dissection and deep packet inspection</td></tr>
+                            <tr><td>17</td><td>VirusTotal</td><td>Malware Analysis</td><td>Multi-engine file and URL scanner</td></tr>
+                            <tr><td>18</td><td>YARA</td><td>Malware Analysis</td><td>Rule-based pattern matching for malware files</td></tr>
+                            <tr><td>19</td><td>OSQuery</td><td>Endpoint</td><td>SQL-based system telemetry and query engine</td></tr>
+                            <tr><td>20</td><td>Security Onion</td><td>NSM Platform</td><td>Integrated suite (Zeek, ELK, Suricata)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Types of Malware -->
+            <div id="malware-types" class="section-view">
+                <h1>🦠 Types of Malware</h1>
+                <div class="subtitle">MALicious softWARE — threats that harm systems, steal data, or disrupt operations.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Virus</div><div class="card-desc">Attaches to files and spreads upon execution. (Examples: Melissa, CIH)</div></div>
+                    <div class="card"><div class="card-title">Worm</div><div class="card-desc">Self-replicates across network pathways without user intervention. (Conficker, Stuxnet)</div></div>
+                    <div class="card"><div class="card-title">Trojan</div><div class="card-desc">Disguised as beneficial software to trick users. (Zeus, Emotet)</div></div>
+                    <div class="card"><div class="card-title">Ransomware</div><div class="card-desc">Encrypts files and holds keys for extortion payment. (WannaCry, Ryuk)</div></div>
+                    <div class="card"><div class="card-title">Spyware</div><div class="card-desc">Secretly monitors user activity without consent. (CoolWebSearch, FinFisher)</div></div>
+                    <div class="card"><div class="card-title">Rootkit</div><div class="card-desc">Hides malware deep inside operating system kernel. (TDSS, ZeroAccess)</div></div>
+                    <div class="card"><div class="card-title">Keylogger</div><div class="card-desc">Records keystrokes to harvest passwords and sensitive input.</div></div>
+                    <div class="card"><div class="card-title">Botnet</div><div class="card-desc">Remotely controlled network of compromised devices. (Mirai)</div></div>
+                </div>
+            </div>
+
+            <!-- Cyber Terms -->
+            <div id="terms" class="section-view">
+                <h1>📖 Cybersecurity Terms Explained</h1>
+                <div class="subtitle">A quick glossary of modern cybersecurity concepts.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Zero Trust</div><div class="card-desc">Never trust, always verify every access request.</div></div>
+                    <div class="card"><div class="card-title">Machine Identity</div><div class="card-desc">Managing certificates, keys, and API credentials for non-humans.</div></div>
+                    <div class="card"><div class="card-title">Open XDR</div><div class="card-desc">Extended detection and response correlating across security tools.</div></div>
+                    <div class="card"><div class="card-title">Exposure Management</div><div class="card-desc">Proactively identifying and prioritizing exploitable risks.</div></div>
+                    <div class="card"><div class="card-title">PAM</div><div class="card-desc">Privileged Access Management for controlling administrative power.</div></div>
+                    <div class="card"><div class="card-title">SOAR</div><div class="card-desc">Security Orchestration, Automation, and Response.</div></div>
+                    <div class="card"><div class="card-title">CSPM</div><div class="card-desc">Cloud Security Posture Management for identifying misconfigurations.</div></div>
+                    <div class="card"><div class="card-title">DevSecOps</div><div class="card-desc">Integrating security controls throughout the CI/CD pipeline.</div></div>
+                </div>
+            </div>
+
+            <!-- SOC Logs -->
+            <div id="soc-logs" class="section-view">
+                <h1>📋 SOC Logs: Eyes & Ears of Cybersecurity</h1>
+                <div class="subtitle">Logs are the foundation of security monitoring and incident response.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">System Logs</div><div class="card-desc">OS events, boot sequences, service statuses, kernel events.</div></div>
+                    <div class="card"><div class="card-title">Security Logs</div><div class="card-desc">Authentication attempts, access control, policy modifications, privilege escalations.</div></div>
+                    <div class="card"><div class="card-title">Network Logs</div><div class="card-desc">Firewall rules, NAT translations, VPN logs, DNS requests.</div></div>
+                    <div class="card"><div class="card-title">Web Logs</div><div class="card-desc">HTTP requests, response codes, URLs accessed, User-Agents.</div></div>
+                    <div class="card"><div class="card-title">Database Logs</div><div class="card-desc">Query logs, DB logins, schema changes, backup events.</div></div>
+                    <div class="card"><div class="card-title">Email Logs</div><div class="card-desc">SMTP transactions, delivery status, spam filters, attachment scans.</div></div>
+                </div>
+                <h2>Log Pipeline Flow</h2>
+                <div class="roadmap-step">
+                    <p><strong>Log Generation</strong> ➔ <strong>Collection</strong> ➔ <strong>Normalization</strong> ➔ <strong>Storage</strong> ➔ <strong>Analysis</strong> ➔ <strong>Alerting</strong></p>
+                </div>
+            </div>
+
+            <!-- 30 Days SOC Plan -->
+            <div id="soc-plan" class="section-view">
+                <h1>📅 30 Days, 30 Topics: SOC Learning Plan</h1>
+                <div class="subtitle">A practical daily learning plan for aspiring SOC analysts.</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Day 1</div><div class="card-desc">SOC Analyst Role & Responsibilities</div></div>
+                    <div class="card"><div class="card-title">Day 2</div><div class="card-desc">OSI Model & TCP/IP Basics</div></div>
+                    <div class="card"><div class="card-title">Day 3</div><div class="card-desc">Essential Protocols: DNS, DHCP, HTTP</div></div>
+                    <div class="card"><div class="card-title">Day 4</div><div class="card-desc">Windows Operating System Fundamentals</div></div>
+                    <div class="card"><div class="card-title">Day 5</div><div class="card-desc">Linux Administration Fundamentals</div></div>
+                    <div class="card"><div class="card-title">Day 6</div><div class="card-desc">Command Line Essentials (Bash / PowerShell)</div></div>
+                    <div class="card"><div class="card-title">Day 7</div><div class="card-desc">Log Types & Log Sources</div></div>
+                    <div class="card"><div class="card-title">Day 8</div><div class="card-desc">Introduction to SIEM Platforms</div></div>
+                    <div class="card"><div class="card-title">Day 9</div><div class="card-desc">SIEM Searching & Query Syntax</div></div>
+                    <div class="card"><div class="card-title">Day 10</div><div class="card-desc">Alert Triage & Prioritization</div></div>
+                    <div class="card"><div class="card-title">Day 11</div><div class="card-desc">Use Case Analysis: Brute Force Attacks</div></div>
+                    <div class="card"><div class="card-title">Day 12</div><div class="card-desc">Identity & Access Management (IAM)</div></div>
+                    <div class="card"><div class="card-title">Day 13</div><div class="card-desc">Authentication Mechanisms & Protocols</div></div>
+                    <div class="card"><div class="card-title">Day 14</div><div class="card-desc">MITRE ATT&CK Framework Overview</div></div>
+                    <div class="card"><div class="card-title">Day 15</div><div class="card-desc">Threat Hunting Fundamentals</div></div>
+                    <div class="card"><div class="card-title">Day 16</div><div class="card-desc">IOC, IOA & TTP Analysis</div></div>
+                    <div class="card"><div class="card-title">Day 17</div><div class="card-desc">Network Traffic Analysis Basics</div></div>
+                    <div class="card"><div class="card-title">Day 18</div><div class="card-desc">Deep Packet Inspection with Wireshark</div></div>
+                    <div class="card"><div class="card-title">Day 19</div><div class="card-desc">Email Security & Phishing Analysis</div></div>
+                    <div class="card"><div class="card-title">Day 20</div><div class="card-desc">Malware Types & Infection Vectors</div></div>
+                    <div class="card"><div class="card-title">Day 21</div><div class="card-desc">Endpoint Security & EDR Solutions</div></div>
+                    <div class="card"><div class="card-title">Day 22</div><div class="card-desc">Digital Forensics Basics</div></div>
+                    <div class="card"><div class="card-title">Day 23</div><div class="card-desc">Memory Forensics Introduction</div></div>
+                    <div class="card"><div class="card-title">Day 24</div><div class="card-desc">Cloud Security Fundamentals</div></div>
+                    <div class="card"><div class="card-title">Day 25</div><div class="card-desc">IDS / IPS Deployment & Rules</div></div>
+                    <div class="card"><div class="card-title">Day 26</div><div class="card-desc">Incident Management Workflows</div></div>
+                    <div class="card"><div class="card-title">Day 27</div><div class="card-desc">Compliance Frameworks (ISO, NIST)</div></div>
+                    <div class="card"><div class="card-title">Day 28</div><div class="card-desc">Incident Response Life Cycle</div></div>
+                    <div class="card"><div class="card-title">Day 29</div><div class="card-desc">Post-Incident Review & Reporting</div></div>
+                    <div class="card"><div class="card-title">Day 30</div><div class="card-desc">Capstone Project & Portfolio Building</div></div>
+                </div>
+            </div>
+
+            <!-- Offensive Linux Security -->
+            <div id="offensive-linux" class="section-view">
+                <h1>🗡️ Offensive Linux Security Tools</h1>
+                <div class="subtitle">Categorized Pentesting Tools | Created by Dan Nanni / study-notes.org</div>
+                <div class="grid">
+                    <div class="card"><div class="card-title">Information Gathering</div><div class="card-desc">DNSRecon, theHarvester, Amass, Recon-ng, Nmap</div></div>
+                    <div class="card"><div class="card-title">Exploitation</div><div class="card-desc">Metasploit, Pwntools, PTF, Exploit Pack, sqlmap, jSQL Injection</div></div>
+                    <div class="card"><div class="card-title">Post-Exploitation</div><div class="card-desc">Empire, Sliver, Impacket, Mimikatz, Havoc, Bloodhound</div></div>
+                    <div class="card"><div class="card-title">Wireless Attacks</div><div class="card-desc">Airgeddon, Wifite, Kismet, Reaver</div></div>
+                    <div class="card"><div class="card-title">Mobile Security</div><div class="card-desc">Drozer, Bettercap, Androguard, NetHunter</div></div>
+                    <div class="card"><div class="card-title">Social Engineering</div><div class="card-desc">SET (Social-Engineer Toolkit), GoPhish</div></div>
+                    <div class="card"><div class="card-title">Network Attacks</div><div class="card-desc">Ettercap, Yersinia, Scapy, Nmap, Recon-ng</div></div>
+                    <div class="card"><div class="card-title">Password Attacks</div><div class="card-desc">John the Ripper, Medusa, Hydra, CeWL, Hashcat</div></div>
+                    <div class="card"><div class="card-title">Vulnerability Scanning</div><div class="card-desc">Nuclei, OpenVAS, ZAP, Nikto, Burp Suite</div></div>
+                    <div class="card"><div class="card-title">Webapp Pentesting</div><div class="card-desc">Wfuzz, XSStrike, Arachni, ffuf, WPScan</div></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                © CyberDefend Academy · Interactive HTML Cyber Reference Workspace
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Script -->
+    <script>
+        function showSection(sectionId) {
+            // Hide all content views
+            const views = document.querySelectorAll('.section-view');
+            views.forEach(v => v.classList.remove('active'));
+
+            // Remove active style from menu list
+            const menuItems = document.querySelectorAll('.nav-menu li');
+            menuItems.forEach(i => i.classList.remove('active'));
+
+            // Activate target view
+            const targetView = document.getElementById(sectionId);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+
+            // Highlight menu item
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
