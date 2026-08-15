@@ -138,7 +138,9 @@
       font-size: 0.9rem;
     }
     .btn-execute:hover { opacity: 0.9; }
-
+		.sidebar-back-btns{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--hairline)}
+        .sidebar-back-btn{display:block;text-align:center;background:var(--selected);color:var(--body-fg);padding:10px;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:600;border:1px solid var(--hairline);transition:.2s}
+        .sidebar-back-btn:hover{border-color:var(--primary);color:var(--primary)}
     /* Terminal Console */
     .terminal-container {
       background: #000;
@@ -166,6 +168,8 @@
     <div class="sidebar-header">
       <h2>🐉 Kali Toolset Console</h2>
     </div>
+	    <div class="sidebar-back-btns"><a href="paid-cybersecurity-course.html" class="sidebar-back-btn">← Back to Main Page</a></div>
+
     <div class="search-box">
       <input type="text" id="toolSearch" placeholder="Filter tools..." onkeyup="filterTools()">
     </div>
