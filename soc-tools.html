@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 Essential SOC Tools - Interactive Labs & Commands</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --border-color: #334155;
+            --code-bg: #090d16;
+            --terminal-header: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tool-number {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            background-color: rgba(56, 189, 248, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-type {
+            display: inline-block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background-color: #334155;
+            color: #e2e8f0;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-function {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+		.sidebar-back-btns{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--hairline)}
+        .sidebar-back-btn{display:block;text-align:center;background:var(--selected);color:var(--body-fg);padding:10px;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:600;border:1px solid var(--hairline);transition:.2s}
+        .sidebar-back-btn:hover{border-color:var(--primary);color:var(--primary)}
+		
+        .btn-lab {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-lab:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-color);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .lab-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .lab-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .terminal {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .terminal-header {
+            background-color: var(--terminal-header);
+            padding: 0.4rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            text-decoration: underline;
+        }
+
+        pre {
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #38edf8;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🛡️ 20 Essential SOC Tools</h1>
+        <p>Interactive Command Reference & Practical Lab Guide for Monitoring, Detection, and Response</p>
+    </header>
+	<div class="sidebar-back-btns"><a href="paid-cybersecurity-course.html" class="sidebar-back-btn">← Back to Main Page</a></div>
+
+    <div class="controls">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search tools, functions, or categories...">
+        <select id="typeFilter" class="filter-select">
+            <option value="ALL">📋 All Categories</option>
+            <option value="SIEM">📊 SIEM / Cloud SIEM</option>
+            <option value="EDR">💻 EDR / XDR</option>
+            <option value="IDS">🌐 IDS / IPS / NSM</option>
+            <option value="IR">🚨 IR / Orchestration</option>
+            <option value="Intel">🦠 Threat Intel / Malware</option>
+            <option value="Scanner">🔍 Scanner / Endpoint</option>
+        </select>
+    </div>
+
+    <div class="tools-grid" id="toolsGrid"></div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tool Lab</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const toolsData = [
+            {
+                id: 1,
+                name: "Splunk Enterprise",
+                type: "SIEM",
+                function: "Log analysis, threat detection, custom dashboards",
+                objective: "Investigate failed SSH login attempts from internal endpoints.",
+                commands: [
+                    { title: "SPL Query (Failed Logins)", code: 'index=main sourcetype="linux_secure" "Failed password"\n| stats count by src_ip, user\n| sort - count' },
+                    { title: "Detect Potential Brute Force (>10 Attempts)", code: 'index=main action=failure\n| stats count by src_ip\n| where count > 10' }
+                ]
+            },
+            {
+                id: 2,
+                name: "Microsoft Sentinel",
+                type: "Cloud SIEM",
+                function: "Cloud-native SIEM and Azure native integration",
+                objective: "Query Azure Active Directory Sign-in logs for suspicious origins using KQL.",
+                commands: [
+                    { title: "KQL Query (Failed Sign-ins by IP)", code: 'SigninLogs\n| where ResultType != 0\n| summarize FailedCount = count() by IPAddress, UserPrincipalName\n| order by FailedCount desc' },
+                    { title: "KQL Query (Impossible Travel Alert)", code: 'SigninLogs\n| where TimeGenerated > ago(1d)\n| summarize Locations = make_set(Location) by UserPrincipalName\n| where array_length(Locations) > 1' }
+                ]
+            },
+            {
+                id: 3,
+                name: "IBM QRadar",
+                type: "SIEM",
+                function: "Network monitoring, behavioral analytics",
+                objective: "Search offense logs using AQL (Ariel Query Language).",
+                commands: [
+                    { title: "AQL Query (Top Source IPs)", code: 'SELECT sourceip, COUNT(*) FROM events \nGROUP BY sourceip \nORDER BY COUNT(*) DESC \nLAST 24 HOURS' },
+                    { title: "AQL Query (Detect High Severity Events)", code: 'SELECT username, sourceip, QIDNAME(qid) AS EventName \nFROM events \nWHERE severity > 7 \nLAST 1 HOURS' }
+                ]
+            },
+            {
+                id: 4,
+                name: "Elastic Security",
+                type: "SIEM",
+                function: "Flexible log collection, ELK stack searching",
+                objective: "Query Elasticsearch via Dev Tools Console using Lucene / ES DSL.",
+                commands: [
+                    { title: "Kibana Query Language (KQL)", code: 'host.name : "prod-server-01" and event.outcome : "failure"' },
+                    { title: "Elasticsearch DSL Query", code: 'GET /logs-*/_search\n{\n  "query": {\n    "match": { "event.code": "4625" }\n  }\n}' }
+                ]
+            },
+            {
+                id: 5,
+                name: "Defender for Endpoint",
+                type: "EDR",
+                function: "Endpoint protection and automated threat analysis",
+                objective: "Run Advanced Hunting queries to identify malicious process executions.",
+                commands: [
+                    { title: "KQL Process Launch Query", code: 'DeviceProcessEvents\n| where ProcessCommandLine contains "powershell.exe -enc"\n| project Timestamp, DeviceName, AccountName, ProcessCommandLine' },
+                    { title: "Isolate Machine via PowerShell (Live Response)", code: 'Isolate-Machine -Comment "Suspicious Activity Detected"' }
+                ]
+            },
+            {
+                id: 6,
+                name: "CrowdStrike Falcon",
+                type: "EDR/XDR",
+                function: "Real-time endpoint prevention & threat hunting",
+                objective: "Search Falcon Event Streams via Falcon Query Language (FQL) / RTR.",
+                commands: [
+                    { title: "Falcon Query (Unusual PowerShell Executions)", code: 'event_simpleName=ProcessRollup2 ImageFileName="*powershell.exe"\n| table ComputerName, UserName, CommandLine' },
+                    { title: "Real-Time Response (RTR) Command", code: 'runscript -Raw=```Get-Process | Where-Object {$_.CPU -gt 100}```' }
+                ]
+            },
+            {
+                id: 7,
+                name: "SentinelOne",
+                type: "EDR/XDR",
+                function: "AI-powered autonomous endpoint protection",
+                objective: "Execute Deep Visibility hunting queries to inspect registry changes.",
+                commands: [
+                    { title: "Deep Visibility Query", code: 'EventType = "Registry Key Create" AND RegistryKeyPath Contains "RunOnce"' },
+                    { title: "Agent CLI Mitigation Command", code: 'sentinelctl.exe protect -m disconnect -i "AGENT_ID"' }
+                ]
+            },
+            {
+                id: 8,
+                name: "Snort",
+                type: "IDS",
+                function: "Network packet analysis & rule-based detection",
+                objective: "Write custom Snort signatures and run local packet inspection.",
+                commands: [
+                    { title: "Custom IDS Rule (/etc/snort/rules/local.rules)", code: 'alert tcp any any -> $HOME_NET 80 (msg:"ATTACK-RESPONSES Directory Traversal Attempt"; content:"../.."; sid:1000001; rev:1;)' },
+                    { title: "Execute Snort on PCAP", code: 'snort -dev -c /etc/snort/snort.conf -r capture.pcap' }
+                ]
+            },
+            {
+                id: 9,
+                name: "Suricata",
+                type: "IDS/IPS",
+                function: "Intrusion prevention and protocol inspection",
+                objective: "Inspect live network interfaces using multi-threaded signature processing.",
+                commands: [
+                    { title: "Run Suricata Engine", code: 'suricata -c /etc/suricata/suricata.yaml -i eth0' },
+                    { title: "Inspect Alert Logs in Real-time", code: 'tail -f /var/log/suricata/fast.log' }
+                ]
+            },
+            {
+                id: 10,
+                name: "Zeek",
+                type: "NSM",
+                function: "Connection parsing & detailed network logging",
+                objective: "Generate structured network telemetry logs from raw traffic.",
+                commands: [
+                    { title: "Analyze PCAP File", code: 'zeek -r traffic_sample.pcap' },
+                    { title: "Inspect Extracted Connection Logs", code: 'zeek-cut id.orig_h id.resp_h proto service < conn.log | head -n 20' }
+                ]
+            },
+            {
+                id: 11,
+                name: "Wazuh",
+                type: "SIEM/XDR",
+                function: "Open source host monitoring and FIM",
+                objective: "Monitor File Integrity (FIM) and inspect local agent activity.",
+                commands: [
+                    { title: "Configure FIM in ossec.conf", code: '<syscheck>\n  <directories check_all="yes">/etc,/usr/bin</directories>\n</syscheck>' },
+                    { title: "Query Manager Rule Alerts", code: '/var/ossec/bin/wazuh-control status\ngrep "Rule: 550" /var/ossec/logs/alerts/alerts.log' }
+                ]
+            },
+            {
+                id: 12,
+                name: "TheHive",
+                type: "IR",
+                function: "Security incident case management",
+                objective: "Interact with TheHive API using Python/cURL to create security incidents.",
+                commands: [
+                    { title: "API Request to Create Alert", code: 'curl -XPOST -H "Authorization: Bearer <API_KEY>" \\\n-H "Content-Type: application/json" \\\nhttp://localhost:9000/api/alert \\\n-d \'{"title": "Unauthorized SSH Login", "type": "external", "source": "Wazuh"}\'' }
+                ]
+            },
+            {
+                id: 13,
+                name: "Cortex",
+                type: "Orchestration",
+                function: "Automated observable analysis engine",
+                objective: "Trigger automated analyzers for observables (IPs, Hashes).",
+                commands: [
+                    { title: "Run Analyzer via API", code: 'curl -XPOST -H "Authorization: Bearer <API_KEY>" \\\n-H "Content-Type: application/json" \\\nhttp://localhost:9001/api/analyzer/VirusTotal_GetReport/run \\\n-d \'{"data": "8.8.8.8", "dataType": "ip"}\'' }
+                ]
+            },
+            {
+                id: 14,
+                name: "MISP",
+                type: "Threat Intel",
+                function: "IOC sharing platform and threat correlation",
+                objective: "Export Indicators of Compromise (IOCs) using PyMISP.",
+                commands: [
+                    { title: "Python API IOC Fetch Script", code: 'from pymisp import PyMISP\nmisp = PyMISP("https://misp.local", "API_KEY", False)\nresult = misp.search(controller="attributes", type_attribute="ip-dst")\nprint(result)' }
+                ]
+            },
+            {
+                id: 15,
+                name: "Nessus",
+                type: "Vuln Scanner",
+                function: "Vulnerability assessment and risk reporting",
+                objective: "Execute network vulnerability scans using command-line interface.",
+                commands: [
+                    { title: "Trigger Scan via Nessus CLI", code: 'nessuscli scan --start --id=12345' },
+                    { title: "Export Scan Report to CSV", code: 'nessuscli scan --export --id=12345 --format=csv --output=report.csv' }
+                ]
+            },
+            {
+                id: 16,
+                name: "Wireshark",
+                type: "Packet Analyzer",
+                function: "Traffic dissection and deep packet inspection",
+                objective: "Filter packet captures using command-line `tshark`.",
+                commands: [
+                    { title: "Display Filter (HTTP POST Requests)", code: 'tshark -r capture.pcap -Y "http.request.method == POST" -T fields -e ip.src -e http.host' },
+                    { title: "Filter DNS Queries", code: 'tshark -r capture.pcap -Y "dns.flags.response == 0" -T fields -e dns.qry.name' }
+                ]
+            },
+            {
+                id: 17,
+                name: "VirusTotal",
+                type: "Malware Analysis",
+                function: "Multi-engine file and URL scanner",
+                objective: "Query suspicious file hashes using VirusTotal v3 REST API.",
+                commands: [
+                    { title: "Query Hash via cURL", code: 'curl --request GET \\\n  --url https://www.virustotal.com/api/v3/files/44d88612fea8a8f36de82e1278abb02f \\\n  --header "x-apikey: <YOUR_API_KEY>"' }
+                ]
+            },
+            {
+                id: 18,
+                name: "YARA",
+                type: "Malware Analysis",
+                function: "Rule-based pattern matching for malware files",
+                objective: "Write and execute YARA rules against suspicious binaries.",
+                commands: [
+                    { title: "Write Custom YARA Rule (rule.yar)", code: 'rule Suspicious_Strings {\n    strings:\n        $a = "cmd.exe /c"\n        $b = "powershell -EncodedCommand"\n    condition:\n        $a or $b\n}' },
+                    { title: "Scan Directory with YARA", code: 'yara -r rule.yar /path/to/suspicious/files' }
+                ]
+            },
+            {
+                id: 19,
+                name: "OSQuery",
+                type: "Endpoint",
+                function: "SQL-based system telemetry and query engine",
+                objective: "Extract endpoint state and telemetry using SQL queries.",
+                commands: [
+                    { title: "Query Listening Ports", code: 'SELECT pid, name, port, address FROM listening_ports JOIN processes USING (pid);' },
+                    { title: "Check Persistence via Startup Items", code: 'SELECT name, path, status FROM startup_items;' }
+                ]
+            },
+            {
+                id: 20,
+                name: "Security Onion",
+                type: "NSM Platform",
+                function: "Integrated suite (Zeek, ELK, Suricata)",
+                objective: "Manage core NSM services and run analyst queries.",
+                commands: [
+                    { title: "Check Service Status", code: 'so-status' },
+                    { title: "Replay PCAP through Detection Engines", code: 'so-import-pcap sample.pcap' }
+                ]
+            }
+        ];
+
+        const toolsGrid = document.getElementById('toolsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const typeFilter = document.getElementById('typeFilter');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalClose = document.getElementById('modalClose');
+
+        function renderTools(data) {
+            toolsGrid.innerHTML = '';
+            data.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="card-header">
+                            <span class="tool-number">#${tool.id}</span>
+                            <span class="tool-type">${tool.type}</span>
+                        </div>
+                        <h2 class="tool-title">${tool.name}</h2>
+                        <p class="tool-function">${tool.function}</p>
+                    </div>
+                    <button class="btn-lab" onclick="openLab(${tool.id})">⚡ Launch Interactive Lab</button>
+                `;
+                toolsGrid.appendChild(card);
+            });
+        }
+
+        function filterTools() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedType = typeFilter.value;
+
+            const filtered = toolsData.filter(tool => {
+                const matchesSearch = tool.name.toLowerCase().includes(searchTerm) ||
+                                      tool.function.toLowerCase().includes(searchTerm) ||
+                                      tool.type.toLowerCase().includes(searchTerm);
+                
+                const matchesType = selectedType === 'ALL' || tool.type.includes(selectedType);
+
+                return matchesSearch && matchesType;
+            });
+
+            renderTools(filtered);
+        }
+
+        function openLab(toolId) {
+            const tool = toolsData.find(t => t.id === toolId);
+            if (!tool) return;
+
+            modalTitle.innerText = `🛡️ ${tool.name} (${tool.type}) - Practical Lab`;
+            
+            let htmlContent = `
+                <div class="lab-section">
+                    <h3>🎯 Lab Objective</h3>
+                    <p style="color: var(--text-muted);">${tool.objective}</p>
+                </div>
+            `;
+
+            tool.commands.forEach((cmd, idx) => {
+                htmlContent += `
+                    <div class="lab-section">
+                        <h3>💻 ${cmd.title}</h3>
+                        <div class="terminal">
+                            <div class="terminal-header">
+                                <span>Command / Query Reference</span>
+                                <button class="copy-btn" onclick="copyToClipboard('code-${tool.id}-${idx}')">📋 Copy</button>
+                            </div>
+                            <pre><code id="code-${tool.id}-${idx}">${escapeHtml(cmd.code)}</code></pre>
+                        </div>
+                    </div>
+                `;
+            });
+
+            modalBody.innerHTML = htmlContent;
+            modalOverlay.classList.add('active');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;")
+                       .replace(/</g, "&lt;")
+                       .replace(/>/g, "&gt;");
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        modalClose.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        searchInput.addEventListener('input', filterTools);
+        typeFilter.addEventListener('change', filterTools);
+
+        // Initial Render
+        renderTools(toolsData);
+    </script>
+</body>
+</html>
