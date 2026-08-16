@@ -1,305 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VoIP Infrastructure - Labs</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#090d14;--bg2:#0e1420;--card:#121a2a;--cardH:#182240;--bdr:#1c2840;--fg:#e4eaf3;--mt:#6e80a0;--ac:#00e5a0;--acD:rgba(0,229,160,.1);--acG:rgba(0,229,160,.25);--wn:#ff6347;--inf:#3bb8f5;--gd:#f0c040;--pu:#a87cff;--cisco:#049fd9;--avaya:#e31937;--voice:#10b981}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
-.mono{font-family:'JetBrains Mono',monospace}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · VoIP Infrastructure</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== ACADEMY THEME VARIABLES ========== */
+        :root {
+            --primary: #00e676; --primary-fg: #000000; --body-fg: #ffffff; --body-bg: #121212;
+            --body-quiet-color: #b0b0b0; --body-loud-color: #ffffff; --hairline-color: #272727;
+            --border-color: #353535; --darkened-bg: #1e1e1e; --selected-bg: #2a2a2a; --header-bg: #1a1a1a; --input-bg: #242424;
+            --dark-color: #2c3e50;
+        }
+        html[data-theme="light"] {
+            --primary: #02b3e4; --primary-fg: #ffffff; --body-fg: #1a2c3e; --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87; --body-loud-color: #0b2b3b; --hairline-color: #e6edf4;
+            --border-color: #eef2f8; --darkened-bg: #ffffff; --selected-bg: #e9f4fa; --header-bg: #ffffff; --input-bg: #f9fbfe;
+            --dark-color: #34495e;
+        }
 
-.top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(9,13,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-.top-nav-left{display:flex;align-items:center;gap:12px}
-.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,229,160,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
-.back-to-labs:hover{background:rgba(0,229,160,.2);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
-.top-nav-links{display:flex;align-items:center;gap:4px}
-.top-nav-links a{padding:6px 14px;color:var(--mt);text-decoration:none;font-size:12px;font-weight:500;border-radius:6px;transition:all .15s;white-space:nowrap}
-.top-nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.04)}
-.top-nav-links a.active{color:var(--ac);background:var(--acD)}
-.top-nav-links .login-btn{background:rgba(255,99,71,.1);color:var(--wn);border:1px solid rgba(255,99,71,.2);margin-left:4px}
-.top-nav-links .login-btn:hover{background:rgba(255,99,71,.2);border-color:var(--wn)}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
-/* Dropdown Menu Styles */
-.nav-dropdown{position:relative}
-.nav-dropdown>a{display:flex;align-items:center;gap:4px;cursor:pointer}
-.nav-dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;min-width:260px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:10;max-height:400px;overflow-y:auto}
-.nav-dropdown:hover .nav-dropdown-content{display:block;animation:fu .35s ease}
-.nav-dropdown-content a{display:block;padding:8px 12px;font-size:12px;border-radius:5px}
-.nav-dropdown-content a:hover{background:var(--acD);color:var(--ac)}
+        /* ========== ACADEMY TOP NAV & DROPDOWNS ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--darkened-bg); min-width: 260px; box-shadow: 0px 8px 20px rgba(0,0,0,0.25); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown-content a { color: var(--body-fg); padding: 10px 16px; text-decoration: none; display: block; font-size: 0.82rem; font-weight: 500; border-bottom: none; transition: background 0.2s, color 0.2s; }
+        .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
 
-.sidebar{position:fixed;left:0;top:52px;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;overflow-y:auto;transition:transform .3s}
-.sidebar::-webkit-scrollbar{width:3px}
-.sidebar-back-btns{padding:14px 14px 10px;border-bottom:1px solid var(--bdr)}
-.sidebar-back-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,229,160,.06);color:var(--ac);border:1px solid rgba(0,229,160,.15);border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s}
-.sidebar-back-btn:hover{background:rgba(0,229,160,.15);border-color:var(--ac)}
-.sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
-.sidebar-brand i{font-size:18px;color:var(--cisco)}
-.sidebar-brand span{font-weight:700;font-size:13px}
-.sidebar-label{padding:14px 18px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);font-weight:600}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--mt);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
-.nav-item:hover{color:var(--fg);background:rgba(255,255,255,.02)}
-.nav-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
-.nav-item i.icon{width:18px;text-align:center;font-size:12px;flex-shrink:0}
-.nav-item .arrow{margin-left:auto;font-size:9px;transition:transform .25s}
-.nav-item.open .arrow{transform:rotate(90deg)}
-.sub-nav{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.15)}
-.sub-nav.open{max-height:600px}
-.sub-item{display:block;padding:7px 18px 7px 48px;color:var(--mt);text-decoration:none;font-size:12px;transition:all .15s;border-left:3px solid transparent}
-.sub-item:hover,.sub-item.active{color:var(--ac);background:var(--acD);border-left-color:var(--ac)}
+        /* ========== ACADEMY LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }  
+        .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 10px 0; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
-.main{margin-left:260px;margin-top:52px;min-height:calc(100vh - 52px)}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(9,13,20,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
-.topbar-title{font-weight:700;font-size:14px}
-.topbar-right{display:flex;align-items:center;gap:12px}
-.progress-bar{width:110px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%}
-.content{padding:28px;max-width:1100px}
+        .content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-.sec{margin-bottom:48px;scroll-margin-top:120px}
-.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;background:var(--acD);color:var(--ac);font-size:11px;font-weight:600;border-radius:16px;border:1px solid rgba(0,229,160,.18);margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase}
-.sec-badge.cisco-b{background:rgba(4,159,217,.1);color:var(--cisco);border-color:rgba(4,159,217,.2)}
-.sec-badge.avaya-b{background:rgba(227,25,55,.1);color:var(--avaya);border-color:rgba(227,25,55,.2)}
-.sec-badge.dsl-b{background:rgba(240,192,64,.1);color:var(--gd);border-color:rgba(240,192,64,.2)}
-.sec-badge.ts-b{background:rgba(255,99,71,.1);color:var(--wn);border-color:rgba(255,99,71,.2)}
-.sec-title{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
-.sec-desc{color:var(--mt);font-size:14px;max-width:640px;margin-bottom:22px}
+        /* ========== VoIP SPECIFIC STYLES (MAPPED TO ACADEMY VARIABLES) ========== */
+        .topbar { position: sticky; top: 0; z-index: 50; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; border-radius: 14px; margin-bottom: 24px; }
+        .topbar-title { font-weight: 700; font-size: 14px; color: var(--body-loud-color); display: flex; align-items: center; gap: 8px; }
+        .progress-bar { width: 110px; height: 4px; background: var(--hairline-color); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width .3s; width: 0%; }
+        .content { max-width: 1100px; }
 
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;transition:all .25s;position:relative;overflow:hidden}
-.card:hover{border-color:rgba(0,229,160,.25);background:var(--cardH);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
-.card-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+        .hero-mini { padding: 24px 0 24px; text-align: center; position: relative; margin-bottom: 40px; border-bottom: 1px solid var(--hairline-color); }
+        .hero-mini::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 80%, var(--selected-bg), transparent); pointer-events: none; border-radius: 14px;}
 
-.code{background:#060a12;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin:12px 0}
-.code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(28,40,64,.4);border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mt)}
-.dots{display:flex;gap:5px}.dots span{width:9px;height:9px;border-radius:50%}
-.code-body{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;color:#bcc8de;white-space:pre-wrap;word-break:break-all}
-.cm{color:var(--ac)}.cc{color:#3e5070;font-style:italic}.ck{color:var(--pu)}.cv{color:var(--gd)}.cw{color:var(--wn)}.cic{color:var(--cisco)}.cav{color:var(--avaya)}.cp{color:var(--wn)}
+        .sec { margin-bottom: 48px; scroll-margin-top: 120px; }
+        .sec-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; background: var(--selected-bg); color: var(--primary); font-size: 11px; font-weight: 600; border-radius: 16px; border: 1px solid var(--hairline-color); margin-bottom: 12px; letter-spacing: .4px; text-transform: uppercase; }
+        .sec-badge.cisco-b { background: rgba(4,159,217,.1); color: #049fd9; border-color: rgba(4,159,217,.2); }
+        .sec-badge.avaya-b { background: rgba(227,25,55,.1); color: #e31937; border-color: rgba(227,25,55,.2); }
+        .sec-badge.dsl-b { background: rgba(240,192,64,.1); color: #f0c040; border-color: rgba(240,192,64,.2); }
+        .sec-title { font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; color: var(--body-loud-color); }
+        .sec-desc { color: var(--body-quiet-color); font-size: 14px; max-width: 640px; margin-bottom: 22px; line-height: 1.6; }
 
-.imgf{border-radius:12px;overflow:hidden;border:1px solid var(--bdr);position:relative;background:var(--card)}
-.imgf img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;filter:grayscale(25%)}
-.imgf:hover img{transform:scale(1.03);filter:grayscale(0%)}
-.imgf .il{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(9,13,20,.92));font-size:11px;color:var(--mt)}
+        .card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 14px; padding: 22px; transition: all .25s; position: relative; overflow: hidden; margin-bottom: 16px; }
+        .card:hover { border-color: var(--primary); background: var(--selected-bg); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .card-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; }
+        .card h3, .card p { color: var(--body-loud-color); }
+        .card p { font-size: 12px; color: var(--body-quiet-color) !important; line-height: 1.5; }
 
-.tabs{display:flex;gap:3px;margin-bottom:20px;flex-wrap:wrap}
-.tbtn{padding:6px 16px;border:1px solid var(--bdr);border-radius:7px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;transition:all .15s}
-.tbtn:hover{border-color:var(--ac);color:var(--fg)}
-.tbtn.active{background:var(--acD);border-color:var(--ac);color:var(--ac)}
-.tpanel{display:none;animation:fu .35s ease}
-.tpanel.active{display:block}
-@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .code { background: var(--input-bg); border: 1px solid var(--hairline-color); border-radius: 10px; overflow: hidden; margin: 12px 0; }
+        .code-top { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--selected-bg); border-bottom: 1px solid var(--hairline-color); font-size: 11px; color: var(--body-quiet-color); }
+        .dots { display: flex; gap: 5px; } .dots span { width: 9px; height: 9px; border-radius: 50%; background: var(--hairline-color); }
+        .code-body { padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.85; overflow-x: auto; color: var(--body-fg); white-space: pre-wrap; word-break: break-all; background: var(--body-bg); }
+        
+        /* Syntax Highlighting */
+        .cm { color: var(--primary); } .cc { color: var(--body-quiet-color); font-style: italic; } .ck { color: #a87cff; }
+        .cv { color: #f0c040; } .cw { color: #ff6347; } .cic { color: #049fd9; } .cav { color: #e31937; } .cp { color: #ff6347; }
 
-.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:start}
-.vs-badge{align-self:center;width:44px;height:44px;border-radius:50%;background:var(--wn);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-top:30px;box-shadow:0 0 24px rgba(255,99,71,.25);flex-shrink:0}
+        .tabs { display: flex; gap: 3px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tbtn { padding: 6px 16px; border: 1px solid var(--hairline-color); border-radius: 7px; background: transparent; color: var(--body-quiet-color); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; transition: all .15s; }
+        .tbtn:hover { border-color: var(--primary); color: var(--body-fg); }
+        .tbtn.active { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .tpanel { display: none; animation: fu .35s ease; } .tpanel.active { display: block; }
+        @keyframes fu { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.dtbl{width:100%;border-collapse:collapse;font-size:13px}
-.dtbl th{text-align:left;padding:10px 14px;background:rgba(28,40,64,.4);color:var(--ac);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--bdr)}
-.dtbl td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--mt)}
-.dtbl tr:hover td{background:rgba(0,229,160,.02);color:var(--fg)}
+        .vs-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: start; }
+        .vs-badge { align-self: center; width: 44px; height: 44px; border-radius: 50%; background: #ff6347; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; margin-top: 30px; box-shadow: 0 0 24px rgba(255,99,71,.25); flex-shrink: 0; }
+        
+        .imgf { border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline-color); position: relative; background: var(--darkened-bg); margin-bottom: 16px; }
+        .imgf img { width: 100%; height: auto; object-fit: contain; display: block; transition: transform .5s; }
+        .imgf:hover img { transform: scale(1.03); }
+        .imgf .il { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 14px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); font-size: 11px; color: #fff; }
 
-.st{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
-.st-g{background:rgba(0,229,160,.1);color:var(--ac)}
-.st-r{background:rgba(255,99,71,.1);color:var(--wn)}
-.st-y{background:rgba(240,192,64,.1);color:var(--gd)}
-.st-b{background:rgba(59,184,245,.1);color:var(--inf)}
-.st-p{background:rgba(168,124,255,.1);color:var(--pu)}
-.st-ci{background:rgba(4,159,217,.1);color:var(--cisco)}
-.st-av{background:rgba(227,25,55,.1);color:var(--avaya)}
+        .copy-btn { padding: 3px 10px; border: 1px solid var(--hairline-color); border-radius: 5px; background: transparent; color: var(--body-quiet-color); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 10px; transition: all .15s; display: flex; align-items: center; gap: 4px; }
+        .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--darkened-bg); border: 1px solid var(--primary); padding: 10px 18px; border-radius: 10px; display: flex; align-items: center; gap: 8px; transform: translateY(100px); opacity: 0; transition: all .4s ease; z-index: 9999; font-size: 13px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); color: var(--body-fg); }
+        .toast.show { transform: translateY(0); opacity: 1; }
 
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
-.reveal.vis{opacity:1;transform:translateY(0)}
+        /* Tags */
+        .st { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; background: var(--selected-bg); color: var(--primary); border: 1px solid var(--hairline-color); margin: 2px;}
+        .st-ci { background: rgba(4,159,217,.1); color: #049fd9; border-color: rgba(4,159,217,.2); }
+        .st-av { background: rgba(227,25,55,.1); color: #e31937; border-color: rgba(227,25,55,.2); }
+        .st-y { background: rgba(240,192,64,.1); color: #f0c040; border-color: rgba(240,192,64,.2); }
+        .st-p { background: rgba(168,124,255,.1); color: #a87cff; border-color: rgba(168,124,255,.2); }
 
-.hero-mini{padding:36px 0 16px;text-align:center;position:relative}
-.hero-mini::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 80%,rgba(0,229,160,.05),transparent);pointer-events:none}
+        /* Lesson Nav & Footer */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
 
-.copy-btn{padding:3px 10px;border:1px solid var(--bdr);border-radius:5px;background:transparent;color:var(--mt);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:10px;transition:all .15s;display:flex;align-items:center;gap:4px}
-.copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
 
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,.3);padding:10px 18px;border-radius:10px;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .4s ease;z-index:9999;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.toast.show{transform:translateY(0);opacity:1}
-
-@keyframes blink-dot{0%,100%{opacity:1;r:3}50%{opacity:.3;r:1.5}}
-@keyframes dash-flow{to{stroke-dashoffset:-20}}
-.dash-anim{animation:dash-flow 1s linear infinite}
-.blink-d{animation:blink-dot 1.5s ease-in-out infinite}
-
-.mob-btn{display:none;position:fixed;top:60px;left:10px;z-index:200;width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--bdr);color:var(--fg);font-size:15px;cursor:pointer;align-items:center;justify-content:center}
-.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
-.mob-overlay.show{display:block}
-@media(max-width:900px){
-.sidebar{transform:translateX(-100%)}.sidebar.show{transform:translateX(0)}.main{margin-left:0}.mob-btn{display:flex}
-.top-nav-links a:not(.login-btn):not(.active){display:none}.vs-grid{grid-template-columns:1fr}.vs-badge{margin-top:0;justify-self:center}.content{padding:20px 14px}
-.nav-dropdown-content{position:static;display:none;max-height:300px}
-.nav-dropdown:hover .nav-dropdown-content{display:none}
-}
-@media(max-width:600px){.top-nav-links a{padding:5px 8px;font-size:11px}.back-to-labs span{display:none}.back-to-labs{padding:6px 10px}}
-</style>
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .vs-grid { grid-template-columns: 1fr; } .vs-badge { margin-top: 0; justify-self: center; }
+        }
+    </style>
 </head>
 <body>
+<script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
 
-<!-- TOP NAV -->
+<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
 <nav class="top-nav">
-  <div class="top-nav-left">
-    <a href="labs.html" class="back-to-labs"><i class="fa-solid fa-arrow-left"></i><span>Back to Labs</span></a>
-  </div>
-  <div class="top-nav-links">
-    <a href="index.html">Dashboard</a>
-    
-    <!-- COURSES DROPDOWN -->
-    <div class="nav-dropdown">
-        <a href="courses.html">Courses ▾</a>
-        <div class="nav-dropdown-content">
-            <a href="2026.html">Summer Lectures</a>
-            <a href="labs.html">Curriculum</a>
-            <a href="DPA.html">DPA Summer Training Course</a>
-            <a href="level3.html">1- Introduction to Cybersecurity</a>
-            <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
-            <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
-            <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
-            <a href="#" id="dropAiBtn1">Level-1 AI</a>
-            <a href="#" id="dropAiBtn2">Level2-AI</a>
-            <a href="networking.html">CyberSecurity Reading Slides</a>
-            <a href="routing-switching.html">English CyberSecurity Course</a>
-            <a href="aws foundation.html">AWS Cloud Foundation</a>
-            <a href="digital comm.html">Digital Comm</a>
-            <a href="wireless comm.html">Wireless Comm</a>
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a><a href="labs.html">Curriculum</a><a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a><a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a><a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a><a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a><a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a><a href="digital comm.html">Digital Comm</a><a href="wireless comm.html">Wireless Comm</a>
+            </div>
         </div>
-    </div>
-
-    <a href="messages.html">📝 Tasks & Submissions</a>
-
-    <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
-    <div class="nav-dropdown">
-        <a href="labs.html">Curriculum ▾</a>
-        <div class="nav-dropdown-content">
-            <a href="labs.html">Network Security Overview</a>
-            <a href="network Roadmap.html">Network Roadmap</a>
-            <a href="security Roadmap.html">Security Roadmap</a>
-            <a href="lesson-6.html">Switching Architecture</a>
-            <a href="lesson-7.html">Firewall Security Architecture</a>
-            <a href="lesson-3.html">KALI Linux</a>
-            <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
-            <a href="lesson-4.html">Vulnerability Scanners</a>
-            <a href="nessus.html">Nessus Vulnerability Assessment</a>
-            <a href="labs2.html">Networking Labs Overview</a>
-            <a href="lesson-8.html">Wireless Solutions</a>
-            <a href="lesson-9.html">Cyber Attacks</a>
-            <a href="lesson-10.html">Troubleshooting</a>
-            <a href="lesson-11.html">Switch Management</a>
-            <a href="lesson-12.html">VOIP</a>
-            <a href="lesson-13.html">Cloud Computing</a>
-            <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
-            <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
-            <a href="lesson-16.html">Practice Labs advanced</a>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <div class="nav-dropdown">
+            <a href="labs.html" class="active">Curriculum ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a><a href="network Roadmap.html">Network Roadmap</a><a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a><a href="lesson-7.html">Firewall Security Architecture</a><a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a><a href="lesson-4.html">Vulnerability Scanners</a><a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a><a href="lesson-8.html">Wireless Solutions</a><a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a><a href="lesson-11.html">Switch Management</a>
+                <a href="voip.html" style="color:var(--primary); font-weight:700;">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="lesson-13.html">Cloud Computing</a><a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a><a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
         </div>
-    </div>
-
-    <!-- NEW CURRICULUM DROPDOWN (Renamed from Labs) -->
-    <div class="nav-dropdown">
-        <a href="lesson-14.html">Curriculum ▾</a>
-        <div class="nav-dropdown-content">
-            <a href="Switch_Config.html">Basic Switch Configuration</a>
-            <a href="vlan.html">Basic VLAN</a>
-            <a href="static_route.html">Static Routing</a>
-            <a href="ssh.html">SSH Configuration</a>
-            <a href="trunk.html">VLAN Trunking</a>
-            <a href="router_stick.html">Router-on-a-Stick</a>
-            <a href="etherchannel.html">EtherChannel</a>
-            <a href="dhcp.html">DHCPv4 Configuration</a>
-            <a href="nat.html">NAT Configuration</a>
-            <a href="acl.html">Access Control Lists</a>
-            <a href="ospf.html">OSPF Single Area</a>
-            <a href="hsrp.html">HSRP Configuration</a>
-            <a href="stp.html">Spanning Tree Protocol</a>
-            <a href="mgt.html">Switch Management</a>
-            <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
-            <a href="subnetting.html">Routing & Subnetting</a>
-            <a href="asa.html">ASA Firewall Configuration</a>
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a><a href="vlan.html">Basic VLAN</a><a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a><a href="trunk.html">VLAN Trunking</a><a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a><a href="dhcp.html">DHCPv4 Configuration</a><a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a><a href="ospf.html">OSPF Single Area</a><a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a><a href="mgt.html">Switch Management</a><a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a><a href="asa.html">ASA Firewall Configuration</a>
+            </div>
         </div>
+        <a href="login.html" class="login-btn">Login</a>
     </div>
-
-    <a href="login.html" class="login-btn">Login</a>
-  </div>
 </nav>
-<button class="mob-btn" id="mobBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-<div class="mob-overlay" id="mobOverlay"></div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-back-btns">
-    <a href="labs.html" class="sidebar-back-btn"><i class="fa-solid fa-arrow-left"></i>Back to Labs</a>
-  </div>
-  <div class="sidebar-brand">
-    <i class="fa-solid fa-phone-volume"></i>
-    <span>VoIP Infrastructure</span>
-  </div>
-  <div class="sidebar-label">Lab Sections</div>
+<div class="main-content">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-back-btns">
+            <a href="labs.html" class="sidebar-back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Labs</a>
+            <button class="theme-toggle" onclick="toggleTheme()"><span id="themeLabel">☀️ Switch to Light Mode</span></button>
+        </div>
+        <div class="sidebar-header"><h3>Lab Sections</h3></div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#overview" class="active">VoIP Overview</a></li>
+                <li><a href="#topo">Network Topology</a></li>
+                <li><a href="#cisco" style="color:#049fd9">Cisco Config</a></li>
+                <li><a href="#avaya" style="color:#e31937">Avaya Config</a></li>
+                <li><a href="#dsl" style="color:#f0c040">DSL Integration</a></li>
+                <li><a href="#qos">QoS Reference</a></li>
+                <li><a href="#ts">Troubleshooting</a></li>
+                <li><a href="#ref">Quick Reference</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-  <div class="nav-item open" data-nav="overview"><i class="fa-solid fa-circle-info icon"></i><span>VoIP Overview</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav open" data-sub="overview">
-    <a href="#concepts" class="sub-item">Key Concepts</a>
-    <a href="#compare" class="sub-item">Cisco vs Avaya</a>
-  </div>
-
-  <div class="nav-item" data-nav="topo"><i class="fa-solid fa-diagram-project icon"></i><span>Network Topology</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="topo">
-    <a href="#topology" class="sub-item">Topology Diagram</a>
-  </div>
-
-  <div class="nav-item" data-nav="cisco"><i class="fa-solid fa-cube icon" style="color:var(--cisco)"></i><span>Cisco Config</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="cisco">
-    <a href="#cisco-vlan" class="sub-item">Voice VLAN</a>
-    <a href="#cisco-port" class="sub-item">Access Port</a>
-    <a href="#cisco-qos" class="sub-item">QoS / Auto-QoS</a>
-    <a href="#cisco-poe" class="sub-item">PoE Settings</a>
-    <a href="#cisco-trunk" class="sub-item">Trunk / Core</a>
-  </div>
-
-  <div class="nav-item" data-nav="avaya"><i class="fa-solid fa-phone icon" style="color:var(--avaya)"></i><span>Avaya Config</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="avaya">
-    <a href="#avaya-vlan" class="sub-item">Voice VLAN</a>
-    <a href="#avaya-port" class="sub-item">Access Port</a>
-    <a href="#avaya-dhcp" class="sub-item">DHCP Options</a>
-    <a href="#avaya-qos" class="sub-item">QoS / L2Q</a>
-  </div>
-
-  <div class="nav-item" data-nav="dsl"><i class="fa-solid fa-wifi icon" style="color:var(--gd)"></i><span>DSL Integration</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="dsl">
-    <a href="#dsl-types" class="sub-item">DSL Types & BW</a>
-    <a href="#dsl-config" class="sub-item">DSL Router Config</a>
-  </div>
-
-  <div class="nav-item" data-nav="qos"><i class="fa-solid fa-gauge-high icon"></i><span>QoS Reference</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="qos">
-    <a href="#qos-table" class="sub-item">DSCP / CoS Table</a>
-  </div>
-
-  <div class="nav-item" data-nav="ts"><i class="fa-solid fa-bug icon" style="color:var(--wn)"></i><span>Troubleshooting</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="ts">
-    <a href="#ts-cisco" class="sub-item">Cisco Debug</a>
-    <a href="#ts-avaya" class="sub-item">Avaya Debug</a>
-    <a href="#ts-issues" class="sub-item">Common Issues</a>
-  </div>
-
-  <div class="nav-item" data-nav="ref"><i class="fa-solid fa-bookmark icon"></i><span>Quick Reference</span><i class="fa-solid fa-chevron-right arrow"></i></div>
-  <div class="sub-nav" data-sub="ref">
-    <a href="#ref-card" class="sub-item">Command Cheat Sheet</a>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title"><i class="fa-solid fa-graduation-cap" style="color:var(--ac);margin-right:6px"></i>VoIP Voice VLAN & DSL - Complete Lab</div>
-    <div class="topbar-right">
-      <span class="text-xs" style="color:var(--mt)" id="progText">0%</span>
-      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-    </div>
-  </div>
 
 <div class="content">
 
@@ -1069,91 +993,47 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- Toast -->
-<div id="toast" class="toast"><i class="fa-solid fa-check-circle" style="color:var(--ac)"></i><span id="toastMsg">Copied!</span></div>
-
+<!-- JAVASCRIPT -->
 <script>
-// Tab switching
-function switchTab(group, tab, btn) {
-  const container = btn.closest('.sec');
-  container.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
-  container.querySelectorAll('.tpanel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(group + '-' + tab).classList.add('active');
-}
+    // ACADEMY THEME TOGGLE
+    function toggleTheme() {
+        let currentTheme = document.documentElement.getAttribute('data-theme');
+        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('cd_theme', newTheme);
+        document.getElementById('themeLabel').textContent = newTheme === 'dark' ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode';
+    }
+    // Set initial button text
+    if(document.documentElement.getAttribute('data-theme') === 'light') {
+        document.getElementById('themeLabel').textContent = '🌙 Switch to Dark Mode';
+    }
 
-// Copy code
-function copyCode(btn) {
-  const codeBody = btn.closest('.code').querySelector('.code-body');
-  navigator.clipboard.writeText(codeBody.innerText).then(() => showToast('Copied to clipboard!')).catch(() => {
-    const ta = document.createElement('textarea'); ta.value = codeBody.innerText; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copied to clipboard!');
-  });
-}
+    // VOIP PAGE LOGIC (Tabs, Copy, Progress)
+    function switchTab(group, id, btn) {
+        document.querySelectorAll(`#${group}-tabs .tbtn`).forEach(b => b.classList.remove('active'));
+        document.querySelectorAll(`#${group} .tpanel`).forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(id).classList.add('active');
+    }
 
-// Toast
-function showToast(msg) {
-  const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg;
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
-}
+    function copyCode(btn) {
+        const codeBody = btn.closest('.code').querySelector('.code-body');
+        navigator.clipboard.writeText(codeBody.innerText);
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy', 2000);
+    }
 
-// Sidebar nav toggle
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const nav = item.dataset.nav;
-    const sub = document.querySelector(`[data-sub="${nav}"]`);
-    if (sub) { item.classList.toggle('open'); sub.classList.toggle('open'); }
-  });
-});
-
-// Sidebar sub-item active + scroll
-const allSecs = document.querySelectorAll('.sec, .card[id]');
-const subItems = document.querySelectorAll('.sub-item');
-const navItems = document.querySelectorAll('.nav-item');
-
-function updateActive() {
-  let current = '';
-  allSecs.forEach(s => { if (s.getBoundingClientRect().top < 140) current = s.id; });
-  subItems.forEach(s => { s.classList.toggle('active', s.getAttribute('href') === '#' + current); });
-  navItems.forEach(n => {
-    const sub = document.querySelector(`[data-sub="${n.dataset.nav}"]`);
-    if (sub && sub.querySelector('.sub-item.active')) { n.classList.add('active'); }
-  });
-  // Progress
-  const h = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = h > 0 ? Math.round((window.scrollY / h) * 100) : 0;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progText').textContent = pct + '%';
-}
-window.addEventListener('scroll', updateActive);
-
-// Sub-item click: smooth scroll + close mobile
-subItems.forEach(s => {
-  s.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(s.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('show'); document.getElementById('mobOverlay').classList.remove('show'); }
-  });
-});
-
-// Reveal on scroll
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); revealObs.unobserve(e.target); } });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-
-// Mobile menu
-document.getElementById('mobBtn').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('show');
-  document.getElementById('mobOverlay').classList.toggle('show');
-});
-document.getElementById('mobOverlay').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.remove('show');
-  document.getElementById('mobOverlay').classList.remove('show');
-});
-
-// Init
-updateActive();
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("progFill").style.width = scrolled + "%";
+        document.getElementById("progText").textContent = Math.round(scrolled) + "%";
+    });
 </script>
 </body>
+</html>
 </html>
