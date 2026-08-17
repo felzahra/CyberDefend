@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberDefend Academy · Dashboard Columns</title>
+    <title>CyberDefend Academy · Enterprise Security Infrastructure</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,28 +20,37 @@
         body { background: var(--bg); color: var(--fg); transition: background 0.3s, color 0.3s; }
 
         /* ========== TOP NAVIGATION ========== */
-        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .nav-logo-icon { background: var(--primary); color: #000; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
         .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--fg); }
         .nav-brand-text span { font-size: 0.6rem; color: var(--fg-muted); }
-        .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links > a, .nav-dropdown > a { color: var(--fg-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .top-nav-links > a, .nav-dropdown > a { color: var(--fg-muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 5px 0; border-bottom: 2px solid transparent; white-space: nowrap; }
         .top-nav-links > a:hover, .nav-dropdown > a:hover { color: var(--fg); border-bottom-color: var(--primary); }
         .nav-dropdown { position: relative; display: inline-block; }
-        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg-card); min-width: 260px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg-card); min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 420px; overflow-y: auto; }
         .nav-dropdown-content a { color: var(--fg); padding: 10px 16px; display: block; font-size: 0.82rem; font-weight: 500; text-decoration: none; }
         .nav-dropdown-content a:hover { background: var(--accent-bg); color: var(--primary); }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
-        .back-btn { background: rgba(0,230,118,0.1); color: var(--primary); padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 700; border: 1px solid var(--primary); }
-        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--fg); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+        .theme-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--fg); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .login-link { color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 700; padding: 8px 16px; border: 1px solid var(--primary); border-radius: 8px; transition: 0.2s; }
+        .login-link:hover { background: var(--accent-bg); }
+
+        /* ========== CENTER TITLE ========== */
+        .page-hero { text-align: center; padding: 50px 40px 30px; max-width: 800px; margin: 0 auto; }
+        .page-hero h2 { font-size: 2rem; font-weight: 800; color: var(--fg); margin-bottom: 10px; letter-spacing: -0.5px; }
+        .page-hero h2 i { color: var(--primary); margin-right: 10px; }
+        .page-hero p { color: var(--fg-muted); font-size: 0.95rem; line-height: 1.7; }
+        .page-hero .hero-divider { width: 60px; height: 3px; background: var(--primary); margin: 18px auto 0; border-radius: 3px; }
 
         /* ========== GRID LAYOUT ========== */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 25px;
-            padding: 40px;
+            padding: 20px 40px 50px;
             max-width: 1800px;
             margin: 0 auto;
         }
@@ -51,26 +60,28 @@
             border-radius: 16px;
             padding: 25px;
             height: fit-content;
+            transition: box-shadow 0.3s;
         }
+        .grid-column:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .column-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .column-header h2 { color: var(--primary); font-size: 1.2rem; margin-bottom: 5px; }
-        .column-header p { color: var(--fg-muted); font-size: 0.75rem; }
+        .column-header h2 { color: var(--primary); font-size: 1.15rem; margin-bottom: 5px; }
+        .column-header p { color: var(--fg-muted); font-size: 0.72rem; line-height: 1.5; }
 
         /* ========== TREE MENU STYLES ========== */
         ul.tree, ul.tree ul { list-style: none; }
-        ul.tree ul { margin-left: 20px; border-left: 1px dashed var(--border); padding-left: 12px; display: none; /* Hidden by default */ }
-        ul.tree li { margin: 8px 0; position: relative; }
-        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--fg); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        ul.tree ul { margin-left: 18px; border-left: 1px dashed var(--border); padding-left: 12px; display: none; }
+        ul.tree li { margin: 6px 0; position: relative; }
+        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--fg); font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
         ul.tree li > span:hover, ul.tree li > a:hover { background: var(--accent-bg); color: var(--primary); }
         ul.tree li > a.active { background: var(--accent-bg); color: var(--primary); font-weight: 700; }
         
-        .toggle-icon { width: 16px; text-align: center; font-size: 0.7rem; color: var(--fg-muted); transition: transform 0.2s; }
+        .toggle-icon { width: 16px; text-align: center; font-size: 0.7rem; color: var(--fg-muted); transition: transform 0.2s; flex-shrink: 0; }
         .expanded > .toggle-icon { transform: rotate(90deg); }
         
-        .level-1 > span { font-weight: 700; font-size: 0.95rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
+        .level-1 > span { font-weight: 700; font-size: 0.92rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
         .level-1 > span:hover { background: transparent; }
-        .level-2 > a, .level-2 > span { font-weight: 600; font-size: 0.85rem; }
-        .level-3 > a, .level-3 > span { font-size: 0.8rem; color: var(--fg-muted); font-weight: 400; }
+        .level-2 > a, .level-2 > span { font-weight: 600; font-size: 0.84rem; }
+        .level-3 > a, .level-3 > span { font-size: 0.79rem; color: var(--fg-muted); font-weight: 400; }
         .level-3 > a:hover { color: var(--primary); }
 
         /* ========== FOOTER ========== */
@@ -84,92 +95,199 @@
         .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 0.8rem; margin-top: 30px; }
 
         @media (max-width: 900px) {
-            .grid-container { grid-template-columns: 1fr; padding: 20px; }
-            .top-nav { flex-direction: column; gap: 15px; }
+            .grid-container { grid-template-columns: 1fr; padding: 15px; }
+            .top-nav { flex-direction: column; gap: 12px; padding: 14px 20px; }
+            .top-nav-links { justify-content: center; }
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .page-hero { padding: 30px 20px 20px; }
+            .page-hero h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 <script>
-    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    /* Light mode as default */
+    const savedTheme = localStorage.getItem('cd_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
+
     function toggleTheme() {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('cd_theme', next);
+        updateThemeBtn();
     }
+
+    function updateThemeBtn() {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        btn.innerHTML = isDark
+            ? '<i class="fas fa-sun"></i> Light Mode'
+            : '<i class="fas fa-moon"></i> Dark Mode';
+    }
+
+    document.addEventListener('DOMContentLoaded', updateThemeBtn);
 </script>
 
-<!-- HEADER & NAVIGATION -->
+<!-- NAVIGATION -->
 <nav class="top-nav">
     <a href="index.html" class="nav-brand">
         <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Curriculum Map</span></div>
+        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Enterprise Security Infrastructure</span></div>
     </a>
     <div class="top-nav-links">
+	            <a href="index.html" class="active">Dashboard</a>
+
+        <!-- COURSES DROPDOWN -->
         <div class="nav-dropdown">
-            <a href="#">Courses ▾</a>
+            <a href="courses.html">Courses ▾</a>
             <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Enterprise Security Infrastructure</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+            </div>
+        </div>
+
+        <a href="messages.html">📝 Tasks & Submissions</a>
+
+        <!-- CURRICULUM DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="labs.html" class="active">Enterprise Security Infrastructure ▾</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
                 <a href="network Roadmap.html">Network Roadmap</a>
                 <a href="security Roadmap.html">Security Roadmap</a>
                 <a href="lesson-6.html">Switching Architecture</a>
-                <a href="lesson-7.html">Firewall Security</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
                 <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
             </div>
         </div>
+
+        <!-- TOOLSET CONSOLE DROPDOWN -->
         <div class="nav-dropdown">
-            <a href="#">Labs ▾</a>
+            <a href="paid-cybersecurity-course.html">Interactive Attack Labs &#9662;</a>
             <div class="nav-dropdown-content">
-                <a href="begin1.html">Beginner Pentest Lab</a>
+                <a href="encyclopedia.html">The Complete Cyber Curriculum</a>
+                <a href="live-monitor.html">Live Threat Monitor</a>
+                <a href="begin1.html">Beginner Pentest Labs</a>
+                <a href="88888.html">Attack Phases</a>
                 <a href="second.html">Attack LABS p1</a>
                 <a href="third.html">Attack LABS p2</a>
-                <a href="asa-lab.html">ASA Firewall Lab</a>
+                <a href="fourth.html">Attack LABS p3</a>
+                <a href="html.html">Switch Lab</a>
+                <a href="asa-lab.html">Firewall Lab</a>
+                <a href="Firewal-Lab.html">Firewall Lab 2</a>
+                <a href="wireshark-lab.html">Wireshark Lab</a>
                 <a href="logs.html">Log Analysis</a>
+                <a href="crack.html">Exploitation & Cracking</a>
+                <a href="kali50tools.html">🐉 Top 50 Kali Tool CLI</a>
+                <a href="kali50tools3.html">🐉 Kali Toolset Console</a>
+                <a href="kali50tools2.html">🐉 Top 50 Kali Tool CLI+ GUI</a>
+                <a href="BurpSuite.html">Burp Suite</a>
+                <a href="active-directory-attack-lab.html">Active Directory Attack Lab</a>
+                <a href="soc-tools.html">🛡️ 20 Essential SOC Tools</a>
             </div>
         </div>
-        <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i> Theme</button>
-        <a href="index.html" class="back-btn">← Return to Main</a>
+
+        <!-- PACKET TRACER LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Packet Tracer Labs &#9662;</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+
+        <!-- DARK MODE TOGGLE -->
+        <button class="theme-btn" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i> Dark Mode</button>
+
+        <!-- LOGIN -->
+        <a href="login.html" class="login-link">Login</a>
     </div>
 </nav>
 
-<!-- 4-COLUMN GRID CONTAINER -->
+<!-- CENTERED PAGE TITLE -->
+<section class="page-hero">
+    <h2><i class="fas fa-shield-halved"></i> Curriculum</h2>
+    <p>Complete curriculum map covering network architecture, security defense, attack simulation labs, vulnerability management, and hands-on Packet Tracer exercises — all in one place.</p>
+    <div class="hero-divider"></div>
+</section>
+
+<!-- 4-COLUMN GRID -->
 <div class="grid-container">
     
     <!-- COLUMN 1: INTERACTIVE LAB MODULES -->
     <div class="grid-column">
         <div class="column-header">
-            <h2>Attack Interactive Lab Modules</h2>
+            <h2><i class="fas fa-flask"></i> Attack Interactive Lab Modules</h2>
             <p>Hands-on Attack & Defense Labs</p>
         </div>
         <ul class="tree" id="tree1"></ul>
     </div>
 
-    <!-- COLUMN 2: MAIN CURRICULUM (Code 1) -->
+    <!-- COLUMN 2: MAIN CURRICULUM -->
     <div class="grid-column">
         <div class="column-header">
-            <h2>Enterprise Security Infrastructure</h2>
-			 <p>Network Tracks Explained, </p>
-            <p>Roadmaps, Architecture & Security</p>
+            <h2><i class="fas fa-network-wired"></i> Enterprise Security Infrastructure</h2>
+            <p>Network Tracks Explained, Roadmaps, Architecture & Security</p>
         </div>
         <ul class="tree" id="tree2"></ul>
     </div>
 
-    <!-- COLUMN 3: COURSE STRUCTURE EXTRACTOR (Code 2) -->
+    <!-- COLUMN 3: COURSE STRUCTURE -->
     <div class="grid-column">
         <div class="column-header">
-            <h2>CyberSecurity  Course Structure</h2>
-            <p>Core Tracks & Modules</p>
+            <h2><i class="fas fa-graduation-cap"></i> CyberSecurity Course Structure</h2>
+            <p>Core Tracks & Modules with Attack Data</p>
         </div>
         <ul class="tree" id="tree3"></ul>
     </div>
 
-    <!-- COLUMN 4: PRACTICE LABS (PACKET TRACER) -->
+    <!-- COLUMN 4: PRACTICE LABS -->
     <div class="grid-column">
         <div class="column-header">
-            <h2>Packet Tracer Practice Labs</h2>
-            <p>Packet Tracer Exercises</p>
+            <h2><i class="fas fa-server"></i> Practice Labs</h2>
+            <p>Packet Tracer · EVE-NG · GNS3 · Advanced</p>
         </div>
         <ul class="tree" id="tree4"></ul>
     </div>
@@ -202,7 +320,34 @@
 
 <script>
     // =========================================================
-    // DATA 1: Main Curriculum (From your first code block)
+    // DATA 1: Interactive Lab Modules
+    // =========================================================
+    const interactiveLabs = {
+        title: "Interactive Lab Modules", icon: "fa-flask",
+        children: [
+            { title: "Live Threat Monitor", link: "live-monitor.html" },
+            { title: "Beginner Pentest Lab", link: "begin1.html", children: ["Lab Setup (EVE-NG & Kali)", "Nmap Port Scanning", "Wireshark Traffic Analysis", "Metasploit Basics", "Exploiting vsftpd Backdoor"] },
+            { title: "Attack Phases Lab", link: "88888.html", children: ["Reconnaissance", "Scanning", "Exploitation", "Privilege Escalation", "Lateral Movement", "Data Exfiltration", "Erasing Evidence"] },
+            { title: "Attack LABS p1", link: "second.html", children: ["ARP Spoofing MITM", "DNS Spoofing", "Rogue DHCP Server", "Wireless Evil Twin", "SQL Injection", "Cross-Site Scripting (XSS)", "Data Exfiltration (DNS Tunnel)", "Lateral Movement (Pass-the-Hash)", "Phishing Campaign (GoPhish)", "Password Brute Force", "Buffer Overflow Exploit", "Linux Privilege Escalation"] },
+            { title: "Attack LABS p2", link: "third.html", children: ["EternalBlue Exploit", "Active Directory Kerberoasting", "LFI to RCE (Log Poisoning)", "AWS S3 Bucket Exfiltration", "Command Injection", "Windows Persistence (Registry)"] },
+            { title: "Attack LABS p3", link: "fourth.html", children: ["Apache Struts 2 RCE", "VSFTPD Backdoor Exploit", "Shellshock (CGI) RCE", "Local Privilege Escalation", "Network Pivoting (Route +SOCKS)"] },
+            { title: "Switch LAB", link: "html.html", children: ["VLANs & 802.1Q Trunking", "Inter-VLAN Routing (ROAS)", "Switch Port Security", "Wireshark: ARP Spoofing Analysis", "Wireshark: DNS Exfiltration Analysis"] },
+            { title: "ASA Firewall Lab", link: "asa-lab.html", children: ["ASA Basic Setup & Security Levels", "Network Objects & Dynamic NAT", "Access Control Lists (Permit Web)", "Static NAT (Publishing Web Server)", "ACL Block - Deny Attacker IP"] },
+            { title: "Firewall Lab 2", link: "Firewal-Lab.html", children: ["1. Interfaces & Zones", "2. Routing", "3. Security Policies", "4. NAT Rules", "5. Bandwidth (QoS)", "6. VPN Configuration", "7. Logging & Alerts"] },
+            { title: "Wireshark GUI Labs", link: "wireshark-lab.html", children: ["HTTP Credentials", "TCP SYN Flood DoS", "ARP Spoofing & DHCP"] },
+            { title: "Log Analysis", link: "logs.html", children: ["Windows Event Logs", "Linux Auth Logs", "Cisco Switch Logs", "SIEM / EDR Correlation", "Apache Web Logs", "Firewall Logs", "Active Directory Logs", "AWS CloudTrail Logs"] },
+            { title: "Exploitation & Cracking", link: "crack.html", children: ["1. Recon & Nmap", "2. Web Enumeration", "3. Metasploit Exploit", "4. Hash Cracking (John)", "5. Wi-Fi Cracking", "6. SQL Injection", "7. SSH Brute Force", "8. Buffer Overflow", "9. Linux Privilege Escalation", "10. Active Directory Attack", "11. Windows SAM Cracking", "12. Email Phishing"] },
+            { title: "Active Directory Attack Lab", link: "active-directory-attack-lab.html", children: ["1. User Enumeration", "2. Group & ACL Discovery", "3. BloodHound Mapping", "4. Domain Admin Path"] },
+            { title: "Kali Toolset Console", link: "kali50tools3.html", children: ["Wireshark / T-Shark", "THC Hydra", "SQLmap", "Nikto", "Nmap"] },
+            { title: "Top 50 Kali Tool CLI+ GUI", link: "kali50tools2.html", children: [
+                { title: "Burp Suite", link: "BurpSuite.html" }
+            ]}
+        ]
+    };
+    const data1 = [interactiveLabs];
+
+    // =========================================================
+    // DATA 2: Main Curriculum
     // =========================================================
     const curriculum1 = [
         {
@@ -219,7 +364,7 @@
                 },
                 {
                     title: "Security Roadmap", link: "security Roadmap.html",
-                    children: ["Cyber Security Skills You Must Learn", "Comprehensive cybersecurity skills roadmap", "Top 10 Websites Every Cybersecurity Learner Should Know", "Penetration Testing Concepts", "Top Bug Bounty Tools Kali Cheatsheet", "20 Essential SOC Tools for Every SOC Analyst", "Types of Malware", "Cybersecurity Terms Explained Simply"]
+                    children: ["Cyber Security Skills You Must Learn", "Comprehensive Cybersecurity Skills Roadmap", "Top 10 Websites Every Cybersecurity Learner Should Know", "Penetration Testing Concepts", "Top Bug Bounty Tools Kali Cheatsheet", "20 Essential SOC Tools for Every SOC Analyst", "Types of Malware", "Cybersecurity Terms Explained Simply"]
                 },
                 {
                     title: "Cybersecurity Terms Explained", link: "attack-vectors.html",
@@ -336,38 +481,15 @@
                 },
                 {
                     title: "Networking Labs Overview", link: "labs2.html",
-                    children: ["Enterprise & Campus Networks labs"]
+                    children: ["Enterprise & Campus Networks Labs"]
                 }
             ]
         }
     ];
-
-    // Extract Interactive Lab Modules specifically for Column 1
-    const interactiveLabs = {
-        title: "Interactive Lab Modules", icon: "fa-flask",
-        children: [
-            { title: "Live Threat Monitor", link: "live-monitor.html" },
-            { title: "Beginner Pentest Lab", link: "begin1.html", children: ["Lab Setup (EVE-NG & Kali)", "Nmap Port Scanning", "Wireshark Traffic Analysis", "Metasploit Basics", "Exploiting vsftpd Backdoor"] },
-            { title: "Attack Phases Lab", link: "88888.html", children: ["Reconnaissance", "Scanning", "Exploitation", "Privilege Escalation", "Lateral Movement", "Data Exfiltration", "Erasing evidence"] },
-            { title: "Attack LABS p1", link: "second.html", children: ["ARP Spoofing MITM", "DNS Spoofing", "Rogue DHCP Server", "Wireless Evil Twin", "SQL Injection", "Cross-Site Scripting (XSS)", "Data Exfiltration (DNS Tunnel)", "Lateral Movement (Pass-the-Hash)", "Phishing Campaign (GoPhish)", "Password Brute Force", "Buffer Overflow Exploit", "Linux Privilege Escalation"] },
-            { title: "Attack LABS p2", link: "third.html", children: ["EternalBlue Exploit", "Active Directory Kerberoasting", "LFI to RCE (Log Poisoning)", "AWS S3 Bucket Exfiltration", "Command Injection", "Windows Persistence (Registry)"] },
-            { title: "Attack LABS p3", link: "fourth.html", children: ["Apache Struts 2 RCE", "VSFTPD Backdoor Exploit", "Shellshock (CGI) RCE", "Local Privilege Escalation", "Network Pivoting (Route +SOCKS)"] },
-            { title: "Switch LAB", link: "html.html", children: ["VLANs & 802.1Q Trunking", "Inter-VLAN Routing (ROAS)", "Switch Port Security", "Wireshark: ARP Spoofing Analysis", "Wireshark: DNS Exfiltration Analysis"] },
-            { title: "ASA Firewall Lab", link: "asa-lab.html", children: ["ASA Basic Setup & Security Levels", "Network Objects & Dynamic NAT", "Access Control Lists (Permit Web)", "Static NAT (Publishing Web Server)", "ACL Block - Deny Attacker IP"] },
-            { title: "Firewall Lab 2", link: "Firewal-Lab.html", children: ["1. Interfaces & Zones", "2. Routing", "3. Security Policies", "4. NAT Rules", "5. Bandwidth (QoS)", "6. VPN Configuration", "7. Logging & Alerts"] },
-            { title: "Wireshark GUI Labs", link: "wireshark-lab.html", children: ["HTTP Credentials", "TCP SYN Flood DoS", "ARP Spoofing & DHCP"] },
-            { title: "Log Analysis", link: "logs.html", children: ["Windows Event Logs", "Linux Auth Logs", "Cisco Switch Logs", "SIEM / EDR Correlation", "Apache Web Logs", "Firewall Logs", "Active Directory Logs", "AWS CloudTrail Logs"] },
-            { title: "Exploitation & Cracking", link: "crack.html", children: ["1. Recon & Nmap", "2. Web Enumeration", "3. Metasploit Exploit", "4. Hash Cracking (John)", "5. Wi-Fi Cracking", "6. SQL Injection", "7. SSH Brute Force", "8. Buffer Overflow", "9. Linux Privilege Escalation", "10. Active Directory Attack", "11. Windows SAM Cracking", "12. Email Phishing"] },
-            { title: "Active Directory Attack Lab", link: "active-directory-attack-lab.html", children: ["1. User Enumeration", "2. Group & ACL Discovery", "3. BloodHound Mapping", "4. Domain Admin Path"] },
-            { title: "Kali Toolset Console", children: ["Wireshark / T-Shark", "THC Hydra", "SQLmap", "Nikto", "Nmap"] },
-            { title: "🐉 Top 50 Kali tool CLI+ GUI", children: ["Burp Suite"] }
-        ]
-    };
-    const data1 = [interactiveLabs];
-    const data2 = curriculum1; // The full curriculum for Column 2
+    const data2 = curriculum1;
 
     // =========================================================
-    // DATA 3: Extractor Curriculum (From your second code block)
+    // DATA 3: Course Structure with Attack Data
     // =========================================================
     const data3 = [
       { cat: "1. Getting Started", icon: "fa-rocket", modules: [
@@ -487,30 +609,68 @@
     ];
 
     // =========================================================
-    // DATA 4: Practice Labs Packet Tracer
+    // DATA 4: Practice Labs (with links filled in)
     // =========================================================
     const data4 = [
       {
-        title: "Practice Labs (Packet Tracer)", icon: "fa-network-wired",
+        title: "Packet Tracer Labs", icon: "fa-network-wired",
         children: [
-          "Basic Switch Configuration", 
-          "Basic VLAN Configuration", 
-          "Static Routing", 
-          "SSH Configuration", 
-          "VLAN Trunking", 
-          "Router-on-a-Stick", 
-          "EtherChannel", 
-          "DHCPv4 Configuration", 
-          "NAT Configuration", 
-          "Access Control Lists", 
-          "OSPF Routing", 
-          "HSRP Configuration", 
-          "Spanning Tree Protocol", 
-          "Switch Management", 
-          "VoIP — Cisco & Avaya", 
-          "Cloud — AWS / Azure / GCP", 
-          "Subnetting Practice", 
-          "Security ASA Firewall"
+          { title: "Basic Switch Configuration", link: "Switch_Config.html" },
+          { title: "Basic VLAN Configuration", link: "vlan.html" },
+          { title: "Static Routing", link: "static_route.html" },
+          { title: "SSH Configuration", link: "ssh.html" },
+          { title: "VLAN Trunking", link: "trunk.html" },
+          { title: "Router-on-a-Stick", link: "router_stick.html" },
+          { title: "EtherChannel", link: "etherchannel.html" },
+          { title: "DHCPv4 Configuration", link: "dhcp.html" },
+          { title: "NAT Configuration", link: "nat.html" },
+          { title: "Access Control Lists", link: "acl.html" },
+          { title: "OSPF Single Area", link: "ospf.html" },
+          { title: "HSRP Configuration", link: "hsrp.html" },
+          { title: "Spanning Tree Protocol", link: "stp.html" },
+          { title: "Switch Management", link: "mgt.html" },
+          { title: "VoIP — Cisco & Avaya Voice VLAN", link: "voip.html" },
+          { title: "Routing & Subnetting", link: "subnetting.html" },
+          { title: "ASA Firewall Configuration", link: "asa.html" }
+        ]
+      },
+      {
+        title: "EVE-NG & GNS3 Labs", icon: "fa-cubes",
+        children: [
+          { title: "Practice Labs (EVE-NG + GNS3)", link: "lesson-15.html", children: [
+            "EVE-NG Network Topology Building",
+            "GNS3 Virtual Lab Setup",
+            "Kali Linux Integration with EVE-NG",
+            "Multi-Vendor Network Simulation",
+            "SD-WAN Lab Topology",
+            "BGP Routing Lab"
+          ]}
+        ]
+      },
+      {
+        title: "Advanced Practice Labs", icon: "fa-layer-group",
+        children: [
+          { title: "Advanced Labs Overview", link: "lesson-16.html", children: [
+            "Enterprise Campus Network Design",
+            "Multi-Site VPN Topology",
+            "DMZ Deployment Lab",
+            "High Availability (HSRP + VRRP)",
+            "QoS & Traffic Shaping",
+            "Network Automation with Python"
+          ]}
+        ]
+      },
+      {
+        title: "Cloud Hands-On Labs", icon: "fa-cloud",
+        children: [
+          { title: "Cloud Computing Labs", link: "lesson-13.html", children: [
+            "AWS S3 Bucket Policies",
+            "IAM Role & Policy Configuration",
+            "VPC & Subnet Design",
+            "Security Group Rules",
+            "Azure Network Security Groups",
+            "GCP Firewall Rules"
+          ]}
         ]
       }
     ];
@@ -520,7 +680,6 @@
     // =========================================================
     function renderTree(nodes, parentElement, level) {
         nodes.forEach(node => {
-            // Handle string conversion
             if (typeof node === 'string') {
                 node = { title: node, link: null, children: null };
             }
@@ -531,7 +690,6 @@
             const itemElement = node.link ? document.createElement('a') : document.createElement('span');
             itemElement.href = node.link || '#';
             
-            // Determine title and icon
             let title = node.cat || node.title || node.name;
             let iconHtml = '';
             if (level === 1) iconHtml = `<i class="fas ${node.icon || 'fa-folder'}" style="color: var(--primary); margin-right: 8px;"></i>`;
@@ -541,7 +699,6 @@
             itemElement.innerHTML = `${iconHtml} ${title}`;
             li.appendChild(itemElement);
 
-            // Determine children array
             const children = node.children || node.modules || node.data;
 
             if (children && children.length > 0) {
@@ -550,9 +707,8 @@
                 renderTree(children, ul, level + 1);
                 li.appendChild(ul);
 
-                // Click event to toggle display block/none
                 itemElement.addEventListener('click', (e) => {
-                    if (e.target.tagName === 'A' && node.link) return; // Allow links to work
+                    if (e.target.tagName === 'A' && node.link) return; 
                     e.preventDefault();
                     itemElement.classList.toggle('expanded');
                     ul.style.display = ul.style.display === 'block' ? 'none' : 'block';
@@ -571,7 +727,7 @@
     renderTree(data3, document.getElementById('tree3'), 1);
     renderTree(data4, document.getElementById('tree4'), 1);
 
-    // Auto-expand the first level by default so the user sees the categories immediately
+    // Auto-expand the first level
     document.querySelectorAll('.level-1 > span').forEach(span => {
         setTimeout(() => span.click(), 100);
     });
