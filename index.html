@@ -212,6 +212,18 @@
     </style>
 </head>
 <body>
+    <script>
+/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(a => {
+        const h = a.getAttribute('href');
+        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener noreferrer');
+        }
+    });
+});
+</script>
 <!-- DEFAULT TO LIGHT MODE -->
 <script>document.documentElement.setAttribute('data-theme', 'light');</script>
 
