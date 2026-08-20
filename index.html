@@ -212,18 +212,6 @@
     </style>
 </head>
 <body>
-    <script>
-/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href]').forEach(a => {
-        const h = a.getAttribute('href');
-        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener noreferrer');
-        }
-    });
-});
-</script>
 <!-- DEFAULT TO LIGHT MODE -->
 <script>document.documentElement.setAttribute('data-theme', 'light');</script>
 
@@ -372,13 +360,13 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     <!-- ========== ROADMAP VISUALIZATION INJECTION ========== -->
-    <div class="cards-wrap" id="cardsWrap"></div>
+    
 
     <!-- COURSE GRID CARD -->
     <div class="hero-card">
         <div class="course-grid">
             <a href="2026.html" class="course-card"><div class="course-icon" style="font-size:3rem;font-weight:900;color:#ef4444;">⬇</div><h3>Summer Lectures</h3><p style="font-size:0.8rem;">Recorded Sessions & Videos</p></a>
-            <a href="Curriculum.html" class="course-card"><div class="course-icon">📘 </div><h3>Curriculum</h3><p style="font-size:0.8rem;">Core Tracks , Roadmaps,Modules</p></a>
+            <a href="Curriculum.html" class="course-card"><div class="course-icon">📘 </div><h3>Curriculum & Roadmaps</h3><p style="font-size:0.8rem;">Core Tracks , Roadmaps,Modules</p></a>
             <a href="labs.html" class="course-card"><div class="course-icon">📚</div><h3>Enterprise Security Infrastructure</h3><p style="font-size:0.8rem;">Network Tracks Explained, Roadmaps, Architecture & Security</p></a>
             <a href="DPA.html" class="course-card"><div class="course-icon">🔀</div><h3>DPA Summer Training Course</h3><p style="font-size:0.8rem;">Damietta Port Summer Training</p></a>
             <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p style="font-size:0.8rem;">Foundations & Core Concepts</p></a>
@@ -427,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <a href="cybersecurity-course.html" class="btn-large">Start Cybersecurity Course →</a>
     </div>
-    
+    <div class="cards-wrap" id="cardsWrap"></div>
     <footer>© CyberDefend Academy · Part of Accenture</footer>
 </div>
 
@@ -453,7 +441,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="chatbot-send" id="chatbot-send">➤</button>
     </div>
 </div>
-
+<script>
+/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(a => {
+        const h = a.getAttribute('href');
+        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener noreferrer');
+        }
+    });
+});
+</script>
 <script>
     // THEME TOGGLE LOGIC (DEFAULT LIGHT MODE)
     function toggleTheme() {
@@ -602,11 +601,8 @@ document.addEventListener('DOMContentLoaded', () => {
           {n:'CompTIA Security+)',l:'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7'},	 
           {n:'penetration test ',l:'https://www.youtube.com/watch?v=eUPk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs'},
           {n:'Kali Linux Ethical Hacking',l:'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1Ue1UideULQvEgCgQ3a1B'},
-          {n:'Windows for Cybersecurity',l:'https://www.youtube.com/watch?v=OpYXo_wrLXk&list=PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv'},
           {n:'Web Application Penetration',l:'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4'},
-          {n:' SOC Analyst',l:'https://www.youtube.com/watch?v=b439X92USmE&list=PLroS9tRyoUGqPHKWE1VqNw1957AAgOVzR&pp=0gcJCf4COCosWNin'},
           {n:'Blue Teaming / SOC Analyst',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ&si=NIDNOSLeFlvzTk23'},
-          {n:'Cybersecurity Analyst Projects',l:'https://www.youtube.com/watch?v=kku0fVfksrk&list=PLG6KGSNK4PuBWmX9NykU0wnWamjxdKhDJ'},
           {n:'30-Day SOC Analyst Challenge',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6&si=0QIIve7ucFBAlHZT'}
         ]
       },
@@ -625,6 +621,28 @@ document.addEventListener('DOMContentLoaded', () => {
           {n:'Attack Interactive Attack Labs',l:'paid-cybersecurity-course.html'},
           {n:'Summer Lectures',l:'2026.html'},
           {n:'CyberSecurity Reading Slides',l:'networking.html'}
+        ]
+      },
+	        {
+        title:'Network Beginner Roadmap',
+        desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',
+        icon:'fa-skull-crossbones',
+        color:'#ef4444',
+        steps:[
+          {n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},
+          {n:' Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},
+          {n:'IP Address & Subnetting ',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H&pp=0gcJCf4COCosWNin'},
+          {n:'CCNA course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},
+          {n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},
+          {n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},
+          {n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},
+          {n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},
+          {n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},
+		  {n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},
+		  {n:'VMware windows VM',l:'https://youtu.be/t3PAufBUX9o'},
+		  {n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},
+		  {n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},
+		  {n:'Download Here',l:'https://filecr.com/home/?'}
         ]
       }
     ];
