@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · Switch Command Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000;
+            --body-fg: #e0e0e0;
+            --body-bg: #060606;
+            --body-quiet: #888;
+            --body-loud: #fff;
+            --hairline: #1a1a1a;
+            --darkened: #0e0e0e;
+            --selected: #161616;
+            --selected-row: #121212;
+            --cisco-bg: #0a1a0e;
+            --cisco-border: #2e7d32;
+            --cisco-text: #66bb6a;
+            --hp-bg: #0a0e1a;
+            --hp-border: #1565c0;
+            --hp-text: #42a5f5;
+            --aruba-bg: #1a0e0a;
+            --aruba-border: #e65100;
+            --aruba-text: #ff8a65;
+            --code-bg: #080808;
+            --warn-bg: #1a1500;
+            --warn-border: #f9a825;
+            --info-bg: #0a1520;
+            --info-border: #29b6f6;
+            --tip-bg: #0a1a0e;
+            --tip-border: #00e676;
+            --err-bg: #1a0a0a;
+            --err-border: #ef5350;
+        }
+        html[data-theme="light"] {
+            --primary: #00897b;
+            --primary-fg: #fff;
+            --body-fg: #2c3e50;
+            --body-bg: #f4f5f7;
+            --body-quiet: #78909c;
+            --body-loud: #1a1a2e;
+            --hairline: #dde1e6;
+            --darkened: #fff;
+            --selected: #e8f5e9;
+            --selected-row: #f5f5f5;
+            --cisco-bg: #e8f5e9;
+            --cisco-border: #2e7d32;
+            --cisco-text: #1b5e20;
+            --hp-bg: #e3f2fd;
+            --hp-border: #1565c0;
+            --hp-text: #0d47a1;
+            --aruba-bg: #fff3e0;
+            --aruba-border: #e65100;
+            --aruba-text: #bf360c;
+            --code-bg: #f5f5f5;
+            --warn-bg: #fff8e1;
+            --warn-border: #f9a825;
+            --info-bg: #e1f5fe;
+            --info-border: #29b6f6;
+            --tip-bg: #e8f5e9;
+            --tip-border: #00897b;
+            --err-bg: #ffebee;
+            --err-border: #ef5350;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        .page { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+
+        .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
+        .top-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo { width: 44px; height: 44px; background: var(--primary); color: var(--primary-fg); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .top-left h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud); }
+        .top-left h1 span { display: block; font-size: 0.6rem; color: var(--primary); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn { cursor: pointer; border: 1px solid var(--hairline); padding: 8px 16px; background: var(--darkened); border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 0.82rem; font-weight: 600; margin-bottom: 24px; }
+        .back-link:hover { text-decoration: underline; }
+
+        .hero { background: linear-gradient(135deg, var(--selected), var(--darkened)); border: 1px solid var(--hairline); border-radius: 24px; padding: 36px 32px; margin-bottom: 32px; }
+        .hero-badge { display: inline-block; background: var(--primary); color: var(--primary-fg); font-size: 0.62rem; font-weight: 700; padding: 4px 14px; border-radius: 30px; letter-spacing: 1px; margin-bottom: 12px; }
+        .hero h2 { font-size: 1.9rem; font-weight: 800; color: var(--body-loud); margin-bottom: 6px; }
+        .hero p { color: var(--body-quiet); font-size: 0.9rem; max-width: 750px; }
+        .legend { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.78rem; font-weight: 600; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 4px; }
+        .legend-dot.cisco { background: var(--cisco-border); }
+        .legend-dot.hp { background: var(--hp-border); }
+        .legend-dot.aruba { background: var(--aruba-border); }
+
+        /* TOC */
+        .toc { background: var(--darkened); border: 1px solid var(--hairline); border-radius: 18px; padding: 22px 28px; margin-bottom: 32px; }
+        .toc h3 { font-size: 0.95rem; font-weight: 700; color: var(--body-loud); margin-bottom: 12px; }
+        .toc-grid { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+        .toc a { color: var(--primary); text-decoration: none; font-size: 0.78rem; font-weight: 500; padding: 3px 0; transition: 0.15s; }
+        .toc a:hover { text-decoration: underline; }
+        .toc a .n { color: var(--body-quiet); font-weight: 700; margin-right: 4px; }
+
+        /* SECTION */
+        .section { margin-bottom: 40px; }
+        .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--hairline); }
+        .sec-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; background: var(--selected); border: 1px solid var(--hairline); }
+        .sec-head h2 { font-size: 1.25rem; font-weight: 700; color: var(--body-loud); }
+        .sec-head h2 small { display: block; font-size: 0.7rem; color: var(--body-quiet); font-weight: 500; margin-top: 1px; }
+
+        /* COMPARE TABLE */
+        .cmp-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 16px; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); }
+        .cmp-table th { padding: 12px 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-align: left; border-bottom: 2px solid var(--hairline); }
+        .cmp-table th.concept { background: var(--selected); color: var(--body-loud); width: 22%; }
+        .cmp-table th.cisco { background: var(--cisco-bg); color: var(--cisco-text); border-left: 3px solid var(--cisco-border); }
+        .cmp-table th.hp { background: var(--hp-bg); color: var(--hp-text); border-left: 3px solid var(--hp-border); }
+        .cmp-table th.aruba { background: var(--aruba-bg); color: var(--aruba-text); border-left: 3px solid var(--aruba-border); }
+        .cmp-table td { padding: 10px 16px; font-size: 0.8rem; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+        .cmp-table td.concept { background: var(--selected-row); color: var(--body-loud); font-weight: 600; }
+        .cmp-table td.cisco { background: var(--cisco-bg); border-left: 3px solid var(--cisco-border); }
+        .cmp-table td.hp { background: var(--hp-bg); border-left: 3px solid var(--hp-border); }
+        .cmp-table td.aruba { background: var(--aruba-bg); border-left: 3px solid var(--aruba-border); }
+        .cmp-table tr:last-child td { border-bottom: none; }
+        .cmp-table tr:hover td { filter: brightness(1.05); }
+        code { font-family: 'Courier New', Consolas, monospace; font-size: 0.76rem; padding: 1px 5px; border-radius: 4px; background: var(--code-bg); border: 1px solid var(--hairline); color: var(--body-fg); white-space: nowrap; }
+        .cmd-multiline { display: flex; flex-direction: column; gap: 3px; }
+        .cmd-multiline code { display: block; white-space: pre-wrap; }
+
+        /* CALLOUT */
+        .callout { border-radius: 12px; padding: 14px 18px; margin: 14px 0; font-size: 0.8rem; line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+        .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); }
+        .callout.info { background: var(--info-bg); border-left: 4px solid var(--info-border); }
+        .callout.tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); }
+        .callout.err { background: var(--err-bg); border-left: 4px solid var(--err-border); }
+        .callout strong { color: var(--body-loud); }
+
+        /* NOTE BOX BETWEEN SECTIONS */
+        .note-box { background: var(--selected); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 22px; margin: 20px 0; font-size: 0.82rem; color: var(--body-quiet); line-height: 1.7; }
+        .note-box strong { color: var(--body-loud); }
+
+        /* QUICK REFERENCE CARDS */
+        .quick-refs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin: 20px 0; }
+        .qcard { border-radius: 16px; padding: 20px 22px; border: 1px solid; }
+        .qcard.cisco { background: var(--cisco-bg); border-color: var(--cisco-border); }
+        .qcard.hp { background: var(--hp-bg); border-color: var(--hp-border); }
+        .qcard.aruba { background: var(--aruba-bg); border-color: var(--aruba-border); }
+        .qcard h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; }
+        .qcard.cisco h4 { color: var(--cisco-text); }
+        .qcard.hp h4 { color: var(--hp-text); }
+        .qcard.aruba h4 { color: var(--aruba-text); }
+        .qcard code { display: block; margin: 4px 0; font-size: 0.74rem; }
+
+        footer { text-align: center; padding: 32px 0; font-size: 0.72rem; color: var(--body-quiet); border-top: 1px solid var(--hairline); }
+
+        @media (max-width: 800px) {
+            .cmp-table { font-size: 0.72rem; }
+            .cmp-table th, .cmp-table td { padding: 8px 10px; }
+            code { font-size: 0.68rem; }
+            .hero h2 { font-size: 1.4rem; }
+        }
+        @media (max-width: 600px) {
+            .page { padding: 16px 10px 60px; }
+            .cmp-table th.concept, .cmp-table td.concept { width: auto; }
+            .cmp-table, .cmp-table thead, .cmp-table tbody, .cmp-table th, .cmp-table td, .cmp-table tr { display: block; width: 100%; }
+            .cmp-table thead { display: none; }
+            .cmp-table tr { margin-bottom: 12px; border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline); }
+            .cmp-table td { border-left: none !important; border-bottom: 1px solid var(--hairline); }
+            .cmp-table td::before { content: attr(data-label); display: block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+            .cmp-table td.concept::before { content: ''; }
+        }
+    </style>
+</head>
+<body>
+<script>
+    const st = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', st);
+</script>
+
+<div class="page">
+    <div class="top-bar">
+        <div class="top-left">
+            <div class="top-logo">🔄</div>
+            <h1>CyberDefend<span>COMMAND REFERENCE</span></h1>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()"><span id="tl">☀️ Light</span></button>
+    </div>
+    <a href="new9.html" class="back-link">← Back to HP Switch Course</a>
+
+    <div class="hero">
+        <div class="hero-badge">COMMAND COMPARISON</div>
+        <h2>Cisco IOS vs HP Comware vs ArubaOS-Switch</h2>
+        <p>Every command you need, side by side. Covers navigation, VLANs, interfaces, routing, security, IRF/Stacking, and 20+ categories.</p>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot cisco"></div>Cisco IOS / IOS-XE</div>
+            <div class="legend-item"><div class="legend-dot hp"></div>HP Comware v5 / v7</div>
+            <div class="legend-item"><div class="legend-dot aruba"></div>ArubaOS-Switch (ProVision)</div>
+        </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <h3>📋 Jump to Section</h3>
+        <div class="toc-grid">
+            <a href="#s1"><span class="n">1.</span>Navigation & Modes</a>
+            <a href="#s2"><span class="n">2.</span>Saving Config</a>
+            <a href="#s3"><span class="n">3.</span>Negation (no / undo)</a>
+            <a href="#s4"><span class="n">4.</span>Hostname</a>
+            <a href="#s5"><span class="n">5.</span>User Accounts</a>
+            <a href="#s6"><span class="n">6.</span>Privilege Levels</a>
+            <a href="#s7"><span class="n">7.</span>VLANs</a>
+            <a href="#s8"><span class="n">8.</span>VLAN Interface (SVI)</a>
+            <a href="#s9"><span class="n">9.</span>Access Ports</a>
+            <a href="#s10"><span class="n">10.</span>Trunk Ports</a>
+            <a href="#s11"><span class="n">11.</span>Hybrid Ports (HP only)</a>
+            <a href="#s12"><span class="n">12.</span>Link Aggregation</a>
+            <a href="#s13"><span class="n">13.</span>STP</a>
+            <a href="#s14"><span class="n">14.</span>Static Routing</a>
+            <a href="#s15"><span class="n">15.</span>OSPF</a>
+            <a href="#s16"><span class="n">16.</span>ACLs</a>
+            <a href="#s17"><span class="n">17.</span>DHCP</a>
+            <a href="#s18"><span class="n">18.</span>SSH & Telnet</a>
+            <a href="#s19"><span class="n">19.</span>SNMP</a>
+            <a href="#s20"><span class="n">20.</span>NTP</a>
+            <a href="#s21"><span class="n">21.</span>PoE</a>
+            <a href="#s22"><span class="n">22.</span>Port Security</a>
+            <a href="#s23"><span class="n">23.</span>sFlow / NetFlow</a>
+            <a href="#s24"><span class="n">24.</span>IRF / VSF / Stack</a>
+            <a href="#s25"><span class="n">25.</span>LLDP / CDP</a>
+            <a href="#s26"><span class="n">26.</span>Show / Display</a>
+            <a href="#s27"><span class="n">27.</span>File Management</a>
+            <a href="#s28"><span class="n">28.</span>Password Recovery</a>
+            <a href="#s29"><span class="n">29.</span>Reboot & Factory Reset</a>
+            <a href="#s30"><span class="n">30.</span>Quick Cheat Sheet</a>
+        </div>
+    </div>
+
+    <!-- ===================== 1. NAVIGATION ===================== -->
+    <div class="section" id="s1">
+        <div class="sec-head"><div class="sec-icon">🧭</div><h2>1. Navigation & Mode Changes<small>How to move between CLI modes</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enter global config</td><td class="cisco" data-label="Cisco"><code>configure terminal</code></td><td class="hp" data-label="HP"><code>system-view</code></td><td class="aruba" data-label="Aruba"><code>configure terminal</code> <br>or <code>config</code></td></tr>
+            <tr><td class="concept" data-label="Task">Exit one level</td><td class="cisco" data-label="Cisco"><code>exit</code></td><td class="hp" data-label="HP"><code>quit</code></td><td class="aruba" data-label="Aruba"><code>exit</code></td></tr>
+            <tr><td class="concept" data-label="Task">Exit all levels</td><td class="cisco" data-label="Cisco"><code>end</code></td><td class="hp" data-label="HP"><code>return</code><br>or <code>Ctrl+Z</code></td><td class="aruba" data-label="Aruba"><code>end</code></td></tr>
+            <tr><td class="concept" data-label="Task">Go to priv exec</td><td class="cisco" data-label="Cisco"><code>enable</code></td><td class="hp" data-label="HP"><code>super 3</code><br>(enter level)</td><td class="aruba" data-label="Aruba"><code>enable</code></td></tr>
+            <tr><td class="concept" data-label="Task">Prompt — User mode</td><td class="cisco" data-label="Cisco"><code>Switch&gt;</code></td><td class="hp" data-label="HP"><code>&lt;Switch&gt;</code></td><td class="aruba" data-label="Aruba"><code>Switch&gt;</code></td></tr>
+            <tr><td class="concept" data-label="Task">Prompt — Priv mode</td><td class="cisco" data-label="Cisco"><code>Switch#</code></td><td class="hp" data-label="HP"><code>&lt;Switch&gt;</code> (same, uses super)</td><td class="aruba" data-label="Aruba"><code>Switch#</code></td></tr>
+            <tr><td class="concept" data-label="Task">Prompt — Config mode</td><td class="cisco" data-label="Cisco"><code>Switch(config)#</code></td><td class="hp" data-label="HP"><code>[Switch]</code></td><td class="aruba" data-label="Aruba"><code>Switch(config)#</code></td></tr>
+            <tr><td class="concept" data-label="Task">Prompt — Interface</td><td class="cisco" data-label="Cisco"><code>Switch(config-if)#</code></td><td class="hp" data-label="HP"><code>[Switch-Ethernet1/0/1]</code></td><td class="aruba" data-label="Aruba"><code>Switch(config-if)#</code></td></tr>
+            <tr><td class="concept" data-label="Task">Abbreviate commands</td><td class="cisco" data-label="Cisco"><code>conf t</code>, <code>int gi0/1</code></td><td class="hp" data-label="HP"><code>sys</code>, <code>int gi1/0/1</code></td><td class="aruba" data-label="Aruba"><code>conf t</code>, <code>int 1</code></td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>Key Difference:</strong> Cisco and Aruba use <code>configure terminal</code> / <code>exit</code> / <code>end</code>. HP Comware uses <code>system-view</code> / <code>quit</code> / <code>return</code>. HP doesn't have a separate "privileged" mode — it uses <code>super</code> to elevate privilege level within the same prompt.</div></div>
+    </div>
+
+    <!-- ===================== 2. SAVING ===================== -->
+    <div class="section" id="s2">
+        <div class="sec-head"><div class="sec-icon">💾</div><h2>2. Saving Configuration<small>Running-config → Startup-config</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Save config</td><td class="cisco" data-label="Cisco"><code>copy running-config startup-config</code><br>or <code>write memory</code><br>or <code>wr</code></td><td class="hp" data-label="HP"><code>save</code><br>(prompts for file name)<br><code>save force</code><br>(overwrite without prompt)</td><td class="aruba" data-label="Aruba"><code>write memory</code><br>or <code>wr mem</code></td></tr>
+            <tr><td class="concept" data-label="Task">Erase startup config</td><td class="cisco" data-label="Cisco"><code>erase startup-config</code><br>or <code>write erase</code></td><td class="hp" data-label="HP"><code>reset saved-configuration</code><br><code>reboot</code> (to apply)</td><td class="aruba" data-label="Aruba"><code>erase startup-config</code></td></tr>
+            <tr><td class="concept" data-label="Task">Auto-save</td><td class="cisco" data-label="Cisco">Not built-in (use EEM script)</td><td class="hp" data-label="HP"><code>save interval 60</code><br>(auto-save every 60 min)</td><td class="aruba" data-label="Aruba">Not built-in</td></tr>
+        </table>
+        <div class="callout err"><span class="callout-icon">⚠️</span><div><strong>Critical:</strong> HP Comware does NOT auto-save. If you reboot without <code>save</code>, all changes are lost. Cisco IOS-XE (some platforms) has "archive" auto-save, but classic IOS does not. Always save manually!</div></div>
+    </div>
+
+    <!-- ===================== 3. NEGATION ===================== -->
+    <div class="section" id="s3">
+        <div class="sec-head"><div class="sec-icon">❌</div><h2>3. Negation — Removing / Disabling Commands<small>The "no" vs "undo" vs "no" difference</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Remove a command</td><td class="cisco" data-label="Cisco"><code>no [command]</code><br>Ex: <code>no ip address</code></td><td class="hp" data-label="HP"><code>undo [command]</code><br>Ex: <code>undo ip address</code></td><td class="aruba" data-label="Aruba"><code>no [command]</code><br>Ex: <code>no ip address</code></td></tr>
+            <tr><td class="concept" data-label="Task">Shutdown interface</td><td class="cisco" data-label="Cisco"><code>shutdown</code></td><td class="hp" data-label="HP"><code>shutdown</code></td><td class="aruba" data-label="Aruba"><code>shutdown</code></td></tr>
+            <tr><td class="concept" data-label="Task">Enable interface</td><td class="cisco" data-label="Cisco"><code>no shutdown</code></td><td class="hp" data-label="HP"><code>undo shutdown</code></td><td class="aruba" data-label="Aruba"><code>no shutdown</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove VLAN from trunk</td><td class="cisco" data-label="Cisco"><code>no switchport trunk allowed vlan 40</code></td><td class="hp" data-label="HP"><code>undo port trunk permit vlan 40</code></td><td class="aruba" data-label="Aruba"><code>no trunk allowed vlan 40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove description</td><td class="cisco" data-label="Cisco"><code>no description</code></td><td class="hp" data-label="HP"><code>undo description</code></td><td class="aruba" data-label="Aruba"><code>no description</code></td></tr>
+        </table>
+        <div class="note-box"><strong>Rule of thumb:</strong> Cisco and Aruba use <code>no</code> to negate. HP Comware uses <code>undo</code>. Everything else follows the same pattern — just swap the keyword. <code>no shutdown</code> = <code>undo shutdown</code>.</div>
+    </div>
+
+    <!-- ===================== 4. HOSTNAME ===================== -->
+    <div class="section" id="s4">
+        <div class="sec-head"><div class="sec-icon">🏷️</div><h2>4. Hostname<small>Name the switch</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Set hostname</td><td class="cisco" data-label="Cisco"><code>hostname CORE-SW-01</code></td><td class="hp" data-label="HP"><code>sysname CORE-SW-01</code></td><td class="aruba" data-label="Aruba"><code>hostname CORE-SW-01</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove hostname</td><td class="cisco" data-label="Cisco"><code>no hostname</code></td><td class="hp" data-label="HP"><code>undo sysname</code></td><td class="aruba" data-label="Aruba"><code>no hostname</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 5. USER ACCOUNTS ===================== -->
+    <div class="section" id="s5">
+        <div class="sec-head"><div class="sec-icon">👤</div><h2>5. User Accounts<small>manager, monitor, admin — local authentication</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Create user (plaintext)</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>username manager privilege 15 secret MyPass123</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>local-user manager</code><code>password simple MyPass123</code><code>authorization-attribute level 3</code><code>service-type telnet ssh</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>username manager password plaintext MyPass123</code><code>username manager privilege 15</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Create user (encrypted)</td><td class="cisco" data-label="Cisco"><code>username manager privilege 15 secret MyPass123</code><br>(secret = hashed automatically)</td><td class="hp" data-label="HP"><code>local-user manager</code><br><code>password cipher MyPass123</code><br>(cipher = stores encrypted)</td><td class="aruba" data-label="Aruba"><code>username manager password MyPass123</code><br>(auto-hashed in show run)</td></tr>
+            <tr><td class="concept" data-label="Task">Read-only user (monitor)</td><td class="cisco" data-label="Cisco"><code>username monitor privilege 1 secret MonPass123</code></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>local-user monitor</code><code>password cipher MonPass123</code><code>authorization-attribute level 1</code><code>service-type telnet ssh</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>username monitor password plaintext MonPass123</code><code>username monitor privilege 0</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Allow web access</td><td class="cisco" data-label="Cisco"><code>ip http authentication local</code></td><td class="hp" data-label="HP"><code>service-type web</code><br>(under local-user)</td><td class="aruba" data-label="Aruba"><code>web-management ssl</code><br>(users auto-get web access)</td></tr>
+            <tr><td class="concept" data-label="Task">Delete user</td><td class="cisco" data-label="Cisco"><code>no username manager</code></td><td class="hp" data-label="HP"><code>undo local-user manager</code></td><td class="aruba" data-label="Aruba"><code>no username manager</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show users</td><td class="cisco" data-label="Cisco"><code>show running-config | include username</code></td><td class="hp" data-label="HP"><code>display local-user</code></td><td class="aruba" data-label="Aruba"><code>show user</code></td></tr>
+        </table>
+        <div class="callout warn"><span class="callout-icon">⚠️</span><div><strong>Level Mapping:</strong> Cisco privilege 15 = HP level 3 = Aruba privilege 15 (full admin). Cisco privilege 1 = HP level 1 = Aruba privilege 0 (read-only). HP has 4 levels (0-3), Cisco has 0-15, Aruba has 0-15.</div></div>
+    </div>
+
+    <!-- ===================== 6. PRIVILEGE LEVELS ===================== -->
+    <div class="section" id="s6">
+        <div class="sec-head"><div class="sec-icon">🔐</div><h2>6. Privilege Levels<small>Access control hierarchy</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Level</th><th class="cisco">Cisco (0–15)</th><th class="hp">HP Comware (0–3)</th><th class="aruba">ArubaOS (0–15)</th></tr>
+            <tr><td class="concept" data-label="Level">0 — Restricted</td><td class="cisco" data-label="Cisco">Reserved (ping, traceroute only on some)</td><td class="hp" data-label="HP">Visit — basic ping/traceroute</td><td class="aruba" data-label="Aruba">Read-only, limited commands</td></tr>
+            <tr><td class="concept" data-label="Level">1 — Monitor</td><td class="cisco" data-label="Cisco">User EXEC mode (show commands)</td><td class="hp" data-label="HP">Monitor — show, display, ping</td><td class="aruba" data-label="Aruba">Monitor — show commands</td></tr>
+            <tr><td class="concept" data-label="Level">2 — Config</td><td class="cisco" data-label="Cisco">Privilege 2–14 (custom)</td><td class="hp" data-label="HP">Configuration — can modify config</td><td class="aruba" data-label="Aruba">Privilege 2–14 (custom)</td></tr>
+            <tr><td class="concept" data-label="Level">3/15 — Admin</td><td class="cisco" data-label="Cisco">Privilege 15 — FULL access</td><td class="hp" data-label="HP">Management — FULL access</td><td class="aruba" data-label="Aruba">Privilege 15 — FULL access</td></tr>
+            <tr><td class="concept" data-label="Task">Set enable password</td><td class="cisco" data-label="Cisco"><code>enable secret MyPass</code></td><td class="hp" data-label="HP"><code>super password level 3 cipher MyPass</code></td><td class="aruba" data-label="Aruba"><code>enable secret MyPass</code></td></tr>
+            <tr><td class="concept" data-label="Task">Elevate privilege</td><td class="cisco" data-label="Cisco"><code>enable</code></td><td class="hp" data-label="HP"><code>super 3</code></td><td class="aruba" data-label="Aruba"><code>enable</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 7. VLANs ===================== -->
+    <div class="section" id="s7">
+        <div class="sec-head"><div class="sec-icon"> subdiv></div><h2>7. VLANs<small>Create, name, delete VLANs</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Create VLAN</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>vlan 40</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>vlan 40</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>vlan 40</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Name VLAN</td><td class="cisco" data-label="Cisco"><code>name SALES</code><br>(inside vlan 40)</td><td class="hp" data-label="HP"><code>name SALES</code><br>(inside vlan 40)</td><td class="aruba" data-label="Aruba"><code>name SALES</code><br>(inside vlan 40)</td></tr>
+            <tr><td class="concept" data-label="Task">Create range</td><td class="cisco" data-label="Cisco"><code>vlan 10,20,30-40</code></td><td class="hp" data-label="HP"><code>vlan 10 20 30 to 40</code></td><td class="aruba" data-label="Aruba"><code>vlan 10,20,30-40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Delete VLAN</td><td class="cisco" data-label="Cisco"><code>no vlan 40</code></td><td class="hp" data-label="HP"><code>undo vlan 40</code></td><td class="aruba" data-label="Aruba"><code>no vlan 40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show VLANs</td><td class="cisco" data-label="Cisco"><code>show vlan brief</code></td><td class="hp" data-label="HP"><code>display vlan brief</code></td><td class="aruba" data-label="Aruba"><code>show vlan</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show VLAN 40 detail</td><td class="cisco" data-label="Cisco"><code>show vlan id 40</code></td><td class="hp" data-label="HP"><code>display vlan 40</code></td><td class="aruba" data-label="Aruba"><code>show vlan 40</code></td></tr>
+        </table>
+        <div class="callout tip"><span class="callout-icon">💡</span><div><strong>Same across all three!</strong> VLAN creation and naming is nearly identical on Cisco, HP, and Aruba. The only difference is in range syntax: Cisco/Aruba use <code>30-40</code> while HP uses <code>30 to 40</code>.</div></div>
+    </div>
+
+    <!-- ===================== 8. VLAN INTERFACE (SVI) ===================== -->
+    <div class="section" id="s8">
+        <div class="sec-head"><div class="sec-icon">🌐</div><h2>8. VLAN Interface (SVI)<small>Layer 3 interface for VLAN — management, routing</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enter VLAN interface</td><td class="cisco" data-label="Cisco"><code>interface vlan 40</code></td><td class="hp" data-label="HP"><code>interface Vlan-interface40</code></td><td class="aruba" data-label="Aruba"><code>interface vlan 40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Assign IP</td><td class="cisco" data-label="Cisco"><code>ip address 10.0.40.1 255.255.255.0</code></td><td class="hp" data-label="HP"><code>ip address 10.0.40.1 255.255.255.0</code></td><td class="aruba" data-label="Aruba"><code>ip address 10.0.40.1 255.255.255.0</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove IP</td><td class="cisco" data-label="Cisco"><code>no ip address</code></td><td class="hp" data-label="HP"><code>undo ip address</code></td><td class="aruba" data-label="Aruba"><code>no ip address</code></td></tr>
+            <tr><td class="concept" data-label="Task">Enable SVI</td><td class="cisco" data-label="Cisco"><code>no shutdown</code><br>(SVIs auto-up with VLAN, but sometimes needed)</td><td class="hp" data-label="HP"><code>undo shutdown</code><br>(stays DOWN until port in VLAN is UP)</td><td class="aruba" data-label="Aruba"><code>no shutdown</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show VLAN interfaces</td><td class="cisco" data-label="Cisco"><code>show ip interface brief</code></td><td class="hp" data-label="HP"><code>display ip interface brief</code></td><td class="aruba" data-label="Aruba"><code>show ip interface brief</code></td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>Key Syntax Difference:</strong> Cisco/Aruba say <code>interface vlan 40</code>. HP says <code>interface Vlan-interface40</code> (with hyphen and no space). This trips up many students — memorize this one!</div></div>
+    </div>
+
+    <!-- ===================== 9. ACCESS PORTS ===================== -->
+    <div class="section" id="s9">
+        <div class="sec-head"><div class="sec-icon">🔌</div><h2>9. Access Ports<small>Assign a port to a single VLAN</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enter interface</td><td class="cisco" data-label="Cisco"><code>interface gigabitEthernet 0/1</code><br>or <code>int gi0/1</code></td><td class="hp" data-label="HP"><code>interface GigabitEthernet 1/0/1</code><br>or <code>int gi1/0/1</code></td><td class="aruba" data-label="Aruba"><code>interface 1</code><br>or <code>int 1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set as access port</td><td class="cisco" data-label="Cisco"><code>switchport mode access</code></td><td class="hp" data-label="HP"><code>port access vlan 40</code><br>(sets mode + VLAN in one command)</td><td class="aruba" data-label="Aruba"><code>no trunk</code><br>(removes trunk = access mode)</td></tr>
+            <tr><td class="concept" data-label="Task">Assign VLAN</td><td class="cisco" data-label="Cisco"><code>switchport access vlan 40</code></td><td class="hp" data-label="HP"><code>port access vlan 40</code></td><td class="aruba" data-label="Aruba"><code>untagged vlan 40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Full access config</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>int gi0/1</code><code>switchport mode access</code><code>switchport access vlan 40</code><code>spanning-tree portfast</code><code>no shutdown</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>int gi1/0/1</code><code>port access vlan 40</code><code>stp edged-port enable</code><code>undo shutdown</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>int 1</code><code>no trunk</code><code>untagged vlan 40</code><code>spanning-tree portfast</code><code>no shutdown</code></div></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 10. TRUNK PORTS ===================== -->
+    <div class="section" id="s10">
+        <div class="sec-head"><div class="sec-icon">🔀</div><h2>10. Trunk Ports<small>Carry multiple tagged VLANs</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Set trunk mode</td><td class="cisco" data-label="Cisco"><code>switchport mode trunk</code></td><td class="hp" data-label="HP"><code>port link-type trunk</code></td><td class="aruba" data-label="Aruba"><code>trunk</code></td></tr>
+            <tr><td class="concept" data-label="Task">Allow all VLANs</td><td class="cisco" data-label="Cisco"><code>switchport trunk allowed vlan all</code></td><td class="hp" data-label="HP"><code>port trunk permit vlan all</code></td><td class="aruba" data-label="Aruba"><code>trunk allowed vlan all</code></td></tr>
+            <tr><td class="concept" data-label="Task">Allow specific VLANs</td><td class="cisco" data-label="Cisco"><code>switchport trunk allowed vlan 10,20,30</code></td><td class="hp" data-label="HP"><code>port trunk permit vlan 10 20 30</code></td><td class="aruba" data-label="Aruba"><code>trunk allowed vlan 10,20,30</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove VLAN from trunk</td><td class="cisco" data-label="Cisco"><code>no switchport trunk allowed vlan 40</code></td><td class="hp" data-label="HP"><code>undo port trunk permit vlan 40</code></td><td class="aruba" data-label="Aruba"><code>no trunk allowed vlan 40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set native VLAN</td><td class="cisco" data-label="Cisco"><code>switchport trunk native vlan 99</code></td><td class="hp" data-label="HP"><code>port trunk pvid vlan 99</code></td><td class="aruba" data-label="Aruba"><code>native vlan 99</code></td></tr>
+            <tr><td class="concept" data-label="Task">Full trunk config</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>int gi0/24</code><code>switchport mode trunk</code><code>switchport trunk allowed vlan all</code><code>switchport trunk native vlan 99</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>int gi1/0/24</code><code>port link-type trunk</code><code>port trunk permit vlan all</code><code>port trunk pvid vlan 99</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>int 24</code><code>trunk</code><code>trunk allowed vlan all</code><code>native vlan 99</code></div></td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>Terminology Mapping:</strong> Cisco "native VLAN" = HP "PVID" = Aruba "native VLAN". Native/PVID = the VLAN for untagged frames on a trunk. Cisco says <code>allowed vlan</code>, HP says <code>permit vlan</code>, Aruba says <code>allowed vlan</code>.</div></div>
+    </div>
+
+    <!-- ===================== 11. HYBRID PORTS ===================== -->
+    <div class="section" id="s11">
+        <div class="sec-head"><div class="sec-icon">🔀</div><h2>11. Hybrid Ports<small>HP/Aruba exclusive — mix tagged + untagged VLANs</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Set hybrid mode</td><td class="cisco" data-label="Cisco"><span style="color:var(--err-border);font-weight:700;">❌ Not supported</span><br>Cisco has no hybrid mode</td><td class="hp" data-label="HP"><code>port link-type hybrid</code></td><td class="aruba" data-label="Aruba">Default mode is hybrid-like<br>Use <code>untagged</code> + <code>tagged</code> directly</td></tr>
+            <tr><td class="concept" data-label="Task">Add untagged VLAN</td><td class="cisco" data-label="Cisco">N/A</td><td class="hp" data-label="HP"><code>port hybrid vlan 50 untagged</code></td><td class="aruba" data-label="Aruba"><code>untagged vlan 50</code></td></tr>
+            <tr><td class="concept" data-label="Task">Add tagged VLAN</td><td class="cisco" data-label="Cisco">N/A</td><td class="hp" data-label="HP"><code>port hybrid vlan 60 tagged</code></td><td class="aruba" data-label="Aruba"><code>tagged vlan 60</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove VLAN from hybrid</td><td class="cisco" data-label="Cisco">N/A</td><td class="hp" data-label="HP"><code>undo port hybrid vlan 50</code></td><td class="aruba" data-label="Aruba"><code>no untagged vlan 50</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set PVID</td><td class="cisco" data-label="Cisco">N/A</td><td class="hp" data-label="HP"><code>port hybrid pvid vlan 50</code></td><td class="aruba" data-label="Aruba">(auto-set by first untagged)</td></tr>
+            <tr><td class="concept" data-label="Task">Full hybrid config</td><td class="cisco" data-label="Cisco"><span style="color:var(--err-border);">Not available</span></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>int gi1/0/1</code><code>port link-type hybrid</code><code>undo port hybrid vlan 1</code><code>port hybrid vlan 50 untagged</code><code>port hybrid pvid vlan 50</code><code>poe enable</code><code>stp edged-port enable</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>int 1</code><code>untagged vlan 50</code><code>tagged vlan 60,70</code><code>spanning-tree portfast</code></div></td></tr>
+        </table>
+        <div class="callout tip"><span class="callout-icon">💡</span><div><strong>Why Hybrid?</strong> Hybrid ports can send some VLANs tagged and others untagged on the SAME port. Use case: connect a VoIP phone (tagged voice VLAN) + PC (untagged data VLAN) on one port without using Cisco's "voice vlan" feature. HP and Aruba support this natively. Cisco requires the <code>switchport voice vlan</code> workaround.</div></div>
+    </div>
+
+    <!-- ===================== 12. LINK AGGREGATION ===================== -->
+    <div class="section" id="s12">
+        <div class="sec-head"><div class="sec-icon">🔗</div><h2>12. Link Aggregation / Port Channel<small>LACP — bundle multiple links</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Create LAG interface</td><td class="cisco" data-label="Cisco"><code>interface Port-channel1</code></td><td class="hp" data-label="HP"><code>interface Bridge-Aggregation1</code></td><td class="aruba" data-label="Aruba"><code>interface lag 1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set LACP mode</td><td class="cisco" data-label="Cisco"><code>channel-group 1 mode active</code><br>(on physical interface)</td><td class="hp" data-label="HP"><code>link-aggregation mode dynamic</code><br>(on Bridge-Aggregation interface)</td><td class="aruba" data-label="Aruba"><code>lacp active</code><br>(on lag interface)</td></tr>
+            <tr><td class="concept" data-label="Task">Add port to LAG</td><td class="cisco" data-label="Cisco"><code>channel-group 1 mode active</code></td><td class="hp" data-label="HP"><code>port link-aggregation group 1</code></td><td class="aruba" data-label="Aruba"><code>lag 1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Full LAG config</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>int Port-channel1</code><code>switchport mode trunk</code><code>switchport trunk allowed vlan all</code><code>int gi0/1</code><code>channel-group 1 mode active</code><code>int gi0/2</code><code>channel-group 1 mode active</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>int Bridge-Aggregation1</code><code>port link-type trunk</code><code>port trunk permit vlan all</code><code>link-aggregation mode dynamic</code><code>int gi1/0/1</code><code>port link-aggregation group 1</code><code>int gi1/0/2</code><code>port link-aggregation group 1</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>int lag 1</code><code>trunk</code><code>trunk allowed vlan all</code><code>lacp active</code><code>int 1</code><code>lag 1</code><code>int 2</code><code>lag 1</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Show LAG status</td><td class="cisco" data-label="Cisco"><code>show etherchannel summary</code></td><td class="hp" data-label="HP"><code>display link-aggregation summary</code></td><td class="aruba" data-label="Aruba"><code>show lacp</code></td></tr>
+            <tr><td class="concept" data-label="Task">Static LAG (no LACP)</td><td class="cisco" data-label="Cisco"><code>channel-group 1 mode on</code></td><td class="hp" data-label="HP"><code>link-aggregation mode static</code></td><td class="aruba" data-label="Aruba"><code>no lacp</code><br>(on lag interface)</td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>Naming:</strong> Cisco "Port-channel" = HP "Bridge-Aggregation" = Aruba "LAG". LACP "active" (Cisco/Aruba) = "dynamic" (HP). Always prefer LACP over static — it detects misconfigurations.</div></div>
+    </div>
+
+    <!-- ===================== 13. STP ===================== -->
+    <div class="section" id="s13">
+        <div class="sec-head"><div class="sec-icon">🌳</div><h2>13. Spanning Tree Protocol<small>Prevent loops</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable STP</td><td class="cisco" data-label="Cisco"><code>spanning-tree mode rapid-pvst</code></td><td class="hp" data-label="HP"><code>stp mode rstp</code><br>(often enabled by default)</td><td class="aruba" data-label="Aruba"><code>spanning-tree</code><br><code>spanning-tree mode rapid-pvst</code></td></tr>
+            <tr><td class="concept" data-label="Task">Edge / PortFast</td><td class="cisco" data-label="Cisco"><code>spanning-tree portfast</code></td><td class="hp" data-label="HP"><code>stp edged-port enable</code></td><td class="aruba" data-label="Aruba"><code>spanning-tree portfast</code></td></tr>
+            <tr><td class="concept" data-label="Task">Root primary</td><td class="cisco" data-label="Cisco"><code>spanning-tree vlan 40 root primary</code></td><td class="hp" data-label="HP"><code>stp priority 0</code><br>(in vlan 40 or mst)</td><td class="aruba" data-label="Aruba"><code>spanning-tree vlan 40 priority 0</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show STP</td><td class="cisco" data-label="Cisco"><code>show spanning-tree</code></td><td class="hp" data-label="HP"><code>display stp</code></td><td class="aruba" data-label="Aruba"><code>show spanning-tree</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 14. STATIC ROUTING ===================== -->
+    <div class="section" id="s14">
+        <div class="sec-head"><div class="sec-icon">🛤️</div><h2>14. Static Routing<small>Manual route entries</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Default route</td><td class="cisco" data-label="Cisco"><code>ip route 0.0.0.0 0.0.0.0 10.0.241.1</code></td><td class="hp" data-label="HP"><code>ip route-static 0.0.0.0 0.0.0.0 10.0.241.1</code></td><td class="aruba" data-label="Aruba"><code>ip route 0.0.0.0 0.0.0.0 10.0.241.1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Specific route</td><td class="cisco" data-label="Cisco"><code>ip route 192.168.50.0 255.255.255.0 10.0.1.1</code></td><td class="hp" data-label="HP"><code>ip route-static 192.168.50.0 255.255.255.0 10.0.1.1</code></td><td class="aruba" data-label="Aruba"><code>ip route 192.168.50.0 255.255.255.0 10.0.1.1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Null route (blackhole)</td><td class="cisco" data-label="Cisco"><code>ip route 10.99.99.0 255.255.255.0 Null0</code></td><td class="hp" data-label="HP"><code>ip route-static 10.99.99.0 255.255.255.0 NULL0</code></td><td class="aruba" data-label="Aruba"><code>ip route 10.99.99.0 255.255.255.0 null0</code></td></tr>
+            <tr><td class="concept" data-label="Task">Remove route</td><td class="cisco" data-label="Cisco"><code>no ip route 0.0.0.0 0.0.0.0 10.0.241.1</code></td><td class="hp" data-label="HP"><code>undo ip route-static 0.0.0.0 0.0.0.0 10.0.241.1</code></td><td class="aruba" data-label="Aruba"><code>no ip route 0.0.0.0 0.0.0.0 10.0.241.1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show routes</td><td class="cisco" data-label="Cisco"><code>show ip route</code></td><td class="hp" data-label="HP"><code>display ip routing-table</code></td><td class="aruba" data-label="Aruba"><code>show ip route</code></td></tr>
+        </table>
+        <div class="note-box"><strong>Notice:</strong> HP adds <code>-static</code> to the command: <code>ip route-static</code> instead of just <code>ip route</code>. This is because HP also supports <code>ip route</code> for dynamic routing protocols. Cisco and Aruba use <code>ip route</code> for static only.</div>
+    </div>
+
+    <!-- ===================== 15. OSPF ===================== -->
+    <div class="section" id="s15">
+        <div class="sec-head"><div class="sec-icon">🦅</div><h2>15. OSPF<small>Dynamic routing</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable OSPF</td><td class="cisco" data-label="Cisco"><code>router ospf 1</code></td><td class="hp" data-label="HP"><code>ospf 1</code></td><td class="aruba" data-label="Aruba"><code>router ospf 1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Advertise network</td><td class="cisco" data-label="Cisco"><code>network 10.0.11.0 0.0.0.255 area 0</code></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>area 0.0.0.0</code><code>network 10.0.11.0 0.0.0.255</code></div></td><td class="aruba" data-label="Aruba"><code>network 10.0.11.0/24 area 0</code></td></tr>
+            <tr><td class="concept" data-label="Task">Redistribute static</td><td class="cisco" data-label="Cisco"><code>redistribute static subnets</code></td><td class="hp" data-label="HP"><code>import-route static</code></td><td class="aruba" data-label="Aruba"><code>redistribute static</code></td></tr>
+            <tr><td class="concept" data-label="Task">Redistribute connected</td><td class="cisco" data-label="Cisco"><code>redistribute connected subnets</code></td><td class="hp" data-label="HP"><code>import-route direct</code></td><td class="aruba" data-label="Aruba"><code>redistribute connected</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show OSPF neighbors</td><td class="cisco" data-label="Cisco"><code>show ip ospf neighbor</code></td><td class="hp" data-label="HP"><code>display ospf peer</code></td><td class="aruba" data-label="Aruba"><code>show ip ospf neighbor</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show OSPF routes</td><td class="cisco" data-label="Cisco"><code>show ip route ospf</code></td><td class="hp" data-label="HP"><code>display ospf routing</code></td><td class="aruba" data-label="Aruba"><code>show ip route ospf</code></td></tr>
+        </table>
+        <div class="callout warn"><span class="callout-icon">⚠️</span><div><strong>Wildcard mask vs subnet mask:</strong> Cisco/HP use wildcard masks (inverse of subnet): <code>0.0.0.255</code> for /24. Aruba uses actual prefix notation: <code>/24</code>. Also HP says <code>import-route</code> while Cisco/Aruba say <code>redistribute</code>.</div></div>
+    </div>
+
+    <!-- ===================== 16. ACLs ===================== -->
+    <div class="section" id="s16">
+        <div class="sec-head"><div class="sec-icon">🛡️</div><h2>16. Access Control Lists<small>Traffic filtering</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Create standard ACL</td><td class="cisco" data-label="Cisco"><code>ip access-list standard 10</code></td><td class="hp" data-label="HP"><code>acl number 2000</code><br>(2000-2999 = standard)</td><td class="aruba" data-label="Aruba"><code>ip access-list standard 10</code></td></tr>
+            <tr><td class="concept" data-label="Task">Create extended ACL</td><td class="cisco" data-label="Cisco"><code>ip access-list extended 100</code></td><td class="hp" data-label="HP"><code>acl number 3000</code><br>(3000-3999 = extended)</td><td class="aruba" data-label="Aruba"><code>ip access-list extended 100</code></td></tr>
+            <tr><td class="concept" data-label="Task">Permit rule</td><td class="cisco" data-label="Cisco"><code>permit ip 192.168.1.0 0.0.0.255 any</code></td><td class="hp" data-label="HP"><code>rule permit ip source 192.168.1.0 0.0.0.255</code></td><td class="aruba" data-label="Aruba"><code>permit ip 192.168.1.0/24 any</code></td></tr>
+            <tr><td class="concept" data-label="Task">Deny rule</td><td class="cisco" data-label="Cisco"><code>deny tcp any host 10.0.1.1 eq 22</code></td><td class="hp" data-label="HP"><code>rule deny tcp source any destination 10.0.1.1 0 destination-port eq 22</code></td><td class="aruba" data-label="Aruba"><code>deny tcp any host 10.0.1.1 eq 22</code></td></tr>
+            <tr><td class="concept" data-label="Task">Apply to interface (in)</td><td class="cisco" data-label="Cisco"><code>ip access-group 100 in</code></td><td class="hp" data-label="HP"><code>packet-filter 3000 inbound</code></td><td class="aruba" data-label="Aruba"><code>ip access-group 100 in</code></td></tr>
+            <tr><td class="concept" data-label="Task">Apply to interface (out)</td><td class="cisco" data-label="Cisco"><code>ip access-group 100 out</code></td><td class="hp" data-label="HP"><code>packet-filter 3000 outbound</code></td><td class="aruba" data-label="Aruba"><code>ip access-group 100 out</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show ACL</td><td class="cisco" data-label="Cisco"><code>show access-lists</code></td><td class="hp" data-label="HP"><code>display acl all</code></td><td class="aruba" data-label="Aruba"><code>show access-lists</code></td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>ACL Numbering:</strong> Cisco uses the same numbers for named/unnamed (1-99 standard, 100-199 extended). HP uses 2000-2999 for standard, 3000-3999 for extended (more ranges exist). Aruba matches Cisco. HP also requires <code>rule</code> keyword before each entry and uses <code>packet-filter</code> instead of <code>access-group</code>.</div></div>
+    </div>
+
+    <!-- ===================== 17. DHCP ===================== -->
+    <div class="section" id="s17">
+        <div class="sec-head"><div class="sec-icon">📡</div><h2>17. DHCP<small>Server and relay</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable DHCP service</td><td class="cisco" data-label="Cisco"><code>service dhcp</code><br>(enabled by default)</td><td class="hp" data-label="HP"><code>dhcp enable</code></td><td class="aruba" data-label="Aruba"><code>dhcp-server</code></td></tr>
+            <tr><td class="concept" data-label="Task">Create DHCP pool</td><td class="cisco" data-label="Cisco"><code>ip dhcp pool VLAN40</code></td><td class="hp" data-label="HP"><code>dhcp server ip-pool VLAN40</code></td><td class="aruba" data-label="Aruba"><code>ip dhcp pool VLAN40</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set network</td><td class="cisco" data-label="Cisco"><code>network 10.0.40.0 255.255.255.0</code></td><td class="hp" data-label="HP"><code>network 10.0.40.0 mask 255.255.255.0</code></td><td class="aruba" data-label="Aruba"><code>network 10.0.40.0 255.255.255.0</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set gateway</td><td class="cisco" data-label="Cisco"><code>default-router 10.0.40.1</code></td><td class="hp" data-label="HP"><code>gateway-list 10.0.40.1</code></td><td class="aruba" data-label="Aruba"><code>default-router 10.0.40.1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set DNS</td><td class="cisco" data-label="Cisco"><code>dns-server 8.8.8.8</code></td><td class="hp" data-label="HP"><code>dns-list 8.8.8.8</code></td><td class="aruba" data-label="Aruba"><code>dns-server 8.8.8.8</code></td></tr>
+            <tr><td class="concept" data-label="Task">DHCP relay</td><td class="cisco" data-label="Cisco"><code>ip helper-address 10.0.1.100</code><br>(on VLAN interface)</td><td class="hp" data-label="HP"><code>dhcp-select relay</code><br><code>dhcp-relay server-address 10.0.1.100</code><br>(on VLAN interface)</td><td class="aruba" data-label="Aruba"><code>ip helper-address 10.0.1.100</code><br>(on VLAN interface)</td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 18. SSH & TELNET ===================== -->
+    <div class="section" id="s18">
+        <div class="sec-head"><div class="sec-icon">🔐</div><h2>18. SSH & Telnet<small>Remote access</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable Telnet server</td><td class="cisco" data-label="Cisco">(enabled by default)</td><td class="hp" data-label="HP"><code>telnet server enable</code></td><td class="aruba" data-label="Aruba">(enabled by default)</td></tr>
+            <tr><td class="concept" data-label="Task">Enable SSH server</td><td class="cisco" data-label="Cisco"><code>ip ssh version 2</code></td><td class="hp" data-label="HP"><code>ssh server enable</code></td><td class="aruba" data-label="Aruba"><code>ip ssh</code></td></tr>
+            <tr><td class="concept" data-label="Task">Generate RSA keys</td><td class="cisco" data-label="Cisco"><code>crypto key generate rsa</code></td><td class="hp" data-label="HP"><code>public-key local create rsa</code></td><td class="aruba" data-label="Aruba"><code>crypto key generate ssh</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set VTY auth (local)</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>line vty 0 15</code><code>login local</code><code>transport input ssh telnet</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>user-interface vty 0 15</code><code>authentication-mode scheme</code><code>protocol inbound telnet</code><code>protocol inbound ssh</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>line vty 0 15</code><code>login local</code><code>transport input ssh telnet</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Enable web UI</td><td class="cisco" data-label="Cisco"><code>ip http secure-server</code></td><td class="hp" data-label="HP"><code>ip https enable</code></td><td class="aruba" data-label="Aruba"><code>web-management ssl</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 19. SNMP ===================== -->
+    <div class="section" id="s19">
+        <div class="sec-head"><div class="sec-icon">📊</div><h2>19. SNMP<small>Network monitoring</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable SNMP</td><td class="cisco" data-label="Cisco"><code>snmp-server community public RO</code></td><td class="hp" data-label="HP"><code>snmp-agent</code><br><code>snmp-agent community read public</code></td><td class="aruba" data-label="Aruba"><code>snmp-server community public</code></td></tr>
+            <tr><td class="concept" data-label="Task">Write community</td><td class="cisco" data-label="Cisco"><code>snmp-server community private RW</code></td><td class="hp" data-label="HP"><code>snmp-agent community write private</code></td><td class="aruba" data-label="Aruba"><code>snmp-server community private authorization read-write</code></td></tr>
+            <tr><td class="concept" data-label="Task">Trap destination</td><td class="cisco" data-label="Cisco"><code>snmp-server host 10.0.10.72 version 2c public</code></td><td class="hp" data-label="HP"><code>snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname public v2c</code></td><td class="aruba" data-label="Aruba"><code>snmp-server host 10.0.10.72 community public</code></td></tr>
+            <tr><td class="concept" data-label="Task">Enable traps</td><td class="cisco" data-label="Cisco"><code>snmp-server enable traps</code></td><td class="hp" data-label="HP"><code>snmp-agent trap enable</code></td><td class="aruba" data-label="Aruba"><code>snmp-server enable traps</code></td></tr>
+            <tr><td class="concept" data-label="Task">SNMP v3 user</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>snmp-server group netteam v3 auth</code><code>snmp-server user NNM netteam v3 auth md5 MyPass123 priv aes 128 MyPriv123</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>snmp-agent group v3 netteam</code><code>snmp-agent usm-user v3 NNM netteam authentication-mode md5 MyPass123 privacy-mode aes128 MyPriv123</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>snmp-server group netteam v3 auth</code><code>snmp-server user NNM netteam v3 auth md5 MyPass123 priv aes 128 MyPriv123</code></div></td></tr>
+        </table>
+        <div class="callout info"><span class="callout-icon">ℹ️</span><div><strong>SNMP command naming:</strong> Cisco uses <code>snmp-server</code>, HP uses <code>snmp-agent</code>, Aruba uses <code>snmp-server</code> (matches Cisco). HP's trap destination command is much longer because it requires specifying UDP domain and params explicitly.</div></div>
+    </div>
+
+    <!-- ===================== 20. NTP ===================== -->
+    <div class="section" id="s20">
+        <div class="sec-head"><div class="sec-icon">🕐</div><h2>20. NTP<small>Time synchronization</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Set NTP server</td><td class="cisco" data-label="Cisco"><code>ntp server 10.0.10.10</code></td><td class="hp" data-label="HP"><code>ntp-service unicast-server 10.0.10.10</code></td><td class="aruba" data-label="Aruba"><code>ntp server 10.0.10.10</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show NTP status</td><td class="cisco" data-label="Cisco"><code>show ntp status</code></td><td class="hp" data-label="HP"><code>display ntp-service status</code></td><td class="aruba" data-label="Aruba"><code>show ntp status</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show clock</td><td class="cisco" data-label="Cisco"><code>show clock</code></td><td class="hp" data-label="HP"><code>display clock</code></td><td class="aruba" data-label="Aruba"><code>show clock</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 21. PoE ===================== -->
+    <div class="section" id="s21">
+        <div class="sec-head"><div class="sec-icon">⚡</div><h2>22. PoE — Power over Ethernet<small>Power APs, phones, cameras</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable PoE on port</td><td class="cisco" data-label="Cisco"><code>power inline auto</code><br>(usually default)</td><td class="hp" data-label="HP"><code>poe enable</code></td><td class="aruba" data-label="Aruba"><code>poe</code></td></tr>
+            <tr><td class="concept" data-label="Task">Disable PoE</td><td class="cisco" data-label="Cisco"><code>power inline never</code></td><td class="hp" data-label="HP"><code>undo poe enable</code></td><td class="aruba" data-label="Aruba"><code>no poe</code></td></tr>
+            <tr><td class="concept" data-label="Task">Set PoE priority</td><td class="cisco" data-label="Cisco"><code>power inline priority high</code></td><td class="hp" data-label="HP"><code>poe priority critical</code></td><td class="aruba" data-label="Aruba"><code>poe priority critical</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show PoE status</td><td class="cisco" data-label="Cisco"><code>show power inline</code></td><td class="hp" data-label="HP"><code>display poe power-interface</code></td><td class="aruba" data-label="Aruba"><code>show power-over-ethernet</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 22. PORT SECURITY ===================== -->
+    <div class="section" id="s22">
+        <div class="sec-head"><div class="sec-icon">🔒</div><h2>23. Port Security<small>Limit MAC addresses per port</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable</td><td class="cisco" data-label="Cisco"><code>switchport port-security</code></td><td class="hp" data-label="HP"><code>port-security enable</code></td><td class="aruba" data-label="Aruba"><code>port-security</code></td></tr>
+            <tr><td class="concept" data-label="Task">Max MACs</td><td class="cisco" data-label="Cisco"><code>switchport port-security maximum 2</code></td><td class="hp" data-label="HP"><code>port-security max-mac-count 2</code></td><td class="aruba" data-label="Aruba"><code>port-security maximum 2</code></td></tr>
+            <tr><td class="concept" data-label="Task">Violation (shutdown)</td><td class="cisco" data-label="Cisco"><code>switchport port-security violation shutdown</code></td><td class="hp" data-label="HP"><code>port-security intrusion-mode blockmac</code><br>or <code>disableport</code></td><td class="aruba" data-label="Aruba"><code>port-security action shutdown</code></td></tr>
+            <tr><td class="concept" data-label="Task">Sticky MAC</td><td class="cisco" data-label="Cisco"><code>switchport port-security mac-address sticky</code></td><td class="hp" data-label="HP"><code>port-security mac-address sticky</code></td><td class="aruba" data-label="Aruba"><code>port-security learn-mode sticky</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show</td><td class="cisco" data-label="Cisco"><code>show port-security</code></td><td class="hp" data-label="HP"><code>display port-security</code></td><td class="aruba" data-label="Aruba"><code>show port-security</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 23. sFLOW ===================== -->
+    <div class="section" id="s23">
+        <div class="sec-head"><div class="sec-icon">📈</div><h2>24. sFlow / NetFlow<small>Traffic monitoring</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Technology</td><td class="cisco" data-label="Cisco">NetFlow / Flexible NetFlow</td><td class="hp" data-label="HP">sFlow (built-in)</td><td class="aruba" data-label="Aruba">sFlow (built-in)</td></tr>
+            <tr><td class="concept" data-label="Task">Define collector</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>flow exporter EXPORTER-1</code><code>destination 10.0.10.76</code><code>source Vlan241</code><code>transport udp 2055</code><code>exit</code><code>flow record RECORD-1</code><code>match ipv4 source address</code><code>match ipv4 destination address</code><code>collect bytes</code><code>collect packets</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>sflow agent ip 10.0.241.1</code><code>sflow collector 1 ip 10.0.10.76</code><code>  description 6343</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>sflow agent 10.0.241.1</code><code>sflow receiver 1</code><code>  ip 10.0.10.76</code><code>  udp-port 6343</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Enable on interface</td><td class="cisco" data-label="Cisco"><div class="cmd-multiline"><code>flow monitor MONITOR-1</code><code>record RECORD-1</code><code>exporter EXPORTER-1</code><code>cache timeout active 60</code><code>int gi0/1</code><code>ip flow monitor MONITOR-1 input</code></div></td><td class="hp" data-label="HP"><div class="cmd-multiline"><code>int gi1/0/1</code><code>sflow sampling-rate 1000</code><code>sflow flow collector 1</code><code>sflow counter interval 30</code><code>sflow counter collector 1</code></div></td><td class="aruba" data-label="Aruba"><div class="cmd-multiline"><code>int 1</code><code>sflow enable</code><code>sflow polling-interval 30</code><code>sflow sampling-rate 1000</code><code>sflow receiver 1</code></div></td></tr>
+            <tr><td class="concept" data-label="Task">Show</td><td class="cisco" data-label="Cisco"><code>show flow exporter</code><br><code>show flow monitor cache</code></td><td class="hp" data-label="HP"><code>display sflow</code></td><td class="aruba" data-label="Aruba"><code>show sflow</code></td></tr>
+        </table>
+        <div class="callout tip"><span class="callout-icon">💡</span><div><strong>sFlow vs NetFlow:</strong> HP and Aruba use sFlow (sample-based, lightweight, IETF standard). Cisco uses NetFlow (flow-based, more detail, heavier). sFlow samples 1 in N packets. NetFlow tracks every unique flow. Both send data to an analyzer (PRTG, ntopng, InMon).</div></div>
+    </div>
+
+    <!-- ===================== 24. IRF / VSF / STACK ===================== -->
+    <div class="section" id="s24">
+        <div class="sec-head"><div class="sec-icon">🏗️</div><h2>25. IRF / VSF / Stack<small>Virtualize multiple switches into one</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Technology name</td><td class="cisco" data-label="Cisco">StackWise / VSS / Stack</td><td class="hp" data-label="HP"><strong>IRF</strong> (Intelligent Resilient Framework)</td><td class="aruba" data-label="Aruba"><strong>VSF</strong> (Virtual Switching Framework)</td></tr>
+            <tr><td class="concept" data-label="Task">Create IRF port</td><td class="cisco" data-label="Cisco"><code>stackwise-virtual</code><br>(varies by platform)</td><td class="hp" data-label="HP"><code>irf-port 1/1</code></td><td class="aruba" data-label="Aruba"><code>vsf member 1</code><br><code>vsf link 1</code></td></tr>
+            <tr><td class="concept" data-label="Task">Bind physical port</td><td class="cisco" data-label="Cisco"><code>stackwise-virtual link 1</code><br><code>dual-active detection</code></td><td class="hp" data-label="HP"><code>port group interface TenGE1/1/1 mode normal</code></td><td class="aruba" data-label="Aruba"><code>vsf port 1</code><br>(assign to link)</td></tr>
+            <tr><td class="concept" data-label="Task">Set member priority</td><td class="cisco" data-label="Cisco"><code>stackwise-virtual domain 1</code><br><code>priority 200</code></td><td class="hp" data-label="HP"><code>irf member 1 priority 32</code></td><td class="aruba" data-label="Aruba"><code>vsf member 1 priority 200</code></td></tr>
+            <tr><td class="concept" data-label="Task">Activate (reboot)</td><td class="cisco" data-label="Cisco"><code>reload</code><br>(after config)</td><td class="hp" data-label="HP"><code>irf configuration active</code><br>(triggers reboot)</td><td class="aruba" data-label="Aruba"><code>vsf enable</code><br>(triggers reboot)</td></tr>
+            <tr><td class="concept" data-label="Task">Show status</td><td class="cisco" data-label="Cisco"><code>show stackwise-virtual</code></td><td class="hp" data-label="HP"><code>display irf configuration</code></td><td class="aruba" data-label="Aruba"><code>show vsf</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 25. LLDP / CDP ===================== -->
+    <div class="section" id="s25">
+        <div class="sec-head"><div class="sec-icon">👋</div><h2>26. LLDP / CDP<small>Neighbor discovery</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable</td><td class="cisco" data-label="Cisco"><code>cdp run</code><br><code>lldp run</code></td><td class="hp" data-label="HP"><code>lldp enable</code></td><td class="aruba" data-label="Aruba"><code>lldp run</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show neighbors</td><td class="cisco" data-label="Cisco"><code>show cdp neighbors</code><br><code>show lldp neighbors</code></td><td class="hp" data-label="HP"><code>display lldp neighbor-information</code></td><td class="aruba" data-label="Aruba"><code>show lldp neighbors</code></td></tr>
+            <tr><td class="concept" data-label="Task">Show detail</td><td class="cisco" data-label="Cisco"><code>show cdp neighbors detail</code></td><td class="hp" data-label="HP"><code>display lldp neighbor-information verbose</code></td><td class="aruba" data-label="Aruba"><code>show lldp neighbors detail</code></td></tr>
+        </table>
+        <div class="callout tip"><span class="callout-icon">💡</span><div><strong>Cross-vendor:</strong> Use LLDP (IEEE 802.1AB) in mixed environments — it works across Cisco, HP, Aruba, Juniper. CDP is Cisco-proprietary and won't show HP/Aruba neighbors.</div></div>
+    </div>
+
+    <!-- ===================== 26. SHOW / DISPLAY ===================== -->
+    <div class="section" id="s26">
+        <div class="sec-head"><div class="sec-icon">👁️</div><h2>27. Show / Display Commands<small>The most-used verification commands</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">What to see</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="What">Running config</td><td class="cisco" data-label="Cisco"><code>show running-config</code></td><td class="hp" data-label="HP"><code>display current-configuration</code></td><td class="aruba" data-label="Aruba"><code>show running-config</code></td></tr>
+            <tr><td class="concept" data-label="What">Startup config</td><td class="cisco" data-label="Cisco"><code>show startup-config</code></td><td class="hp" data-label="HP"><code>display saved-configuration</code></td><td class="aruba" data-label="Aruba"><code>show startup-config</code></td></tr>
+            <tr><td class="concept" data-label="What">Interface summary</td><td class="cisco" data-label="Cisco"><code>show ip interface brief</code></td><td class="hp" data-label="HP"><code>display ip interface brief</code></td><td class="aruba" data-label="Aruba"><code>show ip interface brief</code></td></tr>
+            <tr><td class="concept" data-label="What">Interface detail</td><td class="cisco" data-label="Cisco"><code>show interfaces gi0/1</code></td><td class="hp" data-label="HP"><code>display interface gi1/0/1</code></td><td class="aruba" data-label="Aruba"><code>show interfaces 1</code></td></tr>
+            <tr><td class="concept" data-label="What">All interfaces status</td><td class="cisco" data-label="Cisco"><code>show interface status</code></td><td class="hp" data-label="HP"><code>display interface brief</code></td><td class="aruba" data-label="Aruba"><code>show interfaces brief</code></td></tr>
+            <tr><td class="concept" data-label="What">MAC address table</td><td class="cisco" data-label="Cisco"><code>show mac address-table</code></td><td class="hp" data-label="HP"><code>display mac-address</code></td><td class="aruba" data-label="Aruba"><code>show mac-address-table</code></td></tr>
+            <tr><td class="concept" data-label="What">VLANs</td><td class="cisco" data-label="Cisco"><code>show vlan brief</code></td><td class="hp" data-label="HP"><code>display vlan brief</code></td><td class="aruba" data-label="Aruba"><code>show vlan</code></td></tr>
+            <tr><td class="concept" data-label="What">Routing table</td><td class="cisco" data-label="Cisco"><code>show ip route</code></td><td class="hp" data-label="HP"><code>display ip routing-table</code></td><td class="aruba" data-label="Aruba"><code>show ip route</code></td></tr>
+            <tr><td class="concept" data-label="What">Version</td><td class="cisco" data-label="Cisco"><code>show version</code></td><td class="hp" data-label="HP"><code>display version</code></td><td class="aruba" data-label="Aruba"><code>show version</code></td></tr>
+            <tr><td class="concept" data-label="What">CPU/memory</td><td class="cisco" data-label="Cisco"><code>show processes cpu</code><br><code>show memory</code></td><td class="hp" data-label="HP"><code>display cpu-usage</code><br><code>display memory</code></td><td class="aruba" data-label="Aruba"><code>show cpu</code><br><code>show memory</code></td></tr>
+            <tr><td class="concept" data-label="What">Logs</td><td class="cisco" data-label="Cisco"><code>show logging</code></td><td class="hp" data-label="HP"><code>display logbuffer</code></td><td class="aruba" data-label="Aruba"><code>show logging</code></td></tr>
+            <tr><td class="concept" data-label="What">Current users</td><td class="cisco" data-label="Cisco"><code>show users</code></td><td class="hp" data-label="HP"><code>display users</code></td><td class="aruba" data-label="Aruba"><code>show users</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 27. FILE MANAGEMENT ===================== -->
+    <div class="section" id="s27">
+        <div class="sec-head"><div class="sec-icon">📁</div><h2>28. File Management<small>Flash, configs, firmware</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">List files</td><td class="cisco" data-label="Cisco"><code>dir</code></td><td class="hp" data-label="HP"><code>dir</code></td><td class="aruba" data-label="Aruba"><code>dir</code></td></tr>
+            <tr><td class="concept" data-label="Task">Copy file (TFTP)</td><td class="cisco" data-label="Cisco"><code>copy tftp://10.0.1.1/file flash:</code></td><td class="hp" data-label="HP"><code>tftp 10.0.1.1 get file</code></td><td class="aruba" data-label="Aruba"><code>copy tftp://10.0.1.1/file flash:</code></td></tr>
+            <tr><td class="concept" data-label="Task">Delete file</td><td class="cisco" data-label="Cisco"><code>delete flash:old-config.txt</code></td><td class="hp" data-label="HP"><code>delete /unreserved old-config.txt</code></td><td class="aruba" data-label="Aruba"><code>delete flash:old-config.txt</code></td></tr>
+            <tr><td class="concept" data-label="Task">Firmware upgrade</td><td class="cisco" data-label="Cisco"><code>copy tftp://.../image.bin flash:</code><br><code>boot system flash:image.bin</code><br><code>reload</code></td><td class="hp" data-label="HP"><code>tftp 10.0.1.1 get image.bin</code><br><code>boot-loader file image.bin</code><br><code>reboot</code></td><td class="aruba" data-label="Aruba"><code>copy tftp://.../image.swi flash:</code><br><code>boot system flash:image.swi</code><br><code>reload</code></td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 28. PASSWORD RECOVERY ===================== -->
+    <div class="section" id="s28">
+        <div class="sec-head"><div class="sec-icon">🔑</div><h2>29. Password Recovery<small>Regain access when credentials are lost</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Enable recovery</td><td class="cisco" data-label="Cisco">(always possible via ROMMON)</td><td class="hp" data-label="HP"><code>password-recovery enable</code><br>(must be set BEFORE losing password!)</td><td class="aruba" data-label="Aruba">(always possible via boot menu)</td></tr>
+            <tr><td class="concept" data-label="Task">Recovery method</td><td class="cisco" data-label="Cisco">1. Reboot<br>2. Send Ctrl+Break → ROMMON<br>3. <code>confreg 0x2142</code><br>4. <code>boot</code><br>5. <code>copy start run</code><br>6. Change password<br>7. <code>config-register 0x2102</code><br>8. <code>wr mem</code></td><td class="hp" data-label="HP">1. Reboot<br>2. Press Ctrl+B at boot<br>3. Enter boot menu password<br>4. Skip current config<br>5. Boot without config<br>6. Log in (no password)<br>7. <code>display saved-configuration</code><br>8. Copy passwords, reset</td><td class="aruba" data-label="Aruba">1. Reboot<br>2. Press key at boot prompt<br>3. Enter maintenance mode<br>4. Select "Reset password"<br>5. Set new password<br>6. Reboot normally</td></tr>
+        </table>
+        <div class="callout err"><span class="callout-icon">⚠️</span><div><strong>HP Critical Difference:</strong> HP requires <code>password-recovery enable</code> to be configured BEFORE you lose the password. If it was set to <code>disable</code>, the only option is to contact HPE support or use the ROMMON-level console password. Always enable this in lab environments!</div></div>
+    </div>
+
+    <!-- ===================== 29. REBOOT & FACTORY RESET ===================== -->
+    <div class="section" id="s29">
+        <div class="sec-head"><div class="sec-icon">🔄</div><h2>30. Reboot & Factory Reset<small>Restart and restore to defaults</small></h2></div>
+        <table class="cmp-table">
+            <tr><th class="concept">Task</th><th class="cisco">Cisco IOS</th><th class="hp">HP Comware</th><th class="aruba">ArubaOS-Switch</th></tr>
+            <tr><td class="concept" data-label="Task">Reboot</td><td class="cisco" data-label="Cisco"><code>reload</code></td><td class="hp" data-label="HP"><code>reboot</code></td><td class="aruba" data-label="Aruba"><code>reload</code></td></tr>
+            <tr><td class="concept" data-label="Task">Factory reset</td><td class="cisco" data-label="Cisco"><code>write erase</code><br><code>reload</code></td><td class="hp" data-label="HP"><code>reset saved-configuration</code><br><code>reboot</code></td><td class="aruba" data-label="Aruba"><code>erase startup-config</code><br><code>reload</code></td></tr>
+            <tr><td class="concept" data-label="Task">Cancel reboot</td><td class="cisco" data-label="Cisco">Send <code>Ctrl+C</code> during countdown</td><td class="hp" data-label="HP">Type <code>Ctrl+C</code> or <code>Ctrl+]</code> during countdown</td><td class="aruba" data-label="Aruba">Type <code>n</code> at "Proceed with reload?" prompt</td></tr>
+        </table>
+    </div>
+
+    <!-- ===================== 30. QUICK CHEAT SHEET ===================== -->
+    <div class="section" id="s30">
+        <div class="sec-head"><div class="sec-icon">📋</div><h2>Quick Cheat Sheet<small>The 10 most important translations</small></h2></div>
+        <div class="quick-refs">
+            <div class="qcard cisco">
+                <h4>🟢 Cisco IOS</h4>
+                <code>configure terminal</code>
+                <code>interface vlan 40</code>
+                <code>switchport mode trunk</code>
+                <code>switchport trunk allowed vlan all</code>
+                <code>switchport trunk native vlan 99</code>
+                <code>channel-group 1 mode active</code>
+                <code>no [command]</code>
+                <code>copy running-config startup-config</code>
+                <code>show running-config</code>
+                <code>end</code>
+            </div>
+            <div class="qcard hp">
+                <h4>🔵 HP Comware</h4>
+                <code>system-view</code>
+                <code>interface Vlan-interface40</code>
+                <code>port link-type trunk</code>
+                <code>port trunk permit vlan all</code>
+                <code>port trunk pvid vlan 99</code>
+                <code>port link-aggregation group 1</code>
+                <code>undo [command]</code>
+                <code>save force</code>
+                <code>display current-configuration</code>
+                <code>return</code>
+            </div>
+            <div class="qcard aruba">
+                <h4>🟠 ArubaOS-Switch</h4>
+                <code>configure terminal</code>
+                <code>interface vlan 40</code>
+                <code>trunk</code>
+                <code>trunk allowed vlan all</code>
+                <code>native vlan 99</code>
+                <code>lag 1</code>
+                <code>no [command]</code>
+                <code>write memory</code>
+                <code>show running-config</code>
+                <code>end</code>
+            </div>
+        </div>
+
+        <div class="note-box" style="margin-top: 24px;">
+            <strong>🧠 Memory Trick — "CUA" Rule:</strong><br>
+            • <strong>C</strong>isco and <strong>A</strong>ruba are similar (both derived from classic CLI)<br>
+            • <strong>U</strong>ndo is HP-only (Cisco/Aruba use "no")<br>
+            • <strong>U</strong>se "system-view" for HP, "config t" for Cisco/Aruba<br>
+            • <strong>A</strong>dd "-static" to HP routes, "-interface" to HP VLAN interfaces<br>
+            • <strong>U</strong>nique HP terms: PVID (native), Bridge-Aggregation (port-channel), edged-port (portfast), import-route (redistribute), display (show)
+        </div>
+    </div>
+
+    <footer>
+        © 2025 CyberDefend · Switch Command Comparison Guide — Networking & Security Labs<br>
+        Cisco IOS · HP Comware v5/v7 · ArubaOS-Switch (ProVision)
+    </footer>
+</div>
+
+<script>
+    function toggleTheme() {
+        const h = document.documentElement;
+        const n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        h.setAttribute('data-theme', n);
+        localStorage.setItem('cd_theme', n);
+        document.getElementById('tl').textContent = n === 'dark' ? '☀️ Light' : '🌙 Dark';
+    }
+    document.getElementById('tl').textContent = st === 'dark' ? '☀️ Light' : '🌙 Dark';
+</script>
+</body>
+</html>
