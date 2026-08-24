@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · HP Switch Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --selected-row: #242424;
+            --message-warning-bg: #2a251a;
+            --header-bg: #1a1a1a;
+            --link-fg: #00e676;
+            --error-fg: #e35f5f;
+            --message-error-bg: #570808;
+            --message-success-bg: #006b1b;
+            --close-button-hover-bg: #666666;
+        }
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --selected-row: #f9fbfe;
+            --message-warning-bg: #fef9e6;
+            --header-bg: #ffffff;
+            --link-fg: #027e9e;
+            --error-fg: #dc2626;
+            --message-error-bg: #fee2e2;
+            --message-success-bg: #e6f4ea;
+            --close-button-hover-bg: #cbd5e1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        .sidebar { width: 320px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
+        .brand { padding: 24px; border-bottom: 1px solid var(--hairline-color); background: linear-gradient(135deg, var(--darkened-bg) 0%, var(--body-bg) 100%); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: var(--primary); color: var(--primary-fg); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(0,230,118,0.2); }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud-color); }
+        .logo-text span { font-size: 0.65rem; color: var(--primary); font-weight: 600; letter-spacing: 1px; }
+        .tagline { font-size: 0.7rem; color: var(--body-quiet-color); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .back-link { padding: 16px 20px; display: block; color: var(--link-fg); text-decoration: none; font-size: 0.8rem; font-weight: 500; border-bottom: 1px solid var(--hairline-color); }
+        .back-link:hover { background: var(--selected-bg); }
+        .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 16px 20px; border-radius: 10px; width: calc(100% - 40px); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+        .course-title-sidebar { padding: 0 20px 16px; margin-top: 10px; border-bottom: 1px solid var(--hairline-color); }
+        .course-title-sidebar h2 { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+        .nav-list { padding: 16px 0; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 12px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; color: var(--body-fg); }
+        .nav-item:hover, .nav-item.active { background: var(--selected-bg); color: var(--link-fg); font-weight: 600; border-left: 3px solid var(--primary); }
+        .check-icon { font-size: 1.1rem; min-width: 24px; }
+        .nav-section-label { padding: 8px 20px 4px; font-size: 0.7rem; color: var(--primary); font-weight: 600; }
+        .main-content { flex: 1; overflow-y: auto; padding: 0; background: var(--body-bg); display: flex; flex-direction: column; transition: background 0.3s; }
+        .top-nav { display: flex; align-items: center; justify-content: flex-end; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a, .top-nav-links .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; pointer-events: auto; cursor: pointer; }
+        .top-nav-links > a:hover, .top-nav-links .nav-dropdown > a:hover { color: var(--body-fg); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; border: none; }
+        .top-nav-links a.login-btn:hover { opacity: 0.9; }
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; right: 0; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 8px; min-width: 260px; padding: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; animation: fu .35s ease; }
+        @keyframes fu { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown-content a { display: block; padding: 8px 12px; font-size: 0.85rem; border-radius: 5px; border-bottom: none !important; color: var(--body-quiet-color); }
+        .nav-dropdown-content a:hover { background: var(--selected-bg); color: var(--primary); }
+        .content-wrapper { padding: 32px 40px; flex: 1; }
+        .lesson-header { margin-bottom: 20px; }
+        .lesson-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 5px; }
+        .lesson-header p { color: var(--body-quiet-color); font-size: 0.95rem; }
+        .lesson-card { max-width: 1000px; margin: 0 auto 48px; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--hairline-color); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: background 0.3s, border-color 0.3s; }
+        .card-header { padding: 28px 32px 12px; border-bottom: 1px solid var(--hairline-color); }
+        .lesson-badge { font-size: 0.7rem; font-weight: 600; color: var(--primary); background: var(--selected-bg); display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 700; color: var(--body-loud-color); margin: 8px 0 8px 0; }
+        .sub { color: var(--body-quiet-color); margin-top: 8px; font-size: 0.9rem; }
+        .lesson-tabs { display: flex; border-bottom: 2px solid var(--hairline-color); margin: 16px 28px 0 28px; gap: 8px; }
+        .tab-btn-lesson { background: transparent; border: none; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--body-quiet-color); cursor: pointer; border-radius: 30px 30px 0 0; transition: 0.2s; font-family: inherit; }
+        .tab-btn-lesson.active { color: var(--primary); background: var(--selected-bg); border-bottom: 3px solid var(--primary); }
+        .tab-content { display: none; padding: 20px 28px 28px 28px; }
+        .tab-content.active { display: block; }
+        .video-container { margin: 0 0 16px 0; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .description-text { line-height: 1.65; color: var(--body-fg); font-size: 0.95rem; }
+        .info-grid { background: var(--selected-row); border-radius: 18px; padding: 18px 24px; margin: 20px 0 0; border-left: 4px solid var(--primary); }
+        .btn-youtube { display: inline-flex; align-items: center; gap: 8px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
+        .btn-youtube:hover { background: #cc0000; transform: scale(0.98); }
+        .btn-drive { display: inline-flex; align-items: center; gap: 8px; background: #4285f4; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
+        .btn-drive:hover { background: #3367d6; transform: scale(0.98); }
+        .downloads-list { display: flex; flex-direction: column; gap: 12px; }
+        .download-item { background: var(--selected-row); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--hairline-color); }
+        .download-info h4 { font-size: 1rem; margin-bottom: 4px; color: var(--body-loud-color); }
+        .download-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
+        .btn-download { background: var(--primary); color: var(--primary-fg); padding: 8px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: 0.2s; display: inline-block; }
+        .btn-download:hover { background: var(--link-fg); }
+        .nav-buttons { max-width: 1000px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; position: relative; z-index: 10; }
+        .nav-btn { padding: 11px 28px; border-radius: 12px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; pointer-events: auto; }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .nav-btn-prev { background: var(--selected-bg); color: var(--body-quiet-color); border: 1px solid var(--hairline-color); }
+        .nav-btn-prev:hover:not(:disabled) { background: var(--close-button-hover-bg); color: var(--body-fg); transform: translateY(-1px); }
+        .nav-btn-next { background: var(--primary); color: var(--primary-fg); border: 1px solid var(--primary); }
+        .nav-btn-next:hover:not(:disabled) { background: var(--link-fg); border-color: var(--link-fg); transform: translateY(-1px); }
+
+        /* PDF CARD */
+        .pdf-card { max-width: 1000px; margin: 0 auto 48px; background: var(--darkened-bg); border-radius: 28px; border: 1px solid var(--hairline-color); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: background 0.3s, border-color 0.3s; }
+        .pdf-card .card-header { border-bottom: 1px solid var(--hairline-color); }
+        .pdf-card-body { padding: 24px 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .pdf-icon-big { width: 72px; height: 72px; background: linear-gradient(135deg, #e53935, #c62828); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; flex-shrink: 0; box-shadow: 0 6px 16px rgba(229,57,53,0.25); }
+        .pdf-details { flex: 1; min-width: 200px; }
+        .pdf-details h3 { font-size: 1.15rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 4px; }
+        .pdf-details p { font-size: 0.82rem; color: var(--body-quiet-color); line-height: 1.5; }
+        .pdf-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* SIMULATOR DOWNLOAD BANNER */
+        .simulator-banner { max-width: 1000px; margin: 0 auto 48px; background: linear-gradient(135deg, var(--selected-bg) 0%, var(--darkened-bg) 100%); border-radius: 28px; border: 2px solid var(--primary); overflow: hidden; box-shadow: 0 4px 20px rgba(0,230,118,0.1); transition: background 0.3s, border-color 0.3s; }
+        .simulator-banner-body { padding: 28px 32px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+        .sim-icon-big { width: 72px; height: 72px; background: var(--primary); color: var(--primary-fg); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 6px 16px rgba(0,230,118,0.3); }
+        .sim-details { flex: 1; min-width: 200px; }
+        .sim-details h3 { font-size: 1.3rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 6px; }
+        .sim-details p { font-size: 0.85rem; color: var(--body-quiet-color); line-height: 1.5; }
+        .sim-details .sim-links { margin-top: 10px; display: flex; gap: 16px; flex-wrap: wrap; }
+        .sim-details .sim-links a { font-size: 0.8rem; color: var(--link-fg); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .sim-details .sim-links a:hover { text-decoration: underline; }
+        .btn-simulator { background: var(--primary); color: var(--primary-fg); padding: 12px 28px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,230,118,0.25); }
+        .btn-simulator:hover { background: var(--link-fg); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,230,118,0.35); }
+
+        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: var(--body-quiet-color); padding-top: 32px; border-top: 1px solid var(--hairline-color); }
+
+        .comment-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: var(--primary); color: var(--primary-fg); border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(0,230,118,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: none; z-index: 999; transition: transform 0.3s, box-shadow 0.3s; }
+        .comment-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,230,118,0.5); }
+        .comment-fab-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--darkened-bg); }
+        .comment-panel { position: fixed; bottom: 100px; right: 28px; width: 380px; height: 500px; background: var(--darkened-bg); border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid var(--hairline-color); }
+        .comment-panel.open { display: flex; }
+        .comment-panel-header { background: var(--primary); color: var(--primary-fg); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .comment-panel-header h4 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .comment-panel-close { background: rgba(255,255,255,0.2); border: none; color: var(--primary-fg); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .comment-panel-close:hover { background: rgba(255,255,255,0.35); }
+        .comment-panel-form { padding: 14px 16px; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
+        .comment-panel-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .comment-panel-name { width: 110px; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; background: var(--darkened-bg); color: var(--body-fg); flex-shrink: 0; }
+        .comment-panel-name:focus { border-color: var(--primary); }
+        .comment-panel-msg { flex: 1; padding: 8px 12px; border: 1px solid var(--hairline-color); border-radius: 10px; font-family: inherit; font-size: 0.8rem; outline: none; resize: none; min-height: 38px; max-height: 80px; background: var(--darkened-bg); color: var(--body-fg); }
+        .comment-panel-msg:focus { border-color: var(--primary); }
+        .comment-panel-bottom { display: flex; align-items: center; justify-content: flex-end; }
+        .comment-panel-send { background: var(--primary); color: var(--primary-fg); border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .comment-panel-send:hover { background: var(--link-fg); }
+        .comment-panel-send:disabled { background: var(--close-button-hover-bg); cursor: not-allowed; }
+        .comment-panel-status { text-align: center; font-size: 0.75rem; font-weight: 600; padding: 8px; display: none; margin-top: 8px; border-radius: 8px; }
+        .comment-panel-list { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--body-bg); }
+        .comment-panel-list::-webkit-scrollbar { width: 3px; }
+        .comment-panel-list::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 10px; }
+        .cmt-item { display: flex; gap: 10px; }
+        .cmt-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .cmt-body { flex: 1; min-width: 0; }
+        .cmt-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+        .cmt-name { font-weight: 700; font-size: 0.78rem; color: var(--body-loud-color); }
+        .cmt-time { font-size: 0.62rem; color: var(--body-quiet-color); }
+        .cmt-text { font-size: 0.8rem; line-height: 1.5; color: var(--body-fg); word-break: break-word; }
+        .cmt-empty { text-align: center; padding: 30px 10px; color: var(--body-quiet-color); font-size: 0.82rem; }
+        .cmt-empty span { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+
+        @media (max-width: 780px) {
+            .sidebar { width: 280px; }
+            .content-wrapper { padding: 20px; }
+            .card-header h2 { font-size: 1.3rem; }
+            .lesson-tabs { margin: 12px 16px 0; }
+            .tab-content { padding: 16px; }
+            .nav-buttons { padding: 0 4px; }
+            .comment-panel { width: calc(100% - 30px); right: 15px; bottom: 90px; height: 420px; }
+            .top-nav-links { gap: 10px; }
+            .top-nav-links a:not(.login-btn) { display: none; }
+            .nav-dropdown-content { position: static; display: none; max-height: 200px; box-shadow: none; }
+            .nav-dropdown:hover .nav-dropdown-content { display: none; }
+            .pdf-card-body { flex-direction: column; text-align: center; }
+            .simulator-banner-body { flex-direction: column; text-align: center; }
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--close-button-hover-bg); border-radius: 8px; }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<div class="sidebar">
+    <div class="brand">
+        <div class="logo"><div class="logo-icon">🌐</div><div class="logo-text"><h1>CyberDefend</h1><span>NETWORKING LABS</span></div></div>
+        <div class="tagline">Part of Accenture | Hands-on Networking & Security Labs</div>
+    </div>
+    <a href="index.html" class="back-link">← Back to Dashboard</a>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeLabel">Switch to Light Mode</span>
+    </button>
+    <div class="course-title-sidebar">
+        <h2>HP Switch</h2>
+    </div>
+    <div class="nav-list">
+        <div class="nav-section-label">📄 COURSE MATERIAL (1 PDF)</div>
+        <div class="nav-item active" data-lesson="pdf"><span class="check-icon">📄</span> HP Simulator & Resources (PDF)</div>
+
+        <div class="nav-section-label">📺 VIDEO LESSONS (4 VIDEOS)</div>
+        <div class="nav-item" data-lesson="1"><span class="check-icon">⚙️</span> HP Comware Full Lab</div>
+        <div class="nav-item" data-lesson="2"><span class="check-icon">🖥️</span> Lec 2-2 HP Simulator (Switch Config)</div>
+        <div class="nav-item" data-lesson="3"><span class="check-icon">🔧</span> Lec 2-3 HP LAB 1 Switch Config</div>
+        <div class="nav-item" data-lesson="4"><span class="check-icon">🏢</span> HP LAB 2 Hierarchical Campus</div>
+
+        <div class="nav-section-label">⬇️ DOWNLOADS</div>
+        <div class="nav-item" data-lesson="sim"><span class="check-icon">💾</span> Download HP Simulator</div>
+    </div>
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ HP Switch Course — 4 Videos + PDF</div>
+</div>
+
+<div class="main-content">
+    <nav class="top-nav">
+        <div class="top-nav-links">
+            <a href="index.html">Dashboard</a>
+            <div class="nav-dropdown">
+                <a href="courses.html">Courses ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="2026.html">Summer Lectures</a>
+                    <a href="labs.html">Curriculum</a>
+                    <a href="DPA.html">DPA Summer Training Course</a>
+                    <a href="level3.html">1- Introduction to Cybersecurity</a>
+                    <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                    <a href="networking.html">CyberSecurity Reading Slides</a>
+                    <a href="routing-switching.html">English CyberSecurity Course</a>
+                    <a href="aws foundation.html">AWS Cloud Foundation</a>
+                    <a href="digital comm.html">Digital Comm</a>
+                    <a href="wireless comm.html">Wireless Comm</a>
+                </div>
+            </div>
+            <a href="messages.html">📝 Tasks & Submissions</a>
+            <a href="login.html" class="login-btn">Login</a>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="lesson-header">
+            <h2>HP Switch</h2>
+            <p>HP Comware switch configuration, labs, and simulator hands-on training.</p>
+        </div>
+
+        <!-- ==================== PDF SECTION ==================== -->
+        <div id="lesson-pdf" class="pdf-card">
+            <div class="card-header">
+                <span class="lesson-badge">📄 COURSE MATERIAL</span>
+                <h2>HP Simulator & Resources (PDF)</h2>
+                <div class="sub">HP to Cisco Commands Converter · Simulator Reference</div>
+            </div>
+            <div class="pdf-card-body">
+                <div class="pdf-icon-big">📄</div>
+                <div class="pdf-details">
+                    <h3>HP to Cisco Commands Converter & Simulator Guide</h3>
+                    <p>Complete reference PDF including HP simulator setup, HP-to-Cisco command mapping, and installation instructions for Windows.</p>
+                    <div style="margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap;">
+                        <a href="https://techexpert.tips/hp-switch/hp-network-simulator-installation-on-windows/" target="_blank" style="font-size: 0.78rem; color: var(--link-fg); text-decoration: none; font-weight: 600;">📖 Installation Guide →</a>
+                    </div>
+                </div>
+                <div class="pdf-actions">
+                    <a href="https://drive.google.com/file/d/1u9tiCKGH6x2W3h4DGp1mZZb097Kz3LhZ/view?usp=sharing" target="_blank" class="btn-drive">📄 Open PDF on Google Drive</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIDEO 1 ==================== -->
+        <div id="lesson-1" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 1 / 4</span>
+                <h2>HP Comware Full Lab — Install / Telnet / SSH / User Roles / Link Agg / IRF</h2>
+                <div class="sub">HP Comware · Telnet & SSH · User Roles · Link Aggregation · IRF</div>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="video1">🎬 Video</button>
+            </div>
+            <div id="video1" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/W_YMOGpDKg0?rel=0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Full HP Comware lab covering installation, remote access configuration (Telnet & SSH), user role management, link aggregation, and IRF (Intelligent Resilient Framework) setup.</p>
+                    <div class="info-grid">
+                        <p>⚙️ Topics: Comware CLI, Telnet/SSH setup, role-based access control, LACP link aggregation, IRF stacking.</p>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=W_YMOGpDKg0" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIDEO 2 ==================== -->
+        <div id="lesson-2" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 2 / 4</span>
+                <h2>Lec 2-2 HP HP Simulator (Switch Config)</h2>
+                <div class="sub">HP Switch Simulator · Basic Switch Configuration</div>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="video2">🎬 Video</button>
+            </div>
+            <div id="video2" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/zFKUsJmqJ8Y?rel=0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>HP Simulator walkthrough for basic switch configuration. Learn the HP Comware CLI interface and perform initial switch setup.</p>
+                    <div class="info-grid">
+                        <p>🖥️ Topics: HP simulator navigation, basic CLI commands, interface configuration, hostname and VLAN setup.</p>
+                    </div>
+                    <a href="https://youtu.be/zFKUsJmqJ8Y" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIDEO 3 ==================== -->
+        <div id="lesson-3" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 3 / 4</span>
+                <h2>Lec 2-3 HP LAB 1 — Switch Configuration using HP Simulator</h2>
+                <div class="sub">HP Simulator LAB · Practical Switch Configuration</div>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="video3">🎬 Video</button>
+            </div>
+            <div id="video3" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/PXfhfuVKm1U?start=3620&rel=0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>HP LAB 1: Hands-on switch configuration using HP Simulator with practical exercises and real-world scenarios.</p>
+                    <div class="info-grid">
+                        <p>🔧 Topics: VLAN creation, port assignment, trunk configuration, STP, and switch management.</p>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=PXfhfuVKm1U&t=3620s" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIDEO 4 ==================== -->
+        <div id="lesson-4" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 4 / 4</span>
+                <h2>HP LAB 2 — Hierarchical Campus Network (Core & Distribution & Access) using HP Switches</h2>
+                <div class="sub">Hierarchical Network Design · Core · Distribution · Access Layer</div>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="video4">🎬 Video</button>
+            </div>
+            <div id="video4" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/tfX7la1WaOg?rel=0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>HP LAB 2: Build a complete hierarchical campus network with Core, Distribution, and Access layers using HP switches in the simulator.</p>
+                    <div class="info-grid">
+                        <p>🏢 Topics: Three-tier hierarchy, inter-VLAN routing, trunk links, redundancy, and campus network best practices.</p>
+                    </div>
+                    <a href="https://youtu.be/tfX7la1WaOg" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
+        <div id="lesson-sim" class="simulator-banner" style="display:none;">
+            <div class="simulator-banner-body">
+                <div class="sim-icon-big">💾</div>
+                <div class="sim-details">
+                    <h3>Download HP Network Simulator</h3>
+                    <p>Get the official HPE network simulator to practice HP Comware switch configuration on your Windows machine.</p>
+                    <div class="sim-links">
+                        <a href="https://techexpert.tips/hp-switch/hp-network-simulator-installation-on-windows/" target="_blank">📖 Installation Guide</a>
+                        <a href="https://drive.google.com/file/d/1u9tiCKGH6x2W3h4DGp1mZZb097Kz3LhZ/view?usp=sharing" target="_blank">📄 HP to Cisco Commands Converter</a>
+                    </div>
+                </div>
+                <a href="https://support.hpe.com/connect/s/softwaredetails?language=en_US&collectionId=MTX-4237da8706454e59&tab=releaseNotes" target="_blank" class="btn-simulator">⬇️ Download Simulator</a>
+            </div>
+        </div>
+
+        <!-- ==================== NAV BUTTONS ==================== -->
+        <div class="nav-buttons" id="navButtons">
+            <button class="nav-btn nav-btn-prev" id="btnPrev" disabled onclick="navigate(-1)">← Previous</button>
+            <button class="nav-btn nav-btn-next" id="btnNext" onclick="navigate(1)">Next →</button>
+        </div>
+
+        <footer>© 2025 CyberDefend · HP Switch Course — Networking & Security Labs</footer>
+    </div>
+</div>
+
+<!-- COMMENT FAB & PANEL -->
+<button class="comment-fab" onclick="toggleComments()" title="Comments">💬<span class="comment-fab-badge">0</span></button>
+<div class="comment-panel" id="commentPanel">
+    <div class="comment-panel-header"><h4>💬 Lesson Comments</h4><button class="comment-panel-close" onclick="toggleComments()">✕</button></div>
+    <div class="comment-panel-form">
+        <div class="comment-panel-row">
+            <input type="text" class="comment-panel-name" id="cmtName" placeholder="Your name" maxlength="30">
+            <textarea class="comment-panel-msg" id="cmtMsg" placeholder="Write a comment…" maxlength="500"></textarea>
+        </div>
+        <div class="comment-panel-bottom">
+            <div class="comment-panel-status" id="cmtStatus"></div>
+            <button class="comment-panel-send" id="cmtSendBtn" onclick="postComment()">Send</button>
+        </div>
+    </div>
+    <div class="comment-panel-list" id="cmtList"><div class="cmt-empty"><span>💬</span>No comments yet. Be the first!</div></div>
+</div>
+
+<script>
+    // ========== LESSON ORDER ==========
+    const lessonOrder = ['pdf', '1', '2', '3', '4', 'sim'];
+    let currentIndex = 0;
+
+    function showLesson(id) {
+        const allCards = document.querySelectorAll('.pdf-card, .lesson-card, .simulator-banner');
+        allCards.forEach(c => c.style.display = 'none');
+
+        const target = document.getElementById('lesson-' + id);
+        if (target) {
+            target.style.display = '';
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const activeNav = document.querySelector(`.nav-item[data-lesson="${id}"]`);
+        if (activeNav) activeNav.classList.add('active');
+
+        currentIndex = lessonOrder.indexOf(id);
+        updateNavButtons();
+    }
+
+    function navigate(dir) {
+        const newIdx = currentIndex + dir;
+        if (newIdx >= 0 && newIdx < lessonOrder.length) {
+            showLesson(lessonOrder[newIdx]);
+        }
+    }
+
+    function updateNavButtons() {
+        document.getElementById('btnPrev').disabled = currentIndex <= 0;
+        document.getElementById('btnNext').disabled = currentIndex >= lessonOrder.length - 1;
+    }
+
+    // Sidebar nav clicks
+    document.querySelectorAll('.nav-item[data-lesson]').forEach(item => {
+        item.addEventListener('click', () => showLesson(item.dataset.lesson));
+    });
+
+    // Tab switching inside cards
+    document.querySelectorAll('.tab-btn-lesson').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.dataset.tab;
+            const parent = btn.closest('.lesson-card');
+            parent.querySelectorAll('.tab-btn-lesson').forEach(b => b.classList.remove('active'));
+            parent.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // ========== THEME TOGGLE ==========
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('cd_theme', next);
+        document.getElementById('themeLabel').textContent = next === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    // Set initial label
+    document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+
+    // ========== COMMENTS ==========
+    function toggleComments() {
+        document.getElementById('commentPanel').classList.toggle('open');
+    }
+
+    function postComment() {
+        const name = document.getElementById('cmtName').value.trim();
+        const msg = document.getElementById('cmtMsg').value.trim();
+        const status = document.getElementById('cmtStatus');
+        if (!name || !msg) {
+            status.style.display = 'block';
+            status.style.background = 'var(--message-error-bg)';
+            status.style.color = 'var(--error-fg)';
+            status.textContent = 'Please enter your name and comment.';
+            setTimeout(() => status.style.display = 'none', 3000);
+            return;
+        }
+        const colors = ['#e53935','#8e24aa','#1e88e5','#00897b','#43a047','#fb8c00'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const initial = name.charAt(0).toUpperCase();
+        const now = new Date();
+        const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const cmtList = document.getElementById('cmtList');
+        const emptyMsg = cmtList.querySelector('.cmt-empty');
+        if (emptyMsg) emptyMsg.remove();
+        const cmtHtml = `<div class="cmt-item"><div class="cmt-avatar" style="background:${color}">${initial}</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">${name}</span><span class="cmt-time">${time}</span></div><div class="cmt-text">${msg}</div></div></div>`;
+        cmtList.insertAdjacentHTML('afterbegin', cmtHtml);
+        document.getElementById('cmtMsg').value = '';
+        // Update badge
+        const badge = document.querySelector('.comment-fab-badge');
+        badge.textContent = parseInt(badge.textContent) + 1;
+    }
+</script>
+</body>
+</html>
