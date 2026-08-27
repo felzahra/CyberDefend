@@ -4098,13 +4098,20 @@
 </div>
 
 <script>
-    // ========== LESSON ORDER ==========
+       // ========== LESSON ORDER ==========
     const lessonOrder = ['pdf', '1', '2', '3', '4', 'sim'];
     let currentIndex = 0;
 
     function showLesson(id) {
         const allCards = document.querySelectorAll('.pdf-card, .lesson-card, .simulator-banner');
         allCards.forEach(c => c.style.display = 'none');
+
+        // ===== ADD THIS BLOCK TO STOP VIDEOS =====
+        document.querySelectorAll('iframe').forEach(iframe => {
+            const src = iframe.src;
+            iframe.src = src; // Re-assigning the src forces the video to stop and reload
+        });
+        // =========================================
 
         const target = document.getElementById('lesson-' + id);
         if (target) {
