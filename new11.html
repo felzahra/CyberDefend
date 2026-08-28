@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP Switch Architecture — Core, Distribution, Edge — Full CLI Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #05050A; color: #fff; font-family: 'Inter', sans-serif; }
+        ::selection { background-color: rgba(234,179,8,0.3); color: #FEF08A; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #05050A; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .text-gradient-gold { background: linear-gradient(180deg, #FEF08A 0%, #EAB308 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .btn-primary { background: linear-gradient(to right, #FACC15, #EAB308); box-shadow: 0 0 20px rgba(234,179,8,0.3); color: #000; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 150ms ease; }
+        .btn-primary:hover { background: linear-gradient(to right, #FDE047, #FACC15); box-shadow: 0 0 30px rgba(234,179,8,0.5); transform: translateY(-2px); }
+        .code-block { background: #0A0A10; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
+        .code-block pre { padding: 1.25rem; overflow-x: auto; font-size: 0.78rem; line-height: 1.7; }
+        .code-block .code-header { background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; }
+        .code-comment { color: #6B7280; }
+        .code-cmd { color: #EAB308; }
+        .code-string { color: #34D399; }
+        .code-keyword { color: #A78BFA; }
+        .code-output { color: #9CA3AF; }
+        .code-warning { color: #F87171; }
+        .code-info { color: #60A5FA; }
+        .copy-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #9CA3AF; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; transition: all 150ms; font-family: 'Inter', sans-serif; }
+        .copy-btn:hover { background: rgba(234,179,8,0.15); color: #EAB308; border-color: rgba(234,179,8,0.3); }
+        .copy-btn.copied { background: rgba(52,211,153,0.15); color: #34D399; border-color: rgba(52,211,153,0.3); }
+        .step-card { border-left: 3px solid rgba(255,255,255,0.1); transition: all 300ms ease; }
+        .step-card:hover { border-left-color: #EAB308; }
+        .step-card.active { border-left-color: #EAB308; background: rgba(234,179,8,0.03); }
+        .step-number { width: 40px; height: 40px; background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #EAB308; font-size: 0.9rem; flex-shrink: 0; }
+        .floating-decoration { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+        .image-showcase { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); position: relative; }
+        .image-showcase img { width: 100%; height: auto; display: block; transition: transform 700ms ease; }
+        .image-showcase:hover img { transform: scale(1.03); }
+        .image-showcase .image-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(5,5,10,0.95), transparent); padding: 2rem 1rem 1rem; }
+        .nav-link { color: #9CA3AF; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; transition: color 200ms; cursor: pointer; }
+        .nav-link:hover { color: #EAB308; }
+        .alert-box { border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.85rem; line-height: 1.6; }
+        .alert-warning { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: #FCA5A5; }
+        .alert-info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93C5FD; }
+        .alert-success { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6EE7B7; }
+        .alert-tip { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); color: #FDE047; }
+        .tier-core { border-left: 3px solid #F87171; }
+        .tier-dist { border-left: 3px solid #EAB308; }
+        .tier-edge { border-left: 3px solid #60A5FA; }
+        .tier-badge { padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+        .badge-core { background: rgba(248,113,113,0.15); color: #F87171; border: 1px solid rgba(248,113,113,0.3); }
+        .badge-dist { background: rgba(234,179,8,0.15); color: #EAB308; border: 1px solid rgba(234,179,8,0.3); }
+        .badge-edge { background: rgba(96,165,250,0.15); color: #60A5FA; border: 1px solid rgba(96,165,250,0.3); }
+        .tab-btn { padding: 0.5rem 1.25rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; transition: all 200ms; cursor: pointer; border: 1px solid transparent; }
+        .tab-btn.active { background: rgba(234,179,8,0.15); color: #EAB308; border-color: rgba(234,179,8,0.3); }
+        .tab-btn:not(.active) { color: #6B7280; }
+        .tab-btn:not(.active):hover { color: #9CA3AF; background: rgba(255,255,255,0.03); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .progress-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #EAB308, #FDE047); border-radius: 2px; transition: width 500ms ease; }
+        .toc-item { padding: 0.4rem 0; color: #6B7280; font-size: 0.8rem; transition: all 200ms; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .toc-item:hover { color: #EAB308; padding-left: 0.5rem; }
+        .toc-item .toc-dot { width: 4px; height: 4px; background: currentColor; border-radius: 50%; flex-shrink: 0; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeUp { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        @keyframes pulse-line { 0%,100%{stroke-dashoffset:0} 50%{stroke-dashoffset:12} }
+        .anim-pulse { animation: pulse-line 1.5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#05050A]/80 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
+                <iconify-icon icon="lucide:network" width="16" style="color:#000"></iconify-icon>
+            </div>
+            <span class="font-display font-bold text-sm tracking-tight">HP Switch<span class="text-yellow-500">Lab</span></span>
+        </div>
+        <div class="hidden lg:flex items-center gap-6">
+            <a href="#overview" class="nav-link">Overview</a>
+            <a href="#topology" class="nav-link">Topology</a>
+            <a href="#vlan" class="nav-link">VLANs</a>
+            <a href="#core" class="nav-link">Core</a>
+            <a href="#dist" class="nav-link">Distribution</a>
+            <a href="#edge" class="nav-link">Edge</a>
+            <a href="#routing" class="nav-link">Routing</a>
+            <a href="#verify" class="nav-link">Verify</a>
+        </div>
+        <button id="mobileMenuBtn" class="lg:hidden text-gray-400"><iconify-icon icon="lucide:menu" width="24"></iconify-icon></button>
+    </div>
+    <div id="mobileMenu" class="hidden lg:hidden bg-[#0A0A10] border-t border-white/5 px-6 py-4 space-y-3">
+        <a href="#overview" class="block nav-link">Overview</a>
+        <a href="#topology" class="block nav-link">Topology</a>
+        <a href="#vlan" class="block nav-link">VLANs</a>
+        <a href="#core" class="block nav-link">Core</a>
+        <a href="#dist" class="block nav-link">Distribution</a>
+        <a href="#edge" class="block nav-link">Edge</a>
+        <a href="#routing" class="block nav-link">Routing</a>
+        <a href="#verify" class="block nav-link">Verify</a>
+    </div>
+</nav>
+<div class="fixed top-16 left-0 right-0 z-40"><div class="progress-bar"><div id="progressFill" class="progress-fill" style="width:0%"></div></div></div>
+
+<!-- HERO -->
+<section class="relative pt-32 pb-20 px-6 overflow-hidden">
+    <div class="floating-decoration w-[500px] h-[500px] bg-yellow-500/5 top-0 -left-40"></div>
+    <div class="floating-decoration w-[400px] h-[400px] bg-red-500/5 top-20 right-0"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+        <div class="animate-fadeUp">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow-500/20 bg-yellow-500/5 text-yellow-400 text-[10px] font-semibold uppercase tracking-[0.25em] mb-8">
+                <iconify-icon icon="lucide:layers" width="12"></iconify-icon>3-Tier Architecture
+            </span>
+        </div>
+        <h1 class="font-display font-bold text-4xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.1] mb-6 animate-fadeUp delay-100">
+            HP Switch <span class="text-gradient-gold">Core / Dist / Edge</span>
+        </h1>
+        <p class="text-gray-400 font-light text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed animate-fadeUp delay-200">
+            Complete CLI configuration for HPE/Aruba 3-tier network — Core, Distribution, and Edge switches with <strong class="text-white font-medium">3 VLANs</strong>, trunk links, inter-VLAN routing, OSPF, and full verification commands.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 mb-14 animate-fadeUp delay-300">
+            <a href="#core" class="btn-primary px-8 py-3.5 rounded-full text-xs inline-flex items-center gap-2"><iconify-icon icon="lucide:play" width="14"></iconify-icon>Start Configuration</a>
+            <a href="#topology" class="px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider border border-white/10 text-white hover:border-white/30 transition-all inline-flex items-center gap-2"><iconify-icon icon="lucide:git-branch" width="14"></iconify-icon>View Topology</a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto animate-fadeUp delay-400">
+            <div class="glass-panel rounded-xl p-4"><div class="text-2xl font-display font-bold text-red-400">1</div><div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Core Switch</div></div>
+            <div class="glass-panel rounded-xl p-4"><div class="text-2xl font-display font-bold text-yellow-400">2</div><div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Distribution</div></div>
+            <div class="glass-panel rounded-xl p-4"><div class="text-2xl font-display font-bold text-blue-400">3</div><div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Edge Switches</div></div>
+            <div class="glass-panel rounded-xl p-4"><div class="text-2xl font-display font-bold text-green-400">3</div><div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">VLANs</div></div>
+        </div>
+    </div>
+    <div class="max-w-5xl mx-auto mt-14 animate-fadeUp delay-500">
+        <div class="image-showcase"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK1GET0YKok2fkHu-vSa7xFnqCRIyuutIMvxIrfWCRvJdTTo0MYTQe7QfS&s=10" alt="HP Switch Rack" loading="lazy"><div class="image-label"><p class="text-xs text-gray-400">HPE Aruba modular switches in a data center — Core, Distribution, and Edge layers</p></div></div>
+    </div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Understanding the Architecture</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-10">3-Tier Switch Architecture</h2>
+        <div class="grid lg:grid-cols-3 gap-6 mb-10">
+            <div class="glass-panel rounded-2xl p-6 tier-core">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center"><iconify-icon icon="lucide:server" width="22" style="color:#F87171"></iconify-icon></div>
+                    <div><h3 class="font-display font-bold text-lg">Core Layer</h3><span class="tier-badge badge-core">L3</span></div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed mb-3">The backbone of the network. High-speed, high-throughput switching with inter-VLAN routing and OSPF. Connects to distribution switches and router/uplink.</p>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Layer 3 routing (SVI interfaces)</li>
+                    <li>• OSPF for dynamic routing</li>
+                    <li>• 10Gbps uplinks</li>
+                    <li>• Redundancy & fast convergence</li>
+                </ul>
+            </div>
+            <div class="glass-panel rounded-2xl p-6 tier-dist">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center"><iconify-icon icon="lucide:git-branch" width="22" style="color:#EAB308"></iconify-icon></div>
+                    <div><h3 class="font-display font-bold text-lg">Distribution Layer</h3><span class="tier-badge badge-dist">L2/L3</span></div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed mb-3">Aggregation point between core and edge. Implements policies, ACLs, VLAN trunking, and can do L3 routing if needed.</p>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• VLAN trunk to core (Tagged)</li>
+                    <li>• Access ports to edge (Tagged)</li>
+                    <li>• Policy enforcement & ACLs</li>
+                    <li>• Spanning Tree root bridge</li>
+                </ul>
+            </div>
+            <div class="glass-panel rounded-2xl p-6 tier-edge">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center"><iconify-icon icon="lucide:monitor" width="22" style="color:#60A5FA"></iconify-icon></div>
+                    <div><h3 class="font-display font-bold text-lg">Edge Layer</h3><span class="tier-badge badge-edge">L2</span></div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed mb-3">Connects end devices (PCs, printers, phones). Access ports assign VLANs. Uplinks to distribution via trunks.</p>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Access ports (Untagged VLAN)</li>
+                    <li>• Port security & storm control</li>
+                    <li>• Trunk uplink to distribution</li>
+                    <li>• PoE for IP phones/APs</li>
+                </ul>
+            </div>
+        </div>
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/5"><h3 class="font-display font-semibold text-sm">Lab Devices</h3></div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-white/5">
+                        <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Device</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Model</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Role</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Mgmt IP</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Layer</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr class="border-b border-white/5"><td class="px-6 py-3 font-medium">CORE-SW</td><td class="px-6 py-3 font-mono text-xs text-gray-400">Aruba 5406R</td><td class="px-6 py-3"><span class="tier-badge badge-core">Core</span></td><td class="px-6 py-3 font-mono text-xs text-red-400">10.0.0.1</td><td class="px-6 py-3 text-gray-400">L3</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-6 py-3 font-medium">DIST-SW1</td><td class="px-6 py-3 font-mono text-xs text-gray-400">Aruba 3810M</td><td class="px-6 py-3"><span class="tier-badge badge-dist">Distribution</span></td><td class="px-6 py-3 font-mono text-xs text-yellow-400">10.0.0.2</td><td class="px-6 py-3 text-gray-400">L2/L3</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-6 py-3 font-medium">DIST-SW2</td><td class="px-6 py-3 font-mono text-xs text-gray-400">Aruba 3810M</td><td class="px-6 py-3"><span class="tier-badge badge-dist">Distribution</span></td><td class="px-6 py-3 font-mono text-xs text-yellow-400">10.0.0.3</td><td class="px-6 py-3 text-gray-400">L2/L3</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-6 py-3 font-medium">EDGE-SW1</td><td class="px-6 py-3 font-mono text-xs text-gray-400">Aruba 2530</td><td class="px-6 py-3"><span class="tier-badge badge-edge">Edge</span></td><td class="px-6 py-3 font-mono text-xs text-blue-400">10.0.0.4</td><td class="px-6 py-3 text-gray-400">L2</td></tr>
+                        <tr><td class="px-6 py-3 font-medium">EDGE-SW2</td><td class="px-6 py-3 font-mono text-xs text-gray-400">Aruba 2530</td><td class="px-6 py-3"><span class="tier-badge badge-edge">Edge</span></td><td class="px-6 py-3 font-mono text-xs text-blue-400">10.0.0.5</td><td class="px-6 py-3 text-gray-400">L2</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TOPOLOGY -->
+<section id="topology" class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+    <div class="floating-decoration w-[600px] h-[600px] bg-yellow-500/5 -top-40 -right-40"></div>
+    <div class="max-w-6xl mx-auto relative z-10">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Network Map</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Full Topology Diagram</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">3 connections per tier: Core↔Dist (3 links each), Dist↔Edge (3 links each). All inter-switch links are 802.1Q trunks carrying VLANs 10, 20, 30.</p>
+
+        <div class="glass-panel rounded-2xl p-4 md:p-8 mb-8 overflow-x-auto">
+            <svg viewBox="0 0 1000 720" class="w-full min-w-[700px]" xmlns="http://www.w3.org/2000/svg">
+                <!-- TIER LABELS -->
+                <text x="30" y="60" fill="#F87171" font-size="10" font-weight="700" font-family="Space Grotesk" letter-spacing="3" opacity="0.6">CORE TIER</text>
+                <text x="30" y="290" fill="#EAB308" font-size="10" font-weight="700" font-family="Space Grotesk" letter-spacing="3" opacity="0.6">DISTRIBUTION TIER</text>
+                <text x="30" y="540" fill="#60A5FA" font-size="10" font-weight="700" font-family="Space Grotesk" letter-spacing="3" opacity="0.6">EDGE TIER</text>
+
+                <!-- ROUTER -->
+                <g transform="translate(470,10)">
+                    <rect x="0" y="0" width="120" height="50" rx="10" fill="rgba(168,85,247,0.12)" stroke="rgba(168,85,247,0.4)" stroke-width="1.5"/>
+                    <text x="60" y="22" text-anchor="middle" fill="#A855F7" font-size="11" font-weight="700" font-family="Space Grotesk">ROUTER</text>
+                    <text x="60" y="38" text-anchor="middle" fill="#9CA3AF" font-size="8" font-family="JetBrains Mono">10.0.0.254</text>
+                </g>
+
+                <!-- CORE SWITCH -->
+                <g transform="translate(390,80)">
+                    <rect x="0" y="0" width="220" height="90" rx="14" fill="rgba(248,113,113,0.08)" stroke="rgba(248,113,113,0.4)" stroke-width="2"/>
+                    <rect x="15" y="12" width="60" height="18" rx="4" fill="rgba(248,113,113,0.2)"/>
+                    <text x="45" y="25" text-anchor="middle" fill="#F87171" font-size="8" font-weight="700" font-family="Space Grotesk">CORE</text>
+                    <text x="130" y="30" text-anchor="middle" fill="white" font-size="13" font-weight="700" font-family="Space Grotesk">CORE-SW</text>
+                    <text x="110" y="50" text-anchor="middle" fill="#9CA3AF" font-size="7.5" font-family="JetBrains Mono">Aruba 5406R | L3</text>
+                    <text x="110" y="65" text-anchor="middle" fill="#F87171" font-size="7" font-family="JetBrains Mono">VLAN10: 192.168.10.1/24</text>
+                    <text x="110" y="77" text-anchor="middle" fill="#EAB308" font-size="7" font-family="JetBrains Mono">VLAN20: 192.168.20.1/24</text>
+                    <!-- Port labels -->
+                    <text x="0" y="-6" fill="#6B7280" font-size="6.5" font-family="JetBrains Mono">1/1/1  1/1/2  1/1/3</text>
+                </g>
+
+                <!-- CORE to ROUTER line -->
+                <line x1="500" y1="60" x2="500" y2="80" stroke="rgba(168,85,247,0.5)" stroke-width="2" stroke-dasharray="4,3"/>
+
+                <!-- DIST-SW1 -->
+                <g transform="translate(150,310)">
+                    <rect x="0" y="0" width="210" height="85" rx="14" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.4)" stroke-width="1.5"/>
+                    <rect x="15" y="12" width="50" height="18" rx="4" fill="rgba(234,179,8,0.2)"/>
+                    <text x="40" y="25" text-anchor="middle" fill="#EAB308" font-size="8" font-weight="700" font-family="Space Grotesk">DIST</text>
+                    <text x="130" y="30" text-anchor="middle" fill="white" font-size="12" font-weight="700" font-family="Space Grotesk">DIST-SW1</text>
+                    <text x="105" y="48" text-anchor="middle" fill="#9CA3AF" font-size="7.5" font-family="JetBrains Mono">Aruba 3810M | L2/L3</text>
+                    <text x="105" y="63" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Trunk: 1/1/1-3 → Core</text>
+                    <text x="105" y="76" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Trunk: 1/1/4-6 → Edge</text>
+                </g>
+
+                <!-- DIST-SW2 -->
+                <g transform="translate(640,310)">
+                    <rect x="0" y="0" width="210" height="85" rx="14" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.4)" stroke-width="1.5"/>
+                    <rect x="15" y="12" width="50" height="18" rx="4" fill="rgba(234,179,8,0.2)"/>
+                    <text x="40" y="25" text-anchor="middle" fill="#EAB308" font-size="8" font-weight="700" font-family="Space Grotesk">DIST</text>
+                    <text x="130" y="30" text-anchor="middle" fill="white" font-size="12" font-weight="700" font-family="Space Grotesk">DIST-SW2</text>
+                    <text x="105" y="48" text-anchor="middle" fill="#9CA3AF" font-size="7.5" font-family="JetBrains Mono">Aruba 3810M | L2/L3</text>
+                    <text x="105" y="63" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Trunk: 1/1/1-3 → Core</text>
+                    <text x="105" y="76" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Trunk: 1/1/4-6 → Edge</text>
+                </g>
+
+                <!-- EDGE-SW1 -->
+                <g transform="translate(100,560)">
+                    <rect x="0" y="0" width="190" height="80" rx="12" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.4)" stroke-width="1.5"/>
+                    <rect x="12" y="10" width="42" height="16" rx="4" fill="rgba(96,165,250,0.2)"/>
+                    <text x="33" y="22" text-anchor="middle" fill="#60A5FA" font-size="7" font-weight="700" font-family="Space Grotesk">EDGE</text>
+                    <text x="115" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="Space Grotesk">EDGE-SW1</text>
+                    <text x="95" y="44" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Aruba 2530 | L2</text>
+                    <text x="95" y="58" text-anchor="middle" fill="#34D399" font-size="7" font-family="JetBrains Mono">VLAN10 (ports 1-8)</text>
+                    <text x="95" y="70" text-anchor="middle" fill="#EAB308" font-size="7" font-family="JetBrains Mono">VLAN20 (ports 9-16)</text>
+                </g>
+
+                <!-- EDGE-SW2 -->
+                <g transform="translate(530,560)">
+                    <rect x="0" y="0" width="190" height="80" rx="12" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.4)" stroke-width="1.5"/>
+                    <rect x="12" y="10" width="42" height="16" rx="4" fill="rgba(96,165,250,0.2)"/>
+                    <text x="33" y="22" text-anchor="middle" fill="#60A5FA" font-size="7" font-weight="700" font-family="Space Grotesk">EDGE</text>
+                    <text x="115" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="Space Grotesk">EDGE-SW2</text>
+                    <text x="95" y="44" text-anchor="middle" fill="#9CA3AF" font-size="7" font-family="JetBrains Mono">Aruba 2530 | L2</text>
+                    <text x="95" y="58" text-anchor="middle" fill="#F87171" font-size="7" font-family="JetBrains Mono">VLAN30 (ports 1-12)</text>
+                    <text x="95" y="70" text-anchor="middle" fill="#EAB308" font-size="7" font-family="JetBrains Mono">VLAN20 (ports 13-24)</text>
+                </g>
+
+                <!-- PCs under EDGE-SW1 -->
+                <g transform="translate(30,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC1</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#34D399" font-size="6.5" font-family="JetBrains Mono">.10.10</text>
+                </g>
+                <g transform="translate(110,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC2</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#EAB308" font-size="6.5" font-family="JetBrains Mono">.20.10</text>
+                </g>
+                <g transform="translate(190,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC3</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#EAB308" font-size="6.5" font-family="JetBrains Mono">.20.11</text>
+                </g>
+
+                <!-- PCs under EDGE-SW2 -->
+                <g transform="translate(460,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(248,113,113,0.08)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC4</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#F87171" font-size="6.5" font-family="JetBrains Mono">.30.10</text>
+                </g>
+                <g transform="translate(540,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(248,113,113,0.08)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC5</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#F87171" font-size="6.5" font-family="JetBrains Mono">.30.11</text>
+                </g>
+                <g transform="translate(620,660)">
+                    <rect width="65" height="35" rx="6" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.3)" stroke-width="1"/>
+                    <text x="32" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="600" font-family="Space Grotesk">PC6</text>
+                    <text x="32" y="28" text-anchor="middle" fill="#EAB308" font-size="6.5" font-family="JetBrains Mono">.20.20</text>
+                </g>
+
+                <!-- Lines: PC to EDGE -->
+                <line x1="62" y1="660" x2="145" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <line x1="142" y1="660" x2="175" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <line x1="222" y1="660" x2="210" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <line x1="492" y1="660" x2="575" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <line x1="572" y1="660" x2="605" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <line x1="652" y1="660" x2="640" y2="640" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+                <!-- Lines: CORE → DIST-SW1 (3 links) -->
+                <line x1="430" y1="170" x2="290" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="470" y1="170" x2="320" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="510" y1="170" x2="350" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+
+                <!-- Lines: CORE → DIST-SW2 (3 links) -->
+                <line x1="490" y1="170" x2="690" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="530" y1="170" x2="730" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="570" y1="170" x2="770" y2="310" stroke="#F87171" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+
+                <!-- Lines: DIST-SW1 → EDGE-SW1 (3 links) -->
+                <line x1="220" y1="395" x2="170" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="255" y1="395" x2="210" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="290" y1="395" x2="250" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+
+                <!-- Lines: DIST-SW2 → EDGE-SW2 (3 links) -->
+                <line x1="720" y1="395" x2="600" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="755" y1="395" x2="640" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+                <line x1="790" y1="395" x2="680" y2="560" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,3" opacity="0.5" class="anim-pulse"/>
+
+                <!-- Link labels -->
+                <rect x="340" y="225" width="100" height="22" rx="6" fill="rgba(0,0,0,0.6)" stroke="rgba(248,113,113,0.3)" stroke-width="0.5"/>
+                <text x="390" y="240" text-anchor="middle" fill="#F87171" font-size="8" font-weight="600" font-family="JetBrains Mono">3× Trunk LAG</text>
+
+                <rect x="560" y="225" width="100" height="22" rx="6" fill="rgba(0,0,0,0.6)" stroke="rgba(248,113,113,0.3)" stroke-width="0.5"/>
+                <text x="610" y="240" text-anchor="middle" fill="#F87171" font-size="8" font-weight="600" font-family="JetBrains Mono">3× Trunk LAG</text>
+
+                <rect x="185" y="470" width="90" height="22" rx="6" fill="rgba(0,0,0,0.6)" stroke="rgba(234,179,8,0.3)" stroke-width="0.5"/>
+                <text x="230" y="485" text-anchor="middle" fill="#EAB308" font-size="8" font-weight="600" font-family="JetBrains Mono">3× Trunk</text>
+
+                <rect x="660" y="470" width="90" height="22" rx="6" fill="rgba(0,0,0,0.6)" stroke="rgba(234,179,8,0.3)" stroke-width="0.5"/>
+                <text x="705" y="485" text-anchor="middle" fill="#EAB308" font-size="8" font-weight="600" font-family="JetBrains Mono">3× Trunk</text>
+
+                <!-- VLAN Legend -->
+                <g transform="translate(830,560)">
+                    <rect x="0" y="0" width="140" height="130" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                    <text x="70" y="20" text-anchor="middle" fill="white" font-size="9" font-weight="700" font-family="Space Grotesk">VLAN Legend</text>
+                    <circle cx="20" cy="40" r="5" fill="#34D399"/><text x="35" y="44" fill="#9CA3AF" font-size="8" font-family="JetBrains Mono">VLAN 10 — Staff</text>
+                    <circle cx="20" cy="62" r="5" fill="#EAB308"/><text x="35" y="66" fill="#9CA3AF" font-size="8" font-family="JetBrains Mono">VLAN 20 — Servers</text>
+                    <circle cx="20" cy="84" r="5" fill="#F87171"/><text x="35" y="88" fill="#9CA3AF" font-size="8" font-family="JetBrains Mono">VLAN 30 — Guests</text>
+                    <line x1="10" y1="100" x2="130" y2="100" stroke="rgba(255,255,255,0.05)"/>
+                    <text x="70" y="118" text-anchor="middle" fill="#6B7280" font-size="7" font-family="JetBrains Mono">All trunks carry</text>
+                    <text x="70" y="128" text-anchor="middle" fill="#6B7280" font-size="7" font-family="JetBrains Mono">VLAN 10,20,30</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Connection Detail Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/5"><h3 class="font-display font-semibold text-sm">Connection Matrix — 3 Links Per Tier</h3></div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-white/5">
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Link #</th>
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">From</th>
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Port</th>
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">To</th>
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Port</th>
+                        <th class="text-left px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Type</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">1</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/1</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/1</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">2</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/2</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/2</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">3</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/3</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/3</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">4</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/4</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/1</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">5</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/5</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/2</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-red-500/[0.02]"><td class="px-5 py-2 text-gray-500">6</td><td class="px-5 py-2">CORE-SW</td><td class="px-5 py-2 font-mono text-xs text-red-400">1/1/6</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/3</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-yellow-500/[0.02]"><td class="px-5 py-2 text-gray-500">7</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/4</td><td class="px-5 py-2">EDGE-SW1</td><td class="px-5 py-2 font-mono text-xs text-blue-400">24</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-yellow-500/[0.02]"><td class="px-5 py-2 text-gray-500">8</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/5</td><td class="px-5 py-2">EDGE-SW1</td><td class="px-5 py-2 font-mono text-xs text-blue-400">23</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-yellow-500/[0.02]"><td class="px-5 py-2 text-gray-500">9</td><td class="px-5 py-2">DIST-SW1</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/6</td><td class="px-5 py-2">EDGE-SW1</td><td class="px-5 py-2 font-mono text-xs text-blue-400">22</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-yellow-500/[0.02]"><td class="px-5 py-2 text-gray-500">10</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/4</td><td class="px-5 py-2">EDGE-SW2</td><td class="px-5 py-2 font-mono text-xs text-blue-400">24</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr class="border-b border-white/5 bg-yellow-500/[0.02]"><td class="px-5 py-2 text-gray-500">11</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/5</td><td class="px-5 py-2">EDGE-SW2</td><td class="px-5 py-2 font-mono text-xs text-blue-400">23</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                        <tr><td class="px-5 py-2 text-gray-500">12</td><td class="px-5 py-2">DIST-SW2</td><td class="px-5 py-2 font-mono text-xs text-yellow-400">1/1/6</td><td class="px-5 py-2">EDGE-SW2</td><td class="px-5 py-2 font-mono text-xs text-blue-400">22</td><td class="px-5 py-2"><span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-300">Trunk</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- VLAN ILLUSTRATION -->
+<section id="vlan" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">VLAN Design</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">VLAN Illustration & IP Scheme</h2>
+        <p class="text-gray-400 font-light mb-10 max-w-2xl">3 VLANs span across all switches. The Core switch holds the SVI (VLAN interface) for inter-VLAN routing.</p>
+
+        <!-- VLAN Visual Diagram -->
+        <div class="glass-panel rounded-2xl p-6 md:p-8 mb-8">
+            <svg viewBox="0 0 900 320" class="w-full" xmlns="http://www.w3.org/2000/svg">
+                <!-- VLAN 10 Band -->
+                <rect x="40" y="20" width="820" height="80" rx="12" fill="rgba(52,211,153,0.05)" stroke="rgba(52,211,153,0.2)" stroke-width="1"/>
+                <rect x="55" y="35" width="90" height="30" rx="6" fill="rgba(52,211,153,0.15)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
+                <text x="100" y="55" text-anchor="middle" fill="#34D399" font-size="12" font-weight="700" font-family="Space Grotesk">VLAN 10</text>
+                <text x="100" y="85" text-anchor="middle" fill="#6B7280" font-size="8" font-family="JetBrains Mono">192.168.10.0/24</text>
+
+                <text x="200" y="55" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">Staff Network</text>
+                <text x="200" y="72" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">Gateway: 192.168.10.1 (CORE-SW)</text>
+
+                <g transform="translate(420,35)"><rect width="70" height="26" rx="5" fill="rgba(52,211,153,0.1)" stroke="rgba(52,211,153,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#34D399" font-size="7.5" font-family="JetBrains Mono">EDGE-SW1</text></g>
+                <g transform="translate(510,35)"><rect width="70" height="26" rx="5" fill="rgba(52,211,153,0.1)" stroke="rgba(52,211,153,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#34D399" font-size="7.5" font-family="JetBrains Mono">P1-8</text></g>
+                <g transform="translate(600,35)"><rect width="60" height="26" rx="5" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.15)" stroke-width="0.5"/><text x="30" y="18" text-anchor="middle" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">PC1</text></g>
+                <text x="680" y="52" fill="#34D399" font-size="7" font-family="JetBrains Mono">192.168.10.10</text>
+
+                <!-- VLAN 20 Band -->
+                <rect x="40" y="120" width="820" height="80" rx="12" fill="rgba(234,179,8,0.05)" stroke="rgba(234,179,8,0.2)" stroke-width="1"/>
+                <rect x="55" y="135" width="90" height="30" rx="6" fill="rgba(234,179,8,0.15)" stroke="rgba(234,179,8,0.3)" stroke-width="1"/>
+                <text x="100" y="155" text-anchor="middle" fill="#EAB308" font-size="12" font-weight="700" font-family="Space Grotesk">VLAN 20</text>
+                <text x="100" y="185" text-anchor="middle" fill="#6B7280" font-size="8" font-family="JetBrains Mono">192.168.20.0/24</text>
+
+                <text x="200" y="155" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">Server Network</text>
+                <text x="200" y="172" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">Gateway: 192.168.20.1 (CORE-SW)</text>
+
+                <g transform="translate(350,135)"><rect width="70" height="26" rx="5" fill="rgba(234,179,8,0.1)" stroke="rgba(234,179,8,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#EAB308" font-size="7.5" font-family="JetBrains Mono">EDGE-SW1</text></g>
+                <g transform="translate(440,135)"><rect width="70" height="26" rx="5" fill="rgba(234,179,8,0.1)" stroke="rgba(234,179,8,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#EAB308" font-size="7.5" font-family="JetBrains Mono">P9-16</text></g>
+                <g transform="translate(540,135)"><rect width="60" height="26" rx="5" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.15)" stroke-width="0.5"/><text x="30" y="18" text-anchor="middle" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">PC2,3</text></g>
+                <text x="620" y="152" fill="#EAB308" font-size="7" font-family="JetBrains Mono">.20.10, .20.11</text>
+                <g transform="translate(720,135)"><rect width="70" height="26" rx="5" fill="rgba(234,179,8,0.1)" stroke="rgba(234,179,8,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#EAB308" font-size="7.5" font-family="JetBrains Mono">EDGE-SW2</text></g>
+                <g transform="translate(810,135)"><rect width="40" height="26" rx="5" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.15)" stroke-width="0.5"/><text x="20" y="18" text-anchor="middle" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">PC6</text></g>
+
+                <!-- VLAN 30 Band -->
+                <rect x="40" y="220" width="820" height="80" rx="12" fill="rgba(248,113,113,0.05)" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+                <rect x="55" y="235" width="90" height="30" rx="6" fill="rgba(248,113,113,0.15)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+                <text x="100" y="255" text-anchor="middle" fill="#F87171" font-size="12" font-weight="700" font-family="Space Grotesk">VLAN 30</text>
+                <text x="100" y="285" text-anchor="middle" fill="#6B7280" font-size="8" font-family="JetBrains Mono">192.168.30.0/24</text>
+
+                <text x="200" y="255" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">Guest Network</text>
+                <text x="200" y="272" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">Gateway: 192.168.30.1 (CORE-SW)</text>
+
+                <g transform="translate(420,235)"><rect width="70" height="26" rx="5" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.2)" stroke-width="0.5"/><text x="35" y="18" text-anchor="middle" fill="#F87171" font-size="7.5" font-family="JetBrains Mono">EDGE-SW2</text></g>
+                <g transform="translate(510,235)"><rect width="80" height="26" rx="5" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.2)" stroke-width="0.5"/><text x="40" y="18" text-anchor="middle" fill="#F87171" font-size="7.5" font-family="JetBrains Mono">P1-12</text></g>
+                <g transform="translate(610,235)"><rect width="60" height="26" rx="5" fill="rgba(248,113,113,0.08)" stroke="rgba(248,113,113,0.15)" stroke-width="0.5"/><text x="30" y="18" text-anchor="middle" fill="#6B7280" font-size="7.5" font-family="JetBrains Mono">PC4,5</text></g>
+                <text x="690" y="252" fill="#F87171" font-size="7" font-family="JetBrains Mono">.30.10, .30.11</text>
+            </svg>
+        </div>
+
+        <div class="image-showcase mb-6">
+            <img src="https://miro.medium.com/v2/resize:fit:1200/1*28r1kurUIIkbMHYSrl_1DA.png" alt="VLAN Segmentation" loading="lazy">
+            <div class="image-label"><p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>VLAN segmentation isolates broadcast domains — each VLAN is a separate subnet</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CORE SWITCH CONFIG -->
+<section id="core" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-red-400 mb-3 block">Step 1</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Core Switch — Full Configuration</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">CORE-SW is the L3 backbone. It creates VLANs, SVIs for routing, trunk links to both distribution switches, and OSPF.</p>
+
+        <div class="image-showcase mb-6">
+            <img src="https://www.optdex.com/cdn/shop/files/UbSphJm.png?v=1744749566&width=1946" alt="HP Aruba Core Switch" loading="lazy">
+            <div class="image-label"><p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>HPE Aruba 5406R — Modular core switch with 10Gbps uplinks</p></div>
+        </div>
+
+        <div class="step-card tier-core pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+            <div class="flex items-start gap-4 mb-5">
+                <div class="step-number" style="background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.3);color:#F87171;">1</div>
+                <div><h3 class="font-display font-semibold text-lg">CORE-SW — VLANs, Trunks, SVI, OSPF</h3></div>
+            </div>
+            <div class="code-block">
+                <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:terminal" width="14" style="color:#F87171"></iconify-icon><span class="text-xs font-semibold text-gray-300">CORE-SW — Complete Configuration</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre class="font-mono"><span class="code-comment">###############################################################</span>
+<span class="code-comment">#  CORE-SW — HPE Aruba 5406R / ArubaOS-CX                   #</span>
+<span class="code-comment">###############################################################</span>
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  STEP 1A: HOSTNAME & MANAGEMENT IP         #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">hostname CORE-SW</span>
+
+<span class="code-comment"># Create management VLAN (VLAN 99) and assign IP</span>
+<span class="code-cmd">vlan 99</span>
+   <span class="code-cmd">name MGMT</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface vlan 99</span>
+   <span class="code-cmd">ip address 10.0.0.1/24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Set default gateway for management</span>
+<span class="code-cmd">ip default-gateway 10.0.0.254</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  STEP 1B: CREATE VLANS 10, 20, 30          #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">vlan 10</span>
+   <span class="code-cmd">name STAFF</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">name SERVERS</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">vlan 30</span>
+   <span class="code-cmd">name GUESTS</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Verify VLANs</span>
+<span class="code-cmd">show vlan</span>
+<span class="code-output">#  VLAN ID | Name    | Status | Ports</span>
+<span class="code-output">#  ------- | ------- | ------ | -----</span>
+<span class="code-output">#  1       | DEFAULT | Up     | ...</span>
+<span class="code-output">#  10      | STAFF   | Up     |</span>
+<span class="code-output">#  20      | SERVERS | Up     |</span>
+<span class="code-output">#  30      | GUESTS  | Up     |</span>
+<span class="code-output">#  99      | MGMT    | Up     |</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  STEP 1C: SVI — INTER-VLAN ROUTING (L3)       #####</span>
+<span class="code-comment">#####  These are the gateways for each VLAN          #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">interface vlan 10</span>
+   <span class="code-cmd">ip address 192.168.10.1/24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface vlan 20</span>
+   <span class="code-cmd">ip address 192.168.20.1/24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface vlan 30</span>
+   <span class="code-cmd">ip address 192.168.30.1/24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Enable IP routing on the switch</span>
+<span class="code-cmd">ip routing</span>
+
+<span class="code-comment"># Verify SVIs</span>
+<span class="code-cmd">show ip interface brief</span>
+<span class="code-output"># Interface     IP Address      Status  Protocol</span>
+<span class="code-output"># ------------- --------------- ------  --------</span>
+<span class="code-output"># vlan 10       192.168.10.1    Up      Up</span>
+<span class="code-output"># vlan 20       192.168.20.1    Up      Up</span>
+<span class="code-output"># vlan 30       192.168.30.1    Up      Up</span>
+<span class="code-output"># vlan 99       10.0.0.1        Up      Up</span>
+
+
+<span class="code-comment">##### =================================================== #####</span>
+<span class="code-comment">#####  STEP 1D: TRUNK LINKS TO DIST-SW1 (3 links)       #####</span>
+<span class="code-comment">#####  Ports 1/1/1, 1/1/2, 1/1/3 → Tagged VLAN 10,20,30  #####</span>
+<span class="code-comment">##### =================================================== #####</span>
+
+<span class="code-cmd">interface 1/1/1</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface 1/1/2</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface 1/1/3</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Create LAG (Link Aggregation Group) for 3 links to DIST-SW1</span>
+<span class="code-cmd">interface lag 1</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 1</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Assign ports to LAG 1</span>
+<span class="code-cmd">interface 1/1/1</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/2</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/3</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Configure LAG 1 as trunk with tagged VLANs</span>
+<span class="code-cmd">interface lag 1</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### =================================================== #####</span>
+<span class="code-comment">#####  STEP 1E: TRUNK LINKS TO DIST-SW2 (3 links)       #####</span>
+<span class="code-comment">#####  Ports 1/1/4, 1/1/5, 1/1/6 → Tagged VLAN 10,20,30  #####</span>
+<span class="code-comment">##### =================================================== #####</span>
+
+<span class="code-cmd">interface 1/1/4</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/5</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/6</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Create LAG 2 for 3 links to DIST-SW2</span>
+<span class="code-cmd">interface lag 2</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 2</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface 1/1/4</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/5</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/6</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface lag 2</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  STEP 1F: OSPF ROUTING                    #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">router ospf 1</span>
+   <span class="code-comment"># Advertise VLAN networks</span>
+   <span class="code-cmd">network 192.168.10.0/24 area 0.0.0.0</span>
+   <span class="code-cmd">network 192.168.20.0/24 area 0.0.0.0</span>
+   <span class="code-cmd">network 192.168.30.0/24 area 0.0.0.0</span>
+   <span class="code-cmd">network 10.0.0.0/24 area 0.0.0.0</span>
+   <span class="code-comment"># Set router ID</span>
+   <span class="code-cmd">router-id 1.1.1.1</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Default route toward upstream router</span>
+<span class="code-cmd">ip route 0.0.0.0/0 10.0.0.254</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  STEP 1G: SPANNING TREE (CORE IS ROOT)     #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">spanning-tree</span>
+<span class="code-cmd">spanning-tree priority 0</span>
+   <span class="code-comment"># Priority 0 = root bridge for all VLANs</span>
+
+<span class="code-cmd">spanning-tree vlan 10 priority 0</span>
+<span class="code-cmd">spanning-tree vlan 20 priority 0</span>
+<span class="code-cmd">spanning-tree vlan 30 priority 0</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  SAVE CONFIGURATION                        #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">write memory</span>
+<span class="code-output"># Configuration saved.</span></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DISTRIBUTION SWITCHES -->
+<section id="dist" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-400 mb-3 block">Step 2-3</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Distribution Switches — Full Configuration</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">DIST-SW1 and DIST-SW2 aggregate edge switches and connect to core via LAG trunks.</p>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6">
+            <button class="tab-btn active" onclick="switchTab('dist','dist1')">DIST-SW1</button>
+            <button class="tab-btn" onclick="switchTab('dist','dist2')">DIST-SW2</button>
+        </div>
+
+        <div id="dist-dist1" class="tab-content active">
+            <div class="step-card tier-dist pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="step-number">2</div>
+                    <div><h3 class="font-display font-semibold text-lg">DIST-SW1 — Trunks to Core & Edge-SW1</h3></div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon><span class="text-xs font-semibold text-gray-300">DIST-SW1 — Aruba 3810M</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre class="font-mono"><span class="code-comment">###############################################################</span>
+<span class="code-comment">#  DIST-SW1 — HPE Aruba 3810M                               #</span>
+<span class="code-comment">###############################################################</span>
+
+<span class="code-cmd">hostname DIST-SW1</span>
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  VLANs (must match core)                   #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">vlan 10</span>
+   <span class="code-cmd">name STAFF</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">name SERVERS</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>
+   <span class="code-cmd">name GUESTS</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 99</span>
+   <span class="code-cmd">name MGMT</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface vlan 99</span>
+   <span class="code-cmd">ip address 10.0.0.2/24</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">ip default-gateway 10.0.0.254</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  TRUNK TO CORE-SW (3 links via LAG 1)          #####</span>
+<span class="code-comment">#####  Ports 1/1/1, 1/1/2, 1/1/3                    #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">interface 1/1/1</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/2</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/3</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">speed 10gforce</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 1</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface lag 1</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 1</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  TRUNK TO EDGE-SW1 (3 links via LAG 2)         #####</span>
+<span class="code-comment">#####  Ports 1/1/4, 1/1/5, 1/1/6                    #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">interface 1/1/4</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/5</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/6</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">lag 2</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface lag 2</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 2</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  SPANNING TREE (higher priority than edge) #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">spanning-tree</span>
+<span class="code-cmd">spanning-tree priority 4096</span>
+<span class="code-cmd">spanning-tree vlan 10 priority 4096</span>
+<span class="code-cmd">spanning-tree vlan 20 priority 4096</span>
+<span class="code-cmd">spanning-tree vlan 30 priority 4096</span>
+
+<span class="code-cmd">write memory</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="dist-dist2" class="tab-content">
+            <div class="step-card tier-dist pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="step-number">3</div>
+                    <div><h3 class="font-display font-semibold text-lg">DIST-SW2 — Trunks to Core & Edge-SW2</h3></div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon><span class="text-xs font-semibold text-gray-300">DIST-SW2 — Aruba 3810M</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre class="font-mono"><span class="code-comment">###############################################################</span>
+<span class="code-comment">#  DIST-SW2 — HPE Aruba 3810M (mirror of DIST-SW1)         #</span>
+<span class="code-comment">###############################################################</span>
+
+<span class="code-cmd">hostname DIST-SW2</span>
+
+<span class="code-cmd">vlan 10</span>   <span class="code-cmd">name STAFF</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>   <span class="code-cmd">name SERVERS</span> <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>   <span class="code-cmd">name GUESTS</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 99</span>   <span class="code-cmd">name MGMT</span>    <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface vlan 99</span>
+   <span class="code-cmd">ip address 10.0.0.3/24</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">ip default-gateway 10.0.0.254</span>
+
+<span class="code-comment"># === TRUNK TO CORE-SW (LAG 1, ports 1/1/1-3) ===</span>
+<span class="code-cmd">interface 1/1/1</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">speed 10gforce</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 1</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/2</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">speed 10gforce</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 1</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/3</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">speed 10gforce</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 1</span>   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface lag 1</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 1</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># === TRUNK TO EDGE-SW2 (LAG 2, ports 1/1/4-6) ===</span>
+<span class="code-cmd">interface 1/1/4</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 2</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/5</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 2</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">interface 1/1/6</span>   <span class="code-cmd">no shutdown</span>   <span class="code-cmd">lacp active</span>   <span class="code-cmd">lag 2</span>   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface lag 2</span>
+   <span class="code-cmd">no shutdown</span>
+   <span class="code-cmd">lacp key 2</span>
+   <span class="code-cmd">tagged vlan 10,20,30</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># === SPANNING TREE ===</span>
+<span class="code-cmd">spanning-tree</span>
+<span class="code-cmd">spanning-tree priority 8192</span>
+<span class="code-cmd">spanning-tree vlan 10 priority 8192</span>
+<span class="code-cmd">spanning-tree vlan 20 priority 8192</span>
+<span class="code-cmd">spanning-tree vlan 30 priority 8192</span>
+
+<span class="code-cmd">write memory</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-box alert-tip">
+            <iconify-icon icon="lucide:lightbulb" width="14" class="mr-1"></iconify-icon>
+            <strong>LAG Key Matching:</strong> The <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded text-xs">lacp key</code> must match on BOTH ends of the trunk. CORE-SW LAG 1 connects to DIST-SW1 LAG 1 (both use key 1). CORE-SW LAG 2 connects to DIST-SW2 LAG 1 (note: keys are local — just make sure physical ports are correctly mapped).
+        </div>
+    </div>
+</section>
+
+<!-- EDGE SWITCHES -->
+<section id="edge" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-blue-400 mb-3 block">Step 4-5</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Edge Switches — Access Ports & Uplinks</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">Edge switches assign VLANs to access ports (untagged) and have trunk uplinks to distribution.</p>
+
+        <div class="flex gap-2 mb-6">
+            <button class="tab-btn active" onclick="switchTab('edge','edge1')">EDGE-SW1</button>
+            <button class="tab-btn" onclick="switchTab('edge','edge2')">EDGE-SW2</button>
+        </div>
+
+        <div id="edge-edge1" class="tab-content active">
+            <div class="step-card tier-edge pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="step-number" style="background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);color:#60A5FA;">4</div>
+                    <div><h3 class="font-display font-semibold text-lg">EDGE-SW1 — VLAN 10 (Ports 1-8) & VLAN 20 (Ports 9-16)</h3></div>
+                </div>
+                <div class="image-showcase mb-5">
+                    <img src="https://www.eagle.in/wp-content/uploads/2023/12/Aruba-2530-600x600.jpg" alt="HP Aruba 2530 Edge Switch" loading="lazy">
+                    <div class="image-label"><p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>HPE Aruba 2530 — 24-port Layer 2 edge switch</p></div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:terminal" width="14" style="color:#60A5FA"></iconify-icon><span class="text-xs font-semibold text-gray-300">EDGE-SW1 — Aruba 2530 (ProVision CLI)</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre class="font-mono"><span class="code-comment">###############################################################</span>
+<span class="code-comment">#  EDGE-SW1 — HPE Aruba 2530 (ProVision/ProCurve CLI)      #</span>
+<span class="code-comment">#  NOTE: Aruba 2530 uses ProVision CLI (older style)         #</span>
+<span class="code-comment">###############################################################</span>
+
+<span class="code-cmd">hostname EDGE-SW1</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  CREATE VLANS                           #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">vlan 10</span>
+   <span class="code-cmd">name "STAFF"</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">name "SERVERS"</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>
+   <span class="code-cmd">name "GUESTS"</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 99</span>
+   <span class="code-cmd">name "MGMT"</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Management IP</span>
+<span class="code-cmd">vlan 99</span>
+   <span class="code-cmd">ip address 10.0.0.4 255.255.255.0</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">ip default-gateway 10.0.0.254</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  ACCESS PORTS — VLAN 10 (Staff)                  #####</span>
+<span class="code-comment">#####  Ports 1-8: UNTAGGED (access) in VLAN 10          #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">vlan 10</span>
+   <span class="code-cmd">untagged 1-8</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Optionally enable port security on access ports</span>
+<span class="code-cmd">interface 1-8</span>
+   <span class="code-cmd">port-security mode learned</span>
+   <span class="code-cmd">port-security max-mac-count 2</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Enable spanning-tree edge (PortFast) on access ports</span>
+<span class="code-cmd">spanning-tree 1-8 admin-edge-port</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  ACCESS PORTS — VLAN 20 (Servers)                #####</span>
+<span class="code-comment">#####  Ports 9-16: UNTAGGED (access) in VLAN 20         #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">untagged 9-16</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface 9-16</span>
+   <span class="code-cmd">port-security mode learned</span>
+   <span class="code-cmd">port-security max-mac-count 4</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">spanning-tree 9-16 admin-edge-port</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  TRUNK UPLINK TO DIST-SW1 (3 links)              #####</span>
+<span class="code-comment">#####  Ports 22, 23, 24 → TAGGED VLAN 10,20,30         #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">vlan 10</span>
+   <span class="code-cmd">tagged 22-24</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">tagged 22-24</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>
+   <span class="code-cmd">tagged 22-24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Enable LACP on trunk ports (must match DIST-SW1)</span>
+<span class="code-cmd">interface 22-24</span>
+   <span class="code-cmd">lacp active</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Create Trunk LAG on ProVision</span>
+<span class="code-cmd">trunk 22-24 trk1 lacp</span>
+
+<span class="code-comment"># Apply VLAN tagging to the trunk group</span>
+<span class="code-cmd">vlan 10</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  SPANNING TREE (highest priority = edge)    #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+
+<span class="code-cmd">spanning-tree priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 10 priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 20 priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 30 priority 32768</span>
+
+<span class="code-cmd">write memory</span>
+<span class="code-output"># Configuration saved.</span>
+
+<span class="code-comment"># === VERIFY ===</span>
+<span class="code-cmd">show vlan</span>
+<span class="code-output">#  VLAN ID | Name    | Status | Tagged Ports | Untagged Ports</span>
+<span class="code-output">#  ------- | ------- | ------ | ------------ | --------------</span>
+<span class="code-output">#  10      | STAFF   | Up     | Trk1         | 1-8</span>
+<span class="code-output">#  20      | SERVERS | Up     | Trk1         | 9-16</span>
+<span class="code-output">#  30      | GUESTS  | Up     | Trk1         |</span>
+<span class="code-output">#  99      | MGMT    | Up     |              |</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="edge-edge2" class="tab-content">
+            <div class="step-card tier-edge pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="step-number" style="background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);color:#60A5FA;">5</div>
+                    <div><h3 class="font-display font-semibold text-lg">EDGE-SW2 — VLAN 30 (Ports 1-12) & VLAN 20 (Ports 13-24)</h3></div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:terminal" width="14" style="color:#60A5FA"></iconify-icon><span class="text-xs font-semibold text-gray-300">EDGE-SW2 — Aruba 2530</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre class="font-mono"><span class="code-comment">###############################################################</span>
+<span class="code-comment">#  EDGE-SW2 — HPE Aruba 2530                                #</span>
+<span class="code-comment">###############################################################</span>
+
+<span class="code-cmd">hostname EDGE-SW2</span>
+
+<span class="code-cmd">vlan 10</span>   <span class="code-cmd">name "STAFF"</span>    <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>   <span class="code-cmd">name "SERVERS"</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>   <span class="code-cmd">name "GUESTS"</span>   <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 99</span>   <span class="code-cmd">name "MGMT"</span>     <span class="code-cmd">exit</span>
+
+<span class="code-cmd">vlan 99</span>
+   <span class="code-cmd">ip address 10.0.0.5 255.255.255.0</span>
+   <span class="code-cmd">exit</span>
+<span class="code-cmd">ip default-gateway 10.0.0.254</span>
+
+
+<span class="code-comment"># === ACCESS: VLAN 30 (Guests) on ports 1-12 ===</span>
+<span class="code-cmd">vlan 30</span>
+   <span class="code-cmd">untagged 1-12</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">interface 1-12</span>
+   <span class="code-cmd">port-security mode learned</span>
+   <span class="code-cmd">port-security max-mac-count 2</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">spanning-tree 1-12 admin-edge-port</span>
+
+
+<span class="code-comment"># === ACCESS: VLAN 20 (Servers) on ports 13-21 ===</span>
+<span class="code-cmd">vlan 20</span>
+   <span class="code-cmd">untagged 13-21</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-cmd">spanning-tree 13-21 admin-edge-port</span>
+
+
+<span class="code-comment"># === TRUNK TO DIST-SW2 (ports 22-24) ===</span>
+<span class="code-cmd">trunk 22-24 trk1 lacp</span>
+
+<span class="code-cmd">vlan 10</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 20</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+<span class="code-cmd">vlan 30</span>  <span class="code-cmd">tagged trk1</span>  <span class="code-cmd">exit</span>
+
+
+<span class="code-comment"># === SPANNING TREE ===</span>
+<span class="code-cmd">spanning-tree priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 10 priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 20 priority 32768</span>
+<span class="code-cmd">spanning-tree vlan 30 priority 32768</span>
+
+<span class="code-cmd">write memory</span>
+
+<span class="code-comment"># === VERIFY ===</span>
+<span class="code-cmd">show vlan</span>
+<span class="code-output">#  VLAN ID | Name    | Status | Tagged Ports | Untagged Ports</span>
+<span class="code-output">#  ------- | ------- | ------ | ------------ | --------------</span>
+<span class="code-output">#  10      | STAFF   | Up     | Trk1         |</span>
+<span class="code-output">#  20      | SERVERS | Up     | Trk1         | 13-21</span>
+<span class="code-output">#  30      | GUESTS  | Up     | Trk1         | 1-12</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ROUTING -->
+<section id="routing" class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+    <div class="floating-decoration w-[500px] h-[500px] bg-yellow-500/5 -top-40 -right-40"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Step 6</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Routing Declaration — OSPF & Static</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">The core switch handles all inter-VLAN routing via SVIs and advertises routes via OSPF to the upstream router.</p>
+
+        <div class="image-showcase mb-8">
+            <img src="https://cdn.networkacademy.io/sites/default/files/2024-09/ospf-design-terms.svg" alt="OSPF Routing" loading="lazy">
+            <div class="image-label"><p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>OSPF Area 0 — Core switch advertises all VLAN subnets</p></div>
+        </div>
+
+        <div class="step-card pl-8 pr-6 py-6 rounded-r-2xl mb-6">
+            <div class="flex items-start gap-4 mb-5">
+                <div class="step-number">6</div>
+                <div><h3 class="font-display font-semibold text-lg">Full Routing Configuration on CORE-SW</h3></div>
+            </div>
+            <div class="code-block">
+                <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:route" width="14" style="color:#EAB308"></iconify-icon><span class="text-xs font-semibold text-gray-300">CORE-SW — Routing (OSPF + Static)</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre class="font-mono"><span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  STATIC ROUTES                                #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-comment"># Default route to upstream router/internet</span>
+<span class="code-cmd">ip route 0.0.0.0/0 10.0.0.254</span>
+
+<span class="code-comment"># Static route to management network (if separate)</span>
+<span class="code-cmd">ip route 10.0.0.0/24 vlan 99</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  OSPF CONFIGURATION                           #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">router ospf 1</span>
+   <span class="code-comment"># Set unique router ID</span>
+   <span class="code-cmd">router-id 1.1.1.1</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Advertise each VLAN network into OSPF Area 0</span>
+<span class="code-cmd">router ospf 1</span>
+   <span class="code-cmd">area 0.0.0.0 vlan 10</span>
+   <span class="code-cmd">area 0.0.0.0 vlan 20</span>
+   <span class="code-cmd">area 0.0.0.0 vlan 30</span>
+   <span class="code-cmd">area 0.0.0.0 vlan 99</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Alternative syntax (network-based):</span>
+<span class="code-comment"># router ospf 1</span>
+<span class="code-comment">#    network 192.168.10.0/24 area 0.0.0.0</span>
+<span class="code-comment">#    network 192.168.20.0/24 area 0.0.0.0</span>
+<span class="code-comment">#    network 192.168.30.0/24 area 0.0.0.0</span>
+<span class="code-comment">#    network 10.0.0.0/24 area 0.0.0.0</span>
+<span class="code-comment"># exit</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  REDISTRIBUTE STATIC INTO OSPF                 #####</span>
+<span class="code-comment">#####  (So upstream router learns the default route)  #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-cmd">router ospf 1</span>
+   <span class="code-cmd">redistribute static</span>
+   <span class="code-cmd">exit</span>
+
+
+<span class="code-comment">##### ================================================ #####</span>
+<span class="code-comment">#####  OSPF ON UPSTREAM ROUTER (if HPE/Aruba)       #####</span>
+<span class="code-comment">##### ================================================ #####</span>
+
+<span class="code-comment"># On the upstream ROUTER:</span>
+<span class="code-cmd">router ospf 1</span>
+   <span class="code-cmd">router-id 2.2.2.2</span>
+   <span class="code-cmd">area 0.0.0.0 10.0.0.0/24</span>
+   <span class="code-cmd">exit</span>
+
+<span class="code-comment"># Default route back to core</span>
+<span class="code-cmd">ip route 192.168.10.0/24 10.0.0.1</span>
+<span class="code-cmd">ip route 192.168.20.0/24 10.0.0.1</span>
+<span class="code-cmd">ip route 192.168.30.0/24 10.0.0.1</span>
+
+
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#####  ROUTING FLOW DIAGRAM                     #####</span>
+<span class="code-comment">##### ============================================ #####</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  PC1 (192.168.10.10) wants to reach PC4 (192.168.30.10)</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  1. PC1 sends packet to its gateway: 192.168.10.1</span>
+<span class="code-comment">#     (CORE-SW VLAN 10 SVI)</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  2. CORE-SW looks up route: 192.168.30.0/24</span>
+<span class="code-comment">#     → Directly connected via VLAN 30 SVI</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  3. CORE-SW forwards out LAG 2 → DIST-SW2</span>
+<span class="code-comment">#     (tagged VLAN 30)</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  4. DIST-SW2 forwards out LAG 2 → EDGE-SW2</span>
+<span class="code-comment">#     (tagged VLAN 30)</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  5. EDGE-SW2 strips VLAN tag, sends out port 1</span>
+<span class="code-comment">#     (untagged access port in VLAN 30)</span>
+<span class="code-comment">#</span>
+<span class="code-comment">#  6. PC4 (192.168.30.10) receives the packet!</span>
+<span class="code-comment">#</span>
+
+<span class="code-cmd">write memory</span></pre>
+            </div>
+        </div>
+
+        <!-- Routing Flow Visual -->
+        <div class="glass-panel rounded-2xl p-6 mt-6">
+            <h4 class="font-display font-semibold text-sm mb-5 flex items-center gap-2">
+                <iconify-icon icon="lucide:arrow-right-left" width="16" style="color:#EAB308"></iconify-icon>
+                Inter-VLAN Routing Flow (VLAN 10 → VLAN 30)
+            </h4>
+            <div class="flex flex-col items-center gap-2">
+                <div class="w-full max-w-lg rounded-xl bg-green-500/10 border border-green-500/20 p-3 text-center text-sm text-green-400">PC1 — 192.168.10.10 (VLAN 10, EDGE-SW1 port 1)</div>
+                <iconify-icon icon="lucide:arrow-down" width="14" style="color:#6B7280"></iconify-icon>
+                <div class="w-full max-w-lg rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 text-center text-xs text-blue-400">EDGE-SW1 → Trunk (tagged VLAN10) → DIST-SW1 → Trunk (tagged VLAN10) → <strong>CORE-SW</strong></div>
+                <iconify-icon icon="lucide:arrow-down" width="14" style="color:#EAB308"></iconify-icon>
+                <div class="w-full max-w-lg rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-3 text-center text-xs text-yellow-400"><strong>CORE-SW L3 Routing:</strong> SVI vlan10 (192.168.10.1) → SVI vlan30 (192.168.30.1) — Route lookup in routing table</div>
+                <iconify-icon icon="lucide:arrow-down" width="14" style="color:#6B7280"></iconify-icon>
+                <div class="w-full max-w-lg rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 text-center text-xs text-blue-400">CORE-SW → Trunk (tagged VLAN30) → DIST-SW2 → Trunk (tagged VLAN30) → EDGE-SW2</div>
+                <iconify-icon icon="lucide:arrow-down" width="14" style="color:#6B7280"></iconify-icon>
+                <div class="w-full max-w-lg rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-center text-sm text-red-400">PC4 — 192.168.30.10 (VLAN 30, EDGE-SW2 port 1)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- VERIFICATION -->
+<section id="verify" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Step 7</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Verification Commands</h2>
+        <p class="text-gray-400 font-light mb-8 max-w-2xl">Run these on each switch to verify the entire setup is working.</p>
+
+        <div class="flex gap-2 mb-6">
+            <button class="tab-btn active" onclick="switchTab('verify','vcore')">CORE-SW</button>
+            <button class="tab-btn" onclick="switchTab('verify','vdist')">DIST-SW</button>
+            <button class="tab-btn" onclick="switchTab('verify','vedge')">EDGE-SW</button>
+        </div>
+
+        <div id="verify-vcore" class="tab-content active">
+            <div class="code-block">
+                <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:check-circle-2" width="14" style="color:#34D399"></iconify-icon><span class="text-xs font-semibold text-gray-300">CORE-SW Verification</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre class="font-mono"><span class="code-comment"># === VLANs ===</span>
+<span class="code-cmd">show vlan</span>
+
+<span class="code-comment"># === SVI / IP Interfaces ===</span>
+<span class="code-cmd">show ip interface brief</span>
+<span class="code-output"># Interface     IP Address      Status  Protocol</span>
+<span class="code-output"># ------------- --------------- ------  --------</span>
+<span class="code-output"># vlan 10       192.168.10.1    Up      Up</span>
+<span class="code-output"># vlan 20       192.168.20.1    Up      Up</span>
+<span class="code-output"># vlan 30       192.168.30.1    Up      Up</span>
+<span class="code-output"># vlan 99       10.0.0.1        Up      Up</span>
+
+<span class="code-comment"># === Routing Table ===</span>
+<span class="code-cmd">show ip route</span>
+<span class="code-output"># Destination        Gateway         Interface  Type</span>
+<span class="code-output"># ------------------ --------------- ---------- -------</span>
+<span class="code-output"># 0.0.0.0/0          10.0.0.254      vlan 99    static</span>
+<span class="code-output"># 10.0.0.0/24        DIRECT          vlan 99    connected</span>
+<span class="code-output"># 192.168.10.0/24    DIRECT          vlan 10    connected</span>
+<span class="code-output"># 192.168.20.0/24    DIRECT          vlan 20    connected</span>
+<span class="code-output"># 192.168.30.0/24    DIRECT          vlan 30    connected</span>
+
+<span class="code-comment"># === OSPF Neighbors ===</span>
+<span class="code-cmd">show ospf neighbor</span>
+<span class="code-output"># Neighbor ID   Pri  State      Interface   Dead Time</span>
+<span class="code-output"># ------------  ---  ---------  ----------  ---------</span>
+<span class="code-output"># 2.2.2.2       1    Full       vlan 99     32 sec</span>
+
+<span class="code-comment"># === OSPF Routes ===</span>
+<span class="code-cmd">show ospf route</span>
+
+<span class="code-comment"># === LAG / Trunk Status ===</span>
+<span class="code-cmd">show lacp lag 1</span>
+<span class="code-output"># LAG 1: Ports: 1/1/1, 1/1/2, 1/1/3  Status: Up  Partner: DIST-SW1</span>
+<span class="code-cmd">show lacp lag 2</span>
+<span class="code-output"># LAG 2: Ports: 1/1/4, 1/1/5, 1/1/6  Status: Up  Partner: DIST-SW2</span>
+
+<span class="code-comment"># === Spanning Tree ===</span>
+<span class="code-cmd">show spanning-tree</span>
+<span class="code-output"># ROOT: This switch is ROOT (priority 0)</span>
+
+<span class="code-comment"># === Test inter-VLAN ping from CORE-SW ===</span>
+<span class="code-cmd">ping 192.168.10.10</span>
+<span class="code-output"># 5 packets transmitted, 5 received, 0% loss</span>
+<span class="code-cmd">ping 192.168.20.10</span>
+<span class="code-output"># 5 packets transmitted, 5 received, 0% loss</span>
+<span class="code-cmd">ping 192.168.30.10</span>
+<span class="code-output"># 5 packets transmitted, 5 received, 0% loss</span></pre>
+            </div>
+        </div>
+
+        <div id="verify-vdist" class="tab-content">
+            <div class="code-block">
+                <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:check-circle-2" width="14" style="color:#34D399"></iconify-icon><span class="text-xs font-semibold text-gray-300">DIST-SW Verification</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre class="font-mono"><span class="code-comment"># === VLANs ===</span>
+<span class="code-cmd">show vlan</span>
+
+<span class="code-comment"># === LAG Status ===</span>
+<span class="code-cmd">show lacp lag 1</span>
+<span class="code-output"># LAG 1: Up — Partner: CORE-SW (3 ports bundled)</span>
+<span class="code-cmd">show lacp lag 2</span>
+<span class="code-output"># LAG 2: Up — Partner: EDGE-SW (3 ports bundled)</span>
+
+<span class="code-comment"># === Spanning Tree ===</span>
+<span class="code-cmd">show spanning-tree</span>
+<span class="code-output"># Root Bridge: CORE-SW (priority 0)</span>
+<span class="code-output"># This switch: Root Port = LAG 1 (toward core)</span>
+<span class="code-output"># Designated Port = LAG 2 (toward edge)</span>
+
+<span class="code-comment"># === MAC Address Table ===</span>
+<span class="code-cmd">show mac-address-table</span>
+<span class="code-output"># MAC Address       VLAN  Port</span>
+<span class="code-output"># -----------------  ----  -------</span>
+<span class="code-output"># aa:bb:cc:dd:ee:01  10    lag 2</span>
+<span class="code-output"># aa:bb:cc:dd:ee:02  20    lag 2</span>
+
+<span class="code-comment"># === Interface Status ===</span>
+<span class="code-cmd">show interfaces brief</span>
+<span class="code-output"># Port   Status  Speed   Duplex  Type</span>
+<span class="code-output"># -----  ------  ------  ------  -----</span>
+<span class="code-output"># 1/1/1  Up      10G     Full    LAG 1</span>
+<span class="code-output"># 1/1/2  Up      10G     Full    LAG 1</span>
+<span class="code-output"># 1/1/3  Up      10G     Full    LAG 1</span>
+<span class="code-output"># 1/1/4  Up      1G      Full    LAG 2</span>
+<span class="code-output"># 1/1/5  Up      1G      Full    LAG 2</span>
+<span class="code-output"># 1/1/6  Up      1G      Full    LAG 2</span></pre>
+            </div>
+        </div>
+
+        <div id="verify-vedge" class="tab-content">
+            <div class="code-block">
+                <div class="code-header"><div class="flex items-center gap-2"><iconify-icon icon="lucide:check-circle-2" width="14" style="color:#34D399"></iconify-icon><span class="text-xs font-semibold text-gray-300">EDGE-SW Verification (ProVision)</span></div><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre class="font-mono"><span class="code-comment"># === VLANs with Port Mapping ===</span>
+<span class="code-cmd">show vlan</span>
+<span class="code-output">#  VLAN ID | Name    | Status | Tagged  | Untagged</span>
+<span class="code-output">#  ------- | ------- | ------ | ------- | --------</span>
+<span class="code-output">#  10      | STAFF   | Up     | Trk1    | 1-8</span>
+<span class="code-output">#  20      | SERVERS | Up     | Trk1    | 9-16</span>
+<span class="code-output">#  30      | GUESTS  | Up     | Trk1    |</span>
+
+<span class="code-comment"># === Trunk Group Status ===</span>
+<span class="code-cmd">show trk</span>
+<span class="code-output">#  Trk Group | Type | Status | Ports</span>
+<span class="code-output">#  --------- | ---- | ------ | -----</span>
+<span class="code-output">#  Trk1      | LACP | Up     | 22, 23, 24</span>
+
+<span class="code-comment"># === LACP Details ===</span>
+<span class="code-cmd">show lacp</span>
+<span class="code-output"># Port   LACP Status   Partner</span>
+<span class="code-output"># -----  ------------  --------</span>
+<span class="code-output"># 22     Active/Up     DIST-SW1</span>
+<span class="code-output"># 23     Active/Up     DIST-SW1</span>
+<span class="code-output"># 24     Active/Up     DIST-SW1</span>
+
+<span class="code-comment"># === Spanning Tree ===</span>
+<span class="code-cmd">show spanning-tree</span>
+<span class="code-output"># Root: CORE-SW</span>
+<span class="code-output"># Root Port: Trk1</span>
+<span class="code-output"># Edge Ports: 1-16 (PortFast enabled)</span>
+
+<span class="code-comment"># === Port Security ===</span>
+<span class="code-cmd">show port-security</span>
+<span class="code-output"># Port  Status   Max-MAC  Learned</span>
+<span class="code-output"># ----  -------  -------  -------</span>
+<span class="code-output"># 1     Learned  2        1</span>
+<span class="code-output"># 2     Learned  2        0</span>
+
+<span class="code-comment"># === MAC Table (verify devices on correct VLANs) ===</span>
+<span class="code-cmd">show mac-address</span>
+<span class="code-output"># MAC Address       VLAN  Port</span>
+<span class="code-output"># -----------------  ----  -------</span>
+<span class="code-output"># 00:11:22:33:44:01  10    1       ← PC1 on VLAN 10</span>
+<span class="code-output"># 00:11:22:33:44:02  20    9       ← PC2 on VLAN 20</span>
+<span class="code-output"># 00:11:22:33:44:03  20    10      ← PC3 on VLAN 20</span></pre>
+            </div>
+        </div>
+
+        <!-- Cross-VLAN Ping Test -->
+        <div class="mt-8 glass-panel rounded-2xl p-6">
+            <h4 class="font-display font-semibold text-sm mb-4 flex items-center gap-2">
+                <iconify-icon icon="lucide:test-tubes" width="16" style="color:#EAB308"></iconify-icon>
+                End-to-End Ping Test Matrix
+            </h4>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-white/5">
+                        <th class="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">From</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">To</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Cross-VLAN?</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Expected</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr class="border-b border-white/5"><td class="px-4 py-2 text-green-400">PC1 (.10.10)</td><td class="px-4 py-2 text-green-400">PC1 (.10.10)</td><td class="px-4 py-2 text-gray-500">No</td><td class="px-4 py-2 text-green-400">✅ Pass</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-4 py-2 text-green-400">PC1 (.10.10)</td><td class="px-4 py-2 text-yellow-400">PC2 (.20.10)</td><td class="px-4 py-2 text-yellow-400">Yes (10→20)</td><td class="px-4 py-2 text-green-400">✅ Pass (via CORE-SW)</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-4 py-2 text-green-400">PC1 (.10.10)</td><td class="px-4 py-2 text-red-400">PC4 (.30.10)</td><td class="px-4 py-2 text-yellow-400">Yes (10→30)</td><td class="px-4 py-2 text-green-400">✅ Pass (via CORE-SW)</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-4 py-2 text-yellow-400">PC2 (.20.10)</td><td class="px-4 py-2 text-yellow-400">PC6 (.20.20)</td><td class="px-4 py-2 text-gray-500">No (same VLAN)</td><td class="px-4 py-2 text-green-400">✅ Pass (same VLAN)</td></tr>
+                        <tr class="border-b border-white/5"><td class="px-4 py-2 text-red-400">PC4 (.30.10)</td><td class="px-4 py-2 text-green-400">PC1 (.10.10)</td><td class="px-4 py-2 text-yellow-400">Yes (30→10)</td><td class="px-4 py-2 text-green-400">✅ Pass (via CORE-SW)</td></tr>
+                        <tr><td class="px-4 py-2 text-red-400">PC5 (.30.11)</td><td class="px-4 py-2 text-yellow-400">PC3 (.20.11)</td><td class="px-4 py-2 text-yellow-400">Yes (30→20)</td><td class="px-4 py-2 text-green-400">✅ Pass (via CORE-SW)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FULL CONFIG -->
+<section class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto text-center">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Quick Reference</span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">All Switches — Summary</h2>
+        <p class="text-gray-400 font-light mb-8">Key configuration points at a glance.</p>
+    </div>
+    <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
+        <div class="glass-panel rounded-2xl p-5 tier-core">
+            <div class="flex items-center gap-2 mb-3"><span class="tier-badge badge-core">CORE</span><span class="text-sm font-display font-bold">CORE-SW</span></div>
+            <ul class="text-xs text-gray-400 space-y-2">
+                <li class="flex gap-2"><span class="text-red-400">→</span> VLANs 10, 20, 30, 99</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> SVI: .10.1, .20.1, .30.1</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> <code class="text-white">ip routing</code></li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> LAG 1 → DIST-SW1 (3 ports)</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> LAG 2 → DIST-SW2 (3 ports)</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> OSPF Area 0 (router-id 1.1.1.1)</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> STP priority 0 (ROOT)</li>
+                <li class="flex gap-2"><span class="text-red-400">→</span> Static default → 10.0.0.254</li>
+            </ul>
+        </div>
+        <div class="glass-panel rounded-2xl p-5 tier-dist">
+            <div class="flex items-center gap-2 mb-3"><span class="tier-badge badge-dist">DIST ×2</span><span class="text-sm font-display font-bold">DIST-SW1/2</span></div>
+            <ul class="text-xs text-gray-400 space-y-2">
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> VLANs 10, 20, 30, 99</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> LAG 1 → CORE-SW (3 ports)</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> LAG 2 → EDGE-SW (3 ports)</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> All ports: Tagged 10,20,30</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> STP priority 4096/8192</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> Mgmt: 10.0.0.2 / .3</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> No IP routing needed</li>
+                <li class="flex gap-2"><span class="text-yellow-400">→</span> Pure L2 forwarding</li>
+            </ul>
+        </div>
+        <div class="glass-panel rounded-2xl p-5 tier-edge">
+            <div class="flex items-center gap-2 mb-3"><span class="tier-badge badge-edge">EDGE ×2</span><span class="text-sm font-display font-bold">EDGE-SW1/2</span></div>
+            <ul class="text-xs text-gray-400 space-y-2">
+                <li class="flex gap-2"><span class="text-blue-400">→</span> VLANs 10, 20, 30, 99</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> SW1: Untagged 1-8=V10, 9-16=V20</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> SW2: Untagged 1-12=V30, 13-21=V20</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> Trk1 → DIST-SW (3 ports)</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> Port security enabled</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> STP edge-port (PortFast)</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> STP priority 32768</li>
+                <li class="flex gap-2"><span class="text-blue-400">→</span> Mgmt: 10.0.0.4 / .5</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto text-center">
+        <div class="flex items-center justify-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center"><iconify-icon icon="lucide:network" width="16" style="color:#000"></iconify-icon></div>
+            <span class="font-display font-bold text-sm">HP Switch<span class="text-yellow-500">Lab</span></span>
+        </div>
+        <p class="text-xs text-gray-600 mb-2">HPE/Aruba 3-Tier Switch Architecture — Complete CLI Guide</p>
+        <p class="text-[10px] text-gray-700">Aruba, ProVision, and ProCurve are trademarks of Hewlett Packard Enterprise. For educational purposes.</p>
+    </div>
+</footer>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-yellow-500/20 z-50"><iconify-icon icon="lucide:arrow-up" width="16"></iconify-icon></button>
+
+<script>
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('mobileMenu').classList.toggle('hidden'));
+    document.querySelectorAll('#mobileMenu a').forEach(l => l.addEventListener('click', () => document.getElementById('mobileMenu').classList.add('hidden')));
+
+    function copyCode(btn) {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            btn.textContent = 'Copied!'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+        }).catch(() => {
+            const ta = document.createElement('textarea'); ta.value = pre.innerText; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+            btn.textContent = 'Copied!'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+        });
+    }
+
+    function switchTab(group, tab) {
+        const section = event.target.closest('section') || event.target.closest('div').parentElement;
+        section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        section.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(group + '-' + tab).classList.add('active');
+    }
+
+    window.addEventListener('scroll', () => {
+        const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight;
+        document.getElementById('progressFill').style.width = (s / d * 100) + '%';
+        const btn = document.getElementById('backToTop');
+        btn.style.opacity = s > 500 ? '1' : '0';
+        btn.style.pointerEvents = s > 500 ? 'auto' : 'none';
+    });
+
+    const obs = new IntersectionObserver(e => e.forEach(en => { if (en.isIntersecting) en.target.classList.add('active'); }), { threshold: 0.3 });
+    document.querySelectorAll('.step-card').forEach(c => obs.observe(c));
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    }));
+</script>
+</body>
+</html> 
