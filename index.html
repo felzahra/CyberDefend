@@ -2,184 +2,95 @@
 <html lang="en">
 <head>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>CyberDefend Academy · Main Dashboard</title>
-    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <!-- ADDED FONT AWESOME FOR ROADMAP ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    
     <style>
-        /* ========== THEME VARIABLES ========== */
-        :root {
-            --primary: #02b3e4;
-            --primary-fg: #ffffff;
-            --body-fg: #1a2c3e;
-            --body-bg: #f5f7fc;
-            --body-quiet-color: #5c6f87;
-            --body-loud-color: #0b2b3b;
-            --hairline-color: #e6edf4;
-            --border-color: #eef2f8;
-            --darkened-bg: #ffffff;
-            --selected-bg: #e9f4fa;
-            --selected-row: #f9fbfe;
-            --message-warning-bg: #fef9e6;
-            --header-bg: #ffffff;
-            --link-fg: #02b3e4;
-            --shadow: 0 4px 24px rgba(0,0,0,0.06);
-        }
+        :root{--primary:#02b3e4;--primary-fg:#fff;--body-fg:#1a2c3e;--body-bg:#f5f7fc;--body-quiet-color:#5c6f87;--body-loud-color:#0b2b3b;--hairline-color:#e6edf4;--border-color:#eef2f8;--darkened-bg:#fff;--selected-bg:#e9f4fa;--selected-row:#f9fbfe;--message-warning-bg:#fef9e6;--header-bg:#fff;--link-fg:#02b3e4;--shadow:0 4px 24px rgba(0,0,0,.06)}
+        html[data-theme="dark"]{--primary:#00e676;--primary-fg:#000;--body-fg:#fff;--body-bg:#121212;--body-quiet-color:#b0b0b0;--body-loud-color:#fff;--hairline-color:#272727;--border-color:#353535;--darkened-bg:#1e1e1e;--selected-bg:#2a2a2a;--selected-row:#242424;--message-warning-bg:#2a251a;--header-bg:#1a1a1a;--link-fg:#00e676;--shadow:0 4px 24px rgba(0,0,0,.3)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--body-bg);color:var(--body-fg);display:flex;height:100vh;overflow:hidden;transition:background .3s,color .3s}
+        .sidebar{width:320px;background:var(--darkened-bg);border-right:1px solid var(--hairline-color);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;position:relative;transition:background .3s,border-color .3s}
+        .sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:10px}
+        .brand{padding:24px 24px 16px;border-bottom:1px solid var(--hairline-color);background:linear-gradient(135deg,var(--darkened-bg) 0%,var(--body-bg) 100%)}
+        .logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+        .logo-icon{background:var(--primary);color:var(--primary-fg);width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 6px 12px rgba(0,230,118,.2)}
+        .logo-text h1{font-size:1.3rem;font-weight:800;letter-spacing:-.3px;color:var(--body-loud-color);line-height:1.2}
+        .logo-text span{font-size:.65rem;color:var(--body-quiet-color);font-weight:600;letter-spacing:1px}
+        .tagline{font-size:.7rem;color:var(--body-quiet-color);margin-top:8px;border-left:3px solid var(--primary);padding-left:10px}
+        .theme-toggle{cursor:pointer;border:1px solid var(--hairline-color);padding:8px 12px;background:var(--body-bg);margin:16px 20px;border-radius:10px;width:calc(100% - 40px);display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-weight:600;font-size:.8rem;color:var(--body-fg);transition:.2s}
+        .theme-toggle:hover{border-color:var(--primary);color:var(--primary)}
+        .progress-card{background:var(--selected-row);margin:16px 20px;padding:12px 16px;border-radius:20px;display:flex;justify-content:space-between;align-items:center}
+        .progress-text{font-size:.7rem;font-weight:600;color:var(--body-quiet-color)}.progress-number{font-size:1.2rem;font-weight:800;color:var(--primary)}
+        .about-card{background:var(--message-warning-bg);margin:16px 20px 8px;padding:16px;border-radius:24px;border:1px solid var(--hairline-color)}
+        .about-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+        .avatar{width:48px;height:48px;background:linear-gradient(145deg,var(--primary),#03a9f4);border-radius:60px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:600;color:var(--primary-fg);box-shadow:0 4px 8px rgba(0,0,0,.2)}
+        .about-title{font-weight:700;font-size:.9rem;color:var(--body-loud-color)}.about-title span{font-size:.7rem;font-weight:400;color:var(--body-quiet-color);display:block;margin-top:2px}
+        .about-bio{font-size:.7rem;line-height:1.4;color:var(--body-fg);margin-bottom:12px;padding-right:4px}
+        .linkedin-btn{display:inline-flex;align-items:center;gap:8px;background:#0077b5;color:#fff;text-decoration:none;font-size:.7rem;font-weight:500;padding:6px 14px;border-radius:30px;width:fit-content}
+        .linkedin-btn:hover{background:#005e8c}
+        .main-tabs{display:flex;border-bottom:1px solid var(--hairline-color);background:var(--darkened-bg);padding:0 12px;gap:4px;margin-top:8px}
+        .tab-btn{flex:1;background:transparent;border:none;padding:12px 0;font-weight:600;font-size:.8rem;color:var(--body-quiet-color);cursor:pointer;font-family:inherit;border-radius:12px 12px 0 0;transition:.2s;text-decoration:none;text-align:center;display:inline-block}
+        .tab-btn.active{color:var(--primary);border-bottom:3px solid var(--primary);background:var(--selected-bg)}
+        .sidebar-announ-btn{display:block;margin:16px 20px;padding:12px 16px;background:var(--primary);color:var(--primary-fg);text-decoration:none;border-radius:12px;font-weight:700;font-size:.85rem;text-align:center}
+        .sidebar-apk-btn{display:block;margin:0 20px 16px;padding:12px 16px;background:#333;color:#fff;text-decoration:none;border-radius:12px;font-weight:600;font-size:.85rem;text-align:center;border:1px solid var(--hairline-color)}
+        .sidebar-apk-btn:hover{background:#444}
+        .content-area{flex:1;overflow-y:auto;padding:0 0 40px;text-align:center;background:var(--body-bg)}
 
-        html[data-theme="dark"] {
-            --primary: #00e676; /* الأخضر من الصورة */
-            --primary-fg: #000000;
-            --body-fg: #ffffff;
-            --body-bg: #121212;
-            --body-quiet-color: #b0b0b0;
-            --body-loud-color: #ffffff;
-            --hairline-color: #272727;
-            --border-color: #353535;
-            --darkened-bg: #1e1e1e; /* خلفية الكروت */
-            --selected-bg: #2a2a2a;
-            --selected-row: #242424;
-            --message-warning-bg: #2a251a;
-            --header-bg: #1a1a1a; /* خلفية الشريط العلوي */
-            --link-fg: #00e676;
-            --shadow: 0 4px 24px rgba(0,0,0,0.3);
-        }
+		
+		.top-nav { display: flex; align-items: center; justify-content: center; padding: 14px 20px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 6px 10px; }
+		.top-nav-links { display: flex; gap: 6px 14px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 100%; }      
+	    .top-nav-links>a,.nav-dropdown>a{color:var(--body-quiet-color);text-decoration:none;font-size:.9rem;font-weight:600;transition:.2s;padding:5px 0;border-bottom:2px solid transparent}
+        
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
-        
-        .sidebar { width: 320px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; position: relative; transition: background 0.3s, border-color 0.3s; }
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
-        .brand { padding: 24px 24px 16px 24px; border-bottom: 1px solid var(--hairline-color); background: linear-gradient(135deg, var(--darkened-bg) 0%, var(--body-bg) 100%); }
-        .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .logo-icon { background: var(--primary); color: var(--primary-fg); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(0,230,118,0.2); }
-        .logo-text h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.3px; color: var(--body-loud-color); line-height: 1.2; }
-        .logo-text span { font-size: 0.65rem; color: var(--body-quiet-color); font-weight: 600; letter-spacing: 1px; }
-        .tagline { font-size: 0.7rem; color: var(--body-quiet-color); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 10px; }
-        
-        .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 16px 20px; border-radius: 10px; width: calc(100% - 40px); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
-        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
-
-        .progress-card { background: var(--selected-row); margin: 16px 20px; padding: 12px 16px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .progress-text { font-size: 0.7rem; font-weight: 600; color: var(--body-quiet-color); }
-        .progress-number { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
-        .about-card { background: var(--message-warning-bg); margin: 16px 20px 8px 20px; padding: 16px; border-radius: 24px; border: 1px solid var(--hairline-color); transition: all 0.2s ease; }
-        .about-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .avatar { width: 48px; height: 48px; background: linear-gradient(145deg, var(--primary), #03a9f4); border-radius: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 600; color: var(--primary-fg); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .about-title { font-weight: 700; font-size: 0.9rem; color: var(--body-loud-color); }
-        .about-title span { font-size: 0.7rem; font-weight: 400; color: var(--body-quiet-color); display: block; margin-top: 2px; }
-        .about-bio { font-size: 0.7rem; line-height: 1.4; color: var(--body-fg); margin-bottom: 12px; padding-right: 4px; }
-        .linkedin-btn { display: inline-flex; align-items: center; gap: 8px; background: #0077b5; color: white; text-decoration: none; font-size: 0.7rem; font-weight: 500; padding: 6px 14px; border-radius: 30px; transition: 0.2s; width: fit-content; }
-        .linkedin-btn:hover { background: #005e8c; }
-        
-        /* MAIN TABS (PROJECTS / MEDIA) */
-        .main-tabs { display: flex; border-bottom: 1px solid var(--hairline-color); background: var(--darkened-bg); padding: 0 12px; gap: 4px; margin-top: 8px; }
-        .tab-btn { flex: 1; background: transparent; border: none; padding: 12px 0; font-weight: 600; font-size: 0.8rem; color: var(--body-quiet-color); cursor: pointer; font-family: inherit; border-radius: 12px 12px 0 0; transition: 0.2s; text-decoration: none; text-align: center; display: inline-block; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--selected-bg); }
-
-        .sidebar-announ-btn { display: block; margin: 16px 20px; padding: 12px 16px; background: var(--primary); color: var(--primary-fg); text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.85rem; text-align: center; transition: 0.2s; }
-        .sidebar-apk-btn { display: block; margin: 0 20px 16px 20px; padding: 12px 16px; background: #333; color: #fff; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 0.85rem; text-align: center; transition: 0.2s; border: 1px solid var(--hairline-color); }
-        .sidebar-apk-btn:hover { background: #444; }
-
-        .content-area { flex: 1; overflow-y: auto; padding: 0 0 40px 0; text-align: center; background: var(--body-bg); }
-        
-        /* ========== TOP NAVIGATION BAR & DROPDOWNS ========== */
-        .top-nav { display: flex; align-items: center; justify-content: flex-end; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
-        .top-nav-links { display: flex; gap: 25px; align-items: center; }
-        .top-nav-links > a, .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
-        .top-nav-links > a:hover, .nav-dropdown:hover > a, .nav-dropdown > a:hover { color: var(--body-fg); border-bottom-color: var(--primary); }
-        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; border-bottom: none; }
-        .top-nav-links a.login-btn:hover { opacity: 0.9; }
-
-        /* DROPDOWN MENU STYLES */
-        .nav-dropdown { position: relative; display: inline-block; }
-        .nav-dropdown > a::after { content: ' ▾'; font-size: 0.7rem; }
-        .nav-dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--darkened-bg);
-            min-width: 260px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
-            border: 1px solid var(--hairline-color);
-            border-radius: 12px;
-            padding: 8px 0;
-            z-index: 1000;
-            text-align: left;
-            max-height: 380px;
-            overflow-y: auto;
-        }
-        .nav-dropdown-content a {
-            color: var(--body-fg);
-            padding: 10px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 500;
-            border-bottom: none;
-            transition: background 0.2s, color 0.2s;
-        }
-        .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
-        .nav-dropdown:hover .nav-dropdown-content { display: block; }
-        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
-        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-
-        .hero-card { max-width: 900px; margin: 40px auto; background: var(--darkened-bg); border-radius: 32px; padding: 48px; border: 1px solid var(--hairline-color); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); text-align: center; }
-        .hero-card h2 { font-size: 2rem; margin-bottom: 16px; color: var(--body-loud-color); }
-        .btn-large { display: inline-block; margin-top: 24px; padding: 12px 28px; background: var(--primary); color: var(--primary-fg); border-radius: 40px; text-decoration: none; font-weight: 700; transition: 0.2s; border: none; cursor: pointer; }
-        .btn-large:hover { transform: translateY(-2px); }
-        .course-grid { display: flex; gap: 24px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
-        .course-card { background: var(--darkened-bg); border-radius: 24px; padding: 28px; width: 260px; border: 1px solid var(--hairline-color); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: block; text-align: center; cursor: pointer; }
-        .course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); border-color: var(--primary); }
-        .course-icon { font-size: 2.5rem; margin-bottom: 16px; }
-        .course-card h3 { margin-bottom: 8px; color: var(--body-loud-color); }
-        .course-card p { color: var(--body-quiet-color); }
-        footer { margin-top: 60px; font-size: 0.7rem; color: var(--body-quiet-color); padding-bottom: 20px; }
-        
-        .chatbot-toggle { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: var(--primary-fg); border-radius: 50%; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: none; z-index: 999; transition: transform 0.3s; }
-        .chatbot-window { position: fixed; bottom: 100px; right: 25px; width: 350px; height: 450px; background: var(--darkened-bg); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; overflow: hidden; z-index: 999; border: 1px solid var(--hairline-color); }
-        .chatbot-header { background: var(--primary); color: var(--primary-fg); padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
-        .chatbot-body { flex: 1; padding: 15px; overflow-y: auto; background: var(--body-bg); display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
-        .bot-msg { background: var(--darkened-bg); border: 1px solid var(--hairline-color); align-self: flex-start; color: var(--body-fg); }
-        .user-msg { background: var(--primary); color: var(--primary-fg); align-self: flex-end; }
-        .chatbot-input-area { display: flex; padding: 10px; background: var(--darkened-bg); border-top: 1px solid var(--hairline-color); }
-        .chatbot-input { flex: 1; padding: 10px 14px; border: 1px solid var(--hairline-color); border-radius: 20px; outline: none; font-family: inherit; font-size: 0.85rem; background: var(--body-bg); color: var(--body-fg); }
-        .chatbot-send { background: var(--primary); color: var(--primary-fg); border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
-        
-        #loginError { color: #ef4444; margin-top: 15px; font-size: 0.85rem; min-height: 20px; }
-        
-        /* ========== ROADMAP VISUALIZATION STYLES ========== */
-        .cards-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto 40px auto;padding:0 24px;display:flex;flex-direction:column;gap:36px}
-        .path-card{
-          background:var(--darkened-bg);border:1px solid var(--hairline-color);border-radius:24px;
-          overflow:hidden;box-shadow:var(--shadow);transition:background .3s,border-color .3s,box-shadow .3s;
-        }
-        .path-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+		.top-nav-links>a:hover,.nav-dropdown:hover>a,.nav-dropdown>a:hover{color:var(--body-fg);border-bottom-color:var(--primary)}
+        .top-nav-links a.active{color:var(--primary);border-bottom:2px solid var(--primary)}
+        .top-nav-links a.login-btn{background:var(--primary);color:var(--primary-fg);padding:8px 18px;border-radius:8px;border-bottom:none}
+        .top-nav-links a.login-btn:hover{opacity:.9}
+        .nav-dropdown{position:relative;display:inline-block}
+        .nav-dropdown>a::after{content:' ▾';font-size:.7rem}
+        .nav-dropdown-content{display:none;position:absolute;top:100%;left:0;background:var(--darkened-bg);min-width:260px;box-shadow:0 8px 20px rgba(0,0,0,.25);border:1px solid var(--hairline-color);border-radius:12px;padding:8px 0;z-index:1000;text-align:left;max-height:380px;overflow-y:auto}
+        .nav-dropdown-content a{color:var(--body-fg);padding:10px 16px;text-decoration:none;display:block;font-size:.82rem;font-weight:500;border-bottom:none;transition:background .2s,color .2s}
+        .nav-dropdown-content a:hover{background:var(--selected-bg);color:var(--primary)}
+        .nav-dropdown:hover .nav-dropdown-content{display:block}
+        .nav-dropdown-content::-webkit-scrollbar{width:4px}.nav-dropdown-content::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
+        .hero-card{max-width:900px;margin:40px auto;background:var(--darkened-bg);border-radius:32px;padding:48px;border:1px solid var(--hairline-color);box-shadow:0 8px 20px rgba(0,0,0,.2);text-align:center}
+        .hero-card h2{font-size:2rem;margin-bottom:16px;color:var(--body-loud-color)}
+        .btn-large{display:inline-block;margin-top:24px;padding:12px 28px;background:var(--primary);color:var(--primary-fg);border-radius:40px;text-decoration:none;font-weight:700;transition:.2s;border:none;cursor:pointer}
+        .btn-large:hover{transform:translateY(-2px)}
+        .course-grid{display:flex;gap:24px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+        .course-card{background:var(--darkened-bg);border-radius:24px;padding:28px;width:260px;border:1px solid var(--hairline-color);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s;display:block;text-align:center;cursor:pointer}
+        .course-card:hover{transform:translateY(-5px);box-shadow:0 12px 24px rgba(0,0,0,.3);border-color:var(--primary)}
+        .course-icon{font-size:2.5rem;margin-bottom:16px}.course-card h3{margin-bottom:8px;color:var(--body-loud-color)}.course-card p{color:var(--body-quiet-color)}
+        footer{margin-top:60px;font-size:.7rem;color:var(--body-quiet-color);padding-bottom:20px}
+        .chatbot-toggle{position:fixed;bottom:25px;right:25px;width:60px;height:60px;background:var(--primary);color:var(--primary-fg);border-radius:50%;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:none;z-index:999;transition:transform .3s}
+        .chatbot-window{position:fixed;bottom:100px;right:25px;width:350px;height:450px;background:var(--darkened-bg);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;z-index:999;border:1px solid var(--hairline-color)}
+        .chatbot-header{background:var(--primary);color:var(--primary-fg);padding:15px;display:flex;align-items:center;gap:10px;font-weight:700}
+        .chatbot-body{flex:1;padding:15px;overflow-y:auto;background:var(--body-bg);display:flex;flex-direction:column;gap:10px}
+        .chat-msg{max-width:80%;padding:10px 14px;border-radius:12px;font-size:.85rem;line-height:1.4}
+        .bot-msg{background:var(--darkened-bg);border:1px solid var(--hairline-color);align-self:flex-start;color:var(--body-fg)}
+        .user-msg{background:var(--primary);color:var(--primary-fg);align-self:flex-end}
+        .chatbot-input-area{display:flex;padding:10px;background:var(--darkened-bg);border-top:1px solid var(--hairline-color)}
+        .chatbot-input{flex:1;padding:10px 14px;border:1px solid var(--hairline-color);border-radius:20px;outline:none;font-family:inherit;font-size:.85rem;background:var(--body-bg);color:var(--body-fg)}
+        .chatbot-send{background:var(--primary);color:var(--primary-fg);border:none;width:40px;height:40px;border-radius:50%;margin-left:8px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+        #loginError{color:#ef4444;margin-top:15px;font-size:.85rem;min-height:20px}
+        .cards-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto 40px;padding:0 24px;display:flex;flex-direction:column;gap:36px}
+        .path-card{background:var(--darkened-bg);border:1px solid var(--hairline-color);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);transition:background .3s,border-color .3s,box-shadow .3s}
+        .path-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.1)}
         .card-head{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--hairline-color);flex-wrap:wrap;gap:10px}
         .card-head-left{display:flex;align-items:center;gap:14px}
         .card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;flex-shrink:0}
-        .card-head h3{font-size:1.15rem;font-weight:800;color:var(--body-loud-color);margin:0;}
-        .card-head p{font-size:.75rem;color:var(--body-quiet-color);margin-top:2px;margin:0;}
+        .card-head h3{font-size:1.15rem;font-weight:800;color:var(--body-loud-color);margin:0}
+        .card-head p{font-size:.75rem;color:var(--body-quiet-color);margin:0}
         .card-badge{font-size:.7rem;font-weight:700;padding:5px 14px;border-radius:20px;background:var(--selected-bg);color:var(--primary);border:1px solid var(--hairline-color)}
-        .svg-wrap{overflow-x:auto;padding:10px 0 0}
-        .svg-wrap::-webkit-scrollbar{height:4px}
-        .svg-wrap::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:10px}
-
-        /* ========== SVG INTERNAL STYLES ========== */
+        .svg-wrap{overflow-x:auto;padding:10px 0 0}.svg-wrap::-webkit-scrollbar{height:4px}.svg-wrap::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:10px}
         .road-bg{fill:none;stroke:#334155;stroke-width:28;stroke-linecap:round;stroke-linejoin:round;opacity:.15}
         .road-surface{fill:none;stroke:#334155;stroke-width:22;stroke-linecap:round;stroke-linejoin:round}
-        .road-dash{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:2;stroke-linecap:round;stroke-dasharray:12 10}
-        html[data-theme="dark"] .road-dash{stroke:rgba(255,255,255,0.12);}
+        .road-dash{fill:none;stroke:rgba(255,255,255,.35);stroke-width:2;stroke-linecap:round;stroke-dasharray:12 10}
+        html[data-theme="dark"] .road-dash{stroke:rgba(255,255,255,.12)}
         .node-group{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:transform .25s,filter .25s}
         .node-group:hover{transform:scale(1.18);filter:drop-shadow(0 0 14px var(--glow,#02b3e4))}
         .node-circle{stroke:var(--darkened-bg);stroke-width:4}
@@ -187,70 +98,76 @@
         .node-label{fill:var(--body-fg);font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;text-anchor:middle;pointer-events:none}
         .node-sublabel{fill:var(--body-quiet-color);font-family:'Inter',sans-serif;font-weight:400;font-size:9.5px;text-anchor:middle;pointer-events:none}
         .start-finish-text{fill:#fff;font-family:'Inter',sans-serif;font-weight:800;font-size:11px;text-anchor:middle;dominant-baseline:central;pointer-events:none;letter-spacing:.5px}
-
-        /* ========== PATH DRAW ANIMATION ========== */
-        .path-card .road-surface,
-        .path-card .road-dash,
-        .path-card .road-bg{stroke-dasharray:5000;stroke-dashoffset:5000}
+        .path-card .road-surface,.path-card .road-dash,.path-card .road-bg{stroke-dasharray:5000;stroke-dashoffset:5000}
         .path-card.visible .road-bg{animation:drawRoad 1.8s .1s ease forwards}
         .path-card.visible .road-surface{animation:drawRoad 1.8s .15s ease forwards}
         .path-card.visible .road-dash{animation:drawRoad 1.8s .6s ease forwards}
         @keyframes drawRoad{to{stroke-dashoffset:0}}
-        .path-card .node-group{opacity:0;transform:scale(0.3)}
+        .path-card .node-group{opacity:0;transform:scale(.3)}
         .path-card.visible .node-group{animation:popIn .4s ease forwards}
         @keyframes popIn{to{opacity:1;transform:scale(1)}}
-        
-        @media (max-width: 780px) {
-            .sidebar { display: none; } 
-            .content-area { width: 100%; }
-            .top-nav { padding: 15px 20px; justify-content: center; }
-            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
-            .top-nav-links > a, .nav-dropdown > a { font-size: 0.8rem; }
-            .hero-card { padding: 28px; margin: 20px auto; }
-            #loginModal > div { width: 90%; padding: 30px 20px; }
-        }
+        /* SEARCH */
+        #inlineSearchWrap{position:relative}
+        #inlineSearchWrap .search-icon-bg{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;z-index:1;opacity:.5}
+        #inlineSearch{padding-left:42px!important}
+        .index-status{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:.72rem;font-weight:600;color:var(--body-quiet-color);border-bottom:1px solid var(--hairline-color)}
+        .index-spinner{width:14px;height:14px;border:2px solid var(--hairline-color);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .search-count-inline{padding:8px 16px;font-size:.75rem;font-weight:600;color:var(--body-quiet-color);border-bottom:1px solid var(--hairline-color)}
+        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px;gap:8px}
+        .empty-state span{font-size:2rem}.empty-state p{font-size:.85rem;color:var(--body-quiet-color);text-align:center}
+        .result-item{display:flex;align-items:center;gap:14px;padding:12px 16px;text-decoration:none;color:var(--body-fg);transition:background .15s;border-bottom:1px solid var(--hairline-color)}
+        .result-item:last-child{border-bottom:none}.result-item:hover{background:var(--selected-bg)}
+        .result-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+        .result-icon.cat-course{background:#e0f2fe}.result-icon.cat-lab{background:#dcfce7}.result-icon.cat-tool{background:#fef3c7}
+        .result-icon.cat-roadmap{background:#ede9fe}.result-icon.cat-network{background:#fce7f3}.result-icon.cat-other{background:#f1f5f9}
+        html[data-theme="dark"] .result-icon.cat-course{background:#0c4a6e}html[data-theme="dark"] .result-icon.cat-lab{background:#14532d}
+        html[data-theme="dark"] .result-icon.cat-tool{background:#713f12}html[data-theme="dark"] .result-icon.cat-roadmap{background:#3b0764}
+        html[data-theme="dark"] .result-icon.cat-network{background:#831843}html[data-theme="dark"] .result-icon.cat-other{background:#1e293b}
+        .result-info{flex:1;text-align:left;min-width:0}
+        .result-title{font-size:.85rem;font-weight:700;color:var(--body-loud-color);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .result-desc{font-size:.72rem;color:var(--body-quiet-color);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .result-snippet{font-size:.68rem;color:var(--body-quiet-color);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;opacity:.8}
+        .result-arrow{font-size:1rem;color:var(--body-quiet-color);flex-shrink:0;transition:transform .2s}
+        .result-item:hover .result-arrow{transform:translateX(3px);color:var(--primary)}
+        .highlight{background:rgba(2,179,228,.25);color:var(--primary);border-radius:3px;padding:0 2px}
+        html[data-theme="dark"] .highlight{background:rgba(0,230,118,.2);color:var(--primary)}
+        .search-indexed-dot{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;z-index:2;transition:background .3s}
+        .search-indexed-dot.indexing{background:#f59e0b;animation:pulse 1s ease infinite}
+        .search-indexed-dot.ready{background:#22c55e;animation:none}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        @media(max-width:780px){.sidebar{display:none}.content-area{width:100%}.top-nav{padding:15px 20px;justify-content:center}.top-nav-links{gap:15px;flex-wrap:wrap;justify-content:center}.top-nav-links>a,.nav-dropdown>a{font-size:.8rem}.hero-card{padding:28px;margin:20px auto}#loginModal>div{width:90%;padding:30px 20px}#inlineSearchWrap{max-width:100%!important}}
     </style>
 </head>
 <body>
-<!-- DEFAULT TO LIGHT MODE -->
-<script>document.documentElement.setAttribute('data-theme', 'light');</script>
+<script>document.documentElement.setAttribute('data-theme','light');</script>
 
 <div class="sidebar">
     <div class="brand">
         <div class="logo"><div class="logo-icon">🛡️</div><div class="logo-text"><h1>CyberDefend</h1><span>ACADEMY</span></div></div>
         <div class="tagline">Modern cybersecurity learning platform</div>
     </div>
-    
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span id="themeLabel">Switch to Dark Mode</span>
-    </button>
-
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="themeLabel">Switch to Dark Mode</span></button>
     <div class="about-card">
         <div class="about-header"><div class="avatar">FA</div><div class="about-title">Fatma Alzahra AlAgery <span>Cybersecurity Specialist</span></div></div>
         <div class="about-bio">🔐 Security analyst & cyber range instructor. Passionate about SIEM, threat hunting, and digital forensics.</div>
         <a href="https://www.linkedin.com/in/fatmaagery/" target="_blank" class="linkedin-btn"><span>🔗</span> Connect on LinkedIn</a>
     </div>
     <div class="progress-card"><span class="progress-text">📈 Course Progress</span><span class="progress-number">99%</span></div>
-
-    <!-- MAIN TABS -->
     <div class="main-tabs">
         <a href="index.html" class="tab-btn active">📘 COURSES</a>
         <a href="projects.html" class="tab-btn">🚀 PROJECTS</a>
         <a href="media.html" class="tab-btn">🎨 MEDIA & GIFs</a>
     </div>
-    
     <a href="comments.html" class="sidebar-announ-btn">📢 Announcements & FAQ</a>
     <a href="https://drive.google.com/drive/folders/10PVVRv2NkD7oRvSrJfzkun0NQ3KYc7wO?usp=sharing" target="_blank" class="sidebar-apk-btn">📱 Download Mobile APP APK</a>
-    <div style="margin-top: auto; padding: 20px; font-size: 0.65rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color);">⚡ Complete cybersecurity training</div>
+    <div style="margin-top:auto;padding:20px;font-size:.65rem;color:var(--body-quiet-color);border-top:1px solid var(--hairline-color);">⚡ Complete cybersecurity training</div>
 </div>
 
 <div class="content-area">
-    <!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
     <nav class="top-nav">
         <div class="top-nav-links">
             <a href="index.html" class="active">Dashboard</a>
-
-            <!-- COURSES DROPDOWN -->
             <div class="nav-dropdown">
                 <a href="courses.html">Courses</a>
                 <div class="nav-dropdown-content">
@@ -268,14 +185,11 @@
                     <a href="aws foundation.html">AWS Cloud Foundation</a>
                     <a href="digital comm.html">Digital Comm</a>
                     <a href="wireless comm.html">Wireless Comm</a>
-					<a href="new9.html">HP | Aruba Switch</a>
+                    <a href="new9.html">HP | Aruba Switch</a>
                 </div>
             </div>
-
             <a href="messages.html">📝 Tasks & Submissions</a>
-			<a href="Roadmaps.html">Roadmaps</a>
-
-            <!-- CURRICULUM DROPDOWN -->
+            <a href="Roadmaps.html">Roadmaps</a>
             <div class="nav-dropdown">
                 <a href="labs.html">Enterprise Security Infrastructure</a>
                 <div class="nav-dropdown-content">
@@ -300,8 +214,6 @@
                     <a href="lesson-16.html">Practice Labs advanced</a>
                 </div>
             </div>
-
-            <!-- TOOLSET CONSOLE DROPDOWN -->
             <div class="nav-dropdown">
                 <a href="paid-cybersecurity-course.html">Interactive Attack Labs</a>
                 <div class="nav-dropdown-content">
@@ -326,8 +238,6 @@
                     <a href="soc-tools.html">🛡️ 20 Essential SOC Tools</a>
                 </div>
             </div>
-
-            <!-- TERMS EXPLAINED DROPDOWN -->
             <div class="nav-dropdown">
                 <a href="lesson-14.html">Packet Tracer Labs</a>
                 <div class="nav-dropdown-content">
@@ -350,74 +260,43 @@
                     <a href="asa.html">ASA Firewall Configuration</a>
                 </div>
             </div>
-
+            <div style="max-width:420px;position:relative;" id="inlineSearchWrap">
+                <span class="search-icon-bg">🔍</span>
+                <input type="text" id="inlineSearch" placeholder="Search any word from any page..." style="width:100%;padding:10px 30px 10px 42px;border:1px solid var(--hairline-color);border-radius:24px;font-family:inherit;font-size:.88rem;outline:none;background:var(--darkened-bg);color:var(--body-fg);transition:border-color .2s;" onfocus="this.style.borderColor='var(--primary)'" onblur="setTimeout(function(){document.getElementById('inlineResults').style.display='none'},250)">
+                <div class="search-indexed-dot ready" id="indexDot" title="Search ready"></div>
+                <div id="inlineResults" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--darkened-bg);border:1px solid var(--hairline-color);border-radius:16px;max-height:420px;overflow-y:auto;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:200;text-align:left;padding:0;"></div>
+            </div>
+            <a href="search.html" style="font-size:1.1rem;" title="Search">🔍</a>
             <a href="login.html" class="login-btn">Login</a>
         </div>
     </nav>
 
-    <!-- WELCOME CARD -->
     <div class="hero-card">
         <h2>🛡️ Welcome to CyberDefend Academy</h2>
-        <p style="margin: 16px 0; color: var(--body-quiet-color);">Master Cybersecurity, Networking, and Incident Response with hands-on labs.</p>
-		<a href="https://docs.google.com/forms/d/e/1FAIpQLSdcfXU0nQOPnHBMAsM98BAE90Pqbc9_CW7vzj0RpTX8RiLyfA/viewform?usp=preview" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 24px;background:#673AB7;color:#fff;border:none;border-radius:4px;text-decoration:none;font-family:'Roboto','Inter',sans-serif;font-weight:500;font-size:0.875rem;letter-spacing:0.5px;text-transform:uppercase;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:box-shadow 0.2s;">Google Form Link</a>
-
+        <p style="margin:16px 0;color:var(--body-quiet-color);">Master Cybersecurity, Networking, and Incident Response with hands-on labs.</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcfXU0nQOPnHBMAsM98BAE90Pqbc9_CW7vzj0RpTX8RiLyfA/viewform?usp=preview" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 24px;background:#673AB7;color:#fff;border:none;border-radius:4px;text-decoration:none;font-family:'Roboto','Inter',sans-serif;font-weight:500;font-size:.875rem;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 1px 3px rgba(0,0,0,.2);">Google Form Link</a>
     </div>
 
-    <!-- ========== ROADMAP VISUALIZATION INJECTION ========== -->
-    
-
-    <!-- COURSE GRID CARD -->
     <div class="hero-card">
         <div class="course-grid">
-            <a href="2026.html" class="course-card"><div class="course-icon" style="font-size:3rem;font-weight:900;color:#ef4444;">⬇</div><h3>Summer Lectures</h3><p style="font-size:0.8rem;">Recorded Sessions & Videos</p></a>
-            <a href="Curriculum.html" class="course-card"><div class="course-icon">📘 </div><h3>Curriculum & Roadmaps</h3><p style="font-size:0.8rem;">Core Tracks , Roadmaps,Modules</p></a>
-            <a href="labs.html" class="course-card"><div class="course-icon">📚</div><h3>Enterprise Security Infrastructure</h3><p style="font-size:0.8rem;">Network Tracks Explained, Roadmaps, Architecture & Security</p></a>
-            <a href="DPA.html" class="course-card"><div class="course-icon">🔀</div><h3>DPA Summer Training Course</h3><p style="font-size:0.8rem;">Damietta Port Summer Training</p></a>
-            <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p style="font-size:0.8rem;">Foundations & Core Concepts</p></a>
-            <a href="cybersecurity-course.html" class="course-card"><div class="course-icon">🔐</div><h3>2- Cybersecurity Course</h3><p style="font-size:0.8rem;">Attack Types · SIEM · Threat Hunting</p></a>
-            
-            <a href="lesson-14.html" class="course-card"><div class="course-icon">📖</div><h3>Network Terms  | Packet Tracer Labs</h3><p style="font-size:0.8rem;">Detailed explanations of essential networking and cybersecurity terminology to build your foundational knowledge.</p></a>
-            <a href="paid-cybersecurity-course.html" class="course-card"><div class="course-icon">🛠️ </div><h3>Essential Tools | Interactive Attack Labs</h3><p style="font-size:0.8rem;">Explore the interactive Kali Linux toolset console, GUI simulations, and comprehensive guides for security professionals.</p></a>
-
-            <!-- COURSE 3 -->
-            <div id="cyberCourseBtn" class="course-card" style="position: relative; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
-                <div class="course-icon">⚔️</div>
-                <h3>3- Cybersecurity Course (Paid Course)</h3>
-                <p style="font-size:0.8rem;">Advanced Hands-on Labs</p>
-            </div>
-
-            <!-- COURSE 4 -->
-            <div id="cyberCourseBtn2" class="course-card" style="position: relative; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
-                <div class="course-icon">💎</div>
-                <h3>4- Cybersecurity Course (Paid Course)</h3>
-                <p style="font-size:0.8rem;">Advanced Hands-on Labs</p>
-            </div>
-
-            <!-- LEVEL 1 AI -->
-            <div id="aiCourseBtn1" class="course-card" style="position: relative; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
-                <div class="course-icon">🤖</div>
-                <h3>Level-1 AI</h3>
-                <p style="font-size:0.8rem;">Artificial Intelligence Basics</p>
-            </div>
-
-            <!-- LEVEL 2 AI -->
-            <div id="aiCourseBtn2" class="course-card" style="position: relative; border: 1px solid #ffe6b3;">
-                <span style="position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold;">PREMIUM</span>
-                <div class="course-icon">🧠</div>
-                <h3>Level2-AI</h3>
-                <p style="font-size:0.8rem;">Advanced AI Concepts</p>
-            </div>
-
-            <a href="networking.html" class="course-card"><div class="course-icon">🌐</div><h3>CyberSecurity Reading Slides</h3><p style="font-size:0.8rem;">Reading Slides</p></a>
-            <a href="routing-switching.html" class="course-card"><div class="course-icon">🛡️</div><h3>English CyberSecurity Course</h3><p style="font-size:0.8rem;">Attack Types · SIEM · Threat Hunting</p></a>
-            <a href="aws foundation.html" class="course-card"><div class="course-icon">☁️</div><h3>AWS Cloud Foundation</h3><p style="font-size:0.8rem;">AWS Cloud Solutions</p></a>
-            <a href="digital comm.html" class="course-card"><div class="course-icon">🧠</div><h3>Digital Comm</h3><p style="font-size:0.8rem;">Digital Communications</p></a>
-            <a href="wireless comm.html" class="course-card"><div class="course-icon">🎯️</div><h3>Wireless Comm</h3><p style="font-size:0.8rem;">Wireless Communications</p></a>
-			<a href="new9.html" class="course-card"><div class="course-icon">🎯️</div><h3>HP | Aruba Switch</h3><p style="font-size:0.8rem;">HP | Aruba Switch</p></a>
-
+            <a href="2026.html" class="course-card"><div class="course-icon" style="font-size:3rem;font-weight:900;color:#ef4444;">⬇</div><h3>Summer Lectures</h3><p>Recorded Sessions & Videos</p></a>
+            <a href="Curriculum.html" class="course-card"><div class="course-icon">📘</div><h3>Curriculum & Roadmaps</h3><p>Core Tracks, Roadmaps, Modules</p></a>
+            <a href="labs.html" class="course-card"><div class="course-icon">📚</div><h3>Enterprise Security Infrastructure</h3><p>Network Tracks, Roadmaps, Architecture & Security</p></a>
+            <a href="DPA.html" class="course-card"><div class="course-icon">🔀</div><h3>DPA Summer Training Course</h3><p>Damietta Port Summer Training</p></a>
+            <a href="level3.html" class="course-card"><div class="course-icon">🔐</div><h3>1- Introduction to Cybersecurity</h3><p>Foundations & Core Concepts</p></a>
+            <a href="cybersecurity-course.html" class="course-card"><div class="course-icon">🔐</div><h3>2- Cybersecurity Course</h3><p>Attack Types · SIEM · Threat Hunting</p></a>
+            <a href="lesson-14.html" class="course-card"><div class="course-icon">📖</div><h3>Network Terms | Packet Tracer Labs</h3><p>Essential networking and cybersecurity terminology</p></a>
+            <a href="paid-cybersecurity-course.html" class="course-card"><div class="course-icon">🛠️</div><h3>Essential Tools | Interactive Attack Labs</h3><p>Kali Linux toolset console, GUI simulations</p></a>
+            <div id="cyberCourseBtn" class="course-card" style="position:relative;border:1px solid #ffe6b3;"><span style="position:absolute;top:12px;right:12px;background:#FFD700;color:#000;padding:4px 10px;border-radius:6px;font-size:.6rem;font-weight:bold;">PREMIUM</span><div class="course-icon">⚔️</div><h3>3- Cybersecurity Course (Paid)</h3><p>Advanced Hands-on Labs</p></div>
+            <div id="cyberCourseBtn2" class="course-card" style="position:relative;border:1px solid #ffe6b3;"><span style="position:absolute;top:12px;right:12px;background:#FFD700;color:#000;padding:4px 10px;border-radius:6px;font-size:.6rem;font-weight:bold;">PREMIUM</span><div class="course-icon">💎</div><h3>4- Cybersecurity Course (Paid)</h3><p>Advanced Hands-on Labs</p></div>
+            <div id="aiCourseBtn1" class="course-card" style="position:relative;border:1px solid #ffe6b3;"><span style="position:absolute;top:12px;right:12px;background:#FFD700;color:#000;padding:4px 10px;border-radius:6px;font-size:.6rem;font-weight:bold;">PREMIUM</span><div class="course-icon">🤖</div><h3>Level-1 AI</h3><p>Artificial Intelligence Basics</p></div>
+            <div id="aiCourseBtn2" class="course-card" style="position:relative;border:1px solid #ffe6b3;"><span style="position:absolute;top:12px;right:12px;background:#FFD700;color:#000;padding:4px 10px;border-radius:6px;font-size:.6rem;font-weight:bold;">PREMIUM</span><div class="course-icon">🧠</div><h3>Level2-AI</h3><p>Advanced AI Concepts</p></div>
+            <a href="networking.html" class="course-card"><div class="course-icon">🌐</div><h3>CyberSecurity Reading Slides</h3><p>Reading Slides</p></a>
+            <a href="routing-switching.html" class="course-card"><div class="course-icon">🛡️</div><h3>English CyberSecurity Course</h3><p>Attack Types · SIEM · Threat Hunting</p></a>
+            <a href="aws foundation.html" class="course-card"><div class="course-icon">☁️</div><h3>AWS Cloud Foundation</h3><p>AWS Cloud Solutions</p></a>
+            <a href="digital comm.html" class="course-card"><div class="course-icon">🧠</div><h3>Digital Comm</h3><p>Digital Communications</p></a>
+            <a href="wireless comm.html" class="course-card"><div class="course-icon">🎯️</div><h3>Wireless Comm</h3><p>Wireless Communications</p></a>
+            <a href="new9.html" class="course-card"><div class="course-icon">🎯️</div><h3>HP | Aruba Switch</h3><p>HP | Aruba Switch</p></a>
         </div>
         <a href="cybersecurity-course.html" class="btn-large">Start Cybersecurity Course →</a>
     </div>
@@ -425,342 +304,258 @@
     <footer>© CyberDefend Academy · Part of Accenture</footer>
 </div>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: var(--darkened-bg); color: var(--body-fg); padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--hairline-color);">
-        <h3 style="margin-bottom: 10px;">Login Required</h3>
-        <p id="modalCourseName" style="color: var(--body-quiet-color); margin-bottom: 25px;">Verifying access...</p>
-        <div id="modalGoogleButton" style="display: flex; justify-content: center; margin-bottom: 15px; min-height: 40px;"></div>
-        <div id="loginError"></div>
-        <br>
-        <button id="closeModalBtn" style="background: none; border: none; color: var(--body-quiet-color); cursor: pointer; text-decoration: underline; font-family: inherit; font-size: 0.9rem;">Cancel</button>
+<div id="loginModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;justify-content:center;align-items:center;">
+    <div style="background:var(--darkened-bg);color:var(--body-fg);padding:40px;border-radius:16px;text-align:center;width:400px;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid var(--hairline-color);">
+        <h3 style="margin-bottom:10px;">Login Required</h3>
+        <p id="modalCourseName" style="color:var(--body-quiet-color);margin-bottom:25px;">Verifying access...</p>
+        <div id="modalGoogleButton" style="display:flex;justify-content:center;margin-bottom:15px;min-height:40px;"></div>
+        <div id="loginError"></div><br>
+        <button id="closeModalBtn" style="background:none;border:none;color:var(--body-quiet-color);cursor:pointer;text-decoration:underline;font-family:inherit;font-size:.9rem;">Cancel</button>
     </div>
 </div>
 
-<!-- CHATBOT -->
 <button class="chatbot-toggle" id="chatbot-toggle">💬</button>
 <div class="chatbot-window" id="chatbot-window">
-    <div class="chatbot-header"><span>🛡️</span><div>CyberDefend Assistant<br><small style="font-size:0.7rem; font-weight:400;">Typically replies instantly</small></div></div>
+    <div class="chatbot-header"><span>🛡️</span><div>CyberDefend Assistant<br><small style="font-size:.7rem;font-weight:400;">Typically replies instantly</small></div></div>
     <div class="chatbot-body" id="chatbot-body"><div class="chat-msg bot-msg">Hello! Welcome to CyberDefend Academy. How can I help you today?</div></div>
     <div class="chatbot-input-area">
         <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Type your message...">
         <button class="chatbot-send" id="chatbot-send">➤</button>
     </div>
 </div>
+
 <script>
-/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href]').forEach(a => {
-        const h = a.getAttribute('href');
-        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener noreferrer');
-        }
-    });
-});
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('a[href]').forEach(function(a){var h=a.getAttribute('href');if(h&&!h.startsWith('#')&&!h.startsWith('javascript:')&&!h.startsWith('mailto:')){a.setAttribute('target','_blank');a.setAttribute('rel','noopener noreferrer');}});});
 </script>
+
 <script>
-    // THEME TOGGLE LOGIC (DEFAULT LIGHT MODE)
-    function toggleTheme() {
-        let currentTheme = document.documentElement.getAttribute('data-theme');
-        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        document.getElementById('themeLabel').textContent = newTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-    }
+/* =============================================================
+   SEARCH ENGINE — Every word from every page is searchable.
+   labs.html has ALL its text pre-embedded below.
+   Other pages are fetched in background to extract their text.
+   ============================================================= */
 
-    const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
-    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
-    let requestedCourseColumn = null;
+/* ---------- ALL TEXT FROM labs.html PASTE (every word) ---------- */
+var LABS_FULL_TEXT = "Enterprise Security Infrastructure Curriculum Complete curriculum map covering network architecture security defense attack simulation labs vulnerability management and hands-on Packet Tracer exercises all in one place Attack Interactive Lab Modules Hands-on Attack and Defense Labs Live Threat Monitor Beginner Pentest Lab Lab Setup EVE-NG and Kali Nmap Port Scanning Wireshark Traffic Analysis Metasploit Basics Exploiting vsftpd Backdoor Attack Phases Lab Reconnaissance Scanning Exploitation Privilege Escalation Lateral Movement Data Exfiltration Erasing Evidence Attack LABS p1 ARP Spoofing MITM DNS Spoofing Rogue DHCP Server Wireless Evil Twin SQL Injection Cross-Site Scripting XSS Data Exfiltration DNS Tunnel Lateral Movement Pass-the-Hash Phishing Campaign GoPhish Password Brute Force Buffer Overflow Exploit Linux Privilege Escalation Attack LABS p2 EternalBlue Exploit Active Directory Kerberoasting LFI to RCE Log Poisoning AWS S3 Bucket Exfiltration Command Injection Windows Persistence Registry Attack LABS p3 Apache Struts 2 RCE VSFTPD Backdoor Exploit Shellshock CGI RCE Local Privilege Escalation Network Pivoting Route SOCKS Switch LAB VLANs and 802.1Q Trunking Inter-VLAN Routing ROAS Switch Port Security Wireshark ARP Spoofing Analysis Wireshark DNS Exfiltration Analysis ASA Firewall Lab ASA Basic Setup and Security Levels Network Objects and Dynamic NAT Access Control Lists Permit Web Static NAT Publishing Web Server ACL Block Deny Attacker IP Firewall Lab 2 Interfaces and Zones Routing Security Policies NAT Rules Bandwidth QoS VPN Configuration Logging and Alerts Wireshark GUI Labs HTTP Credentials TCP SYN Flood DoS ARP Spoofing and DHCP Log Analysis Windows Event Logs Linux Auth Logs Cisco Switch Logs SIEM EDR Correlation Apache Web Logs Firewall Logs Active Directory Logs AWS CloudTrail Logs Exploitation and Cracking Recon and Nmap Web Enumeration Metasploit Exploit Hash Cracking John Wi-Fi Cracking SQL Injection SSH Brute Force Buffer Overflow Linux Privilege Escalation Active Directory Attack Windows SAM Cracking Email Phishing Active Directory Attack Lab User Enumeration Group and ACL Discovery BloodHound Mapping Domain Admin Path Kali Toolset Console Wireshark T-Shark THC Hydra SQLmap Nikto Nmap Top 50 Kali Tool CLI and GUI Burp Suite Roadmaps and Overview Network Overview Network Roadmap Network Tracks Certification Hierarchy Virtualization Network Simulation Programs Essential Tool Downloads Network Engineer Roadmap Security Roadmap Cyber Security Skills You Must Learn Comprehensive Cybersecurity Skills Roadmap Top 10 Websites Every Cybersecurity Learner Should Know Penetration Testing Concepts Top Bug Bounty Tools Kali Cheatsheet 20 Essential SOC Tools for Every SOC Analyst Types of Malware Cybersecurity Terms Explained Simply Cybersecurity Threats in OSI Model Penetration Testing Fundamentals Essential Ethical Hacking Tools Types of Internet Threats Defensive Linux Security Tools Offensive Linux Security Blue Team vs Red Team How Hackers Get Access Linux Forensic Artifacts Anti-Phishing Tools Attack Today Defend Forever Free Steganography Tools Top 10 Cybersecurity Websites Top 10 Cybersecurity Platforms SOC Logs Eyes and Ears of Cybersecurity 30 Days 30 Topics SOC Analyst Learning Plan Bug Bounty and Recon Cheatsheet Cybersecurity Skills Roadmap Architecture and Devices Switching Architecture Port Overview and Geography Network Infrastructure Devices Access Layer and IP Phone Bridging Network Cables and Testing Tools Fiber Optic Infrastructure SFP Modules and Splicing Underground Infrastructure and Fiber Cut Mapping Network Monitoring with Zabbix Phase 2 Six-Area Segmentation Design Switch Management Remote Management SSH Secure Management Methods User Mode vs Privileged Mode RBAC and Security Delegation Password Management L2 vs L3 Switching SVI Inter-VLAN Routing Default Gateway Redundancy and High Availability Access Port vs Trunk Port VLANs Access Control Lists Routing Static Dynamic and Default Router on a Stick Wireless Solutions Closed APN and Microwave Architecture SOTI Real-Time Monitoring and Vehicle Mount Terminals VMT Centralized Management via SOTI MobiControl Enterprise RFID and Logistics Tracking RFID Network Architecture Active vs Passive RFID Tags Vehicle Detection and Gate Automation Logistics Yard Management and Exit Processing RFID Hardware and Reader Connectivity RFID Infrastructure Tags and Readers Crosstalk Server Readers to Infrastructure Switches VOIP Network Topology Cisco VOIP Switch Configuration DSL Integration with VoIP Troubleshooting Security and Defense Firewall Security Architecture Introduction to Firewalls Firewall Packet Filtering Access Control Lists ACL and Policies Example Firewall Rule Table Applying Layered Security Defense in Depth Application Attacks Network Attacks Authentication Factors MFA Intrusion Detection IDS vs Prevention IPS IDS IPS Tuning and The Confusion Matrix Open-Source IDS IPS Tools Snort and Suricata Example IDS Alerts Table Demilitarized Zone DMZ Network Address Translation NAT Virtual Private Networks VPN Centralized Logging SIEM EDR and XDR Antivirus Detection Methods Cyber Attacks Types of Cyber Attacks STRIDE THREAT MODELING Social Engineering Attacks Phishing Vishing Pretexting Tailgating Baiting Network-Based Attacks DDoS MITM DNS Spoofing Cache Poisoning Session Hijacking Application and Web Attacks SQL Injection XSS CSRF Broken Authentication Directory Traversal Malware-Based Attacks Ransomware Trojans Worms Spyware Adware Cryptocurrency Advanced and Persistent Threats APT Zero-Day Exploits Supply Chain Attack Polymorphic Metamorphic Malware Risk Assessment Matrices RISK ANALYSIS TECHNIQUES 20 Essential SOC Tools Linux and Vulnerability Management KALI Linux Kali Linux Setup Labs and Penetration Testing Download and Installation Kali Linux Metasploitable 2 Building a Virtual Penetration Testing Lab Integrating Kali with GNS3 and EVE-NG How to Use Kali for Penetration Testing Top 50 Kali Linux Tools Wireless Security Testing Aircrack-ng Reaver Wifite Exploitation Frameworks Metasploit BeEF SET Password Cracking John Hashcat Hydra Medusa Vulnerability Analysis OpenVAS Lynis Wapiti Forensics and Info Gathering Maltego Recon-ng theHarvester Dmitry Autopsy Reverse Engineering Ghidra Radare2 GDB Exploitation Development MSFVenom Searchsploit Pattern Create Spoofing and MITM Ettercap Bettercap Responder Mobile Security ADB MobSF Frida Cryptography and Stego Hashid Steghide Binwalk Post-Exploitation Mimikatz PowerSploit Evil-WinRM Reporting and Docs Dradis Faraday CherryTree Pipal Advanced Integration Tool Chaining Custom Dev Vulnerability Scanners The Penetration Testing Cycle False Positives and Negatives Types of Vulnerability Scanners Top Vulnerability Scanning Tools Reconnaissance and OSINT Tools Shodan The Search Engine for the Internet of Things WHOIS Google Dorks Google Hacking Bug Bounty Hunting Nessus Vulnerability Assessment Nessus Installation and Setup Scan Configuration Analyzing Results Extracting CVEs from Scan Results Export Results Understanding CVSS Scores Searching CVE Details in MITRE Cross-Reference with NVD Remediation Strategies Best Practices Attack Simulation and Labs Attack Simulation Course Structure Getting Started Where to Start and Install CVE CVSS and MITRE ATT and CK Fundamentals and Architecture CIA Triad AAA Auth Authz Acct Cryptography and Hashing OSI Model and Protocols GRC Gov Risk Compliance NIST CSF ISO 27001 PCI-DSS Risk Management Network Defense Blue Team Firewalls and ACLs IDS IPS Snort SOC and SIEM Monitoring Zero Trust Arch Offensive Ops Red Team Recon Nmap Vuln Scanning Nessus Nmap Web App Attacks OWASP SQL Injection SQLi admin OR 1 equals 1 sqlmap Use Prepared Statements Parameterized Queries Executing malicious SQL commands to dump databases or bypass logins Cross-Site Scripting XSS img src x onerror alert 1 Burp Suite Output encoding HTML escaping and CSP Injecting client-side scripts into web pages viewed by other users CSRF img src bank.com transfer to attacker OWASP ZAP Anti-CSRF tokens Forcing an authenticated user to execute unwanted actions SSRF localhost admin panel Burp Suite Whitelist allowed domains for server requests Forcing a server to make requests to internal resources XXE ENTITY xxe SYSTEM file etc passwd Burp Suite Disable DTD processing in XML parsers Exploiting XML parsers to read local files or initiate SSRF LFI page dot dot dot etc passwd Burp Suite Whitelist allowed files strip dot dot Including local files on the server through the web browser RFI page http attacker.com shell.txt Burp Suite Disable allow url include in PHP Including remote files often leading to RCE Command Injection semicolon cat etc shadow Commix Use safe APIs avoid shell commands Executing operating system commands on the host server IDOR GET api users 1001 to 1002 Burp Suite Strict access control checks on objects Accessing objects directly by manipulating IDs Metasploit Framework EternalBlue MS17-010 use exploit windows smb ms17 010 eternalblue Metasploit Apply MS17-010 patch block SMB SMBv1 remote code execution flaw used by WannaCry BlueKeep CVE-2019-0708 use exploit windows rdp cve 2019 0708 bluekeep rce Metasploit Patch RDP disable NLA RDP vulnerability allowing pre-auth RCE Log4Shell CVE-2021-44228 jndi ldap attacker.com x Metasploit Update Log4j block outbound LDAP JNDI injection in Apache Log4j leading to RCE VSFTPD Backdoor use exploit unix ftp vsftpd 234 backdoor Metasploit Update VSFTPD Malicious backdoor inserted into the VSFTPD source code Shellshock use exploit multi http apache mod cgi bash env exec Metasploit Update Bash Bash vulnerability allowing execution of commands via environment variables Active Directory Attacks Kerberoasting GetUserSPNs.py corp.local user pass request Impacket Strong passwords for Service Accounts Requesting TGS tickets for services and cracking them offline AS-REP Roasting GetNPUsers.py corp.local usersfile users.txt Impacket Disable Do not require Kerberos preauth Requesting AS-REP tickets for users with preauth disabled Pass-the-Hash PtH crackmapexec smb 10.0.0.5 admin H aad3b CrackMapExec Disable NTLM enforce Kerberos Authenticating using an NTLM hash instead of a password Golden Ticket mimikatz kerberos golden user Admin krbtgt HASH Mimikatz Protect KRBTGT reset password twice Forging TGTs using the KRBTGT hash DCSync mimikatz lsadump dcsync user Administrator Mimikatz Restrict Replication privileges Simulating a Domain Controller to request password hashes DFIR Forensics and IR Log Analysis grep Memory Forensics Volatility Incident Response PICERL Cloud Security AWS S3 and IAM Container Security DevSecOps SAST and Code Scanning CI CD Pipeline Security Malware Analysis Static Analysis Dynamic Analysis Sandbox The Kali Linux Arsenal Info Gathering and OSINT Nmap nmap sV sC 10.10.10.5 Network Mapper Network discovery and security auditing Maltego maltego OSINT Graphing Graphical link analysis for OSINT gathering Recon-ng recon-ng Web Recon Full-featured web reconnaissance framework theHarvester theHarvester d target.com b google Email Subdomain Gather emails subdomains and employee names Shodan shodan search apache Search Engine Search engine for Internet-connected devices Web Application Tools Burp Suite burpsuite and Web Proxy Graphical tool to intercept and modify web traffic OWASP ZAP zap-cli quick-scan http target Web Scanner Open-source alternative to Burp Suite SQLmap sqlmap u http target id 1 dump SQLi Automation Automates the detection and exploitation of SQLi Nikto nikto h http target Web Server Scanner Scans for dangerous files and outdated software Gobuster gobuster dir u http target w wordlist Directory Brute-force Finds hidden directories and files Exploitation Frameworks Metasploit msfconsole Exploitation The industry standard for exploit development and execution Searchsploit searchsploit apache 2.4 Exploit DB Command line search for Exploit-DB BeEF ./beef Browser Exploit Focuses on the web browser to launch client-side attacks SET setoolkit Social Engineering Framework for phishing and social engineering attacks Password Cracking Hashcat hashcat m 1000 hash.txt rockyou.txt GPU Cracker World fastest password cracker using GPU John the Ripper john wordlist rockyou.txt hashes.txt CPU Cracker Autodetects and cracks password hashes Hydra hydra l admin P rockyou.txt ssh 10.10.10.5 Online Brute-force Fast network logon cracker Medusa medusa h 10.10.10.5 u admin P rockyou.txt M ssh Online Brute-force Parallel network logon cracker Sniffing and Spoofing Wireshark tshark i eth0 Packet Analyzer Interactively dump and analyze network traffic Bettercap bettercap iface eth0 MITM Powerful flexible tool to perform MITM attacks Ettercap ettercap T M arp target gateway MITM Comprehensive suite for man-in-the-middle attacks Responder responder I eth0 wrf LLMNR NBT-NS Poisoner Answers NBT-NS queries to capture NTLMv2 hashes Post-Exploitation Mimikatz sekurlsa logonpasswords Credential Dumping Extracts plaintext passwords hashes and Kerberos tickets BloodHound Invoke-BloodHound CollectionMethod All AD Graphing Identifies complex attack paths in Active Directory Evil-WinRM evil-winrm i 10.10.10.5 u admin p pass WinRM Shell Ultimate WinRM shell for hacking PowerSploit Invoke-Mimikatz PowerShell Framework PowerShell post-exploitation framework Forensics and Stego Volatility volatility f mem.raw pslist Memory Forensics Extracts artifacts from memory dumps Autopsy autopsy and Disk Forensics GUI for The Sleuth Kit to analyze disk images Binwalk binwalk e firmware.bin Firmware Analyzer Searches binary images for embedded files Steghide steghide extract sf image.jpg Steganography Hides and extracts data in image audio files CyberSecurity Course Structure Core Tracks and Modules with Attack Data Practice Labs Packet Tracer EVE-NG GNS3 Advanced Packet Tracer Labs Basic Switch Configuration Basic VLAN Configuration Static Routing SSH Configuration VLAN Trunking Router-on-a-Stick EtherChannel DHCPv4 Configuration NAT Configuration Access Control Lists OSPF Single Area HSRP Configuration Spanning Tree Protocol Switch Management VoIP Cisco and Avaya Voice VLAN Routing and Subnetting ASA Firewall Configuration EVE-NG and GNS3 Labs Practice Labs EVE-NG and GNS3 EVE-NG Network Topology Building GNS3 Virtual Lab Setup Kali Linux Integration with EVE-NG Multi-Vendor Network Simulation SD-WAN Lab Topology BGP Routing Lab Advanced Practice Labs Part of Accenture";
 
-    // Chatbot Logic
-    const toggleBtn = document.getElementById('chatbot-toggle');
-    const chatWindow = document.getElementById('chatbot-window');
-    toggleBtn.addEventListener('click', () => { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; });
-    const sendBtn = document.getElementById('chatbot-send');
-    const inputField = document.getElementById('chatbot-input');
-    const chatBody = document.getElementById('chatbot-body');
-    async function sendMessage() {
-        const text = inputField.value.trim(); if (!text) return;
-        const userMsg = document.createElement('div'); userMsg.classList.add('chat-msg', 'user-msg'); userMsg.innerText = text; chatBody.appendChild(userMsg); inputField.value = ''; chatBody.scrollTop = chatBody.scrollHeight;
-        try { await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec", { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }); } catch (error) {}
-        setTimeout(() => { const botMsg = document.createElement('div'); botMsg.classList.add('chat-msg', 'bot-msg'); botMsg.innerText = "Thank you! We will get back to you soon."; chatBody.appendChild(botMsg); chatBody.scrollTop = chatBody.scrollHeight; }, 800);
-    }
-    sendBtn.addEventListener('click', sendMessage);
-    inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+/* ---------- PAGE REGISTRY ---------- */
+var PAGES=[
+{t:'Enterprise Security Infrastructure',u:'labs.html',d:'Network Tracks, Roadmaps, Architecture & Security',c:'cat-course',_content:LABS_FULL_TEXT},
+{t:'Summer Lectures',u:'2026.html',d:'Recorded Sessions & Videos',c:'cat-course',_content:null},
+{t:'DPA Summer Training Course',u:'DPA.html',d:'Damietta Port Summer Training',c:'cat-course',_content:null},
+{t:'Introduction to Cybersecurity',u:'level3.html',d:'Foundations & Core Concepts',c:'cat-course',_content:null},
+{t:'Cybersecurity Course',u:'cybersecurity-course.html',d:'Attack Types, SIEM, Threat Hunting',c:'cat-course',_content:null},
+{t:'English CyberSecurity Course',u:'routing-switching.html',d:'Attack Types, SIEM, Threat Hunting in English',c:'cat-course',_content:null},
+{t:'AWS Cloud Foundation',u:'aws foundation.html',d:'AWS Cloud Solutions',c:'cat-course',_content:null},
+{t:'Digital Comm',u:'digital comm.html',d:'Digital Communications',c:'cat-course',_content:null},
+{t:'Wireless Comm',u:'wireless comm.html',d:'Wireless Communications',c:'cat-course',_content:null},
+{t:'HP Aruba Switch',u:'new9.html',d:'HP | Aruba Switch Configuration',c:'cat-course',_content:null},
+{t:'CyberSecurity Reading Slides',u:'networking.html',d:'Reading Slides for Cybersecurity',c:'cat-course',_content:null},
+{t:'Curriculum & Roadmaps',u:'Curriculum.html',d:'Core Tracks, Roadmaps, Modules',c:'cat-course',_content:null},
+{t:'Courses Overview',u:'courses.html',d:'All Courses Listing',c:'cat-course',_content:null},
+{t:'Switching Architecture',u:'lesson-6.html',d:'Network switching fundamentals',c:'cat-lab',_content:null},
+{t:'Firewall Security Architecture',u:'lesson-7.html',d:'Firewall design and deployment',c:'cat-lab',_content:null},
+{t:'KALI Linux',u:'lesson-3.html',d:'Kali Linux installation and basics',c:'cat-lab',_content:null},
+{t:'Top 50 Kali Linux Tools',u:'kali-tools.html',d:'Essential Kali tools overview',c:'cat-tool',_content:null},
+{t:'Vulnerability Scanners',u:'lesson-4.html',d:'Scanning tools and techniques',c:'cat-lab',_content:null},
+{t:'Nessus Vulnerability Assessment',u:'nessus.html',d:'Nessus scanner setup and usage',c:'cat-lab',_content:null},
+{t:'Networking Labs Overview',u:'labs2.html',d:'Hands-on networking labs',c:'cat-lab',_content:null},
+{t:'Wireless Solutions',u:'lesson-8.html',d:'Wireless network security',c:'cat-lab',_content:null},
+{t:'Cyber Attacks',u:'lesson-9.html',d:'Types of cyber attacks explained',c:'cat-lab',_content:null},
+{t:'Troubleshooting',u:'lesson-10.html',d:'Network troubleshooting methods',c:'cat-lab',_content:null},
+{t:'Switch Management',u:'lesson-11.html',d:'Managing network switches',c:'cat-lab',_content:null},
+{t:'VOIP',u:'lesson-12.html',d:'Voice over IP fundamentals',c:'cat-lab',_content:null},
+{t:'Cloud Computing',u:'lesson-13.html',d:'Cloud computing concepts',c:'cat-lab',_content:null},
+{t:'Practice Labs Packet Tracer',u:'lesson-14.html',d:'Cisco Packet Tracer exercises',c:'cat-lab',_content:null},
+{t:'Practice Labs EVE-NG & GNS3',u:'lesson-15.html',d:'EVE-NG and GNS3 lab exercises',c:'cat-lab',_content:null},
+{t:'Practice Labs Advanced',u:'lesson-16.html',d:'Advanced lab scenarios',c:'cat-lab',_content:null},
+{t:'The Complete Cyber Curriculum',u:'encyclopedia.html',d:'Full cybersecurity curriculum reference',c:'cat-tool',_content:null},
+{t:'Live Threat Monitor',u:'live-monitor.html',d:'Real-time threat monitoring dashboard',c:'cat-tool',_content:null},
+{t:'Beginner Pentest Labs',u:'begin1.html',d:'Beginner penetration testing labs',c:'cat-lab',_content:null},
+{t:'Attack Phases',u:'88888.html',d:'Cyber attack phases explained',c:'cat-lab',_content:null},
+{t:'Attack LABS Part 1',u:'second.html',d:'Attack lab exercises part 1',c:'cat-lab',_content:null},
+{t:'Attack LABS Part 2',u:'third.html',d:'Attack lab exercises part 2',c:'cat-lab',_content:null},
+{t:'Attack LABS Part 3',u:'fourth.html',d:'Attack lab exercises part 3',c:'cat-lab',_content:null},
+{t:'Switch Lab',u:'html.html',d:'Hands-on switch configuration lab',c:'cat-lab',_content:null},
+{t:'Firewall Lab',u:'asa-lab.html',d:'ASA Firewall configuration lab',c:'cat-lab',_content:null},
+{t:'Firewall Lab 2',u:'Firewal-Lab.html',d:'Advanced firewall lab',c:'cat-lab',_content:null},
+{t:'Wireshark Lab',u:'wireshark-lab.html',d:'Packet analysis with Wireshark',c:'cat-lab',_content:null},
+{t:'Log Analysis',u:'logs.html',d:'Security log analysis techniques',c:'cat-lab',_content:null},
+{t:'Exploitation & Cracking',u:'crack.html',d:'Password cracking and exploitation',c:'cat-lab',_content:null},
+{t:'Top 50 Kali Tool CLI',u:'kali50tools.html',d:'Command-line Kali tools reference',c:'cat-tool',_content:null},
+{t:'Kali Toolset Console',u:'kali50tools3.html',d:'Interactive Kali toolset terminal',c:'cat-tool',_content:null},
+{t:'Top 50 Kali Tool CLI + GUI',u:'kali50tools2.html',d:'CLI and GUI Kali tools',c:'cat-tool',_content:null},
+{t:'Burp Suite',u:'BurpSuite.html',d:'Web application testing with Burp Suite',c:'cat-tool',_content:null},
+{t:'Active Directory Attack Lab',u:'active-directory-attack-lab.html',d:'AD attack scenarios and techniques',c:'cat-lab',_content:null},
+{t:'20 Essential SOC Tools',u:'soc-tools.html',d:'Must-have tools for SOC analysts',c:'cat-tool',_content:null},
+{t:'Basic Switch Configuration',u:'Switch_Config.html',d:'Configure a Cisco switch from scratch',c:'cat-network',_content:null},
+{t:'Basic VLAN',u:'vlan.html',d:'VLAN creation and assignment',c:'cat-network',_content:null},
+{t:'Static Routing',u:'static_route.html',d:'Configure static routes',c:'cat-network',_content:null},
+{t:'SSH Configuration',u:'ssh.html',d:'Secure Shell setup on routers and switches',c:'cat-network',_content:null},
+{t:'VLAN Trunking',u:'trunk.html',d:'Inter-switch trunk links',c:'cat-network',_content:null},
+{t:'Router-on-a-Stick',u:'router_stick.html',d:'Single router inter-VLAN routing',c:'cat-network',_content:null},
+{t:'EtherChannel',u:'etherchannel.html',d:'Link aggregation with EtherChannel',c:'cat-network',_content:null},
+{t:'DHCPv4 Configuration',u:'dhcp.html',d:'DHCP server setup on Cisco',c:'cat-network',_content:null},
+{t:'NAT Configuration',u:'nat.html',d:'Network Address Translation setup',c:'cat-network',_content:null},
+{t:'Access Control Lists',u:'acl.html',d:'Standard and extended ACLs',c:'cat-network',_content:null},
+{t:'OSPF Single Area',u:'ospf.html',d:'OSPF routing protocol configuration',c:'cat-network',_content:null},
+{t:'HSRP Configuration',u:'hsrp.html',d:'Hot Standby Router Protocol',c:'cat-network',_content:null},
+{t:'Spanning Tree Protocol',u:'stp.html',d:'STP to prevent network loops',c:'cat-network',_content:null},
+{t:'Switch Management',u:'mgt.html',d:'Remote switch management',c:'cat-network',_content:null},
+{t:'VoIP Cisco & Avaya',u:'voip.html',d:'Voice VLAN configuration',c:'cat-network',_content:null},
+{t:'Routing & Subnetting',u:'subnetting.html',d:'IP subnetting and routing concepts',c:'cat-network',_content:null},
+{t:'ASA Firewall Configuration',u:'asa.html',d:'Cisco ASA firewall setup',c:'cat-network',_content:null},
+{t:'Roadmaps',u:'Roadmaps.html',d:'Career and learning roadmaps',c:'cat-roadmap',_content:null},
+{t:'Network Roadmap',u:'network Roadmap.html',d:'Network engineering learning path',c:'cat-roadmap',_content:null},
+{t:'Security Roadmap',u:'security Roadmap.html',d:'Cybersecurity career roadmap',c:'cat-roadmap',_content:null},
+{t:'Tasks & Submissions',u:'messages.html',d:'Course tasks and assignment submissions',c:'cat-other',_content:null},
+{t:'Announcements & FAQ',u:'comments.html',d:'Latest announcements and frequently asked questions',c:'cat-other',_content:null},
+{t:'Projects',u:'projects.html',d:'Student projects showcase',c:'cat-other',_content:null},
+{t:'Media & GIFs',u:'media.html',d:'Visual media and GIF resources',c:'cat-other',_content:null},
+{t:'Login',u:'login.html',d:'Sign in to your account',c:'cat-other',_content:null}
+];
 
-    // Sheet Verification
-    async function checkCourseAccess(email, courseColumn) {
-        try {
-            const response = await fetch(PAID_COURSES_SHEET_URL);
-            const csvText = await response.text();
-            const cleanCsv = csvText.replace(/\r/g, ''); 
-            const lines = cleanCsv.split('\n');
-            if (lines.length < 2) return false;
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            const emailIndex = headers.indexOf('email');
-            const courseIndex = headers.indexOf(courseColumn.toLowerCase());
-            if (emailIndex === -1 || courseIndex === -1) return false;
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue; 
-                const row = lines[i].split(',');
-                const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
-                const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
-                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') return true; 
-            }
-            return false; 
-        } catch (error) { return false; }
-    }
+/* ---------- SEARCH HELPERS ---------- */
+function getSnippet(fullText,queryWords,maxLen){
+    maxLen=maxLen||120;var lower=fullText.toLowerCase(),bestIdx=-1;
+    for(var w=0;w<queryWords.length;w++){var idx=lower.indexOf(queryWords[w]);if(idx!==-1&&(bestIdx===-1||idx<bestIdx))bestIdx=idx;}
+    if(bestIdx===-1)return fullText.substring(0,maxLen)+'...';
+    var start=Math.max(0,bestIdx-30),end=Math.min(fullText.length,bestIdx+80),snippet='';
+    if(start>0)snippet+='...';snippet+=fullText.substring(start,end);if(end<fullText.length)snippet+='...';return snippet;
+}
+function highlightWords(text,queryWords){
+    var result=text;
+    for(var w=0;w<queryWords.length;w++){var word=queryWords[w];if(word.length<2)continue;var regex=new RegExp('('+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');result=result.replace(regex,'<span class="highlight">$1</span>');}
+    return result;
+}
+function highlightTitle(title,query){
+    var qL=query.toLowerCase(),tL=title.toLowerCase(),idx=tL.indexOf(qL);
+    if(idx===-1)return title;
+    return title.substring(0,idx)+'<span class="highlight">'+title.substring(idx,idx+query.length)+'</span>'+title.substring(idx+query.length);
+}
 
-    // Google Login Handler
-    async function handlePaidCourseLogin(response) {
-        const errorDiv = document.getElementById('loginError');
-        errorDiv.innerHTML = "⏳ Verifying access in database..."; 
-        try {
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            const userEmail = payload.email;
-            const hasAccess = await checkCourseAccess(userEmail, requestedCourseColumn);
-            
-            if (hasAccess) {
-                localStorage.setItem('googleUserLoggedIn', 'true');
-                document.getElementById('loginModal').style.display = 'none';
-                
-                let redirectLink = 'paid-cybersecurity-course.html'; // Course 3
-                if (requestedCourseColumn === 'Course_4') redirectLink = 'paid-cybersecurity-course-2.html';
-                else if (requestedCourseColumn === 'Level_1_AI') redirectLink = 'Level-1 AI.html';
-                else if (requestedCourseColumn === 'Level_2_AI') redirectLink = 'Level2-AI.html';
-                
-                alert("Access Granted! Redirecting...");
-                window.location.href = redirectLink;
-            } else {
-                errorDiv.innerHTML = "❌ Access Denied. Your email is not approved for this course in the sheet.";
-            }
-        } catch (error) {
-            errorDiv.innerHTML = "❌ Login failed.";
-        }
-    }
+/* ---------- THE SEARCH FUNCTION ---------- */
+function search(q){
+    var list=document.getElementById('inlineResults');
+    if(!q.trim()){list.style.display='none';list.innerHTML='';return;}
+    var words=q.toLowerCase().split(/\s+/).filter(function(w){return w.length>1;});
+    if(!words.length){list.style.display='none';list.innerHTML='';return;}
 
-    function renderGoogleButton() {
-        const container = document.getElementById('modalGoogleButton');
-        container.innerHTML = ''; 
-        if (typeof google === 'undefined' || !google.accounts) return;
-        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handlePaidCourseLogin });
-        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
-    }
-
-    // Click Listeners for ALL courses (Cards & Dropdowns)
-    document.addEventListener('click', function(event) {
-        const loginModal = document.getElementById('loginModal');
-        const courseNameText = document.getElementById('modalCourseName');
-        
-        if (event.target.closest('#cyberCourseBtn') || event.target.closest('#dropCyberBtn3')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Course_3';
-            courseNameText.innerText = "Please log in to verify access for Course 3.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-        if (event.target.closest('#cyberCourseBtn2') || event.target.closest('#dropCyberBtn4')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Course_4';
-            courseNameText.innerText = "Please log in to verify access for Course 4.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-        if (event.target.closest('#aiCourseBtn1') || event.target.closest('#dropAiBtn1')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Level_1_AI';
-            courseNameText.innerText = "Please log in to verify access for Level-1 AI.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-        if (event.target.closest('#aiCourseBtn2') || event.target.closest('#dropAiBtn2')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Level_2_AI';
-            courseNameText.innerText = "Please log in to verify access for Level2-AI.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-
-        if (event.target.closest('#closeModalBtn')) { loginModal.style.display = 'none'; }
-        if (event.target === loginModal) { loginModal.style.display = 'none'; }
+    var results=PAGES.filter(function(p){
+        var searchable=(p.t+' '+p.d).toLowerCase();
+        if(p._content)searchable+=' '+p._content.toLowerCase();
+        for(var i=0;i<words.length;i++){if(searchable.indexOf(words[i])!==-1)return true;}
+        return false;
+    }).sort(function(a,b){
+        var aT=a.t.toLowerCase(),bT=b.t.toLowerCase(),qL=q.toLowerCase();
+        if(aT.startsWith(qL)&&!bT.startsWith(qL))return -1;
+        if(!aT.startsWith(qL)&&bT.startsWith(qL))return 1;
+        return aT.localeCompare(bT);
     });
 
-    /* ========== ROADMAP CIRCLE COLORS ========== */
-    const CC=['#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#f43f5e'];
+    var countHTML='<div class="search-count-inline">'+results.length+' result'+(results.length!==1?'s':'')+' found for "'+q+'"</div>';
 
-    /* ========== ROADMAP PLAYLIST DATA ========== */
-    const playlists=[
-      {
-         title:'CyberSecurity Roadmap',
-        desc:'Network Fundamentals, firewalls, Linux, KALI , Pentest',
-        icon:'fa-network-wired',
-        color:'#02b3e4',
-        steps:[
-          {n:'Networking CCNA R&S',l:'https://www.youtube.com/watch?v=VMI1z5h5Jy4&list=PLLlr6jKKdyK3JYsGq_jEcNx-EHF4lqXHP'},
-          {n:'CCNA security',l:'https://www.youtube.com/watch?v=8SPaWhv-9H8&list=PLLlr6jKKdyK2GhxtDaFympthZ2OvsvuZZ'},
-          {n:'Linux Operating System ',l:'https://www.youtube.com/watch?v=EIjr6HSTJss&list=PLLlr6jKKdyK0Cc3Bm-3kFutfwIgMlgcT9'},
-          {n:'Programming & Scripting',l:'https://www.youtube.com/watch?v=mvZHDpCHphk&list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs'},    
-          {n:'CompTIA Security+)',l:'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7'},	 
-          {n:'penetration test ',l:'https://www.youtube.com/watch?v=eUPk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs'},
-          {n:'Kali Linux Ethical Hacking',l:'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1Ue1UideULQvEgCgQ3a1B'},
-          {n:'Web Application Penetration',l:'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4'},
-          {n:'Blue Teaming / SOC Analyst',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ&si=NIDNOSLeFlvzTk23'},
-          {n:'30-Day SOC Analyst Challenge',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6&si=0QIIve7ucFBAlHZT'}
-        ]
-      },
-      {
-        title:'WebSite Roadmap',
-        desc:'Networking and Cybersecurity Courses | Interactive Labs',
-        icon:'fa-skull-crossbones',
-        color:'#ef4444',
-        steps:[
-		  {n:'Summer Lectures',l:'2026.html'},
-          {n:'DPA Summer Training Course',l:'DPA.html'},
-          {n:' Enterprise Security Infrastructure',l:'labs.html'},
-          {n:'Network Terms | Command Lines',l:'lesson-14.html'},
-          {n:'1- Introduction to Cybersecurity',l:'level3.html'},
-          {n:'2-Cybersecurity Course',l:'cybersecurity-course.html'},
-          {n:'English CyberSecurity Course',l:'routing-switching.html'},
-          {n:'Attack Interactive Attack Labs',l:'paid-cybersecurity-course.html'},
-          {n:'Summer Lectures',l:'2026.html'},
-          {n:'CyberSecurity Reading Slides',l:'networking.html'}
-        ]
-      },
-	        {
-        title:'Network Beginner Roadmap',
-        desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',
-        icon:'fa-skull-crossbones',
-        color:'#ef4444',
-        steps:[
-          {n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},
-          {n:' Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},
-          {n:'IP Address & Subnetting ',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H&pp=0gcJCf4COCosWNin'},
-          {n:'CCNA course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},
-          {n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},
-          {n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},
-          {n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},
-          {n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},
-          {n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},
-		  {n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},
-		  {n:'VMware windows VM',l:'https://youtu.be/t3PAufBUX9o'},
-		  {n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},
-		  {n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},
-		  {n:'Download Here',l:'https://filecr.com/home/?'}
-        ]
-      }
-    ];
-
-    /* ========== SVG GENERATOR ========== */
-    function buildSVG(pl){
-      const cols=3, count=pl.steps.length;
-      const rows=Math.ceil((count+2)/cols);
-      const rowH=120, startY=58, padX=110;
-      const colW=280;
-      const svgW=padX*2+colW*(cols-1);
-      const svgH=startY+(rows-1)*rowH+50;
-
-      const nodes=[];
-      nodes.push({label:'START',link:null,color:'#22c55e',type:'terminal'});
-      pl.steps.forEach((s,i)=>nodes.push({label:s.n,link:s.l,color:CC[i%CC.length],type:'step'}));
-      nodes.push({label:'FINISH',link:null,color:'#ef4444',type:'terminal'});
-
-      const positions=nodes.map((_,i)=>{
-        const row=Math.floor(i/cols);
-        let col=i%cols;
-        if(row%2===1) col=cols-1-col;
-        return{x:padX+col*colW, y:startY+row*rowH};
-      });
-
-      let d=`M ${positions[0].x},${positions[0].y}`;
-      for(let i=1;i<positions.length;i++){
-        const p=positions[i-1], c=positions[i];
-        const pRow=Math.floor((i-1)/cols), cRow=Math.floor(i/cols);
-        if(cRow!==pRow){
-          const bulge=c.x>svgW/2?90:-90;
-          d+=` C ${p.x+bulge},${p.y} ${c.x+bulge},${c.y} ${c.x},${c.y}`;
-        }else{
-          d+=` L ${c.x},${c.y}`;
-        }
-      }
-
-      let svg=`<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="min-width:${svgW}px;width:100%;height:auto;display:block">`;
-      svg+=`<defs>`;
-      nodes.forEach((n,i)=>{
-        svg+=`<filter id="glow_${pl.icon.replace(/[^a-z]/gi,'')}_${i}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur"/><feFlood flood-color="${n.color}" flood-opacity="0.5" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
-      });
-      svg+=`</defs>`;
-      svg+=`<path class="road-bg" d="${d}"/>`;
-      svg+=`<path class="road-surface" d="${d}"/>`;
-      svg+=`<path class="road-dash" d="${d}"/>`;
-
-      nodes.forEach((n,i)=>{
-        const{x,y}=positions[i];
-        const row=Math.floor(i/cols);
-        const labelAbove=row%2===1;
-        const labelY=labelAbove?y-32:y+38;
-        const subY=labelAbove?y-20:y+50;
-        const r=n.type==='terminal'?20:22;
-        const delay=0.3+i*0.12;
-        const filterId=`glow_${pl.icon.replace(/[^a-z]/gi,'')}_${i}`;
-
-        if(n.link){
-          svg+=`<a href="${n.link}" class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
-        }else{
-          svg+=`<g class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
-        }
-        svg+=`<circle class="node-circle" cx="${x}" cy="${y}" r="${r}" fill="${n.color}"/>`;
-        if(n.type==='terminal'){
-          svg+=`<text class="start-finish-text" x="${x}" y="${y}">${n.label}</text>`;
-        }else{
-          svg+=`<text class="node-text" x="${x}" y="${y}">${i}</text>`;
-        }
-        svg+=`<text class="node-label" x="${x}" y="${labelY}">${n.label}</text>`;
-        if(n.link){
-          svg+=`<text class="node-sublabel" x="${x}" y="${subY}">Click to open →</text>`;
-          svg+=`</a>`;
-        }else{
-          svg+=`</g>`;
-        }
-      });
-      svg+=`</svg>`;
-      return svg;
+    if(!results.length){
+        list.innerHTML=countHTML+'<div class="empty-state"><span>😕</span><p>No results found. Try different keywords.</p></div>';
+        list.style.display='block';return;
     }
 
-    /* ========== RENDER ROADMAP CARDS ========== */
-    const wrap=document.getElementById('cardsWrap');
-    playlists.forEach(pl=>{
-      const card=document.createElement('section');
-      card.className='path-card';
-      card.innerHTML=`
-        <div class="card-head">
-          <div class="card-head-left">
-            <div class="card-icon" style="background:${pl.color}"><i class="fas ${pl.icon}"></i></div>
-            <div>
-              <h3>${pl.title}</h3>
-              <p>${pl.desc}</p>
-            </div>
-          </div>
-          <div class="card-badge">${pl.steps.length} Steps</div>
-        </div>
-        <div class="svg-wrap">${buildSVG(pl)}</div>
-      `;
-      wrap.appendChild(card);
-    });
+    var html=countHTML;
+    for(var i=0;i<results.length;i++){
+        var r=results[i];
+        var displayTitle=highlightTitle(r.t,q);
+        var icon='📄';
+        if(r.c==='cat-course')icon='📘';else if(r.c==='cat-lab')icon='🧪';
+        else if(r.c==='cat-tool')icon='🛠️';else if(r.c==='cat-roadmap')icon='🗺️';
+        else if(r.c==='cat-network')icon='🌐';
+        var snippetHTML='';
+        if(r._content){var raw=getSnippet(r._content,words,140);snippetHTML='<div class="result-snippet">'+highlightWords(raw,words)+'</div>';}
+        html+='<a href="'+r.u+'" class="result-item"><div class="result-icon '+r.c+'">'+icon+'</div><div class="result-info"><div class="result-title">'+displayTitle+'</div><div class="result-desc">'+r.d+'</div>'+snippetHTML+'</div><div class="result-arrow">→</div></a>';
+    }
+    list.innerHTML=html;list.style.display='block';
+}
 
-    /* ========== INTERSECTION OBSERVER FOR ANIMATIONS ========== */
-    const obs=new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          e.target.classList.add('visible');
-          obs.unobserve(e.target);
-        }
-      });
-    },{threshold:0.15});
-    document.querySelectorAll('.path-card').forEach(c=>obs.observe(c));
+/* ---------- BACKGROUND INDEXER (for pages OTHER than labs.html) ---------- */
+var indexDone=0,indexTotal=0,indexFinished=false;
+function extractText(html){try{var doc=new DOMParser().parseFromString(html,'text/html');var rm=doc.querySelectorAll('script,style,noscript,meta,link,svg');for(var i=0;i<rm.length;i++)rm[i].remove();var text=(doc.body.textContent||doc.body.innerText||'');return text.replace(/\s+/g,' ').trim();}catch(e){return '';}}
+function updateIndexDot(){var dot=document.getElementById('indexDot');if(!dot)return;if(indexFinished){dot.className='search-indexed-dot ready';dot.title='Search ready';}else{dot.className='search-indexed-dot indexing';dot.title='Indexing... ('+indexDone+'/'+indexTotal+')';}}
+
+function startIndexer(){
+    var localPages=[];
+    for(var i=0;i<PAGES.length;i++){var url=PAGES[i].u;if(url&&!url.startsWith('http')&&!url.startsWith('https')&&!url.startsWith('#')&&!PAGES[i]._content){localPages.push(PAGES[i]);}}
+    indexTotal=localPages.length;indexDone=0;indexFinished=false;
+    if(indexTotal===0){indexFinished=true;updateIndexDot();return;}
+    var batchSize=3,batchDelay=200,idx=0;
+    function processNext(){
+        if(idx>=localPages.length){indexFinished=true;updateIndexDot();var cv=document.getElementById('inlineSearch').value;if(cv.trim())search(cv);return;}
+        var batchEnd=Math.min(idx+batchSize,localPages.length),promises=[];
+        for(var j=idx;j<batchEnd;j++){(function(page){promises.push(fetch(page.u,{method:'GET'}).then(function(resp){if(!resp.ok)throw new Error(resp.status);return resp.text();}).then(function(html){page._content=extractText(html);}).catch(function(){}).finally(function(){indexDone++;updateIndexDot();}));})(localPages[j]);}
+        idx=batchEnd;Promise.all(promises).then(function(){setTimeout(processNext,batchDelay);});
+    }
+    processNext();
+}
+
+/* ---------- WIRE UP SEARCH INPUT ---------- */
+var inlineSearchInput=document.getElementById('inlineSearch');
+var inlineResultsDiv=document.getElementById('inlineResults');
+var searchDebounce=null;
+inlineSearchInput.addEventListener('input',function(){clearTimeout(searchDebounce);var val=this.value;searchDebounce=setTimeout(function(){search(val);},120);});
+inlineSearchInput.addEventListener('focus',function(){if(this.value.trim())search(this.value);});
+document.addEventListener('click',function(e){var wrap=document.getElementById('inlineSearchWrap');if(wrap&&!wrap.contains(e.target)){inlineResultsDiv.style.display='none';}});
+inlineSearchInput.addEventListener('keydown',function(e){if(e.key==='Escape'){inlineResultsDiv.style.display='none';this.blur();}});
+startIndexer();
+</script>
+
+<script>
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);document.getElementById('themeLabel').textContent=n==='dark'?'Switch to Light Mode':'Switch to Dark Mode';}
+var GOOGLE_CLIENT_ID='541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
+var PAID_COURSES_SHEET_URL='https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
+var requestedCourseColumn=null;
+var toggleBtn=document.getElementById('chatbot-toggle'),chatWindow=document.getElementById('chatbot-window');
+toggleBtn.addEventListener('click',function(){chatWindow.style.display=chatWindow.style.display==='flex'?'none':'flex';});
+var sendBtn=document.getElementById('chatbot-send'),inputField=document.getElementById('chatbot-input'),chatBody=document.getElementById('chatbot-body');
+async function sendMessage(){var text=inputField.value.trim();if(!text)return;var userMsg=document.createElement('div');userMsg.classList.add('chat-msg','user-msg');userMsg.innerText=text;chatBody.appendChild(userMsg);inputField.value='';chatBody.scrollTop=chatBody.scrollHeight;try{await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec",{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});}catch(e){}setTimeout(function(){var botMsg=document.createElement('div');botMsg.classList.add('chat-msg','bot-msg');botMsg.innerText="Thank you! We will get back to you soon.";chatBody.appendChild(botMsg);chatBody.scrollTop=chatBody.scrollHeight;},800);}
+sendBtn.addEventListener('click',sendMessage);inputField.addEventListener('keypress',function(e){if(e.key==='Enter')sendMessage();});
+async function checkCourseAccess(email,courseColumn){try{var response=await fetch(PAID_COURSES_SHEET_URL);var csvText=await response.text();var cleanCsv=csvText.replace(/\r/g,'');var lines=cleanCsv.split('\n');if(lines.length<2)return false;var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase();});var emailIndex=headers.indexOf('email');var courseIndex=headers.indexOf(courseColumn.toLowerCase());if(emailIndex===-1||courseIndex===-1)return false;for(var i=1;i<lines.length;i++){if(!lines[i].trim())continue;var row=lines[i].split(',');var rowEmail=row[emailIndex]?row[emailIndex].trim().toLowerCase():"";var rowAccess=row[courseIndex]?row[courseIndex].trim().toLowerCase():"";if(rowEmail===email.toLowerCase()&&rowAccess==='yes')return true;}return false;}catch(e){return false;}}
+async function handlePaidCourseLogin(response){var errorDiv=document.getElementById('loginError');errorDiv.innerHTML="⏳ Verifying access in database...";try{var payload=JSON.parse(atob(response.credential.split('.')[1]));var userEmail=payload.email;var hasAccess=await checkCourseAccess(userEmail,requestedCourseColumn);if(hasAccess){localStorage.setItem('googleUserLoggedIn','true');document.getElementById('loginModal').style.display='none';var redirectLink='paid-cybersecurity-course.html';if(requestedCourseColumn==='Course_4')redirectLink='paid-cybersecurity-course-2.html';else if(requestedCourseColumn==='Level_1_AI')redirectLink='Level-1 AI.html';else if(requestedCourseColumn==='Level_2_AI')redirectLink='Level2-AI.html';alert("Access Granted! Redirecting...");window.location.href=redirectLink;}else{errorDiv.innerHTML="❌ Access Denied. Your email is not approved for this course.";}}catch(e){errorDiv.innerHTML="❌ Login failed.";}}
+function renderGoogleButton(){var container=document.getElementById('modalGoogleButton');container.innerHTML='';if(typeof google==='undefined'||!google.accounts)return;google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handlePaidCourseLogin});google.accounts.id.renderButton(container,{theme:'outline',size:'large',width:300,text:'signin_with'});}
+document.addEventListener('click',function(event){var loginModal=document.getElementById('loginModal');var courseNameText=document.getElementById('modalCourseName');if(event.target.closest('#cyberCourseBtn')||event.target.closest('#dropCyberBtn3')){event.preventDefault();event.stopPropagation();requestedCourseColumn='Course_3';courseNameText.innerText="Please log in to verify access for Course 3.";document.getElementById('loginError').innerHTML="";loginModal.style.display='flex';setTimeout(renderGoogleButton,100);}if(event.target.closest('#cyberCourseBtn2')||event.target.closest('#dropCyberBtn4')){event.preventDefault();event.stopPropagation();requestedCourseColumn='Course_4';courseNameText.innerText="Please log in to verify access for Course 4.";document.getElementById('loginError').innerHTML="";loginModal.style.display='flex';setTimeout(renderGoogleButton,100);}if(event.target.closest('#aiCourseBtn1')||event.target.closest('#dropAiBtn1')){event.preventDefault();event.stopPropagation();requestedCourseColumn='Level_1_AI';courseNameText.innerText="Please log in to verify access for Level-1 AI.";document.getElementById('loginError').innerHTML="";loginModal.style.display='flex';setTimeout(renderGoogleButton,100);}if(event.target.closest('#aiCourseBtn2')||event.target.closest('#dropAiBtn2')){event.preventDefault();event.stopPropagation();requestedCourseColumn='Level_2_AI';courseNameText.innerText="Please log in to verify access for Level2-AI.";document.getElementById('loginError').innerHTML="";loginModal.style.display='flex';setTimeout(renderGoogleButton,100);}if(event.target.closest('#closeModalBtn')){loginModal.style.display='none';}if(event.target===loginModal){loginModal.style.display='none';}});
+
+/* ========== ROADMAP ========== */
+var CC=['#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#f43f5e','#10b981','#f59e0b','#6366f1','#84cc16','#e11d48'];
+var playlists=[
+{title:'CyberSecurity Roadmap',desc:'Network Fundamentals, firewalls, Linux, KALI, Pentest',icon:'fa-network-wired',color:'#02b3e4',steps:[
+{n:'Networking CCNA R&S',l:'https://www.youtube.com/watch?v=VMI1z5h5Jy4&list=PLLlr6jKKdyK3JYsGq_jEcNx-EHF4lqXHP'},
+{n:'CCNA Security',l:'https://www.youtube.com/watch?v=8SPaWhv-9H8&list=PLLlr6jKKdyK2GhxtDaFympthZ2OvsvuZZ'},
+{n:'Linux Operating System',l:'https://www.youtube.com/watch?v=EIjr6HSTJss&list=PLLlr6jKKdyK0Cc3Bm-3kFutfwIgMlgcT9'},
+{n:'Programming & Scripting',l:'https://www.youtube.com/watch?v=mvZHDpCHphk&list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs'},
+{n:'CompTIA Security+',l:'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7'},
+{n:'Penetration Testing',l:'https://www.youtube.com/watch?v=eUPk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs'},
+{n:'Kali Linux Ethical Hacking',l:'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1Ue1UideULQvEgCgQ3a1B'},
+{n:'Web Application Penetration',l:'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4'},
+{n:'Blue Teaming / SOC Analyst',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ'},
+{n:'30-Day SOC Analyst Challenge',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6'}]},
+{title:'WebSite Roadmap',desc:'Networking and Cybersecurity Courses | Interactive Labs',icon:'fa-skull-crossbones',color:'#ef4444',steps:[
+{n:'Summer Lectures',l:'2026.html'},{n:'DPA Summer Training Course',l:'DPA.html'},{n:'Enterprise Security Infrastructure',l:'labs.html'},{n:'Network Terms | Command Lines',l:'lesson-14.html'},{n:'1- Introduction to Cybersecurity',l:'level3.html'},{n:'2-Cybersecurity Course',l:'cybersecurity-course.html'},{n:'English CyberSecurity Course',l:'routing-switching.html'},{n:'Interactive Attack Labs',l:'paid-cybersecurity-course.html'},{n:'CyberSecurity Reading Slides',l:'networking.html'},{n:'AWS Cloud Foundation',l:'aws foundation.html'}]},
+{title:'Network Beginner Roadmap',desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',icon:'fa-graduation-cap',color:'#22c55e',steps:[
+{n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},
+{n:'Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},
+{n:'IP Address & Subnetting',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H'},
+{n:'CCNA Course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},
+{n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},
+{n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},
+{n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},
+{n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},
+{n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},
+{n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},
+{n:'VMware Windows VM',l:'https://youtu.be/t3PAufBUX9o'},
+{n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},
+{n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},
+{n:'Download Tools',l:'https://filecr.com/home/?'}]}
+];
+function buildSVG(pl){var cols=3,count=pl.steps.length,rows=Math.ceil((count+2)/cols),rowH=120,startY=58,padX=110,colW=280,svgW=padX*2+colW*(cols-1),svgH=startY+(rows-1)*rowH+50,nodes=[];nodes.push({label:'START',link:null,color:'#22c55e',type:'terminal'});pl.steps.forEach(function(s,i){nodes.push({label:s.n,link:s.l,color:CC[i%CC.length],type:'step'});});nodes.push({label:'FINISH',link:null,color:'#ef4444',type:'terminal'});var positions=nodes.map(function(_,i){var row=Math.floor(i/cols),col=i%cols;if(row%2===1)col=cols-1-col;return{x:padX+col*colW,y:startY+row*rowH};});var d='M '+positions[0].x+','+positions[0].y;for(var i=1;i<positions.length;i++){var p=positions[i-1],c=positions[i],pRow=Math.floor((i-1)/cols),cRow=Math.floor(i/cols);if(cRow!==pRow){var bulge=c.x>svgW/2?90:-90;d+=' C '+(p.x+bulge)+','+p.y+' '+(c.x+bulge)+','+c.y+' '+c.x+','+c.y;}else{d+=' L '+c.x+','+c.y;}}var svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" xmlns="http://www.w3.org/2000/svg" style="min-width:'+svgW+'px;width:100%;height:auto;display:block"><defs>';var fb=pl.icon.replace(/[^a-z]/gi,'');nodes.forEach(function(n,i){svg+='<filter id="glow_'+fb+'_'+i+'" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur"/><feFlood flood-color="'+n.color+'" flood-opacity="0.5" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';});svg+='</defs><path class="road-bg" d="'+d+'"/><path class="road-surface" d="'+d+'"/><path class="road-dash" d="'+d+'"/>';nodes.forEach(function(n,i){var x=positions[i].x,y=positions[i].y,row=Math.floor(i/cols),labelAbove=row%2===1,labelY=labelAbove?y-32:y+38,subY=labelAbove?y-20:y+50,r=n.type==='terminal'?20:22,delay=0.3+i*0.12,filterId='glow_'+fb+'_'+i;if(n.link){svg+='<a href="'+n.link+'" class="node-group" style="--glow:'+n.color+';animation-delay:'+delay+'s" filter="url(#'+filterId+')">';}else{svg+='<g class="node-group" style="--glow:'+n.color+';animation-delay:'+delay+'s" filter="url(#'+filterId+')">';}svg+='<circle class="node-circle" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+n.color+'"/>';if(n.type==='terminal'){svg+='<text class="start-finish-text" x="'+x+'" y="'+y+'">'+n.label+'</text>';}else{svg+='<text class="node-text" x="'+x+'" y="'+y+'">'+i+'</text>';}svg+='<text class="node-label" x="'+x+'" y="'+labelY+'">'+n.label+'</text>';if(n.type==='step'){svg+='<text class="node-sublabel" x="'+x+'" y="'+subY+'">Step '+i+'</text>';}if(n.link){svg+='</a>';}else{svg+='</g>';}});svg+='</svg>';return svg;}
+function renderPlaylists(){var wrap=document.getElementById('cardsWrap');wrap.innerHTML=playlists.map(function(pl,pi){var svgContent=buildSVG(pl);return '<div class="path-card" id="pc'+pi+'"><div class="card-head"><div class="card-head-left"><div class="card-icon" style="background:'+pl.color+'"><i class="fa-solid '+pl.icon+'"></i></div><div><h3>'+pl.title+'</h3><p>'+pl.desc+'</p></div></div><div class="card-badge">'+pl.steps.length+' Steps</div></div><div class="svg-wrap">'+svgContent+'</div></div>';}).join('');var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.15});document.querySelectorAll('.path-card').forEach(function(c){obs.observe(c);});}
+renderPlaylists();
 </script>
 </body>
 </html>
