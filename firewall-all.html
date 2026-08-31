@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · Resource Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000;
+            --body-fg: #e0e0e0;
+            --body-bg: #0a0a0a;
+            --body-quiet: #888;
+            --body-loud: #fff;
+            --hairline: #1a1a1a;
+            --darkened: #0e0e0e;
+            --selected: #161616;
+            --selected-row: #121212;
+            --header-bg: #0f0f0f;
+            --sidebar-bg: #0c0c0c;
+            --error: #ef5350;
+            --warn-bg: #1a1500;
+            --warn-border: #f9a825;
+            --info-bg: #0a1520;
+            --info-border: #29b6f6;
+            --tip-bg: #0a1a0e;
+            --tip-border: #00e676;
+        }
+        html[data-theme="light"] {
+            --primary: #00897b;
+            --primary-fg: #fff;
+            --body-fg: #2c3e50;
+            --body-bg: #f4f5f7;
+            --body-quiet: #78909c;
+            --body-loud: #1a1a2e;
+            --hairline: #dde1e6;
+            --darkened: #fff;
+            --selected: #e8f5e9;
+            --selected-row: #f5f5f5;
+            --header-bg: #fff;
+            --sidebar-bg: #fafbfc;
+            --error: #d32f2f;
+            --warn-bg: #fff8e1;
+            --warn-border: #f9a825;
+            --info-bg: #e1f5fe;
+            --info-border: #29b6f6;
+            --tip-bg: #e8f5e9;
+            --tip-border: #00897b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--body-bg);
+            color: var(--body-fg);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--hairline);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        html[data-theme="light"] .sidebar-scroll::-webkit-scrollbar-thumb { background: #ccc; }
+        .sidebar-logo {
+            padding: 22px 20px 18px;
+            border-bottom: 1px solid var(--hairline);
+            background: linear-gradient(135deg, var(--darkened) 0%, var(--body-bg) 100%);
+        }
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            width: 46px;
+            height: 46px;
+            background: var(--primary);
+            color: var(--primary-fg);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 6px 16px rgba(0,230,118,0.2);
+            flex-shrink: 0;
+        }
+        .logo-info h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--body-loud);
+            line-height: 1.2;
+        }
+        .logo-info span {
+            font-size: 0.6rem;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 1.5px;
+        }
+        .logo-tagline {
+            font-size: 0.7rem;
+            color: var(--body-quiet);
+            margin-top: 8px;
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+            line-height: 1.5;
+        }
+        .theme-row {
+            padding: 14px 16px 6px;
+        }
+        .theme-btn {
+            cursor: pointer;
+            border: 1px solid var(--hairline);
+            padding: 8px 0;
+            background: var(--body-bg);
+            border-radius: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--body-fg);
+            transition: 0.2s;
+        }
+        .theme-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .sidebar-course {
+            padding: 14px 20px 10px;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .sidebar-course h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .nav-section {
+            padding: 12px 0 8px;
+        }
+        .nav-label {
+            padding: 4px 20px 8px;
+            font-size: 0.65rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--hairline);
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 20px;
+            margin: 2px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            color: var(--body-fg);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+        .nav-link:hover {
+            background: var(--selected);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        .nav-link.active {
+            background: var(--selected);
+            color: var(--primary);
+            font-weight: 600;
+            border-left-color: var(--primary);
+        }
+        .nav-link .nav-ico {
+            font-size: 1.05rem;
+            min-width: 22px;
+            text-align: center;
+        }
+        .nav-link .nav-badge {
+            margin-left: auto;
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: var(--primary);
+            color: var(--primary-fg);
+            padding: 2px 7px;
+            border-radius: 20px;
+        }
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--hairline);
+            font-size: 0.68rem;
+            color: var(--body-quiet);
+            text-align: center;
+            line-height: 1.5;
+            flex-shrink: 0;
+        }
+        .sidebar-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 58px;
+            min-height: 58px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--hairline);
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .top-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--body-quiet);
+        }
+        .breadcrumb a {
+            color: var(--body-quiet);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb .sep { opacity: 0.4; }
+        .breadcrumb .current {
+            color: var(--body-loud);
+            font-weight: 600;
+        }
+        .back-main-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--selected);
+            color: var(--primary);
+            border: 1px solid var(--hairline);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .back-main-btn:hover {
+            background: var(--primary);
+            color: var(--primary-fg);
+            border-color: var(--primary);
+        }
+        .top-header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-header-right a {
+            color: var(--body-quiet);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .top-header-right a:hover { color: var(--body-loud); }
+        .top-login {
+            background: var(--primary) !important;
+            color: var(--primary-fg) !important;
+            padding: 6px 16px !important;
+            border-radius: 8px !important;
+            font-size: 0.78rem !important;
+        }
+        .top-login:hover { opacity: 0.85; }
+        .content-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        #pageFrame {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: var(--body-bg);
+            display: none;
+            z-index: 5;
+        }
+        #welcomeContent {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            z-index: 1;
+        }
+        #welcomeContent::-webkit-scrollbar { width: 5px; }
+        #welcomeContent::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
+        html[data-theme="light"] #welcomeContent::-webkit-scrollbar-thumb { background: #ccc; }
+        .welcome-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 36px 32px 60px;
+        }
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--selected) 0%, var(--darkened) 100%);
+            border: 1px solid var(--hairline);
+            border-radius: 22px;
+            padding: 40px 36px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            background: var(--primary);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+        .welcome-hero .wh-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--primary-fg);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .welcome-hero h2 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--body-loud);
+            margin-bottom: 8px;
+        }
+        .welcome-hero p {
+            color: var(--body-quiet);
+            font-size: 0.9rem;
+            max-width: 650px;
+            line-height: 1.7;
+        }
+        .welcome-stats {
+            display: flex;
+            gap: 28px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--body-bg);
+            border: 1px solid var(--hairline);
+            border-radius: 14px;
+            padding: 14px 20px;
+            min-width: 160px;
+        }
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--body-quiet);
+            font-weight: 500;
+        }
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .quick-card {
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 18px;
+            padding: 24px 22px;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-decoration: none;
+            display: block;
+        }
+        .quick-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,230,118,0.08);
+        }
+        .qc-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 14px;
+        }
+        .qc-icon.down { background: rgba(0,230,118,0.1); }
+        .qc-icon.book { background: rgba(41,182,246,0.1); }
+        .qc-icon.vid { background: rgba(255,82,82,0.1); }
+        .quick-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--body-loud);
+            margin-bottom: 6px;
+        }
+        .quick-card p {
+            font-size: 0.78rem;
+            color: var(--body-quiet);
+            line-height: 1.5;
+        }
+        .qc-count {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--selected);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .recent-section {
+            margin-bottom: 32px;
+        }
+        .recent-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--body-loud);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .recent-item:hover {
+            border-color: var(--primary);
+            background: var(--selected);
+        }
+        .ri-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .ri-icon.dl { background: rgba(0,230,118,0.1); }
+        .ri-icon.bk { background: rgba(41,182,246,0.1); }
+        .ri-icon.vd { background: rgba(255,82,82,0.1); }
+        .ri-info { flex: 1; min-width: 0; }
+        .ri-info h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--body-loud);
+            margin-bottom: 2px;
+        }
+        .ri-info p {
+            font-size: 0.72rem;
+            color: var(--body-quiet);
+        }
+        .ri-arrow {
+            color: var(--body-quiet);
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .recent-item:hover .ri-arrow {
+            color: var(--primary);
+            transform: translateX(3px);
+        }
+        .bottom-footer {
+            padding: 14px 32px;
+            border-top: 1px solid var(--hairline);
+            background: var(--header-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--body-quiet);
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .bottom-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .bottom-footer a:hover { text-decoration: underline; }
+        .footer-links {
+            display: flex;
+            gap: 18px;
+        }
+        @media (max-width: 900px) {
+            .sidebar { width: 260px; }
+            .quick-grid { grid-template-columns: 1fr; }
+            .welcome-hero h2 { font-size: 1.4rem; }
+            .welcome-stats { gap: 12px; }
+            .stat-box { min-width: 130px; padding: 10px 14px; }
+        }
+        @media (max-width: 600px) {
+            .sidebar { width: 220px; }
+            .welcome-inner { padding: 20px 16px 40px; }
+            .top-header { padding: 0 16px; }
+            .bottom-footer { padding: 12px 16px; flex-direction: column; gap: 6px; text-align: center; }
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
+        html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #ccc; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-scroll">
+        <div class="sidebar-logo">
+            <div class="logo-row">
+                <div class="logo-box">🛡️</div>
+                <div class="logo-info">
+                    <h1>CyberDefend</h1>
+                    <span>NETWORK ACADEMY</span>
+                </div>
+            </div>
+            <p class="logo-tagline">Your one-stop hub for downloads, books & video courses</p>
+        </div>
+        <div class="theme-row">
+            <button class="theme-btn" onclick="toggleTheme()">🌙 Toggle Theme</button>
+        </div>
+        <div class="sidebar-course">
+            <h2>📚 Resource Library</h2>
+        </div>
+
+        <!-- DOWNLOADS SECTION -->
+        <div class="nav-section">
+            <div class="nav-label">DOWNLOADS</div>
+            <a class="nav-link" href="fortinet.html" onclick="loadPage(this,'fortinet.html'); return false;">
+                <span class="nav-ico">💻</span> Fortinet Course
+                <span class="nav-badge">NEW</span>
+            </a>
+            <a class="nav-link" href="fortinet2.html" onclick="loadPage(this,'fortinet2.html'); return false;">
+                <span class="nav-ico">📦</span> Firmware Updates
+            </a>
+            <a class="nav-link" href="downloads/configs.html" onclick="loadPage(this,'downloads/configs.html'); return false;">
+                <span class="nav-ico">⚙️</span> Config Templates
+            </a>
+            <a class="nav-link" href="downloads/tools.html" onclick="loadPage(this,'downloads/tools.html'); return false;">
+                <span class="nav-ico">🔧</span> Network Tools
+            </a>
+            <a class="nav-link" href="downloads/cheatsheets.html" onclick="loadPage(this,'downloads/cheatsheets.html'); return false;">
+                <span class="nav-ico">📋</span> Cheat Sheets
+                <span class="nav-badge">5</span>
+            </a>
+        </div>
+
+        <!-- BOOKS SECTION -->
+        <div class="nav-section">
+            <div class="nav-label">BOOKS & GUIDES</div>
+            <a class="nav-link" href="books/hp-switch-guide.html" onclick="loadPage(this,'books/hp-switch-guide.html'); return false;">
+                <span class="nav-ico">📕</span> HP Switch Guide
+            </a>
+            <a class="nav-link" href="books/aruba-cx-book.html" onclick="loadPage(this,'books/aruba-cx-book.html'); return false;">
+                <span class="nav-ico">📗</span> Aruba CX Book
+            </a>
+            <a class="nav-link" href="books/vlan-handbook.html" onclick="loadPage(this,'books/vlan-handbook.html'); return false;">
+                <span class="nav-ico">📘</span> VLAN Handbook
+            </a>
+            <a class="nav-link" href="books/security-guide.html" onclick="loadPage(this,'books/security-guide.html'); return false;">
+                <span class="nav-ico">📙</span> Security Guide
+            </a>
+            <a class="nav-link" href="books/ospf-deep-dive.html" onclick="loadPage(this,'books/ospf-deep-dive.html'); return false;">
+                <span class="nav-ico">📄</span> OSPF Deep Dive
+            </a>
+            <a class="nav-link" href="books/lab-manual.html" onclick="loadPage(this,'books/lab-manual.html'); return false;">
+                <span class="nav-ico">📓</span> Lab Manual
+                <span class="nav-badge">PDF</span>
+            </a>
+        </div>
+
+        <!-- VIDEOS SECTION -->
+        <div class="nav-section">
+            <div class="nav-label">VIDEO COURSES</div>
+            <a class="nav-link" href="videos/getting-started.html" onclick="loadPage(this,'videos/getting-started.html'); return false;">
+                <span class="nav-ico">🎬</span> Getting Started
+            </a>
+            <a class="nav-link" href="videos/vlan-trunking.html" onclick="loadPage(this,'videos/vlan-trunking.html'); return false;">
+                <span class="nav-ico">🎥</span> VLAN & Trunking
+            </a>
+            <a class="nav-link" href="videos/stp-lesson.html" onclick="loadPage(this,'videos/stp-lesson.html'); return false;">
+                <span class="nav-ico">📹</span> Spanning Tree
+            </a>
+            <a class="nav-link" href="videos/routing-basics.html" onclick="loadPage(this,'videos/routing-basics.html'); return false;">
+                <span class="nav-ico">🎥</span> Routing Basics
+            </a>
+            <a class="nav-link" href="videos/vsx-setup.html" onclick="loadPage(this,'videos/vsx-setup.html'); return false;">
+                <span class="nav-ico">📹</span> VSX Setup
+            </a>
+            <a class="nav-link" href="videos/security-labs.html" onclick="loadPage(this,'videos/security-labs.html'); return false;">
+                <span class="nav-ico">🎬</span> Security Labs
+                <span class="nav-badge">12</span>
+            </a>
+        </div>
+    </div>
+    <div class="sidebar-footer">
+        © 2025 <a href="#">CyberDefend</a><br>
+        All resources for educational use only
+    </div>
+</aside>
+
+<div class="right-panel">
+    <div class="top-header">
+        <div class="top-header-left">
+            <button class="back-main-btn" onclick="goHome()">← Back to Main</button>
+            <div class="breadcrumb">
+                <a href="#" onclick="goHome(); return false;">Home</a>
+                <span class="sep">/</span>
+                <span class="current" id="breadcrumbCurrent">Resources</span>
+            </div>
+        </div>
+        <div class="top-header-right">
+            <a href="#">Help</a>
+            <a href="#">Contact</a>
+            <a href="#" class="top-login">Login</a>
+        </div>
+    </div>
+
+    <div class="content-area">
+        <iframe id="pageFrame" src="about:blank"></iframe>
+
+        <div id="welcomeContent">
+            <div class="welcome-inner">
+                <div class="welcome-hero">
+                    <span class="wh-badge">RESOURCE HUB</span>
+                    <h2>HP & Aruba Learning Resources</h2>
+                    <p>Access downloads, books, and video courses — everything you need to master HP ProCurve and Aruba CX switches. Pick a category from the sidebar to get started.</p>
+                    <div class="welcome-stats">
+                        <div class="stat-box">
+                            <div class="stat-num">5</div>
+                            <div class="stat-label">Downloads</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">6</div>
+                            <div class="stat-label">Books</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">6</div>
+                            <div class="stat-label">Video Courses</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">17</div>
+                            <div class="stat-label">Total Items</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-grid">
+                    <a class="quick-card" href="fortinet.html" onclick="loadPage(document.querySelectorAll('.nav-link')[0],'fortinet.html'); return false;">
+                        <div class="qc-icon down">⬇️</div>
+                        <h3>Downloads</h3>
+                        <p>Simulators, firmware, config templates, tools and cheat sheets</p>
+                        <span class="qc-count">5 items</span>
+                    </a>
+                    <a class="quick-card" href="books/hp-switch-guide.html" onclick="loadPage(document.querySelectorAll('.nav-link')[5],'books/hp-switch-guide.html'); return false;">
+                        <div class="qc-icon book">📖</div>
+                        <h3>Books & Guides</h3>
+                        <p>In-depth guides for HP switches, Aruba CX, VLANs, security & more</p>
+                        <span class="qc-count">6 items</span>
+                    </a>
+                    <a class="quick-card" href="videos/getting-started.html" onclick="loadPage(document.querySelectorAll('.nav-link')[11],'videos/getting-started.html'); return false;">
+                        <div class="qc-icon vid">▶️</div>
+                        <h3>Video Courses</h3>
+                        <p>Step-by-step video lessons from basics to advanced configurations</p>
+                        <span class="qc-count">6 items</span>
+                    </a>
+                </div>
+
+                <div class="recent-section">
+                    <h3>📌 Recently Added</h3>
+                    <div class="recent-list">
+                        <a class="recent-item" href="fortinet.html" onclick="loadPage(document.querySelectorAll('.nav-link')[0],'fortinet.html'); return false;">
+                            <div class="ri-icon dl">💻</div>
+                            <div class="ri-info">
+                                <h4>Fortinet Course</h4>
+                                <p>Download · Added today</p>
+                            </div>
+                            <span class="ri-arrow">→</span>
+                        </a>
+                        <a class="recent-item" href="books/lab-manual.html" onclick="loadPage(document.querySelectorAll('.nav-link')[10],'books/lab-manual.html'); return false;">
+                            <div class="ri-icon bk">📓</div>
+                            <div class="ri-info">
+                                <h4>Complete Lab Manual</h4>
+                                <p>Book · Added 5 days ago</p>
+                            </div>
+                            <span class="ri-arrow">→</span>
+                        </a>
+                        <a class="recent-item" href="videos/security-labs.html" onclick="loadPage(document.querySelectorAll('.nav-link')[16],'videos/security-labs.html'); return false;">
+                            <div class="ri-icon vd">🎬</div>
+                            <div class="ri-info">
+                                <h4>Security Labs — 12 Hands-On Videos</h4>
+                                <p>Video · Added 1 week ago</p>
+                            </div>
+                            <span class="ri-arrow">→</span>
+                        </a>
+                        <a class="recent-item" href="downloads/cheatsheets.html" onclick="loadPage(document.querySelectorAll('.nav-link')[4],'downloads/cheatsheets.html'); return false;">
+                            <div class="ri-icon dl">📋</div>
+                            <div class="ri-info">
+                                <h4>Command Cheat Sheets Collection</h4>
+                                <p>Download · Added 1 week ago</p>
+                            </div>
+                            <span class="ri-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-footer">
+        <span>© 2025 CyberDefend Network Academy · All rights reserved</span>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Discord</a>
+            <a href="#">YouTube</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadPage(el, url) {
+    var frame = document.getElementById('pageFrame');
+    var welcome = document.getElementById('welcomeContent');
+    var bc = document.getElementById('breadcrumbCurrent');
+    frame.style.display = 'block';
+    frame.src = url;
+    welcome.style.display = 'none';
+    var text = el.textContent.trim();
+    bc.textContent = text;
+    document.querySelectorAll('.nav-link').forEach(function(n) { n.classList.remove('active'); });
+    el.classList.add('active');
+}
+
+function goHome() {
+    var frame = document.getElementById('pageFrame');
+    var welcome = document.getElementById('welcomeContent');
+    var bc = document.getElementById('breadcrumbCurrent');
+    frame.style.display = 'none';
+    frame.src = 'about:blank';
+    welcome.style.display = 'block';
+    bc.textContent = 'Resources';
+    document.querySelectorAll('.nav-link').forEach(function(n) { n.classList.remove('active'); });
+}
+
+function toggleTheme() {
+    var html = document.documentElement;
+    if (html.getAttribute('data-theme') === 'light') {
+        html.removeAttribute('data-theme');
+        document.querySelector('.theme-btn').textContent = '🌙 Toggle Theme';
+    } else {
+        html.setAttribute('data-theme', 'light');
+        document.querySelector('.theme-btn').textContent = '☀️ Toggle Theme';
+    }
+}
+</script>
+
+</body>
+</html>

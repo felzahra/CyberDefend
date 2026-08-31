@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FortiGate Firewall on GNS3 — Full Installation & Configuration Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #05050A; color: #fff; font-family: 'Inter', sans-serif; }
+        ::selection { background-color: rgba(234,179,8,0.3); color: #FEF08A; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #05050A; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        .text-gradient-gold {
+            background: linear-gradient(180deg, #FEF08A 0%, #EAB308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #FACC15, #EAB308);
+            box-shadow: 0 0 20px rgba(234,179,8,0.3);
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 150ms ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #FDE047, #FACC15);
+            box-shadow: 0 0 30px rgba(234,179,8,0.5);
+            transform: translateY(-2px);
+        }
+        .code-block {
+            background: #0A0A10;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .code-block pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            line-height: 1.7;
+        }
+        .code-block .code-header {
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .code-comment { color: #6B7280; }
+        .code-cmd { color: #EAB308; }
+        .code-string { color: #34D399; }
+        .code-keyword { color: #A78BFA; }
+        .code-output { color: #9CA3AF; }
+        .code-warning { color: #F87171; }
+        .code-info { color: #60A5FA; }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #9CA3AF;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 150ms;
+            font-family: 'Inter', sans-serif;
+        }
+        .copy-btn:hover { background: rgba(234,179,8,0.15); color: #EAB308; border-color: rgba(234,179,8,0.3); }
+        .copy-btn.copied { background: rgba(52,211,153,0.15); color: #34D399; border-color: rgba(52,211,153,0.3); }
+
+        .step-card {
+            border-left: 3px solid rgba(255,255,255,0.1);
+            transition: all 300ms ease;
+        }
+        .step-card:hover { border-left-color: #EAB308; }
+        .step-card.active { border-left-color: #EAB308; background: rgba(234,179,8,0.03); }
+
+        .step-number {
+            width: 40px; height: 40px;
+            background: rgba(234,179,8,0.1);
+            border: 1px solid rgba(234,179,8,0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: #EAB308;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .topology-node {
+            transition: all 300ms ease;
+            cursor: pointer;
+        }
+        .topology-node:hover { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(234,179,8,0.4)); }
+
+        .floating-decoration {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .policy-permit { border-left: 3px solid #34D399; }
+        .policy-deny { border-left: 3px solid #F87171; }
+
+        .tab-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 200ms;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .tab-btn.active { background: rgba(234,179,8,0.15); color: #EAB308; border-color: rgba(234,179,8,0.3); }
+        .tab-btn:not(.active) { color: #6B7280; }
+        .tab-btn:not(.active):hover { color: #9CA3AF; background: rgba(255,255,255,0.03); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .timeline-dot {
+            width: 12px; height: 12px;
+            background: #EAB308;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(234,179,8,0.5);
+            flex-shrink: 0;
+        }
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(234,179,8,0.5), rgba(234,179,8,0.05));
+            flex-shrink: 0;
+        }
+
+        .image-showcase {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+        }
+        .image-showcase img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 700ms ease;
+        }
+        .image-showcase:hover img { transform: scale(1.03); }
+        .image-showcase .image-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(5,5,10,0.95), transparent);
+            padding: 2rem 1rem 1rem;
+        }
+
+        .nav-link {
+            color: #9CA3AF;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 200ms;
+            cursor: pointer;
+        }
+        .nav-link:hover { color: #EAB308; }
+
+        .alert-box {
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .alert-warning { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: #FCA5A5; }
+        .alert-info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93C5FD; }
+        .alert-success { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6EE7B7; }
+        .alert-tip { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); color: #FDE047; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeUp { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(234,179,8,0.3); }
+            50% { box-shadow: 0 0 25px rgba(234,179,8,0.6); }
+        }
+
+        .toc-item {
+            padding: 0.4rem 0;
+            color: #6B7280;
+            font-size: 0.8rem;
+            transition: all 200ms;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .toc-item:hover { color: #EAB308; padding-left: 0.5rem; }
+        .toc-item .toc-dot { width: 4px; height: 4px; background: currentColor; border-radius: 50%; flex-shrink: 0; }
+
+        .zone-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .zone-lan { background: rgba(96,165,250,0.15); color: #60A5FA; border: 1px solid rgba(96,165,250,0.3); }
+        .zone-wan { background: rgba(248,113,113,0.15); color: #F87171; border: 1px solid rgba(248,113,113,0.3); }
+        .zone-dmz { background: rgba(234,179,8,0.15); color: #EAB308; border: 1px solid rgba(234,179,8,0.3); }
+
+        .progress-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #EAB308, #FDE047); border-radius: 2px; transition: width 500ms ease; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#05050A]/80 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
+                    <iconify-icon icon="lucide:shield" width="16" style="color:#000"></iconify-icon>
+                </div>
+                <span class="font-display font-bold text-sm tracking-tight">FortiGate<span class="text-yellow-500">Lab</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#overview" class="nav-link">Overview</a>
+                <a href="#prerequisites" class="nav-link">Prerequisites</a>
+                <a href="#topology" class="nav-link">Topology</a>
+                <a href="#installation" class="nav-link">Installation</a>
+                <a href="#configuration" class="nav-link">Configuration</a>
+                <a href="#policies" class="nav-link">Policies</a>
+                <a href="#testing" class="nav-link">Testing</a>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden text-gray-400">
+                <iconify-icon icon="lucide:menu" width="24"></iconify-icon>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-[#0A0A10] border-t border-white/5 px-6 py-4 space-y-3">
+            <a href="#overview" class="block nav-link">Overview</a>
+            <a href="#prerequisites" class="block nav-link">Prerequisites</a>
+            <a href="#topology" class="block nav-link">Topology</a>
+            <a href="#installation" class="block nav-link">Installation</a>
+            <a href="#configuration" class="block nav-link">Configuration</a>
+            <a href="#policies" class="block nav-link">Policies</a>
+            <a href="#testing" class="block nav-link">Testing</a>
+        </div>
+    </nav>
+
+    <!-- ===== READING PROGRESS ===== -->
+    <div class="fixed top-16 left-0 right-0 z-40">
+        <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <!-- Decorations -->
+        <div class="floating-decoration w-[500px] h-[500px] bg-yellow-500/5 top-0 -left-40"></div>
+        <div class="floating-decoration w-[400px] h-[400px] bg-blue-500/5 top-20 right-0"></div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="animate-fadeUp">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow-500/20 bg-yellow-500/5 text-yellow-400 text-[10px] font-semibold uppercase tracking-[0.25em] mb-8">
+                    <iconify-icon icon="lucide:book-open" width="12"></iconify-icon>
+                    Complete Lab Guide
+                </span>
+            </div>
+
+            <h1 class="font-display font-bold text-4xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.1] mb-6 animate-fadeUp delay-100">
+                FortiGate Firewall<br>
+                <span class="text-gradient-gold">on GNS3</span>
+            </h1>
+
+            <p class="text-gray-400 font-light text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed animate-fadeUp delay-200">
+                Step-by-step installation and full CLI configuration guide. Build a complete network topology with <strong class="text-white font-medium">LAN</strong>, <strong class="text-white font-medium">WAN</strong>, and <strong class="text-white font-medium">DMZ</strong> zones — including 2 PCs in DMZ — with permit and deny firewall policies.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-14 animate-fadeUp delay-300">
+                <a href="#installation" class="btn-primary px-8 py-3.5 rounded-full text-xs inline-flex items-center gap-2">
+                    <iconify-icon icon="lucide:play" width="14"></iconify-icon>
+                    Start Lab
+                </a>
+                <a href="#topology" class="px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider border border-white/10 text-white hover:border-white/30 transition-all inline-flex items-center gap-2">
+                    <iconify-icon icon="lucide:network" width="14"></iconify-icon>
+                    View Topology
+                </a>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto animate-fadeUp delay-400">
+                <div class="glass-panel rounded-xl p-4">
+                    <div class="text-2xl font-display font-bold text-yellow-400">12</div>
+                    <div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Steps</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4">
+                    <div class="text-2xl font-display font-bold text-yellow-400">5</div>
+                    <div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Policies</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4">
+                    <div class="text-2xl font-display font-bold text-yellow-400">3</div>
+                    <div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Zones</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4">
+                    <div class="text-2xl font-display font-bold text-yellow-400">4</div>
+                    <div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Devices</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="max-w-5xl mx-auto mt-16 animate-fadeUp delay-500">
+            <div class="image-showcase">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOO5Kmi-rr6uZamOXFJqCBJ4uLMF85pEScFruwXAZKRROFH3ODW8q9sC0&s=10" alt="FortiGate GNS3 Lab" loading="lazy">
+                <div class="image-label">
+                    <p class="text-xs text-gray-400">FortiGate VM running on GNS3 with full zone-based firewall configuration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TABLE OF CONTENTS ===== -->
+    <section id="overview" class="py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Table of Contents</span>
+                    <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">What You'll Learn</h2>
+                    <p class="text-gray-400 font-light leading-relaxed mb-8">
+                        This guide walks you through every command needed to install, configure, and test a FortiGate firewall on GNS3. You'll create a realistic 3-zone network with actual firewall policies that permit and deny traffic between zones.
+                    </p>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">GNS3 FortiGate Setup</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Import image, configure VM, allocate resources</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">Interface & Zone Config</p>
+                                <p class="text-xs text-gray-500 mt-0.5">LAN, WAN, DMZ interfaces with IP addressing</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">DHCP Server Setup</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Auto-assign IPs to LAN and DMZ PCs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">Permit & Deny Policies</p>
+                                <p class="text-xs text-gray-500 mt-0.5">5 real firewall policies with logging</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">NAT & Routing</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Outbound NAT, default route, static routes</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399" class="mt-0.5 flex-shrink-0"></iconify-icon>
+                            <div>
+                                <p class="text-sm font-medium text-white">Ping & Verification</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Test each policy with real traffic</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 h-fit">
+                    <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-500 mb-4">Jump To</p>
+                    <div class="space-y-1">
+                        <div class="toc-item" onclick="document.getElementById('prerequisites').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Prerequisites</div>
+                        <div class="toc-item" onclick="document.getElementById('topology').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Network Topology</div>
+                        <div class="toc-item" onclick="document.getElementById('installation').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Installation on GNS3</div>
+                        <div class="toc-item" onclick="document.getElementById('cli-config').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>CLI Configuration</div>
+                        <div class="toc-item" onclick="document.getElementById('interfaces').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Interface Setup</div>
+                        <div class="toc-item" onclick="document.getElementById('dhcp').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>DHCP Servers</div>
+                        <div class="toc-item" onclick="document.getElementById('routing').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Routing & NAT</div>
+                        <div class="toc-item" onclick="document.getElementById('policies').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Firewall Policies</div>
+                        <div class="toc-item" onclick="document.getElementById('testing').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Testing & Verification</div>
+                        <div class="toc-item" onclick="document.getElementById('troubleshoot').scrollIntoView({behavior:'smooth'})"><span class="toc-dot"></span>Troubleshooting</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PREREQUISITES ===== -->
+    <section id="prerequisites" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:clipboard-list" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Before You Begin</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-10">Prerequisites</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <iconify-icon icon="lucide:download" width="18" style="color:#60A5FA"></iconify-icon>
+                        </div>
+                        <h3 class="font-display font-semibold text-base">Software Required</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2 text-sm text-gray-300"><span class="text-yellow-500 mt-0.5">→</span> GNS3 v2.2+ (GUI or VM version)</li>
+                        <li class="flex items-start gap-2 text-sm text-gray-300"><span class="text-yellow-500 mt-0.5">→</span> FortiGate VM Image (.qcow2) from Fortinet</li>
+                        <li class="flex items-start gap-2 text-sm text-gray-300"><span class="text-yellow-500 mt-0.5">→</span> QEMU installed (comes with GNS3)</li>
+                        <li class="flex items-start gap-2 text-sm text-gray-300"><span class="text-yellow-500 mt-0.5">→</span> VPCS (Virtual PC Simulator) for PCs</li>
+                        <li class="flex items-start gap-2 text-sm text-gray-300"><span class="text-yellow-500 mt-0.5">→</span> 8GB+ RAM, 4 CPU cores recommended</li>
+                    </ul>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
+                            <iconify-icon icon="lucide:info" width="18" style="color:#EAB308"></iconify-icon>
+                        </div>
+                        <h3 class="font-display font-semibold text-base">Important Notes</h3>
+                    </div>
+                    <div class="alert-box alert-warning mb-3">
+                        <strong>License:</strong> FortiGate VM requires a FortiCare license for full features. The trial gives you 15 days of full functionality. Without a license, many features are restricted.
+                    </div>
+                    <div class="alert-box alert-tip">
+                        <strong>Tip:</strong> Download the FortiGate VM from the Fortinet Support portal (requires free account). Choose the <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded text-xs">FortiGate-VM64-v7.x.x.qcow2</code> file.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prerequisite Image -->
+            <div class="mt-8 image-showcase">
+                <img src="https://uploads-us-west-2.insided.com/fortinet-en/attachment/65560i70CA326C3DB0DCD0.png" alt="GNS3 Download Page" loading="lazy">
+                <div class="image-label">
+                    <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>Fortinet Support Portal — Download FortiGate VM image</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NETWORK TOPOLOGY ===== -->
+    <section id="topology" class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+        <div class="floating-decoration w-[600px] h-[600px] bg-yellow-500/5 -top-40 -right-60"></div>
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:network" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Lab Design</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Network Topology</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Our lab features a FortiGate firewall with 3 security zones: LAN (internal), WAN (external/internet), and DMZ (demilitarized zone) with 2 PCs.</p>
+
+            <!-- SVG Topology Diagram -->
+            <div class="glass-panel rounded-2xl p-6 md:p-10 mb-8">
+                <svg viewBox="0 0 900 500" class="w-full" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Zone Backgrounds -->
+                    <rect x="20" y="20" width="220" height="460" rx="16" fill="rgba(96,165,250,0.05)" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>
+                    <text x="130" y="55" text-anchor="middle" fill="#60A5FA" font-size="11" font-weight="600" font-family="Space Grotesk" letter-spacing="2">LAN ZONE</text>
+
+                    <rect x="340" y="20" width="220" height="460" rx="16" fill="rgba(234,179,8,0.05)" stroke="rgba(234,179,8,0.15)" stroke-width="1"/>
+                    <text x="450" y="55" text-anchor="middle" fill="#EAB308" font-size="11" font-weight="600" font-family="Space Grotesk" letter-spacing="2">DMZ ZONE</text>
+
+                    <rect x="660" y="20" width="220" height="460" rx="16" fill="rgba(248,113,113,0.05)" stroke="rgba(248,113,113,0.15)" stroke-width="1"/>
+                    <text x="770" y="55" text-anchor="middle" fill="#F87171" font-size="11" font-weight="600" font-family="Space Grotesk" letter-spacing="2">WAN ZONE</text>
+
+                    <!-- LAN PC -->
+                    <g class="topology-node" transform="translate(70, 180)">
+                        <rect x="0" y="0" width="120" height="80" rx="12" fill="rgba(96,165,250,0.1)" stroke="rgba(96,165,250,0.3)" stroke-width="1.5"/>
+                        <text x="60" y="30" text-anchor="middle" fill="white" font-size="13" font-weight="600" font-family="Space Grotesk">PC-LAN</text>
+                        <text x="60" y="50" text-anchor="middle" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">VPCS</text>
+                        <text x="60" y="68" text-anchor="middle" fill="#60A5FA" font-size="9" font-family="JetBrains Mono">192.168.1.10</text>
+                    </g>
+
+                    <!-- FortiGate -->
+                    <g class="topology-node" transform="translate(210, 150)">
+                        <rect x="0" y="0" width="160" height="200" rx="16" fill="rgba(234,179,8,0.08)" stroke="rgba(234,179,8,0.4)" stroke-width="2"/>
+                        <rect x="20" y="15" width="120" height="30" rx="6" fill="rgba(234,179,8,0.15)"/>
+                        <text x="80" y="35" text-anchor="middle" fill="#EAB308" font-size="11" font-weight="700" font-family="Space Grotesk">FORTIGATE</text>
+                        <text x="80" y="62" text-anchor="middle" fill="white" font-size="9" font-family="JetBrains Mono">port1: LAN</text>
+                        <text x="80" y="78" text-anchor="middle" fill="#60A5FA" font-size="8" font-family="JetBrains Mono">192.168.1.1/24</text>
+                        <line x1="30" y1="88" x2="130" y2="88" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                        <text x="80" y="105" text-anchor="middle" fill="white" font-size="9" font-family="JetBrains Mono">port2: DMZ</text>
+                        <text x="80" y="121" text-anchor="middle" fill="#EAB308" font-size="8" font-family="JetBrains Mono">172.16.1.1/24</text>
+                        <line x1="30" y1="131" x2="130" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                        <text x="80" y="148" text-anchor="middle" fill="white" font-size="9" font-family="JetBrains Mono">port3: WAN</text>
+                        <text x="80" y="164" text-anchor="middle" fill="#F87171" font-size="8" font-family="JetBrains Mono">10.0.0.2/30</text>
+                        <text x="80" y="190" text-anchor="middle" fill="#6B7280" font-size="8" font-family="JetBrains Mono">FortiOS v7.x</text>
+                    </g>
+
+                    <!-- DMZ PC 1 -->
+                    <g class="topology-node" transform="translate(400, 130)">
+                        <rect x="0" y="0" width="120" height="80" rx="12" fill="rgba(234,179,8,0.1)" stroke="rgba(234,179,8,0.3)" stroke-width="1.5"/>
+                        <text x="60" y="30" text-anchor="middle" fill="white" font-size="13" font-weight="600" font-family="Space Grotesk">PC-DMZ1</text>
+                        <text x="60" y="50" text-anchor="middle" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">VPCS</text>
+                        <text x="60" y="68" text-anchor="middle" fill="#EAB308" font-size="9" font-family="JetBrains Mono">172.16.1.10</text>
+                    </g>
+
+                    <!-- DMZ PC 2 -->
+                    <g class="topology-node" transform="translate(400, 290)">
+                        <rect x="0" y="0" width="120" height="80" rx="12" fill="rgba(234,179,8,0.1)" stroke="rgba(234,179,8,0.3)" stroke-width="1.5"/>
+                        <text x="60" y="30" text-anchor="middle" fill="white" font-size="13" font-weight="600" font-family="Space Grotesk">PC-DMZ2</text>
+                        <text x="60" y="50" text-anchor="middle" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">VPCS</text>
+                        <text x="60" y="68" text-anchor="middle" fill="#EAB308" font-size="9" font-family="JetBrains Mono">172.16.1.11</text>
+                    </g>
+
+                    <!-- WAN Router (Internet Sim) -->
+                    <g class="topology-node" transform="translate(710, 180)">
+                        <rect x="0" y="0" width="120" height="80" rx="12" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.3)" stroke-width="1.5"/>
+                        <text x="60" y="30" text-anchor="middle" fill="white" font-size="13" font-weight="600" font-family="Space Grotesk">INET-RT</text>
+                        <text x="60" y="50" text-anchor="middle" fill="#9CA3AF" font-size="9" font-family="JetBrains Mono">VPCS/Cisco</text>
+                        <text x="60" y="68" text-anchor="middle" fill="#F87171" font-size="9" font-family="JetBrains Mono">10.0.0.1/30</text>
+                    </g>
+
+                    <!-- Connection Lines -->
+                    <!-- LAN PC to FortiGate -->
+                    <line x1="190" y1="220" x2="210" y2="220" stroke="#60A5FA" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+                    <circle cx="200" cy="220" r="3" fill="#60A5FA"/>
+
+                    <!-- FortiGate to DMZ PCs -->
+                    <path d="M370 210 Q385 210 400 170" fill="none" stroke="#EAB308" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+                    <circle cx="385" cy="210" r="3" fill="#EAB308"/>
+                    <path d="M370 260 Q385 280 400 330" fill="none" stroke="#EAB308" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+                    <circle cx="385" cy="270" r="3" fill="#EAB308"/>
+
+                    <!-- FortiGate to WAN -->
+                    <line x1="370" y1="250" x2="710" y2="220" stroke="#F87171" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+                    <circle cx="540" cy="235" r="3" fill="#F87171"/>
+
+                    <!-- Labels on connections -->
+                    <text x="198" y="210" fill="#60A5FA" font-size="7" font-family="JetBrains Mono" text-anchor="middle" transform="rotate(-90, 198, 210)">port1</text>
+                    <text x="388" y="195" fill="#EAB308" font-size="7" font-family="JetBrains Mono">port2</text>
+                    <text x="540" y="228" fill="#F87171" font-size="7" font-family="JetBrains Mono">port3</text>
+                </svg>
+            </div>
+
+            <!-- IP Table -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-white/5">
+                    <h3 class="font-display font-semibold text-sm">IP Addressing Table</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-white/5">
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Device</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Interface</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">IP Address</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Zone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">FortiGate</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">port1</td>
+                                <td class="px-6 py-3 font-mono text-xs text-blue-400">192.168.1.1/24</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-lan">LAN</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">FortiGate</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">port2</td>
+                                <td class="px-6 py-3 font-mono text-xs text-yellow-400">172.16.1.1/24</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-dmz">DMZ</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">FortiGate</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">port3</td>
+                                <td class="px-6 py-3 font-mono text-xs text-red-400">10.0.0.2/30</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-wan">WAN</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">PC-LAN</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">eth0</td>
+                                <td class="px-6 py-3 font-mono text-xs text-blue-400">192.168.1.10/24</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-lan">LAN</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">PC-DMZ1</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">eth0</td>
+                                <td class="px-6 py-3 font-mono text-xs text-yellow-400">172.16.1.10/24</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-dmz">DMZ</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3 font-medium">PC-DMZ2</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">eth0</td>
+                                <td class="px-6 py-3 font-mono text-xs text-yellow-400">172.16.1.11/24</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-dmz">DMZ</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 font-medium">INET-RT</td>
+                                <td class="px-6 py-3 font-mono text-xs text-gray-400">eth0</td>
+                                <td class="px-6 py-3 font-mono text-xs text-red-400">10.0.0.1/30</td>
+                                <td class="px-6 py-3"><span class="zone-badge zone-wan">WAN</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INSTALLATION ON GNS3 ===== -->
+    <section id="installation" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:package-plus" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 1-3</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-10">Installation on GNS3</h2>
+
+            <!-- Step 1 -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="1">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Import FortiGate VM Image into GNS3</h3>
+                        <p class="text-gray-400 text-sm mt-1">Add the FortiGate QEMU image to your GNS3 appliance library.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://getlabsdone.com/wp-content/uploads/2019/09/image-70.png.webp" alt="GNS3 Import QEMU VM" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>GNS3 → Edit → Preferences → QEMU VMs → New</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm text-gray-300 leading-relaxed">
+                    <p><strong class="text-white">1.</strong> Open GNS3 → Go to <strong class="text-yellow-400">Edit → Preferences → QEMU VMs</strong></p>
+                    <p><strong class="text-white">2.</strong> Click <strong class="text-yellow-400">New</strong> → Select <strong class="text-yellow-400">QEMU VM type</strong></p>
+                    <p><strong class="text-white">3.</strong> Name it <code class="text-yellow-300 bg-yellow-500/10 px-1.5 py-0.5 rounded text-xs">FortiGate-VM</code></p>
+                    <p><strong class="text-white">4.</strong> Browse and select the <code class="text-yellow-300 bg-yellow-500/10 px-1.5 py-0.5 rounded text-xs">FortiGate-VM64-v7.x.x.qcow2</code> file</p>
+                    <p><strong class="text-white">5.</strong> Set QEMU binary to <code class="text-yellow-300 bg-yellow-500/10 px-1.5 py-0.5 rounded text-xs">qemu-system-x86_64</code></p>
+                    <p><strong class="text-white">6.</strong> Click <strong class="text-yellow-400">Finish</strong></p>
+                </div>
+
+                <div class="alert-box alert-tip mt-4">
+                    <iconify-icon icon="lucide:lightbulb" width="14" class="mr-1"></iconify-icon>
+                    <strong>Tip:</strong> Make sure the qcow2 file is not compressed (.zip/.gz). Extract it first.
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="2">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Configure VM Resources</h3>
+                        <p class="text-gray-400 text-sm mt-1">Allocate proper RAM and CPU for the FortiGate VM to run smoothly.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd7jZPoNUIzB_SfIo5cqXaGrxyyHz6Dlx-yNf9lg1d98ub_Ge7MxaiviY&s=10" alt="GNS3 VM Settings" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>FortiGate VM Settings — RAM, CPU, Adapters</p>
+                    </div>
+                </div>
+
+                <div class="code-block mb-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:settings-2" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">GNS3 VM Settings</span>
+                        </div>
+                        <span class="text-[10px] text-gray-600 uppercase tracking-wider">Configuration</span>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># In GNS3 → Right-click FortiGate VM → Configure</span>
+
+<span class="code-keyword">General:</span>
+  Name:          FortiGate-VM
+  Category:      Security
+  Symbol:        Firewall
+
+<span class="code-keyword">System:</span>
+  RAM:           <span class="code-string">2048 MB</span>        <span class="code-comment"># Minimum 1024, recommended 2048+</span>
+  CPUs:          <span class="code-string">2</span>              <span class="comment"># Minimum 1, recommended 2</span>
+  Console type:  telnet
+
+<span class="code-keyword">Network:</span>
+  Adapters:      <span class="code-string">4</span>              <span class="code-comment"># port1(LAN), port2(DMZ), port3(WAN), port4(mgmt)</span>
+  Type:          e1000
+
+<span class="code-keyword">Advanced:</span>
+  QEMU options:  <span class="code-string">-smp 2 -m 2048</span>
+  Priority:      Normal</pre>
+                </div>
+
+                <div class="alert-box alert-warning">
+                    <iconify-icon icon="lucide:alert-triangle" width="14" class="mr-1"></iconify-icon>
+                    <strong>Warning:</strong> Do NOT set RAM below 1024MB. FortiGate VM will crash or fail to boot. 2048MB is the safe minimum for lab use.
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="3">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Build Topology in GNS3</h3>
+                        <p class="text-gray-400 text-sm mt-1">Drag devices onto the canvas and connect them with proper links.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://networkers.wdfiles.com/local--files/setting-up-fortigate-firewall-in-gns3/Fortigate%20lab1.png" alt="GNS3 Topology Canvas" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>GNS3 Canvas — Drag and connect all devices</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm text-gray-300 leading-relaxed">
+                    <p><strong class="text-white">1.</strong> Drag <strong class="text-yellow-400">FortiGate-VM</strong> from the appliances panel to canvas</p>
+                    <p><strong class="text-white">2.</strong> Drag <strong class="text-blue-400">3 × VPCS</strong> (for PC-LAN, PC-DMZ1, PC-DMZ2)</p>
+                    <p><strong class="text-white">3.</strong> Drag <strong class="text-red-400">1 × VPCS</strong> or router (for INET-RT simulating internet)</p>
+                    <p><strong class="text-white">4.</strong> Connect using the GNS3 wiring tool:</p>
+                </div>
+
+                <div class="code-block mt-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:cable" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">Wiring Connections</span>
+                        </div>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># Connection Map:</span>
+<span class="code-output">PC-LAN  (eth0)  ←→  FortiGate (port1)    <span class="code-comment"># LAN zone</span></span>
+<span class="code-output">PC-DMZ1 (eth0)  ←→  FortiGate (port2)    <span class="code-comment"># DMZ zone</span></span>
+<span class="code-output">PC-DMZ2 (eth0)  ←→  FortiGate (port2)    <span class="code-comment"># DMZ zone (use a switch/hub if needed)</span></span>
+<span class="code-output">INET-RT (eth0)  ←→  FortiGate (port3)    <span class="code-comment"># WAN zone</span></span>
+
+<span class="code-comment"># NOTE: If you need 2 DMZ PCs on same interface,</span>
+<span class="code-comment"># add an "Ethernet switch" node between FG port2 and both DMZ PCs</span></pre>
+                </div>
+
+                <div class="alert-box alert-info mt-4">
+                    <iconify-icon icon="lucide:info" width="14" class="mr-1"></iconify-icon>
+                    <strong>DMZ Switch:</strong> Since FortiGate has only one port2 for DMZ, add an <strong>Ethernet Switch</strong> (from GNS3 appliances) between FortiGate port2 and the two DMZ PCs to share the segment.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CLI CONFIGURATION ===== -->
+    <section id="cli-config" class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+        <div class="floating-decoration w-[500px] h-[500px] bg-yellow-500/5 bottom-0 -left-40"></div>
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:terminal" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 4-5</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Initial CLI Configuration</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Boot the FortiGate and perform initial setup through the console.</p>
+
+            <!-- Step 4: Boot -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="4">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Boot FortiGate & Initial Login</h3>
+                        <p class="text-gray-400 text-sm mt-1">Start all devices and access the FortiGate console.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://fortinet.grazitti.com/fortinet-kb-production/api/uploads/327bec36.png" alt="FortiGate Boot Console" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>FortiGate boot sequence in GNS3 console — wait for login prompt</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">FortiGate Console — Initial Boot</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># Start all devices in GNS3 (green play button or right-click → Start)</span>
+<span class="code-comment"># Right-click FortiGate → Console</span>
+<span class="code-comment"># Wait 2-3 minutes for full boot...</span>
+
+<span class="code-output">FortiGate-VM # Welcome to FortiGate VM
+FortiGate-VM login:</span>
+
+<span class="code-cmd">maintainer</span>              <span class="code-comment"># Default username for first login</span>
+<span class="code-string">bcpb+FGT-VM64-FTNT-04000000</span>  <span class="code-comment"># Default password (check your image)</span>
+
+<span class="code-comment"># If maintainer doesn't work, try:</span>
+<span class="code-cmd">admin</span>                   <span class="code-comment"># Username: admin</span>
+<span class="code-string">(blank)</span>                  <span class="code-comment"># Password: leave empty, press Enter</span>
+
+<span class="code-output">Welcome!
+FortiGate-VM #</span></pre>
+                </div>
+
+                <div class="alert-box alert-warning mt-4">
+                    <iconify-icon icon="lucide:alert-triangle" width="14" class="mr-1"></iconify-icon>
+                    <strong>Default Credentials:</strong> For most FortiGate VM images: username = <code class="bg-red-500/10 px-1 rounded text-xs">admin</code>, password = <em>(empty)</em>. If that fails, try <code class="bg-red-500/10 px-1 rounded text-xs">maintainer</code> / <code class="bg-red-500/10 px-1 rounded text-xs">bcpb+FGT-VM64-...</code> (the exact string varies by image version).
+                </div>
+            </div>
+
+            <!-- Step 5: System Settings -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="5">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Set Hostname & Admin Password</h3>
+                        <p class="text-gray-400 text-sm mt-1">Configure basic system settings before configuring interfaces.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">System Configuration</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># Enter configuration mode</span>
+<span class="code-cmd">config system global</span>
+    <span class="code-comment"># Set a meaningful hostname</span>
+    <span class="code-cmd">set hostname FG-LAB</span>
+
+    <span class="code-comment"># Change admin password (IMPORTANT!)</span>
+    <span class="code-cmd">set admin-password "Admin@123#"</span>
+
+    <span class="code-comment"># Set timezone</span>
+    <span class="code-cmd">set timezone 05</span>    <span class="code-comment"># 05 = EST (adjust for your location)</span>
+
+    <span class="code-comment"># Enable admin access on all interfaces for lab</span>
+    <span class="code-cmd">set admin-sport 443</span>
+    <span class="code-cmd">set admin-ssh-port 22</span>
+<span class="code-cmd">end</span>
+
+<span class="code-output"># Output:</span>
+<span class="code-output"># hostname changed to FG-LAB</span>
+<span class="code-output"># password changed</span>
+
+<span class="code-comment"># Verify</span>
+<span class="code-cmd">get system status</span>
+<span class="code-output"># Hostname: FG-LAB</span>
+<span class="code-output"># Version: FortiGate-VM v7.4.x</span>
+<span class="code-output"># FortiGate VM (64-bit)</span></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INTERFACE CONFIGURATION ===== -->
+    <section id="interfaces" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:ethernet" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 6</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Interface Configuration</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Configure IP addresses on each physical port and assign them to security zones.</p>
+
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="6">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">6</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Configure port1 (LAN), port2 (DMZ), port3 (WAN)</h3>
+                        <p class="text-gray-400 text-sm mt-1">Assign IP addresses and bring interfaces up.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://us1.discourse-cdn.com/spiceworks/original/4X/9/8/2/98270eb36ab418c197afd93a7743d305ca974797.jpeg" alt="FortiGate Interface Config" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>FortiGate GUI → Network → Interfaces (same can be done via CLI below)</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">Interface IP Configuration</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment">###### ============================================ ######</span>
+<span class="code-comment">######  PORT 1 — LAN INTERFACE (192.168.1.1/24)  ######</span>
+<span class="code-comment">###### ============================================ ######</span>
+
+<span class="code-cmd">config system interface</span>
+    <span class="code-cmd">edit "port1"</span>
+        <span class="code-cmd">set alias "LAN"</span>
+        <span class="code-cmd">set ip 192.168.1.1 255.255.255.0</span>
+        <span class="code-comment"># Assign to LAN zone</span>
+        <span class="code-cmd">set zone "lan"</span>
+        <span class="code-comment"># Enable the interface</span>
+        <span class="code-cmd">set status up</span>
+        <span class="code-comment"># Allow management access (for lab purposes)</span>
+        <span class="code-cmd">set allowaccess ping https ssh http</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">###### ============================================= ######</span>
+<span class="code-comment">######  PORT 2 — DMZ INTERFACE (172.16.1.1/24)   ######</span>
+<span class="code-comment">###### ============================================= ######</span>
+
+    <span class="code-cmd">edit "port2"</span>
+        <span class="code-cmd">set alias "DMZ"</span>
+        <span class="code-cmd">set ip 172.16.1.1 255.255.255.0</span>
+        <span class="code-comment"># Assign to DMZ zone</span>
+        <span class="code-cmd">set zone "dmz"</span>
+        <span class="code-cmd">set status up</span>
+        <span class="code-cmd">set allowaccess ping https ssh</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">###### ============================================= ######</span>
+<span class="code-comment">######  PORT 3 — WAN INTERFACE (10.0.0.2/30)     ######</span>
+<span class="code-comment">###### ============================================= ######</span>
+
+    <span class="code-cmd">edit "port3"</span>
+        <span class="code-cmd">set alias "WAN"</span>
+        <span class="code-cmd">set ip 10.0.0.2 255.255.255.252</span>
+        <span class="code-comment"># Assign to WAN zone</span>
+        <span class="code-cmd">set zone "wan"</span>
+        <span class="code-cmd">set status up</span>
+        <span class="code-cmd">set allowaccess ping</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># Verify all interfaces</span>
+<span class="code-cmd">get system interface physical</span>
+<span class="code-output"># == [ port1 ]</span>
+<span class="code-output">#    alias: LAN   ip: 192.168.1.1 255.255.255.0</span>
+<span class="code-output">#    status: up   zone: lan   speed: 1000Mbps</span>
+<span class="code-output"># == [ port2 ]</span>
+<span class="code-output">#    alias: DMZ   ip: 172.16.1.1 255.255.255.0</span>
+<span class="code-output">#    status: up   zone: dmz   speed: 1000Mbps</span>
+<span class="code-output"># == [ port3 ]</span>
+<span class="code-output">#    alias: WAN   ip: 10.0.0.2 255.255.255.252</span>
+<span class="code-output">#    status: up   zone: wan   speed: 1000Mbps</span></pre>
+                </div>
+
+                <div class="alert-box alert-info mt-4">
+                    <iconify-icon icon="lucide:info" width="14" class="mr-1"></iconify-icon>
+                    <strong>Zone Assignment:</strong> FortiGate automatically creates default zones (lan, wan, dmz). When you use <code class="text-blue-300 bg-blue-500/10 px-1 rounded text-xs">set zone "lan"</code>, it assigns the interface to the built-in LAN zone. You can verify zones with <code class="text-blue-300 bg-blue-500/10 px-1 rounded text-xs">show system zone</code>.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DHCP CONFIGURATION ===== -->
+    <section id="dhcp" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:server" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 7</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">DHCP Server Configuration</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Set up DHCP servers on LAN and DMZ to automatically assign IP addresses to all PCs.</p>
+
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="7">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">7</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Create DHCP Servers for LAN & DMZ</h3>
+                        <p class="text-gray-400 text-sm mt-1">VPCS nodes will receive IPs automatically via DHCP.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">DHCP Server Setup</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment">###### ============================== ######</span>
+<span class="code-comment">######  DHCP SERVER ON LAN (port1)   ######</span>
+<span class="code-comment">###### ============================== ######</span>
+
+<span class="code-cmd">config system dhcp server</span>
+    <span class="code-cmd">edit 1</span>
+        <span class="code-comment"># Bind to LAN interface</span>
+        <span class="code-cmd">set interface "port1"</span>
+        <span class="code-comment"># Enable the server</span>
+        <span class="code-cmd">set status enable</span>
+        <span class="code-comment"># DHCP range for LAN PCs</span>
+        <span class="code-cmd">set lease-time 86400</span>
+        <span class="code-cmd">config ip-range</span>
+            <span class="code-cmd">edit 1</span>
+                <span class="code-cmd">set start-ip 192.168.1.10</span>
+                <span class="code-cmd">set end-ip 192.168.1.100</span>
+            <span class="code-cmd">next</span>
+        <span class="code-cmd">end</span>
+        <span class="code-comment"># Default gateway and DNS</span>
+        <span class="code-cmd">set default-gateway 192.168.1.1</span>
+        <span class="code-cmd">set dns-server1 8.8.8.8</span>
+        <span class="code-cmd">set dns-server2 8.8.4.4</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">###### =============================== ######</span>
+<span class="code-comment">######  DHCP SERVER ON DMZ (port2)    ######</span>
+<span class="code-comment">###### =============================== ######</span>
+
+    <span class="code-cmd">edit 2</span>
+        <span class="code-comment"># Bind to DMZ interface</span>
+        <span class="code-cmd">set interface "port2"</span>
+        <span class="code-cmd">set status enable</span>
+        <span class="code-cmd">set lease-time 86400</span>
+        <span class="code-cmd">config ip-range</span>
+            <span class="code-cmd">edit 1</span>
+                <span class="code-comment"># Range for DMZ PCs (PC-DMZ1 and PC-DMZ2)</span>
+                <span class="code-cmd">set start-ip 172.16.1.10</span>
+                <span class="code-cmd">set end-ip 172.16.1.20</span>
+            <span class="code-cmd">next</span>
+        <span class="code-cmd">end</span>
+        <span class="code-comment"># DMZ default gateway</span>
+        <span class="code-cmd">set default-gateway 172.16.1.1</span>
+        <span class="code-cmd">set dns-server1 8.8.8.8</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># Verify DHCP servers</span>
+<span class="code-cmd">show system dhcp server</span>
+<span class="code-output"># Server 1: port1  status=enable  range=192.168.1.10-100</span>
+<span class="code-output"># Server 2: port2  status=enable  range=172.16.1.10-20</span></pre>
+                </div>
+
+                <div class="alert-box alert-success mt-4">
+                    <iconify-icon icon="lucide:check-circle" width="14" class="mr-1"></iconify-icon>
+                    <strong>VPCS DHCP:</strong> On each VPCS node, type <code class="bg-green-500/10 px-1 rounded text-xs">dhcp</code> to get an IP automatically. PC-LAN will get 192.168.1.10, PC-DMZ1 will get 172.16.1.10, PC-DMZ2 will get 172.16.1.11.
+                </div>
+            </div>
+
+            <!-- VPCS Commands -->
+            <div class="glass-panel rounded-2xl p-6 mt-6">
+                <h4 class="font-display font-semibold text-sm mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:monitor" width="16" style="color:#60A5FA"></iconify-icon>
+                    VPCS Commands (on each PC)
+                </h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#60A5FA"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-LAN Console</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-cmd">dhcp</span>
+<span class="code-output"># DORA IP 192.168.1.10/24 GW 192.168.1.1</span>
+
+<span class="code-cmd">ip</span>
+<span class="code-output"># NAME        : VPCS[1]</span>
+<span class="code-output"># IP/MASK     : 192.168.1.10/24</span>
+<span class="code-output"># GATEWAY     : 192.168.1.1</span>
+<span class="code-output"># DNS         : 8.8.8.8</span>
+
+<span class="code-cmd">save</span>
+<span class="code-output"># .saved</span></pre>
+                </div>
+
+                <div class="code-block mt-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-DMZ1 Console</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-cmd">dhcp</span>
+<span class="code-output"># DORA IP 172.16.1.10/24 GW 172.16.1.1</span>
+<span class="code-cmd">save</span></pre>
+                </div>
+
+                <div class="code-block mt-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-DMZ2 Console</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-cmd">dhcp</span>
+<span class="code-output"># DORA IP 172.16.1.11/24 GW 172.16.1.1</span>
+<span class="code-cmd">save</span></pre>
+                </div>
+
+                <div class="code-block mt-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#F87171"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">INET-RT Console (Static IP)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-cmd">ip 10.0.0.1 30 10.0.0.2</span>
+<span class="code-output"># CIDR: 10.0.0.1/30</span>
+<span class="code-cmd">save</span></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ROUTING & NAT ===== -->
+    <section id="routing" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:route" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 8</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Routing & NAT Configuration</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Set up the default route pointing to the WAN and configure outbound NAT for internet access.</p>
+
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="8">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">8</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Default Route & Outbound NAT</h3>
+                        <p class="text-gray-400 text-sm mt-1">Configure routing so internal hosts can reach external networks.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://travelingpacket.com/wp-content/uploads/2026/04/63c75-route-create.jpg?w=554&h=228" alt="FortiGate Routing" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>FortiGate → Router → Static Routes</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">Routing & NAT</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment">###### ============================== ######</span>
+<span class="code-comment">######    DEFAULT ROUTE (WAN)        ######</span>
+<span class="code-comment">###### ============================== ######</span>
+
+<span class="code-cmd">config router static</span>
+    <span class="code-cmd">edit 0</span>
+        <span class="code-comment"># Route all traffic (0.0.0.0/0) to WAN gateway</span>
+        <span class="code-cmd">set dst 0.0.0.0 0.0.0.0</span>
+        <span class="code-cmd">set gateway 10.0.0.1</span>
+        <span class="code-comment"># Exit via port3 (WAN interface)</span>
+        <span class="code-cmd">set device "port3"</span>
+        <span class="code-comment"># Set distance (administrative distance)</span>
+        <span class="code-cmd">set distance 10</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># Verify routing table</span>
+<span class="code-cmd">get router info routing-table all</span>
+<span class="code-output"># Routing table for VRF=0</span>
+<span class="code-output"># S*      0.0.0.0/0 [10/0] via 10.0.0.1, port3</span>
+<span class="code-output"># C       192.168.1.0/24 is directly connected, port1</span>
+<span class="code-output"># C       172.16.1.0/24 is directly connected, port2</span>
+<span class="code-output"># C       10.0.0.0/30 is directly connected, port3</span>
+
+
+<span class="code-comment">###### ======================================= ######</span>
+<span class="code-comment">######  OUTBOUND NAT (IP Masquerade / Overload) ######</span>
+<span class="code-comment">###### ======================================= ######</span>
+
+<span class="code-cmd">config firewall policy</span>
+    <span class="code-comment"># First, check if NAT is enabled by default on policies</span>
+    <span class="code-comment"># (In FortiOS, each policy has its own NAT setting)</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># FortiOS uses "NAT" flag per-policy, not a separate NAT table.</span>
+<span class="code-comment"># When creating firewall policies in the next section,</span>
+<span class="code-comment"># we will set "set nat enable" on outbound policies.</span>
+<span class="code-comment"># This performs IP masquerade (source NAT / overload).</span>
+
+<span class="code-comment"># Verify current NAT settings</span>
+<span class="code-cmd">show system settings</span>
+<span class="code-output"># Check: opmode is "nat" (should be default)</span>
+
+<span class="code-comment"># If operation mode is NOT nat, change it:</span>
+<span class="code-cmd">config system settings</span>
+    <span class="code-cmd">set opmode nat</span>
+<span class="code-cmd">end</span></pre>
+                </div>
+
+                <div class="alert-box alert-tip mt-4">
+                    <iconify-icon icon="lucide:lightbulb" width="14" class="mr-1"></iconify-icon>
+                    <strong>FortiOS NAT Model:</strong> Unlike Cisco ASA or iptables, FortiGate doesn't use a separate NAT configuration. NAT is a per-policy setting. Each firewall policy can have <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded text-xs">set nat enable</code> which translates the source IP to the outgoing interface IP.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FIREWALL POLICIES ===== -->
+    <section id="policies" class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+        <div class="floating-decoration w-[600px] h-[600px] bg-yellow-500/5 -top-40 right-[-200px]"></div>
+        <div class="floating-decoration w-[400px] h-[400px] bg-red-500/5 bottom-0 left-[-100px]"></div>
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:shield-check" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 9</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Firewall Policies — Permit & Deny</h2>
+            <p class="text-gray-400 font-light mb-6 max-w-2xl">This is the core of the lab. We create 5 policies that control traffic between LAN, DMZ, and WAN zones — some permitting traffic, some explicitly denying it.</p>
+
+            <!-- Policy Overview Image -->
+            <div class="image-showcase mb-8">
+                <img src="https://fortinetweb.s3.amazonaws.com/docs.fortinet.com/v2/resources/fed12558-14f5-11e9-b86b-00505692583a/images/b9c2c0b7c3199b52bb65eb671d86d705_Policy-Interface-Pair-View-1.JPG" alt="FortiGate Policy Table" loading="lazy">
+                <div class="image-label">
+                    <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>FortiGate GUI → Policy & Objects → IPv4 Policy — Final result</p>
+                </div>
+            </div>
+
+            <!-- Policy Summary Cards -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+                <div class="glass-panel rounded-xl p-4 policy-permit">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Policy 1</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">PERMIT</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">LAN → WAN</p>
+                    <p class="text-xs text-gray-500 mt-1">Outbound internet with NAT</p>
+                </div>
+                <div class="glass-panel rounded-xl p-4 policy-permit">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Policy 2</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">PERMIT</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">LAN → DMZ</p>
+                    <p class="text-xs text-gray-500 mt-1">Access DMZ servers from LAN</p>
+                </div>
+                <div class="glass-panel rounded-xl p-4 policy-permit">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Policy 3</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">PERMIT</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">DMZ → WAN</p>
+                    <p class="text-xs text-gray-500 mt-1">DMZ servers update via internet</p>
+                </div>
+                <div class="glass-panel rounded-xl p-4 policy-deny">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Policy 4</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">DENY</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">DMZ → LAN</p>
+                    <p class="text-xs text-gray-500 mt-1">Block DMZ from accessing LAN</p>
+                </div>
+                <div class="glass-panel rounded-xl p-4 policy-deny">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Policy 5</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">DENY</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">WAN → LAN</p>
+                    <p class="text-xs text-gray-500 mt-1">Block all inbound from internet</p>
+                </div>
+                <div class="glass-panel rounded-xl p-4 border-l-3" style="border-left: 3px solid #6B7280;">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Implicit</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-500/15 text-gray-400 border border-gray-500/30">DENY</span>
+                    </div>
+                    <p class="text-sm font-medium text-white">All Other</p>
+                    <p class="text-xs text-gray-500 mt-1">Default deny-all at bottom</p>
+                </div>
+            </div>
+
+            <!-- Tabs for Policy Details -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button class="tab-btn active" onclick="switchPolicyTab('all')">All Policies</button>
+                <button class="tab-btn" onclick="switchPolicyTab('permit')">Permit Only</button>
+                <button class="tab-btn" onclick="switchPolicyTab('deny')">Deny Only</button>
+            </div>
+
+            <!-- ALL POLICIES -->
+            <div id="tab-all" class="tab-content active">
+                <div class="step-card pl-8 pr-6 py-6 rounded-r-2xl" data-step="9">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="step-number">9</div>
+                        <div>
+                            <h3 class="font-display font-semibold text-lg">All 5 Firewall Policies — Full CLI</h3>
+                            <p class="text-gray-400 text-sm mt-1">Create all policies in order. FortiGate processes policies top-to-bottom.</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="lucide:shield-check" width="14" style="color:#EAB308"></iconify-icon>
+                                <span class="text-xs font-semibold text-gray-300">Complete Firewall Policy Configuration</span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy All</button>
+                        </div>
+                        <pre class="font-mono"><span class="code-cmd">config firewall policy</span>
+
+<span class="code-comment">############################################################</span>
+<span class="code-comment">#  POLICY 1: LAN → WAN (PERMIT + NAT)                      #</span>
+<span class="code-comment">#  Purpose: Allow LAN users to access the internet          #</span>
+<span class="code-comment">#  Action: PERMIT with source NAT (masquerade)              #</span>
+<span class="code-comment">############################################################</span>
+    <span class="code-cmd">edit 1</span>
+        <span class="code-cmd">set name "LAN-to-WAN-Permit"</span>
+        <span class="code-cmd">set srcintf "port1"</span>              <span class="code-comment"># Source: LAN interface</span>
+        <span class="code-cmd">set dstintf "port3"</span>              <span class="code-comment"># Destination: WAN interface</span>
+        <span class="code-cmd">set srcaddr "all"</span>                <span class="code-comment"># Any source IP (192.168.1.0/24)</span>
+        <span class="code-cmd">set dstaddr "all"</span>                <span class="code-comment"># Any destination IP</span>
+        <span class="code-cmd">set action accept</span>                <span class="code-comment"># ★ PERMIT traffic</span>
+        <span class="code-cmd">set schedule "always"</span>            <span class="code-comment"># Active all the time</span>
+        <span class="code-cmd">set service "ALL"</span>                <span class="code-comment"># All protocols (TCP/UDP/ICMP)</span>
+        <span class="code-cmd">set nat enable</span>                   <span class="code-comment"># ★ Enable source NAT</span>
+        <span class="code-cmd">set logtraffic all</span>               <span class="code-comment"># Log all sessions</span>
+        <span class="code-cmd">set comments "Allow LAN internet access with NAT"</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">############################################################</span>
+<span class="code-comment">#  POLICY 2: LAN → DMZ (PERMIT)                            #</span>
+<span class="code-comment">#  Purpose: Allow LAN users to access DMZ servers           #</span>
+<span class="code-comment">#  Action: PERMIT, no NAT (same internal network context)   #</span>
+<span class="code-comment">############################################################</span>
+    <span class="code-cmd">edit 2</span>
+        <span class="code-cmd">set name "LAN-to-DMZ-Permit"</span>
+        <span class="code-cmd">set srcintf "port1"</span>              <span class="code-comment"># Source: LAN</span>
+        <span class="code-cmd">set dstintf "port2"</span>              <span class="code-comment"># Destination: DMZ</span>
+        <span class="code-cmd">set srcaddr "all"</span>
+        <span class="code-cmd">set dstaddr "all"</span>
+        <span class="code-cmd">set action accept</span>                <span class="code-comment"># ★ PERMIT traffic</span>
+        <span class="code-cmd">set schedule "always"</span>
+        <span class="code-cmd">set service "ALL"</span>
+        <span class="code-cmd">set nat disable</span>                  <span class="code-comment"># No NAT for internal-to-internal</span>
+        <span class="code-cmd">set logtraffic all</span>
+        <span class="code-cmd">set comments "Allow LAN to reach DMZ servers"</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">############################################################</span>
+<span class="code-comment">#  POLICY 3: DMZ → WAN (PERMIT + NAT)                      #</span>
+<span class="code-comment">#  Purpose: Allow DMZ servers to reach internet             #</span>
+<span class="code-comment">#  (e.g., for updates, API calls, etc.)                     #</span>
+<span class="code-comment">############################################################</span>
+    <span class="code-cmd">edit 3</span>
+        <span class="code-cmd">set name "DMZ-to-WAN-Permit"</span>
+        <span class="code-cmd">set srcintf "port2"</span>              <span class="code-comment"># Source: DMZ</span>
+        <span class="code-cmd">set dstintf "port3"</span>              <span class="code-comment"># Destination: WAN</span>
+        <span class="code-cmd">set srcaddr "all"</span>
+        <span class="code-cmd">set dstaddr "all"</span>
+        <span class="code-cmd">set action accept</span>                <span class="code-comment"># ★ PERMIT traffic</span>
+        <span class="code-cmd">set schedule "always"</span>
+        <span class="code-cmd">set service "ALL"</span>
+        <span class="code-cmd">set nat enable</span>                   <span class="code-comment"># ★ Enable source NAT</span>
+        <span class="code-cmd">set logtraffic all</span>
+        <span class="code-cmd">set comments "Allow DMZ servers outbound internet"</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">############################################################</span>
+<span class="code-comment">#  POLICY 4: DMZ → LAN (DENY) ★ EXPLICIT DENY ★           #</span>
+<span class="code-comment">#  Purpose: Block DMZ from initiating connections to LAN    #</span>
+<span class="code-comment">#  Why: If a DMZ server is compromised, attacker           #</span>
+<span class="code-comment">#  cannot pivot into the LAN network                        #</span>
+<span class="code-comment">############################################################</span>
+    <span class="code-cmd">edit 4</span>
+        <span class="code-cmd">set name "DMZ-to-LAN-DENY"</span>
+        <span class="code-cmd">set srcintf "port2"</span>              <span class="code-comment"># Source: DMZ</span>
+        <span class="code-cmd">set dstintf "port1"</span>              <span class="code-comment"># Destination: LAN</span>
+        <span class="code-cmd">set srcaddr "all"</span>
+        <span class="code-cmd">set dstaddr "all"</span>
+        <span class="code-cmd">set action deny</span>                  <span class="code-comment"># ★★★ DENY traffic ★★★</span>
+        <span class="code-cmd">set schedule "always"</span>
+        <span class="code-cmd">set service "ALL"</span>
+        <span class="code-cmd">set logtraffic all</span>               <span class="code-comment"># Log denied attempts!</span>
+        <span class="code-cmd">set comments "BLOCK DMZ from accessing LAN (security)"</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-comment">############################################################</span>
+<span class="code-comment">#  POLICY 5: WAN → LAN (DENY) ★ EXPLICIT DENY ★           #</span>
+<span class="code-comment">#  Purpose: Block all unsolicited inbound traffic          #</span>
+<span class="code-comment">#  Why: No external host can reach internal LAN directly   #</span>
+<span class="code-comment">############################################################</span>
+    <span class="code-cmd">edit 5</span>
+        <span class="code-cmd">set name "WAN-to-LAN-DENY"</span>
+        <span class="code-cmd">set srcintf "port3"</span>              <span class="code-comment"># Source: WAN (internet)</span>
+        <span class="code-cmd">set dstintf "port1"</span>              <span class="code-comment"># Destination: LAN</span>
+        <span class="code-cmd">set srcaddr "all"</span>
+        <span class="code-cmd">set dstaddr "all"</span>
+        <span class="code-cmd">set action deny</span>                  <span class="code-comment"># ★★★ DENY traffic ★★★</span>
+        <span class="code-cmd">set schedule "always"</span>
+        <span class="code-cmd">set service "ALL"</span>
+        <span class="code-cmd">set logtraffic all</span>               <span class="code-comment"># Log for security monitoring</span>
+        <span class="code-cmd">set comments "BLOCK all inbound internet to LAN"</span>
+    <span class="code-cmd">next</span>
+
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># ============================================================</span>
+<span class="code-comment"># NOTE: FortiGate has an IMPLICIT DENY at the bottom of the   </span>
+<span class="code-comment"># policy list. Any traffic not matching policies 1-5 will be  </span>
+<span class="code-comment"># automatically dropped. For example:                          </span>
+<span class="code-comment">#   - WAN → DMZ: DENIED (implicit)                            </span>
+<span class="code-comment">#   - DMZ → DMZ (same interface): handled by local-in policy  </span>
+<span class="code-comment"># ============================================================</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERMIT ONLY -->
+            <div id="tab-permit" class="tab-content">
+                <div class="space-y-4">
+                    <div class="glass-panel rounded-xl p-5 policy-permit">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399"></iconify-icon>
+                            <span class="font-display font-semibold text-green-400">Policy 1 — LAN → WAN</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                            <div><span class="text-gray-500">Source:</span> <span class="text-blue-400">port1 (LAN)</span></div>
+                            <div><span class="text-gray-500">Dest:</span> <span class="text-red-400">port3 (WAN)</span></div>
+                            <div><span class="text-gray-500">Action:</span> <span class="text-green-400 font-bold">ACCEPT</span></div>
+                            <div><span class="text-gray-500">NAT:</span> <span class="text-green-400">ENABLE</span></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">LAN users can browse the internet. Source IP is NATed to 10.0.0.2.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 policy-permit">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399"></iconify-icon>
+                            <span class="font-display font-semibold text-green-400">Policy 2 — LAN → DMZ</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                            <div><span class="text-gray-500">Source:</span> <span class="text-blue-400">port1 (LAN)</span></div>
+                            <div><span class="text-gray-500">Dest:</span> <span class="text-yellow-400">port2 (DMZ)</span></div>
+                            <div><span class="text-gray-500">Action:</span> <span class="text-green-400 font-bold">ACCEPT</span></div>
+                            <div><span class="text-gray-500">NAT:</span> <span class="text-gray-400">DISABLE</span></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">LAN PCs can reach DMZ servers (PC-DMZ1, PC-DMZ2) at 172.16.1.x. No NAT needed internally.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 policy-permit">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:check-circle-2" width="18" style="color:#34D399"></iconify-icon>
+                            <span class="font-display font-semibold text-green-400">Policy 3 — DMZ → WAN</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                            <div><span class="text-gray-500">Source:</span> <span class="text-yellow-400">port2 (DMZ)</span></div>
+                            <div><span class="text-gray-500">Dest:</span> <span class="text-red-400">port3 (WAN)</span></div>
+                            <div><span class="text-gray-500">Action:</span> <span class="text-green-400 font-bold">ACCEPT</span></div>
+                            <div><span class="text-gray-500">NAT:</span> <span class="text-green-400">ENABLE</span></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">DMZ servers can reach the internet (e.g., for OS updates, API calls). NATed to 10.0.0.2.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DENY ONLY -->
+            <div id="tab-deny" class="tab-content">
+                <div class="space-y-4">
+                    <div class="glass-panel rounded-xl p-5 policy-deny">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:x-circle" width="18" style="color:#F87171"></iconify-icon>
+                            <span class="font-display font-semibold text-red-400">Policy 4 — DMZ → LAN (DENY)</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                            <div><span class="text-gray-500">Source:</span> <span class="text-yellow-400">port2 (DMZ)</span></div>
+                            <div><span class="text-gray-500">Dest:</span> <span class="text-blue-400">port1 (LAN)</span></div>
+                            <div><span class="text-gray-500">Action:</span> <span class="text-red-400 font-bold">DENY</span></div>
+                            <div><span class="text-gray-500">Log:</span> <span class="text-yellow-400">ALL</span></div>
+                        </div>
+                        <div class="alert-box alert-warning mt-3">
+                            <strong>Why explicit deny?</strong> Even though the implicit deny would catch this, we create an explicit deny policy with <strong>logging</strong> so we can detect if a compromised DMZ server is attempting to scan or access the LAN. This is a security best practice.
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5 policy-deny">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:x-circle" width="18" style="color:#F87171"></iconify-icon>
+                            <span class="font-display font-semibold text-red-400">Policy 5 — WAN → LAN (DENY)</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                            <div><span class="text-gray-500">Source:</span> <span class="text-red-400">port3 (WAN)</span></div>
+                            <div><span class="text-gray-500">Dest:</span> <span class="text-blue-400">port1 (LAN)</span></div>
+                            <div><span class="text-gray-500">Action:</span> <span class="text-red-400 font-bold">DENY</span></div>
+                            <div><span class="text-gray-500">Log:</span> <span class="text-yellow-400">ALL</span></div>
+                        </div>
+                        <div class="alert-box alert-warning mt-3">
+                            <strong>Why explicit deny?</strong> Blocks ALL unsolicited inbound traffic from the internet to the LAN. Logged attempts help identify port scanning or attack attempts from outside.
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-5" style="border-left:3px solid #6B7280;">
+                        <div class="flex items-center gap-3 mb-3">
+                            <iconify-icon icon="lucide:shield-off" width="18" style="color:#6B7280"></iconify-icon>
+                            <span class="font-display font-semibold text-gray-400">Implicit Deny — All Other Traffic</span>
+                        </div>
+                        <p class="text-xs text-gray-500">Any traffic not matching policies 1-5 is automatically dropped by FortiGate's implicit deny. For example, <strong>WAN → DMZ</strong> traffic is denied because no policy permits it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verify Policies -->
+            <div class="mt-8">
+                <h4 class="font-display font-semibold text-sm mb-4 flex items-center gap-2">
+                    <iconify-icon icon="lucide:list-checks" width="16" style="color:#EAB308"></iconify-icon>
+                    Verify All Policies
+                </h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">Show Policy Table</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-cmd">show firewall policy</span>
+
+<span class="code-output"># policy id 1</span>
+<span class="code-output">    name: LAN-to-WAN-Permit</span>
+<span class="code-output">    srcintf: port1  dstintf: port3</span>
+<span class="code-output">    srcaddr: all  dstaddr: all</span>
+<span class="code-output">    action: accept  nat: enable  logtraffic: all</span>
+<span class="code-output">#    schedule: always  service: ALL</span>
+<span class="code-output">#    comments: Allow LAN internet access with NAT</span>
+<span class="code-output">#</span>
+<span class="code-output"># policy id 2</span>
+<span class="code-output">#    name: LAN-to-DMZ-Permit</span>
+<span class="code-output">#    srcintf: port1  dstintf: port2</span>
+<span class="code-output">#    action: accept  nat: disable  logtraffic: all</span>
+<span class="code-output">#</span>
+<span class="code-output"># policy id 3</span>
+<span class="code-output">#    name: DMZ-to-WAN-Permit</span>
+<span class="code-output">#    srcintf: port2  dstintf: port3</span>
+<span class="code-output">#    action: accept  nat: enable  logtraffic: all</span>
+<span class="code-output">#</span>
+<span class="code-output"># policy id 4</span>
+<span class="code-output">#    name: DMZ-to-LAN-DENY</span>
+<span class="code-output">#    srcintf: port2  dstintf: port1</span>
+<span class="code-output">#    action: deny  logtraffic: all</span>
+<span class="code-output">#</span>
+<span class="code-output"># policy id 5</span>
+<span class="code-output">#    name: WAN-to-LAN-DENY</span>
+<span class="code-output">#    srcintf: port3  dstintf: port1</span>
+<span class="code-output">#    action: deny  logtraffic: all</span></pre>
+                </div>
+            </div>
+
+            <!-- Policy Flow Diagram -->
+            <div class="mt-8 glass-panel rounded-2xl p-6">
+                <h4 class="font-display font-semibold text-sm mb-5 flex items-center gap-2">
+                    <iconify-icon icon="lucide:arrow-down-up" width="16" style="color:#EAB308"></iconify-icon>
+                    Policy Decision Flow
+                </h4>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-full max-w-md rounded-xl bg-white/5 border border-white/10 p-3 text-center text-sm">Incoming Packet</div>
+                    <iconify-icon icon="lucide:arrow-down" width="16" style="color:#6B7280"></iconify-icon>
+                    <div class="w-full max-w-md rounded-xl bg-green-500/10 border border-green-500/30 p-3 text-center text-sm text-green-400">Match Policy 1-3? → <strong>ACCEPT</strong> (with/without NAT)</div>
+                    <iconify-icon icon="lucide:arrow-down" width="16" style="color:#6B7280"></iconify-icon>
+                    <div class="w-full max-w-md rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-sm text-red-400">Match Policy 4-5? → <strong>DENY + LOG</strong></div>
+                    <iconify-icon icon="lucide:arrow-down" width="16" style="color:#6B7280"></iconify-icon>
+                    <div class="w-full max-w-md rounded-xl bg-gray-500/10 border border-gray-500/30 p-3 text-center text-sm text-gray-400">No match? → <strong>IMPLICIT DENY</strong> (dropped silently)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTING & VERIFICATION ===== -->
+    <section id="testing" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:test-tubes" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Step 10-12</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-4">Testing & Verification</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-2xl">Test each policy to verify permit and deny rules are working correctly.</p>
+
+            <!-- Test 1: LAN → WAN -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="10">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">10</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Test Permit: LAN → WAN (Policy 1)</h3>
+                        <p class="text-gray-400 text-sm mt-1">PC-LAN should be able to ping the WAN router (INET-RT).</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#60A5FA"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-LAN → Ping WAN (Should SUCCEED)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On PC-LAN console:</span>
+<span class="code-cmd">ping 10.0.0.1</span>
+
+<span class="code-output"># 84 bytes from 10.0.0.1 icmp_seq=1 ttl=63 time=5.2ms</span>
+<span class="code-output"># 84 bytes from 10.0.0.1 icmp_seq=2 ttl=63 time=4.8ms</span>
+<span class="code-output"># 84 bytes from 10.0.0.1 icmp_seq=3 ttl=63 time=5.1ms</span>
+<span class="code-output"># --- 10.0.0.1 ping statistics ---</span>
+<span class="code-output"># 3 packets transmitted, 3 received, 0% packet loss</span>
+
+<span class="code-string">✅ SUCCESS — Policy 1 (LAN→WAN PERMIT) is working!</span>
+<span class="code-comment"># The ping succeeds because Policy 1 permits LAN to WAN with NAT.</span>
+<span class="code-comment"># The source IP is NATed from 192.168.1.10 → 10.0.0.2</span></pre>
+                </div>
+            </div>
+
+            <!-- Test 2: LAN → DMZ -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="11">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">11</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Test Permit: LAN → DMZ (Policy 2)</h3>
+                        <p class="text-gray-400 text-sm mt-1">PC-LAN should reach both DMZ PCs.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#60A5FA"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-LAN → Ping DMZ PCs (Should SUCCEED)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On PC-LAN console:</span>
+<span class="code-cmd">ping 172.16.1.10</span>
+<span class="code-output"># 84 bytes from 172.16.1.10 icmp_seq=1 ttl=63 time=2.1ms</span>
+<span class="code-output"># 3 packets transmitted, 3 received, 0% packet loss</span>
+
+<span class="code-cmd">ping 172.16.1.11</span>
+<span class="code-output"># 84 bytes from 172.16.1.11 icmp_seq=1 ttl=63 time=2.3ms</span>
+<span class="code-output"># 3 packets transmitted, 3 received, 0% packet loss</span>
+
+<span class="code-string">✅ SUCCESS — Policy 2 (LAN→DMZ PERMIT) is working!</span>
+<span class="code-comment"># Both DMZ PCs are reachable from the LAN.</span></pre>
+                </div>
+            </div>
+
+            <!-- Test 3: DMZ → LAN (DENY) -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl" data-step="12">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">12</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Test Deny: DMZ → LAN (Policy 4)</h3>
+                        <p class="text-gray-400 text-sm mt-1">DMZ PCs should NOT be able to reach PC-LAN. This is the critical security test.</p>
+                    </div>
+                </div>
+
+                <div class="image-showcase mb-5">
+                    <img src="https://community.fortinet.com/topic/trackAttachment?file_uuid=d13097af-3ee9-4b68-8ffc-fd89b25d00d6&redirect=1" alt="DMZ to LAN Deny Test" loading="lazy">
+                    <div class="image-label">
+                        <p class="text-xs text-gray-400"><iconify-icon icon="lucide:image" width="12" class="mr-1"></iconify-icon>DMZ PC attempting to ping LAN — should timeout (denied by Policy 4)</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-DMZ1 → Ping LAN (Should FAIL)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On PC-DMZ1 console:</span>
+<span class="code-cmd">ping 192.168.1.10</span>
+
+<span class="code-output"># --- 192.168.1.10 ping statistics ---</span>
+<span class="code-output"># 3 packets transmitted, 0 received, 100% packet loss</span>
+
+<span class="code-warning">❌ BLOCKED — Policy 4 (DMZ→LAN DENY) is working!</span>
+<span class="code-comment"># The ping fails because Policy 4 explicitly DENIES</span>
+<span class="code-comment"># DMZ-to-LAN traffic. The attempt is logged on FortiGate.</span>
+
+<span class="code-comment"># Also test from PC-DMZ2:</span>
+<span class="code-cmd">ping 192.168.1.10</span>
+<span class="code-output"># 3 packets transmitted, 0 received, 100% packet loss</span>
+
+<span class="code-warning">❌ BLOCKED — Both DMZ PCs are denied access to LAN. Correct!</span></pre>
+                </div>
+
+                <!-- Verify log on FortiGate -->
+                <div class="code-block mt-4">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:terminal" width="14" style="color:#F87171"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">FortiGate — Check Deny Log</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On FortiGate console, verify the deny was logged:</span>
+<span class="code-cmd">execute log filter category 0</span>
+<span class="code-cmd">execute log filter field subtype deny</span>
+<span class="code-cmd">execute log display</span>
+
+<span class="code-output"># 1: date=2024-xx-xx time=xx:xx:xx</span>
+<span class="code-output">#    eventtype=traffic subtype=deny</span>
+<span class="code-output">#    srcip=172.16.1.10 srcport=xxxx</span>
+<span class="code-output">#    dstip=192.168.1.10 dstport=xxxx</span>
+<span class="code-output">#    srcintf=port2 dstintf=port1</span>
+<span class="code-output">#    policyid=4</span>
+<span class="code-output">#    action=deny</span>
+<span class="code-output">#    policyname="DMZ-to-LAN-DENY"</span>
+
+<span class="code-string">✅ The deny event is properly logged with Policy ID 4!</span></pre>
+                </div>
+            </div>
+
+            <!-- Test 4: WAN → LAN (DENY) -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number" style="background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.3);color:#F87171;">!</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Test Deny: WAN → LAN (Policy 5)</h3>
+                        <p class="text-gray-400 text-sm mt-1">INET-RT should NOT be able to reach PC-LAN.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#F87171"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">INET-RT → Ping LAN (Should FAIL)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On INET-RT console:</span>
+<span class="code-cmd">ping 192.168.1.10</span>
+
+<span class="code-output"># --- 192.168.1.10 ping statistics ---</span>
+<span class="code-output"># 3 packets transmitted, 0 received, 100% packet loss</span>
+
+<span class="code-warning">❌ BLOCKED — Policy 5 (WAN→LAN DENY) is working!</span>
+<span class="code-comment"># External internet cannot reach internal LAN. Secure!</span></pre>
+                </div>
+            </div>
+
+            <!-- Test 5: DMZ → WAN -->
+            <div class="step-card pl-8 pr-6 py-6 mb-6 rounded-r-2xl">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="step-number">✓</div>
+                    <div>
+                        <h3 class="font-display font-semibold text-lg">Test Permit: DMZ → WAN (Policy 3)</h3>
+                        <p class="text-gray-400 text-sm mt-1">DMZ PCs should reach the WAN router.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:monitor" width="14" style="color:#EAB308"></iconify-icon>
+                            <span class="text-xs font-semibold text-gray-300">PC-DMZ1 → Ping WAN (Should SUCCEED)</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="font-mono"><span class="code-comment"># On PC-DMZ1 console:</span>
+<span class="code-cmd">ping 10.0.0.1</span>
+
+<span class="code-output"># 84 bytes from 10.0.0.1 icmp_seq=1 ttl=63 time=4.9ms</span>
+<span class="code-output"># 3 packets transmitted, 3 received, 0% packet loss</span>
+
+<span class="code-string">✅ SUCCESS — Policy 3 (DMZ→WAN PERMIT) is working!</span>
+<span class="code-comment"># DMZ servers can reach the internet for updates.</span></pre>
+                </div>
+            </div>
+
+            <!-- Results Summary -->
+            <div class="glass-panel rounded-2xl overflow-hidden mt-8">
+                <div class="px-6 py-4 border-b border-white/5">
+                    <h3 class="font-display font-semibold text-sm">Test Results Summary</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-white/5">
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Test</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Source</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Destination</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Policy</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Expected</th>
+                                <th class="text-left px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">1</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3 text-red-400">INET-RT</td>
+                                <td class="px-6 py-3">P1</td>
+                                <td class="px-6 py-3 text-green-400">PERMIT</td>
+                                <td class="px-6 py-3"><span class="text-green-400">✅ Pass</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">2</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3 text-yellow-400">PC-DMZ1</td>
+                                <td class="px-6 py-3">P2</td>
+                                <td class="px-6 py-3 text-green-400">PERMIT</td>
+                                <td class="px-6 py-3"><span class="text-green-400">✅ Pass</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">3</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3 text-yellow-400">PC-DMZ2</td>
+                                <td class="px-6 py-3">P2</td>
+                                <td class="px-6 py-3 text-green-400">PERMIT</td>
+                                <td class="px-6 py-3"><span class="text-green-400">✅ Pass</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">4</td>
+                                <td class="px-6 py-3 text-yellow-400">PC-DMZ1</td>
+                                <td class="px-6 py-3 text-red-400">INET-RT</td>
+                                <td class="px-6 py-3">P3</td>
+                                <td class="px-6 py-3 text-green-400">PERMIT</td>
+                                <td class="px-6 py-3"><span class="text-green-400">✅ Pass</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">5</td>
+                                <td class="px-6 py-3 text-yellow-400">PC-DMZ1</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3">P4</td>
+                                <td class="px-6 py-3 text-red-400">DENY</td>
+                                <td class="px-6 py-3"><span class="text-red-400">❌ Blocked</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-6 py-3">6</td>
+                                <td class="px-6 py-3 text-yellow-400">PC-DMZ2</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3">P4</td>
+                                <td class="px-6 py-3 text-red-400">DENY</td>
+                                <td class="px-6 py-3"><span class="text-red-400">❌ Blocked</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3">7</td>
+                                <td class="px-6 py-3 text-red-400">INET-RT</td>
+                                <td class="px-6 py-3 text-blue-400">PC-LAN</td>
+                                <td class="px-6 py-3">P5</td>
+                                <td class="px-6 py-3 text-red-400">DENY</td>
+                                <td class="px-6 py-3"><span class="text-red-400">❌ Blocked</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TROUBLESHOOTING ===== -->
+    <section id="troubleshoot" class="py-16 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <iconify-icon icon="lucide:wrench" width="20" style="color:#EAB308"></iconify-icon>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500">Reference</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mb-10">Troubleshooting & Useful Commands</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="font-display font-semibold text-sm mb-4 flex items-center gap-2">
+                        <iconify-icon icon="lucide:search" width="16" style="color:#60A5FA"></iconify-icon>
+                        Diagnostic Commands
+                    </h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="text-xs font-semibold text-gray-300">FortiGate Diagnostics</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre class="font-mono text-xs"><span class="code-comment"># Check interface status</span>
+<span class="code-cmd">get system interface physical</span>
+
+<span class="code-comment"># View routing table</span>
+<span class="code-cmd">get router info routing-table all</span>
+
+<span class="code-comment"># Ping from FortiGate itself</span>
+<span class="code-cmd">execute ping 192.168.1.10</span>
+<span class="code-cmd">execute ping 172.16.1.10</span>
+<span class="code-cmd">execute ping 10.0.0.1</span>
+
+<span class="code-comment"># View active firewall sessions</span>
+<span class="code-cmd">diagnose firewall session list</span>
+
+<span class="code-comment"># View session for specific IP</span>
+<span class="code-cmd">diagnose firewall session list filter src-addr 192.168.1.10</span>
+
+<span class="code-comment"># View policy hit counts</span>
+<span class="code-cmd">get firewall policy stat</span>
+
+<span class="code-comment"># Check DHCP leases</span>
+<span class="code-cmd">execute dhcp lease-list</span>
+
+<span class="code-comment"># View real-time traffic logs</span>
+<span class="code-cmd">execute log filter category 0</span>
+<span class="code-cmd">execute log display</span>
+
+<span class="code-comment"># Packet sniffer (capture on port1)</span>
+<span class="code-cmd">diagnose sniffer packet port1 "icmp" 4</span>
+
+<span class="code-comment"># Check ARP table</span>
+<span class="code-cmd">get system arp</span></pre>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="glass-panel rounded-2xl p-6">
+                        <h3 class="font-display font-semibold text-sm mb-4 flex items-center gap-2">
+                            <iconify-icon icon="lucide:alert-circle" width="16" style="color:#F87171"></iconify-icon>
+                            Common Issues
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm font-medium text-white mb-1">FortiGate won't boot</p>
+                                <p class="text-xs text-gray-400">Increase RAM to 2048MB+. Make sure QEMU binary is correct. Check GNS3 server has enough resources.</p>
+                            </div>
+                            <div class="border-t border-white/5 pt-4">
+                                <p class="text-sm font-medium text-white mb-1">Can't login after boot</p>
+                                <p class="text-xs text-gray-400">Wait 3-5 minutes after boot. Try both <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded">admin/(blank)</code> and <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded">maintainer/password</code>.</p>
+                            </div>
+                            <div class="border-t border-white/5 pt-4">
+                                <p class="text-sm font-medium text-white mb-1">VPCS can't get DHCP</p>
+                                <p class="text-xs text-gray-400">Verify interface is UP. Check DHCP server is bound to correct interface. Ensure no typos in IP range. Try <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded">dhcp -r</code> to release/renew.</p>
+                            </div>
+                            <div class="border-t border-white/5 pt-4">
+                                <p class="text-sm font-medium text-white mb-1">Ping works but should be denied</p>
+                                <p class="text-xs text-gray-400">Check policy order! FortiGate matches top-to-bottom. Use <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded">get firewall policy stat</code> to see which policy is matching.</p>
+                            </div>
+                            <div class="border-t border-white/5 pt-4">
+                                <p class="text-sm font-medium text-white mb-1">DMZ PCs can't reach each other</p>
+                                <p class="text-xs text-gray-400">Same-zone traffic (port2→port2) is handled by intra-zone policy. Check <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded">set intrazone allow</code> in firewall settings if needed.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert-box alert-tip">
+                        <iconify-icon icon="lucide:lightbulb" width="14" class="mr-1"></iconify-icon>
+                        <strong>Save your config!</strong> After everything works, save the configuration: <code class="text-yellow-300 bg-yellow-500/10 px-1 rounded text-xs">execute save</code>. Also save GNS3 project to preserve the topology.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FULL CONFIG SUMMARY ===== -->
+    <section class="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+        <div class="floating-decoration w-[600px] h-[600px] bg-yellow-500/5 top-0 left-1/2 -translate-x-1/2"></div>
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="text-center mb-10">
+                <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-yellow-500 mb-3 block">Quick Reference</span>
+                <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight">Complete Config — Copy & Paste</h2>
+                <p class="text-gray-400 font-light mt-3">One single block with the entire FortiGate configuration.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="flex items-center gap-2">
+                        <iconify-icon icon="lucide:file-code-2" width="14" style="color:#EAB308"></iconify-icon>
+                        <span class="text-xs font-semibold text-gray-300">full-config.fgt — Complete FortiGate Configuration</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy All</button>
+                </div>
+                <pre class="font-mono text-xs"><span class="code-comment"># ==========================================</span>
+<span class="code-comment"># FortiGate GNS3 Lab - Complete Config</span>
+<span class="code-comment"># 3 Zones: LAN, DMZ, WAN with 2 DMZ PCs</span>
+<span class="code-comment"># ==========================================</span>
+
+<span class="code-comment"># --- System Settings ---</span>
+<span class="code-cmd">config system global</span>
+    <span class="code-cmd">set hostname FG-LAB</span>
+    <span class="code-cmd">set admin-password "Admin@123#"</span>
+    <span class="code-cmd">set timezone 05</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># --- Interfaces ---</span>
+<span class="code-cmd">config system interface</span>
+    <span class="code-cmd">edit "port1"</span>
+        <span class="code-cmd">set alias "LAN" set ip 192.168.1.1 255.255.255.0</span>
+        <span class="code-cmd">set zone "lan" set status up</span>
+        <span class="code-cmd">set allowaccess ping https ssh http</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit "port2"</span>
+        <span class="code-cmd">set alias "DMZ" set ip 172.16.1.1 255.255.255.0</span>
+        <span class="code-cmd">set zone "dmz" set status up</span>
+        <span class="code-cmd">set allowaccess ping https ssh</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit "port3"</span>
+        <span class="code-cmd">set alias "WAN" set ip 10.0.0.2 255.255.255.252</span>
+        <span class="code-cmd">set zone "wan" set status up</span>
+        <span class="code-cmd">set allowaccess ping</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># --- DHCP Servers ---</span>
+<span class="code-cmd">config system dhcp server</span>
+    <span class="code-cmd">edit 1</span>
+        <span class="code-cmd">set interface "port1" set status enable</span>
+        <span class="code-cmd">set lease-time 86400</span>
+        <span class="code-cmd">set default-gateway 192.168.1.1</span>
+        <span class="code-cmd">set dns-server1 8.8.8.8</span>
+        <span class="code-cmd">config ip-range</span>
+            <span class="code-cmd">edit 1</span>
+                <span class="code-cmd">set start-ip 192.168.1.10</span>
+                <span class="code-cmd">set end-ip 192.168.1.100</span>
+            <span class="code-cmd">next</span>
+        <span class="code-cmd">end</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit 2</span>
+        <span class="code-cmd">set interface "port2" set status enable</span>
+        <span class="code-cmd">set lease-time 86400</span>
+        <span class="code-cmd">set default-gateway 172.16.1.1</span>
+        <span class="code-cmd">set dns-server1 8.8.8.8</span>
+        <span class="code-cmd">config ip-range</span>
+            <span class="code-cmd">edit 1</span>
+                <span class="code-cmd">set start-ip 172.16.1.10</span>
+                <span class="code-cmd">set end-ip 172.16.1.20</span>
+            <span class="code-cmd">next</span>
+        <span class="code-cmd">end</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># --- Routing ---</span>
+<span class="code-cmd">config router static</span>
+    <span class="code-cmd">edit 0</span>
+        <span class="code-cmd">set dst 0.0.0.0 0.0.0.0</span>
+        <span class="code-cmd">set gateway 10.0.0.1</span>
+        <span class="code-cmd">set device "port3"</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># --- Firewall Policies ---</span>
+<span class="code-cmd">config firewall policy</span>
+    <span class="code-cmd">edit 1</span>
+        <span class="code-cmd">set name "LAN-to-WAN-Permit"</span>
+        <span class="code-cmd">set srcintf "port1" set dstintf "port3"</span>
+        <span class="code-cmd">set srcaddr "all" set dstaddr "all"</span>
+        <span class="code-cmd">set action accept set schedule "always"</span>
+        <span class="code-cmd">set service "ALL" set nat enable</span>
+        <span class="code-cmd">set logtraffic all</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit 2</span>
+        <span class="code-cmd">set name "LAN-to-DMZ-Permit"</span>
+        <span class="code-cmd">set srcintf "port1" set dstintf "port2"</span>
+        <span class="code-cmd">set srcaddr "all" set dstaddr "all"</span>
+        <span class="code-cmd">set action accept set schedule "always"</span>
+        <span class="code-cmd">set service "ALL" set nat disable</span>
+        <span class="code-cmd">set logtraffic all</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit 3</span>
+        <span class="code-cmd">set name "DMZ-to-WAN-Permit"</span>
+        <span class="code-cmd">set srcintf "port2" set dstintf "port3"</span>
+        <span class="code-cmd">set srcaddr "all" set dstaddr "all"</span>
+        <span class="code-cmd">set action accept set schedule "always"</span>
+        <span class="code-cmd">set service "ALL" set nat enable</span>
+        <span class="code-cmd">set logtraffic all</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit 4</span>
+        <span class="code-cmd">set name "DMZ-to-LAN-DENY"</span>
+        <span class="code-cmd">set srcintf "port2" set dstintf "port1"</span>
+        <span class="code-cmd">set srcaddr "all" set dstaddr "all"</span>
+        <span class="code-cmd">set action deny set schedule "always"</span>
+        <span class="code-cmd">set service "ALL" set logtraffic all</span>
+    <span class="code-cmd">next</span>
+    <span class="code-cmd">edit 5</span>
+        <span class="code-cmd">set name "WAN-to-LAN-DENY"</span>
+        <span class="code-cmd">set srcintf "port3" set dstintf "port1"</span>
+        <span class="code-cmd">set srcaddr "all" set dstaddr "all"</span>
+        <span class="code-cmd">set action deny set schedule "always"</span>
+        <span class="code-cmd">set service "ALL" set logtraffic all</span>
+    <span class="code-cmd">next</span>
+<span class="code-cmd">end</span>
+
+<span class="code-comment"># --- Save ---</span>
+<span class="code-cmd">execute save</span>
+<span class="code-output"># Configuration saved to file</span></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="py-12 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
+                    <iconify-icon icon="lucide:shield" width="16" style="color:#000"></iconify-icon>
+                </div>
+                <span class="font-display font-bold text-sm">FortiGate<span class="text-yellow-500">Lab</span></span>
+            </div>
+            <p class="text-xs text-gray-600 mb-4">Complete GNS3 FortiGate Installation & Configuration Guide</p>
+            <p class="text-[10px] text-gray-700">For educational and lab purposes only. FortiGate and FortiOS are trademarks of Fortinet, Inc.</p>
+        </div>
+    </footer>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-yellow-500/20 z-50">
+        <iconify-icon icon="lucide:arrow-up" width="16"></iconify-icon>
+    </button>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block');
+            const pre = codeBlock.querySelector('pre');
+            const text = pre.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Policy tab switching
+        function switchPolicyTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        // Reading progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Back to top button
+            const btn = document.getElementById('backToTop');
+            if (scrollTop > 500) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0';
+                btn.style.pointerEvents = 'none';
+            }
+        });
+
+        // Step card highlight on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.step-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
