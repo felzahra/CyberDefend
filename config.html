@@ -1,0 +1,3728 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP Comware · Switch Layers — Access · Distribution · Core</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           ROOT VARIABLES — DARK
+           ═══════════════════════════════════════════ */
+        :root {
+            --bg: #050505;
+            --fg: #e0e0e0;
+            --quiet: #777;
+            --loud: #fff;
+            --hairline: #1a1a1a;
+            --darkened: #0c0c0c;
+            --selected: #141414;
+            --card: #0e0e0e;
+            --code-bg: #080808;
+            --code-fg: #b0bec5;
+
+            /* ACCESS */
+            --acc-bg: #06101e;
+            --acc-border: #1565c0;
+            --acc-text: #42a5f5;
+            --acc-glow: rgba(21,101,192,0.15);
+            --acc-header: linear-gradient(135deg, #0a1a3a 0%, #06101e 50%, #0d1f3c 100%);
+            --acc-accent: #29b6f6;
+
+            /* DISTRIBUTION */
+            --dist-bg: #140a24;
+            --dist-border: #7b1fa2;
+            --dist-text: #ce93d8;
+            --dist-glow: rgba(123,31,162,0.15);
+            --dist-header: linear-gradient(135deg, #1a0e35 0%, #140a24 50%, #200f3a 100%);
+            --dist-accent: #ba68c8;
+
+            /* CORE */
+            --core-bg: #1a0e08;
+            --core-border: #e65100;
+            --core-text: #ff8a65;
+            --core-glow: rgba(230,81,0,0.15);
+            --core-header: linear-gradient(135deg, #2a1508 0%, #1a0e08 50%, #331a0a 100%);
+            --core-accent: #ffab40;
+        }
+
+        /* ═══════════════════════════════════════════
+           ROOT VARIABLES — LIGHT
+           ═══════════════════════════════════════════ */
+        html[data-theme="light"] {
+            --bg: #f0f2f5;
+            --fg: #2c3e50;
+            --quiet: #78909c;
+            --loud: #1a1a2e;
+            --hairline: #dde1e6;
+            --darkened: #fff;
+            --selected: #e8eaf0;
+            --card: #fff;
+            --code-bg: #f5f5f5;
+            --code-fg: #37474f;
+
+            --acc-bg: #e3f2fd;
+            --acc-border: #1565c0;
+            --acc-text: #0d47a1;
+            --acc-glow: rgba(21,101,192,0.08);
+            --acc-header: linear-gradient(135deg, #bbdefb 0%, #e3f2fd 50%, #90caf9 100%);
+            --acc-accent: #0277bd;
+
+            --dist-bg: #f3e5f5;
+            --dist-border: #7b1fa2;
+            --dist-text: #6a1b9a;
+            --dist-glow: rgba(123,31,162,0.08);
+            --dist-header: linear-gradient(135deg, #e1bee7 0%, #f3e5f5 50%, #ce93d8 100%);
+            --dist-accent: #6a1b9a;
+
+            --core-bg: #fff3e0;
+            --core-border: #e65100;
+            --core-text: #bf360c;
+            --core-glow: rgba(230,81,0,0.08);
+            --core-header: linear-gradient(135deg, #ffe0b2 0%, #fff3e0 50%, #ffcc80 100%);
+            --core-accent: #e65100;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.7;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* ═══════════════════════════════════════════
+           FIXED SIDE NAV
+           ═══════════════════════════════════════════ */
+        .side-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 16px;
+            padding: 10px 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .side-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--quiet);
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+        .side-nav a .nav-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .side-nav a.acc-link .nav-dot { background: var(--acc-border); }
+        .side-nav a.dist-link .nav-dot { background: var(--dist-border); }
+        .side-nav a.core-link .nav-dot { background: var(--core-border); }
+
+        .side-nav a.acc-link.active { color: var(--acc-text); background: var(--acc-glow); }
+        .side-nav a.acc-link.active .nav-dot { box-shadow: 0 0 12px var(--acc-border); border-color: var(--acc-accent); transform: scale(1.2); }
+        .side-nav a.dist-link.active { color: var(--dist-text); background: var(--dist-glow); }
+        .side-nav a.dist-link.active .nav-dot { box-shadow: 0 0 12px var(--dist-border); border-color: var(--dist-accent); transform: scale(1.2); }
+        .side-nav a.core-link.active { color: var(--core-text); background: var(--core-glow); }
+        .side-nav a.core-link.active .nav-dot { box-shadow: 0 0 12px var(--core-border); border-color: var(--core-accent); transform: scale(1.2); }
+
+        .side-nav a:hover { color: var(--loud); }
+
+        .side-nav .nav-label {
+            display: none;
+            position: absolute;
+            right: calc(100% + 10px);
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .side-nav a:hover .nav-label { display: block; }
+
+        /* ═══════════════════════════════════════════
+           TOP BAR
+           ═══════════════════════════════════════════ */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 32px;
+            background: var(--darkened);
+            border-bottom: 1px solid var(--hairline);
+            backdrop-filter: blur(12px);
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo {
+            width: 40px; height: 40px;
+            background: var(--acc-border);
+            color: #fff;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+        .top-bar h1 { font-size: 1.1rem; font-weight: 800; color: var(--loud); }
+        .top-bar h1 span { display: block; font-size: 0.58rem; color: var(--quiet); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn {
+            cursor: pointer;
+            border: 1px solid var(--hairline);
+            padding: 7px 16px;
+            background: var(--bg);
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--fg);
+            transition: 0.2s;
+        }
+        .theme-btn:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+
+        /* ═══════════════════════════════════════════
+           LAYER SECTION — COMMON
+           ═══════════════════════════════════════════ */
+        .layer-section {
+            position: relative;
+            overflow: hidden;
+        }
+        .layer-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            z-index: 10;
+        }
+        .layer-section.access::before { background: linear-gradient(90deg, var(--acc-border), var(--acc-accent), var(--acc-border)); }
+        .layer-section.dist::before { background: linear-gradient(90deg, var(--dist-border), var(--dist-accent), var(--dist-border)); }
+        .layer-section.core::before { background: linear-gradient(90deg, var(--core-border), var(--core-accent), var(--core-border)); }
+
+        /* ═══════════════════════════════════════════
+           LAYER HERO BANNER
+           ═══════════════════════════════════════════ */
+        .layer-hero {
+            padding: 80px 48px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .layer-section.access .layer-hero { background: var(--acc-header); }
+        .layer-section.dist .layer-hero { background: var(--dist-header); }
+        .layer-section.core .layer-hero { background: var(--core-header); }
+
+        .layer-hero::after {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 350px; height: 350px;
+            border-radius: 50%;
+            opacity: 0.06;
+        }
+        .layer-section.access .layer-hero::after { background: var(--acc-accent); }
+        .layer-section.dist .layer-hero::after { background: var(--dist-accent); }
+        .layer-section.core .layer-hero::after { background: var(--core-accent); }
+
+        .layer-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .layer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .layer-section.access .layer-badge { background: var(--acc-border); color: #fff; }
+        .layer-section.dist .layer-badge { background: var(--dist-border); color: #fff; }
+        .layer-section.core .layer-badge { background: var(--core-border); color: #fff; }
+
+        .layer-hero h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+        .layer-section.access .layer-hero h2 { color: var(--acc-text); }
+        .layer-section.dist .layer-hero h2 { color: var(--dist-text); }
+        .layer-section.core .layer-hero h2 { color: var(--core-text); }
+
+        .layer-hero p {
+            font-size: 1.05rem;
+            color: var(--quiet);
+            max-width: 650px;
+            line-height: 1.7;
+        }
+        .layer-hero .hero-chips {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .hero-chip {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid;
+        }
+        .layer-section.access .hero-chip { color: var(--acc-text); border-color: var(--acc-border); background: rgba(21,101,192,0.1); }
+        .layer-section.dist .hero-chip { color: var(--dist-text); border-color: var(--dist-border); background: rgba(123,31,162,0.1); }
+        .layer-section.core .hero-chip { color: var(--core-text); border-color: var(--core-border); background: rgba(230,81,0,0.1); }
+
+        /* ═══════════════════════════════════════════
+           TOPOLOGY MINI DIAGRAM
+           ═══════════════════════════════════════════ */
+        .topo-box {
+            margin: 0 48px 0;
+            padding: 24px 28px;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .layer-section.access .topo-box { background: var(--acc-bg); border: 1px solid var(--acc-border); color: var(--acc-text); }
+        .layer-section.dist .topo-box { background: var(--dist-bg); border: 1px solid var(--dist-border); color: var(--dist-text); }
+        .layer-section.core .topo-box { background: var(--core-bg); border: 1px solid var(--core-border); color: var(--core-text); }
+
+        .topo-box .highlight-box {
+            display: inline;
+            background: rgba(255,255,255,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        html[data-theme="light"] .topo-box .highlight-box { background: rgba(0,0,0,0.08); }
+
+        /* ═══════════════════════════════════════════
+           CHARACTERISTICS CARDS
+           ═══════════════════════════════════════════ */
+        .chars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            padding: 0 48px;
+            margin-bottom: 36px;
+        }
+        .char-card {
+            padding: 18px 20px;
+            border-radius: 14px;
+            border: 1px solid var(--hairline);
+            background: var(--card);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .char-card:hover { transform: translateY(-2px); }
+        .layer-section.access .char-card:hover { border-color: var(--acc-border); }
+        .layer-section.dist .char-card:hover { border-color: var(--dist-border); }
+        .layer-section.core .char-card:hover { border-color: var(--core-border); }
+
+        .char-card .char-icon { font-size: 1.4rem; margin-bottom: 8px; }
+        .char-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--loud); margin-bottom: 4px; }
+        .char-card p { font-size: 0.72rem; color: var(--quiet); line-height: 1.5; }
+
+        /* ═══════════════════════════════════════════
+           CONFIG SECTION
+           ═══════════════════════════════════════════ */
+        .config-section {
+            padding: 0 48px 60px;
+        }
+        .config-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .config-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--loud);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .config-actions { display: flex; gap: 8px; }
+        .config-btn {
+            padding: 7px 18px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--hairline);
+            background: var(--darkened);
+            color: var(--fg);
+            transition: 0.2s;
+        }
+        .config-btn:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+        .config-btn.copied { background: #00c853; color: #fff; border-color: #00c853; }
+
+        .config-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--hairline);
+            background: var(--code-bg);
+        }
+        .config-label-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 18px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .layer-section.access .config-label-bar { background: var(--acc-border); color: #fff; }
+        .layer-section.dist .config-label-bar { background: var(--dist-border); color: #fff; }
+        .layer-section.core .config-label-bar { background: var(--core-border); color: #fff; }
+
+        .config-label-bar .line-count { opacity: 0.7; font-weight: 500; }
+
+        .config-code {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 20px 24px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.74rem;
+            line-height: 1.75;
+            color: var(--code-fg);
+            white-space: pre;
+            tab-size: 2;
+            transition: max-height 0.4s ease;
+        }
+        .config-code.expanded { max-height: none; }
+        .config-code::-webkit-scrollbar { width: 6px; }
+        .config-code::-webkit-scrollbar-track { background: var(--code-bg); }
+        .config-code::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        html[data-theme="light"] .config-code::-webkit-scrollbar-thumb { background: #ccc; }
+
+        .config-code .comment { color: #546e7a; }
+        .config-code .cmd { color: #00e676; }
+        .config-code .val { color: #80deea; }
+        .config-code .kw { color: #ffab40; }
+        .config-code .iface { color: #ce93d8; }
+        html[data-theme="light"] .config-code .cmd { color: #00897b; }
+        html[data-theme="light"] .config-code .val { color: #00838f; }
+        html[data-theme="light"] .config-code .kw { color: #e65100; }
+        html[data-theme="light"] .config-code .iface { color: #7b1fa2; }
+
+        /* ═══════════════════════════════════════════
+           SECTION DIVIDER
+           ═══════════════════════════════════════════ */
+        .section-divider {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+        }
+        .divider-1::before { background: linear-gradient(90deg, transparent, var(--dist-border), transparent); }
+        .divider-2::before { background: linear-gradient(90deg, transparent, var(--core-border), transparent); }
+
+        .section-divider .divider-icon {
+            position: relative;
+            z-index: 2;
+            background: var(--bg);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 1px solid var(--hairline);
+        }
+        .divider-1 .divider-icon { color: var(--dist-text); border-color: var(--dist-border); }
+        .divider-2 .divider-icon { color: var(--core-text); border-color: var(--core-border); }
+
+        /* ═══════════════════════════════════════════
+           CALLOUT
+           ═══════════════════════════════════════════ */
+        .callout {
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 0 48px 24px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.info { background: var(--acc-bg); border-left: 4px solid var(--acc-border); }
+        .callout.warn { background: #1a1500; border-left: 4px solid #f9a825; }
+        html[data-theme="light"] .callout.warn { background: #fff8e1; }
+        .callout strong { color: var(--loud); }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.72rem;
+            color: var(--quiet);
+            border-top: 1px solid var(--hairline);
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLL TO TOP
+           ═══════════════════════════════════════════ */
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--fg);
+            z-index: 999;
+            transition: 0.2s;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .scroll-top:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+        .scroll-top.visible { display: flex; }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .side-nav { display: none; }
+            .layer-hero { padding: 50px 24px 40px; }
+            .layer-hero h2 { font-size: 2.2rem; }
+            .topo-box { margin: 0 24px; padding: 16px; font-size: 0.62rem; }
+            .chars-grid { padding: 0 24px; grid-template-columns: 1fr 1fr; }
+            .config-section { padding: 0 24px 40px; }
+            .callout { margin: 0 24px 20px; }
+            .top-bar { padding: 12px 20px; }
+        }
+        @media (max-width: 600px) {
+            .layer-hero h2 { font-size: 1.7rem; }
+            .chars-grid { grid-template-columns: 1fr; }
+            .hero-chips { gap: 6px; }
+            .hero-chip { font-size: 0.65rem; padding: 4px 10px; }
+        }
+
+        /* ═══════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .layer-section { animation: fadeUp 0.5s ease; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════
+         FIXED SIDE NAVIGATION
+         ═══════════════════════════════════════════ -->
+    <nav class="side-nav" id="sideNav" aria-label="Layer navigation">
+        <a href="#access" class="acc-link active" data-section="access">
+            <span class="nav-dot"></span>
+            <span class="nav-text">ACCESS</span>
+            <span class="nav-label">Edge / Access Layer</span>
+        </a>
+        <a href="#distribution" class="dist-link" data-section="distribution">
+            <span class="nav-dot"></span>
+            <span class="nav-text">DIST</span>
+            <span class="nav-label">Distribution Layer</span>
+        </a>
+        <a href="#core" class="core-link" data-section="core">
+            <span class="nav-dot"></span>
+            <span class="nav-text">CORE</span>
+            <span class="nav-label">Core Layer</span>
+        </a>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════
+         TOP BAR
+         ═══════════════════════════════════════════ -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="top-logo">H</div>
+            <h1>HP Comware Switch Layers<span>NETWORK ARCHITECTURE REFERENCE</span></h1>
+        </div>
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙 Dark</button>
+    </header>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                    ACCESS / EDGE LAYER                     ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="access" class="layer-section access">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 2 — EDGE</div>
+                <h2>Access Switch<br>Edge Layer</h2>
+                <p>End-device connectivity. PoE for phones and cameras. Access ports with VLAN assignment. Uplink to Distribution via LACP trunk. No routing — pure Layer 2 forwarding.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">Layer 2 Only</span>
+                    <span class="hero-chip">PoE Enabled</span>
+                    <span class="hero-chip">STP Edge Port</span>
+                    <span class="hero-chip">LACP Uplink</span>
+                    <span class="hero-chip">VLAN Access</span>
+                    <span class="hero-chip">IRF Pair</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Access layer topology">
+  ┌─────────────────────────────────────────────────────────────┐
+  │                    <span class="highlight-box">ACCESS LAYER — E401 (You Are Here)</span>              │
+  │                                                             │
+  │   [PC] [Phone] [Camera] [Printer] [PC] [Phone] [Camera]     │
+  │     │     │       │        │       │     │       │          │
+  │   Gi0/3 Gi0/4  Gi0/5    Gi0/6   Gi0/7 Gi0/8  Gi0/9        │
+  │     └───────┴───────┴────────┴───────┴───────┴──────┘       │
+  │                          │                                  │
+  │                          │
+  │                    Gi0/1 │ Gi0/2                            │
+  │                    ┌─────┴─────┐                            │
+  │                    │ LACP Trunk │ ← vlan all, PVID 244      │
+  │                    └─────┬─────┘                            │
+  │                          │                                   │
+  │  ════════════════════════╪══════════════════════════════    │
+  │                    DISTRIBUTION (ND4)                        │
+  └─────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🔌</div>
+                <h4>PoE Power</h4>
+                <p>Ports 3-24 provide PoE for IP phones, cameras, APs. Power priority configured per profile.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🔗</div>
+                <h4>LACP Uplink</h4>
+                <p>2x GE ports in dynamic LACP to ND4 distribution. Trunk allows all VLANs, PVID 244 for management.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🏷️</div>
+                <h4>VLAN Access</h4>
+                <p>End-device ports configured as access VLAN (112, 44, 34, etc.). Voice VLAN 44 for IP phones.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🛡️</div>
+                <h4>STP Edge</h4>
+                <p>All access ports set as edge ports for fast convergence. BPDUGuard recommended but not shown.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👥</div>
+                <h4>IRF Stack</h4>
+                <p>Two physical switches stacked via IRF using 10GE ports. Appears as single logical device.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📡</div>
+                <h4>sFlow + SNMP</h4>
+                <p>Traffic sampling to collector 10.0.10.76. SNMP traps to NMS servers for monitoring.</p>
+            </div>
+        </div>
+
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <div><strong>Representative Config:</strong> No access switch config was provided in the source. This is a reconstructed E401 config based on the ND4 distribution switch configuration, showing the exact port types, VLAN assignments, and uplink design used in this network.</div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 E401 — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('accessCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('accessCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME E401 — HP COMWARE V5.20</span>
+                    <span class="line-count" id="accessLines"></span>
+                </div>
+                <pre class="config-code" id="accessCode">#
+
+#
+ version 5.20, Release 1519P06
+#
+ sysname E408
+#
+ clock timezone 2 add 03:00:00 
+#
+ super password level 3 cipher $c$3$4ym0Bq/tA0QQwNW2VYWLif6byN01ONn8pq+F8w==
+#
+ voice vlan track lldp
+#
+ irf mac-address persistent timer
+ irf auto-update enable
+ undo irf link-delay
+#
+ domain default enable system 
+#
+ telnet server enable 
+#
+ password-recovery enable
+#
+vlan 1
+#
+vlan 34
+ name Video
+#
+vlan 44
+ name Voice-phone
+#
+vlan 134
+#
+vlan 137
+ name Rekaba-saderat
+#
+vlan 244
+ name Switch-Management
+#
+domain system 
+ access-limit disable 
+ state active 
+ idle-cut disable 
+ self-service-url disable 
+#
+user-group system
+#
+local-user manager
+ password cipher $c$3$iYn2KL16hdte0/tE/MHC2AK0zQqbE6gKHmykGaESRSg=
+ authorization-attribute level 3
+ service-type ssh telnet
+ service-type web
+local-user monitor
+ password cipher $c$3$CQszjJ6b7m9lEZ+tbmvy/KkcXNWBZu0TKqE=
+ authorization-attribute level 1
+ service-type ssh telnet
+ service-type web
+#
+ stp enable
+#
+cwmp
+ undo cwmp enable
+#
+interface Bridge-Aggregation1
+ description Connection-to-ND4
+ port link-type trunk
+ port trunk permit vlan 1
+ stp edged-port enable
+#
+interface NULL0
+#
+interface Vlan-interface244
+ ip address 10.0.244.18 255.255.255.0 
+#
+interface GigabitEthernet1/0/1
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/2
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/3
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/4
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/5
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/6
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/7
+ description Connected-to-Solar-Inverter
+ port access vlan 137
+#
+interface GigabitEthernet1/0/8
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/9
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/10
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/11
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/12
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/13
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/14
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/15
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/16
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/17
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/18
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/19
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/20
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/21
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/22
+ port link-type hybrid
+ undo port hybrid vlan 1
+ port hybrid vlan 137 untagged
+ port hybrid pvid vlan 137
+ voice vlan 44 enable
+ poe enable
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/23
+ description uplink-utp from E423
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+#
+interface GigabitEthernet1/0/24
+ description Switch-Management-Port
+ port access vlan 244
+ stp edged-port enable
+#
+interface GigabitEthernet1/0/25
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/26
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/27
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/28
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 1
+#
+ ip route-static 0.0.0.0 0.0.0.0 10.0.244.1
+#
+ info-center loghost 10.0.10.6
+#
+ snmp-agent
+ snmp-agent local-engineid 800063A203D07E2880300D
+ snmp-agent community write Dp@_L@n 
+ snmp-agent community read Dpa_Lan 
+ snmp-agent log all
+ snmp-agent sys-info version all
+ snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname Dp@_L@n v2c
+ snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname Dp@_L@n v2c
+ snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname Dp@_L@n v2c
+ snmp-agent trap queue-size 500
+ snmp-agent trap life 600
+#
+ ntp-service unicast-server 10.0.10.14
+ ntp-service unicast-server 10.0.10.12
+#
+ ssh server enable
+#
+ load tr069-configuration
+#
+user-interface aux 0
+user-interface vty 0 15
+ authentication-mode scheme
+#
+return </pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         DIVIDER
+         ═══════════════════════════════════════════ -->
+    <div class="section-divider divider-1">
+        <span class="divider-icon">▼ DISTRIBUTION LAYER ▼</span>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                   DISTRIBUTION LAYER                       ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="distribution" class="layer-section dist">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 2/3 — AGGREGATION</div>
+                <h2>Distribution Switch<br>ND4</h2>
+                <p>VLAN routing gateway for all downstream access switches. DHCP relay, OSPF peering to Core, IRF stacking with MAD, and 24x LACP downlinks to edge switches. The bridge between Access and Core.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">L2/L3 Routing</span>
+                    <span class="hero-chip">DHCP Relay</span>
+                    <span class="hero-chip">OSPF Area 0</span>
+                    <span class="hero-chip">24x LACP Downlinks</span>
+                    <span class="hero-chip">IRF + MAD</span>
+                    <span class="hero-chip">VLAN GW</span>
+                    <span class="hero-chip">UDP Helper</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Distribution layer topology">
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                  <span class="highlight-box">DISTRIBUTION LAYER — ND4 (You Are Here)</span>            │
+  │                                                                  │
+  │  E401  E402  E403  E404  E405  E406 ... E420  E421  E422  E423  E424  │
+  │    │    │    │    │    │         │    │    │    │    │              │
+  │  LA-1 LA-2 LA-3 LA-4 LA-5 LA-6   LA-20 LA-21 LA-22 LA-23 LA-24  │
+  │    │    │    │    │    │         │    │    │    │    │              │
+  │    └────┴────┴────┴────┴────┬────┴────┴────┴────┴────┘              │
+  │                              │                                    │
+  │              ┌───────────────┴───────────────┐                     │
+  │              │     ND4 (IRF Pair)            │                     │
+  │              │  Distribution Switch          │                     │
+  │              │  ● VLAN Interfaces (GW)       │                     │
+  │              │  ● DHCP Relay                 │                     │
+  │              │  ● OSPF → Core                │                     │
+  │              └───────────────┬───────────────┘                     │
+  │                     4x 10GE │ (LACP Trunk)                        │
+  │                     VLAN 14 │ OSPF Peer                          │
+  │  ═══════════════════════════╪═════════════════════════════════    │
+  │                          CORE (DPA-Core)                         │
+  └──────────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🌐</div>
+                <h4>VLAN Gateway</h4>
+                <p>Serves as the default gateway for 20+ VLANs (112, 126-137, 140, 142-146, etc.). Each VLAN interface has a /24 IP.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📨</div>
+                <h4>DHCP Relay</h4>
+                <p>Relays DHCP requests to 3 servers: 10.0.10.12, 10.0.10.13, 10.0.10.14. UDP helper also configured for broadcast services.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🗺️</div>
+                <h4>OSPF Peer</h4>
+                <p>OSPF Area 0 on VLAN 14 (10.0.14.1). Static default route via 10.0.14.2 (Core). Redistributes direct and static.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">⛓️</div>
+                <h4>24x LACP Downlinks</h4>
+                <p>Bridge-Aggregation 1-24, each connecting to one access switch (E401-E424). Dynamic LACP with MAD enabled.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👥</div>
+                <h4>IRF + MAD</h4>
+                <p>Two chassis in IRF domain 4. MAD (Multi-Active Detection) via ARP on Vlan-interface244. Prevents split-brain.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📊</div>
+                <h4>sFlow + SNMP v3</h4>
+                <p>sFlow to 10.0.10.76:6343 on all uplink/downlink ports. SNMP v3 with MD5+AES128 for secure NMS integration.</p>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 ND4 — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('distCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('distCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME ND4 — HP COMWARE V5.20.99</span>
+                    <span class="line-count" id="distLines"></span>
+                </div>
+                <pre class="config-code" id="distCode">#
+ version 5.20.99, Release 2221P30
+#
+ sysname ND4
+#
+ clock timezone 2 add 02:00:00
+#
+ super password level 3 cipher $c$3$x2/lEP17yKJRs2kr0224iJAaK25ygn9GcXhI
+#
+ dhcp relay server-group 1 ip 10.0.10.12
+ dhcp relay server-group 1 ip 10.0.10.13
+ dhcp relay server-group 1 ip 10.0.10.14
+#
+ irf domain 4
+ irf mac-address persistent always
+ irf auto-update enable
+ irf link-delay 200
+ irf member 1 priority 32
+#
+ domain default enable system
+#
+ telnet server enable
+#
+ ip ttl-expires enable
+ ip unreachables enable
+#
+ snmp-agent ifmib long-ifindex enable
+#
+ udp-helper enable
+#
+ poe pd-policy priority
+#
+ password-recovery enable
+#
+vlan 1
+#
+vlan 14
+ name OSPF-ND4
+#
+vlan 34
+ name Video
+#
+vlan 44
+ name Voice-phone
+#
+vlan 112
+ name Pedestal-exit
+#
+vlan 126
+ name logistic-126
+#
+vlan 127
+ name Takaeb-akhshab
+#
+vlan 129
+ name Refaat-el-gamel
+#
+vlan 130
+ name kasher-refaat-elgamel
+#
+vlan 131
+ name Mothtathmeren-F1-el-rehab
+#
+vlan 133
+ name NOC
+#
+vlan 134
+ name Gamarek
+#
+vlan 135
+ name Operation-Engineers
+#
+vlan 136
+ name infrastructure-Engineers
+#
+vlan 137
+ name Rekaba-saderat
+#
+vlan 140
+ name HW-LAB
+#
+vlan 142
+ name logistic-142
+#
+vlan 143
+ name new-estesmary
+#
+vlan 144
+ name newestesmarry
+#
+vlan 145
+ name newestesmary
+#
+vlan 146
+ name new estesmary
+#
+vlan 200
+ name kamerat-morakaba
+#
+vlan 244
+ name Switch-Management
+#
+radius scheme system
+ primary authentication 127.0.0.1 1645
+ primary accounting 127.0.0.1 1646
+ user-name-format without-domain
+#
+domain system
+ access-limit disable
+ state active
+ idle-cut disable
+ self-service-url disable
+#
+user-group system
+ group-attribute allow-guest
+#
+local-user manager
+ password cipher $c$3$NS7yVHGoQS618SoN8EjgxxEWh8e2RBI4emTBMQ==
+ authorization-attribute level 3
+ service-type ssh telnet
+ service-type web
+local-user monitor
+ password cipher $c$3$dMY6Isjdbz485WR6bC8fnWpIt2C/ecIMT4g=
+ authorization-attribute level 1
+ service-type ssh telnet
+ service-type web
+local-user system
+ password cipher $c$3$ddwcBnShwWFOxj39EAbVphlxz/ZfXrgtzXox
+ authorization-attribute level 2
+ service-type ssh telnet
+ service-type web
+#
+ stp enable
+#
+poe-profile index 1
+ poe enable
+ poe priority high
+#
+interface Bridge-Aggregation1
+ description Connection-to-E401
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation2
+ description Connection-to-E402
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation3
+ description Connection-to-E403
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation4
+ description Connection-to-E404
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation5
+ description Connection-to-E405
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation6
+ description Connection-to-E406
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation7
+ description Connection-to-E407
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation8
+ description Connection-to-E408
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation9
+ description Connection-to-E409
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation10
+ description Connection-to-E410
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation11
+ description Connection-to-E411
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation12
+ description Connection-to-E412
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation13
+ description Connection-to-E413
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation14
+ description Connection-to-E414
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation15
+ description Connection-to-E415
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation16
+ description Connection-to-E416
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation17
+ description Connection-to-E417
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation18
+ description Connection-to-E418
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation19
+ description Connection-to-E419
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation20
+ description Connection-to-E420
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation21
+ description Connection-to-E421
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation22
+ description Connection-to-E422
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation23
+ description Connection-to-E423
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation24
+ description Connection-to-E424
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation44
+ description LA-core
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 14
+ port trunk pvid vlan 14
+ link-aggregation mode dynamic
+ mad enable
+#
+interface NULL0
+#
+interface Vlan-interface14
+ ip address 10.0.14.1 255.255.255.0
+#
+interface Vlan-interface34
+ ip address 10.0.34.1 255.255.255.0
+#
+interface Vlan-interface44
+ ip address 10.0.44.1 255.255.255.0
+#
+interface Vlan-interface112
+ ip address 10.0.112.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface126
+ ip address 10.0.126.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface127
+ ip address 10.0.127.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface129
+ ip address 10.0.129.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface130
+ ip address 10.0.130.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface131
+ ip address 10.0.131.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface133
+ ip address 10.0.133.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface134
+ ip address 10.0.134.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface135
+ ip address 10.0.135.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface136
+ ip address 10.0.136.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface137
+ ip address 10.0.137.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface140
+ ip address 10.0.140.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface142
+ ip address 10.0.142.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface143
+ ip address 10.0.143.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface144
+ ip address 10.0.144.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface145
+ ip address 10.0.145.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface146
+ ip address 10.0.146.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface244
+ ip address 10.0.244.1 255.255.255.0
+ mad arp enable
+#
+interface GigabitEthernet1/0/1
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/2
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+#
+interface GigabitEthernet1/0/3
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 3
+#
+interface GigabitEthernet1/0/4
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 4
+#
+interface GigabitEthernet1/0/5
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 5
+#
+interface GigabitEthernet1/0/6
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 6
+#
+interface GigabitEthernet1/0/7
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 7
+#
+interface GigabitEthernet1/0/8
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 8
+#
+interface GigabitEthernet1/0/9
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 9
+#
+interface GigabitEthernet1/0/10
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+#
+interface GigabitEthernet1/0/11
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 11
+#
+interface GigabitEthernet1/0/12
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 12
+#
+interface GigabitEthernet1/0/13
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 13
+#
+interface GigabitEthernet1/0/14
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 14
+#
+interface GigabitEthernet1/0/15
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 15
+#
+interface GigabitEthernet1/0/16
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 16
+#
+interface GigabitEthernet1/0/17
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 17
+#
+interface GigabitEthernet1/0/18
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 18
+#
+interface GigabitEthernet1/0/19
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 19
+#
+interface GigabitEthernet1/0/20
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 20
+#
+interface GigabitEthernet1/0/21
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ shutdown
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 21
+#
+interface GigabitEthernet1/0/22
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 22
+#
+interface GigabitEthernet1/0/23
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 23
+#
+interface GigabitEthernet1/0/24
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 24
+#
+interface GigabitEthernet1/0/25
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/26
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/27
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/28
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/29
+ port link-mode bridge
+ port link-type hybrid
+ port hybrid vlan 1 untagged
+#
+interface GigabitEthernet1/0/30
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/31
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet1/0/32
+ port link-mode bridge
+ port access vlan 244
+ shutdown
+ stp disable
+#
+interface GigabitEthernet2/0/1
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 1
+#
+interface GigabitEthernet2/0/2
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+#
+interface GigabitEthernet2/0/3
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 3
+#
+interface GigabitEthernet2/0/4
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 4
+#
+interface GigabitEthernet2/0/5
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ port link-aggregation group 5
+#
+interface GigabitEthernet2/0/6
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 6
+#
+interface GigabitEthernet2/0/7
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 7
+#
+interface GigabitEthernet2/0/8
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 8
+#
+interface GigabitEthernet2/0/9
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 9
+#
+interface GigabitEthernet2/0/10
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+#
+interface GigabitEthernet2/0/11
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 11
+#
+interface GigabitEthernet2/0/12
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 12
+#
+interface GigabitEthernet2/0/13
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 13
+#
+interface GigabitEthernet2/0/14
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 14
+#
+interface GigabitEthernet2/0/15
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 15
+#
+interface GigabitEthernet2/0/16
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 16
+#
+interface GigabitEthernet2/0/17
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 17
+#
+interface GigabitEthernet2/0/18
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 18
+#
+interface GigabitEthernet2/0/19
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 19
+#
+interface GigabitEthernet2/0/20
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 20
+#
+interface GigabitEthernet2/0/21
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 21
+#
+interface GigabitEthernet2/0/22
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 22
+#
+interface GigabitEthernet2/0/23
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan all
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 23
+#
+interface GigabitEthernet2/0/24
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan 1
+ port trunk pvid vlan 244
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 24
+#
+interface GigabitEthernet2/0/25
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/26
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/27
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/28
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/29
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/30
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/31
+ port link-mode bridge
+ shutdown
+#
+interface GigabitEthernet2/0/32
+ port link-mode bridge
+ shutdown
+ stp disable
+#
+interface Ten-GigabitEthernet1/1/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 14
+ port trunk pvid vlan 14
+ port link-aggregation group 44
+#
+interface Ten-GigabitEthernet1/2/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 14
+ port trunk pvid vlan 14
+ port link-aggregation group 44
+#
+interface Ten-GigabitEthernet2/1/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 14
+ port trunk pvid vlan 14
+ port link-aggregation group 44
+#
+interface Ten-GigabitEthernet2/2/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 14
+ port trunk pvid vlan 14
+ port link-aggregation group 44
+#
+interface Ten-GigabitEthernet1/1/1
+#
+interface Ten-GigabitEthernet1/2/1
+#
+interface Ten-GigabitEthernet2/1/1
+#
+interface Ten-GigabitEthernet2/2/1
+#
+ospf 1
+ import-route direct
+ import-route static
+ area 0.0.0.0
+  network 10.0.14.0 0.0.0.255
+#
+ ip route-static 0.0.0.0 0.0.0.0 10.0.14.2
+#
+ info-center loghost 10.0.10.6
+#
+ snmp-agent
+ snmp-agent local-engineid 800063A203D07E287B5553
+ snmp-agent community write Dp@_L@n
+ snmp-agent community read Dpa_Lan
+ snmp-agent log all
+ snmp-agent sys-info version all
+ snmp-agent group v3 network-team
+ snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname Dp@_L@n v3
+ snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname Dp@_L@n v3
+ snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname Dp@_L@n v3
+ snmp-agent usm-user v3 NNM network-team cipher authentication-mode md5 $c$3$3Gai5LRORKR1tmSBJVZ1Q/VlxKxGbidbZ6Ie0LWIpozKTA== privacy-mode aes128 $c$3$MXuPQURiru1tD8e99lW1RZ+eEdEfKHLUjN10uCia8i5Yog==
+ snmp-agent trap enable default-route
+ snmp-agent trap source Vlan-interface244
+ snmp-agent trap queue-size 500
+ snmp-agent trap life 600
+#
+ dhcp enable
+#
+ ntp-service unicast-peer 10.0.10.12
+ ntp-service unicast-server 10.0.10.10
+#
+ ssh server enable
+#
+ ip https enable
+#
+ sflow agent ip 10.0.244.1
+ sflow collector 1 ip 10.0.10.76 description 6343
+#
+ load xml-configuration
+#
+ load tr069-configuration
+#
+user-interface aux 0
+ authentication-mode password
+ set authentication password cipher $c$3$4jYe8g5UHFn51maV/lLUtZw0xupPdaNe
+user-interface aux 1
+user-interface vty 0 4
+ authentication-mode scheme
+user-interface vty 5 15
+#
+irf-port 1/1
+ port group interface Ten-GigabitEthernet1/1/1 mode normal
+#
+irf-port 1/2
+ port group interface Ten-GigabitEthernet1/2/1 mode normal
+#
+irf-port 2/1
+ port group interface Ten-GigabitEthernet2/1/1 mode normal
+#
+irf-port 2/2
+ port group interface Ten-GigabitEthernet2/2/1 mode normal
+#
+return</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         DIVIDER
+         ═══════════════════════════════════════════ -->
+    <div class="section-divider divider-2">
+        <span class="divider-icon">▼ CORE LAYER ▼</span>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                       CORE LAYER                           ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="core" class="layer-section core">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 3 — BACKBONE</div>
+                <h2>Core Switch<br>DPA-Core</h2>
+                <p>The network backbone. OSPF Area 0 hub for all 6 distribution switches. Server farm connectivity, WAN uplinks, firewall integration, ACL filtering, and the default gateway to the internet. STP root bridge with priority 0.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">OSPF Area 0 Hub</span>
+                    <span class="hero-chip">STP Root (Priority 0)</span>
+                    <span class="hero-chip">6x Dist LACP</span>
+                    <span class="hero-chip">Server Farm Trunks</span>
+                    <span class="hero-chip">WAN Uplinks</span>
+                    <span class="hero-chip">ACL Filtering</span>
+                    <span class="hero-chip">IRF Chassis</span>
+                    <span class="hero-chip">Default Route</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Core layer topology">
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                   <span class="highlight-box">CORE LAYER — DPA-Core (You Are Here)</span>              │
+  │                                                                     │
+  │  ND1        ND2        ND3        ND4        ND5        ND6         │
+  │  │          │          │          │          │          │           │
+  │  LA-241     LA-242     LA-243     LA-244     LA-245     LA-246      │
+  │  VLAN 11    VLAN 12    VLAN 13    VLAN 14    VLAN 15    VLAN 16     │
+  │    │          │          │          │          │          │           │
+  │    └──────────┴──────────┴──────────┴──────────┴──────────┘           │
+  │                          │                                          │
+  │            ┌─────────────┴─────────────┐                            │
+  │            │    DPA-Core (IRF Pair)     │                            │
+  │            │  ● OSPF Area 0 (Hub)       │                            │
+  │            │  ● STP Root (Priority 0)   │                            │
+  │            │  ● Default Route → WAN     │                            │
+  │            └──┬──────┬──────┬──────┬───┘                            │
+  │               │      │      │      │                                │
+  │          Server  Server Backup WAN  FortiGate                      │
+  │          Farm-1  Farm-2  Sys   Uplinks  Mgmt                       │
+  │                                                                     │
+  │  ACL 3000: deny dst 10.0.8.0/24 | permit src 172.28.0.0/16         │
+  └─────────────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🗺️</div>
+                <h4>OSPF Area 0 Hub</h4>
+                <p>Peers with all 6 distribution switches via dedicated OSPF VLANs (11-16). Redistributes direct and static routes into OSPF.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👑</div>
+                <h4>STP Root Bridge</h4>
+                <p>STP instance 0 priority set to 0 — the absolute root for the entire Layer 2 topology. All distribution switches converge to this.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🏗️</div>
+                <h4>Server Farm Trunks</h4>
+                <p>4x LACP trunks (101-104) to server farms and backup systems. Carrying VLANs 4 (VM Desktops), 9 (Server Mgmt), 10 (Server Farm).</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🌍</div>
+                <h4>WAN + Default Route</h4>
+                <p>Default route 0.0.0.0/0 via 10.0.250.250. VLAN 441 (WAN) ports, VLAN 250 for upstream routing. Internet egress point.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🛡️</div>
+                <h4>ACL 3000</h4>
+                <p>Filters traffic: denies destination 10.0.8.0/24, permits source 172.28.0.0/16. Applied for security segmentation.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🖥️</div>
+                <h4>Direct Server Ports</h4>
+                <p>48x GE access ports per chassis for direct server connections: IPS Mgmt (254), Wireless Guest (253), FortiGate (252), DMZ (292), etc.</p>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 DPA-Core — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('coreCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('coreCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME DPA-Core — HP COMWARE V5.20.105</span>
+                    <span class="line-count" id="coreLines"></span>
+                </div>
+                <pre class="config-code" id="coreCode">#
+ version 5.20.105, Release 1208P12
+#
+ sysname DPA-Core
+#
+ clock timezone 2 add 03:00:00
+#
+ super password level 3 cipher $c$3$YYdTgghvT4Js+w9RE3sivVpjlKk1p00=
+#
+ dhcp relay server-group 1 ip 10.0.10.12
+ dhcp relay server-group 1 ip 10.0.10.13
+ dhcp relay server-group 1 ip 10.0.10.14
+#
+ irf mac-address persistent always
+ irf auto-update enable
+ irf auto-merge enable
+ undo irf link-delay
+ irf member 1 priority 32
+#
+ domain default enable system
+#
+ telnet server enable
+#
+ ip ttl-expires enable
+ ip unreachables enable
+#
+ lldp enable
+#
+ management-vlan 2
+#
+ snmp-agent ifmib long-ifindex enable
+#
+ ip http enable
+#
+ udp-helper enable
+#
+switch-mode standard chassis 1
+switch-mode mix-bridging-routing chassis 1 slot 0
+switch-mode standard chassis 2
+switch-mode mix-bridging-routing chassis 2 slot 0
+#
+switch-mode  route-normal
+#
+ password-recovery enable
+#
+acl number 3000
+ rule 5 deny ip destination 10.0.8.0 0.0.0.255
+ rule 10 permit ip source 172.28.0.0 0.0.255.255
+#
+vlan 1
+#
+vlan 2
+ name Switch-Management
+#
+vlan 4
+ name VM-Desktops-Servers
+#
+vlan 9
+ name Server-managment
+#
+vlan 10
+ name Server-farm
+#
+vlan 11
+ name OSPF-ND1
+#
+vlan 12
+ name OSPF-ND2
+#
+vlan 13
+ name OSFP-ND3
+#
+vlan 14
+ name OSFP-ND4
+#
+vlan 15
+ name OSFP-ND5
+#
+vlan 16
+ name OSFP-ND6
+#
+vlan 20
+ name DB_TEST
+#
+vlan 21 to 22
+#
+vlan 44
+#
+vlan 47
+ name Voice-Server
+#
+vlan 172
+ name Rekaba
+#
+vlan 192
+ name custom-wan-192.168.1.x
+#
+vlan 248
+#
+vlan 250
+#
+vlan 251
+ name vlan-251
+#
+vlan 252
+ name Fortigate-management
+#
+vlan 253
+ name Wireless-Guest
+#
+vlan 254
+ name IPS-Management
+#
+vlan 272
+ name 172-Data
+#
+vlan 282
+ name Internet
+#
+vlan 292
+ name ext-pub-dmz-10.0.192.x
+#
+vlan 300
+#
+vlan 441
+ name WAN
+#
+domain system
+ access-limit disable
+ state active
+ idle-cut disable
+ self-service-url disable
+#
+user-group system
+ group-attribute allow-guest
+#
+local-user manager
+ password cipher $c$3$LxZQwVtUBz/1c8v2HTAztjyzxoYoJQlryqGNI82g
+ authorization-attribute level 3
+ service-type ssh telnet
+ service-type web
+local-user monitor
+ password cipher $c$3$sjGfgkxhnDUifdmiGpuVLDRimxRxUN8Mppk=
+ authorization-attribute level 1
+ service-type ssh telnet
+ service-type web
+local-user system
+ password cipher $c$3$PN72wMhn8S/y6IdAwk85+Zi/srW9acXH8y6C
+ authorization-attribute level 2
+ service-type ssh telnet
+ service-type web
+#
+ stp instance 0 priority 0
+ stp enable
+#
+monitor-link group 11
+#
+interface Bridge-Aggregation1
+ description IRF1-t0-slave
+ link-aggregation mode dynamic
+#
+interface Bridge-Aggregation2
+ description IRF2-to-slave
+ link-aggregation mode dynamic
+#
+interface Bridge-Aggregation101
+ description to server-farm-1
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ link-aggregation mode dynamic
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface Bridge-Aggregation102
+ description to server-farm-2
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ link-aggregation mode dynamic
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface Bridge-Aggregation103
+ description to-backup-system
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ link-aggregation mode dynamic
+#
+interface Bridge-Aggregation104
+ description to-backup2-system
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ link-aggregation mode dynamic
+#
+interface Bridge-Aggregation241
+ description LA-ND1
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 11 41
+ port trunk pvid vlan 11
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation242
+ description LA-ND2
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 12 42
+ port trunk pvid vlan 12
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation243
+ description LA-ND3
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 13 43
+ port trunk pvid vlan 13
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation244
+ description LA-ND4
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 2 14 44
+ port trunk pvid vlan 14
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation245
+ description LA-ND5
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 15 45
+ port trunk pvid vlan 15
+ link-aggregation mode dynamic
+ mad enable
+#
+interface Bridge-Aggregation246
+ description LA-ND6
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 16 46
+ port trunk pvid vlan 16
+ link-aggregation mode dynamic
+ mad enable
+#
+interface NULL0
+#
+interface Vlan-interface1
+ ip address dhcp-alloc client-identifier mac Vlan-interface1
+#
+interface Vlan-interface2
+ ip address 10.0.2.1 255.255.255.0
+#
+interface Vlan-interface4
+ ip address 172.28.4.1 255.255.252.0
+ dhcp select relay
+ dhcp relay server-select 1
+ udp-helper server 10.0.10.12
+ udp-helper server 10.0.10.13
+#
+interface Vlan-interface11
+ ip address 10.0.11.2 255.255.255.0
+#
+interface Vlan-interface12
+ ip address 10.0.12.2 255.255.255.0
+#
+interface Vlan-interface13
+ ip address 10.0.13.2 255.255.255.0
+#
+interface Vlan-interface14
+ ip address 10.0.14.2 255.255.255.0
+#
+interface Vlan-interface15
+ ip address 10.0.15.2 255.255.255.0
+#
+interface Vlan-interface16
+ ip address 10.0.16.2 255.255.255.0
+#
+interface Vlan-interface20
+ ip address 10.0.20.2 255.255.255.0
+#
+interface Vlan-interface21
+ ip address 10.0.21.2 255.255.255.0
+#
+interface Vlan-interface22
+ ip address 10.0.22.2 255.255.255.0
+#
+interface Vlan-interface47
+ ip address 10.0.47.1 255.255.255.0
+#
+interface Vlan-interface248
+ ip address 10.0.248.1 255.255.255.0
+#
+interface Vlan-interface250
+ ip address 10.0.250.1 255.255.255.0
+#
+interface Vlan-interface300
+ ip address 10.0.8.1 255.255.255.0
+#
+interface GigabitEthernet1/0/0/1
+ port link-mode bridge
+ port access vlan 2
+#
+interface GigabitEthernet1/0/0/2
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/3
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/4
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/5
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/6
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/7
+ port link-mode bridge
+ port access vlan 172
+#
+interface GigabitEthernet1/0/0/8
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/9
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/10
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/11
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet1/0/0/12
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/13
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/14
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/15
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet1/0/0/16
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet1/0/0/17
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/18
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/19
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/20
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/21
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/22
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/23
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/24
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/25
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/26
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet1/0/0/27
+ port link-mode bridge
+ port access vlan 192
+#
+interface GigabitEthernet1/0/0/28
+ port link-mode bridge
+ port access vlan 192
+#
+interface GigabitEthernet1/0/0/29
+ port link-mode bridge
+ port access vlan 192
+#
+interface GigabitEthernet1/0/0/30
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/31
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/32
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/33
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/34
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/35
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet1/0/0/36
+ port link-mode bridge
+ port access vlan 253
+#
+interface GigabitEthernet1/0/0/37
+ port link-mode bridge
+ port access vlan 253
+#
+interface GigabitEthernet1/0/0/38
+ port link-mode bridge
+ port access vlan 252
+#
+interface GigabitEthernet1/0/0/39
+ port link-mode bridge
+ port access vlan 252
+#
+interface GigabitEthernet1/0/0/40
+ port link-mode bridge
+ port access vlan 251
+#
+interface GigabitEthernet1/0/0/41
+ port link-mode bridge
+ port access vlan 251
+#
+interface GigabitEthernet1/0/0/42
+ port link-mode bridge
+ port access vlan 292
+#
+interface GigabitEthernet1/0/0/43
+ port link-mode bridge
+ port access vlan 272
+#
+interface GigabitEthernet1/0/0/44
+ port link-mode bridge
+ port access vlan 272
+#
+interface GigabitEthernet1/0/0/45
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet1/0/0/46
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet1/0/0/47
+ port link-mode bridge
+ port access vlan 47
+#
+interface GigabitEthernet1/0/0/48
+ port link-mode bridge
+ port access vlan 47
+#
+interface GigabitEthernet2/0/0/1
+ port link-mode bridge
+ port access vlan 2
+#
+interface GigabitEthernet2/0/0/2
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/3
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/4
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/5
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/6
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/7
+ port link-mode bridge
+ port access vlan 172
+#
+interface GigabitEthernet2/0/0/8
+ port link-mode bridge
+ port access vlan 251
+ stp edged-port enable
+#
+interface GigabitEthernet2/0/0/9
+ port link-mode bridge
+ port access vlan 10
+ speed 100
+#
+interface GigabitEthernet2/0/0/10
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet2/0/0/11
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/12
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet2/0/0/13
+ port link-mode bridge
+ port access vlan 250
+#
+interface GigabitEthernet2/0/0/14
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/0/15
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet2/0/0/16
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet2/0/0/17
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/18
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/19
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet2/0/0/20
+ port link-mode bridge
+ port access vlan 10
+#
+interface GigabitEthernet2/0/0/21
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/22
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/23
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/24
+ port link-mode bridge
+ port access vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface GigabitEthernet2/0/0/25
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/26
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/27
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/28
+ port link-mode bridge
+ port access vlan 9
+#
+interface GigabitEthernet2/0/0/29
+ port link-mode bridge
+ port access vlan 192
+#
+interface GigabitEthernet2/0/0/30
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/31
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/32
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/33
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/34
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/35
+ port link-mode bridge
+ port access vlan 254
+#
+interface GigabitEthernet2/0/0/36
+ port link-mode bridge
+ port access vlan 253
+#
+interface GigabitEthernet2/0/0/37
+ port link-mode bridge
+ port access vlan 253
+#
+interface GigabitEthernet2/0/0/38
+ port link-mode bridge
+ port access vlan 252
+#
+interface GigabitEthernet2/0/0/39
+ port link-mode bridge
+ port access vlan 252
+#
+interface GigabitEthernet2/0/0/40
+ port link-mode bridge
+ port access vlan 251
+#
+interface GigabitEthernet2/0/0/41
+ port link-mode bridge
+ port access vlan 251
+#
+interface GigabitEthernet2/0/0/42
+ port link-mode bridge
+ port access vlan 292
+#
+interface GigabitEthernet2/0/0/43
+ port link-mode bridge
+ port access vlan 272
+#
+interface GigabitEthernet2/0/0/44
+ port link-mode bridge
+ port access vlan 272
+#
+interface GigabitEthernet2/0/0/45
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet2/0/0/46
+ port link-mode bridge
+ port access vlan 441
+#
+interface GigabitEthernet2/0/0/47
+ port link-mode bridge
+ port access vlan 47
+#
+interface GigabitEthernet2/0/0/48
+ port link-mode bridge
+ port access vlan 47
+#
+interface M-GigabitEthernet1/0/0/0
+#
+interface Ten-GigabitEthernet1/9/0/1
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 11 41
+ port trunk pvid vlan 11
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 241
+#
+interface Ten-GigabitEthernet1/9/0/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 11 41
+ port trunk pvid vlan 11
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 241
+#
+interface Ten-GigabitEthernet1/9/0/3
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 12 42
+ port trunk pvid vlan 12
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 242
+#
+interface Ten-GigabitEthernet1/9/0/4
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 12 42
+ port trunk pvid vlan 12
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 242
+#
+interface Ten-GigabitEthernet1/9/0/5
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 13 43
+ port trunk pvid vlan 13
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 243
+#
+interface Ten-GigabitEthernet1/9/0/6
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 13 43
+ port trunk pvid vlan 13
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 243
+#
+interface Ten-GigabitEthernet1/9/0/7
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 2 14 44
+ port trunk pvid vlan 14
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 244
+#
+interface Ten-GigabitEthernet1/9/0/8
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 2 14 44
+ port trunk pvid vlan 14
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 244
+#
+interface Ten-GigabitEthernet1/9/0/9
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 15 45
+ port trunk pvid vlan 15
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 245
+#
+interface Ten-GigabitEthernet1/9/0/10
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 15 45
+ port trunk pvid vlan 15
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 245
+#
+interface Ten-GigabitEthernet1/9/0/11
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 16 46
+ port trunk pvid vlan 16
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 246
+#
+interface Ten-GigabitEthernet1/9/0/12
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 16 46
+ port trunk pvid vlan 16
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 246
+#
+interface Ten-GigabitEthernet1/9/0/13
+ port link-mode bridge
+ port access vlan 250
+#
+interface Ten-GigabitEthernet1/9/0/14
+ port link-mode bridge
+ port access vlan 10
+#
+interface Ten-GigabitEthernet1/9/0/15
+ port link-mode bridge
+ port access vlan 172
+#
+interface Ten-GigabitEthernet1/9/0/16
+ port link-mode bridge
+ port access vlan 10
+#
+interface Ten-GigabitEthernet1/9/0/17
+ port link-mode bridge
+ port access vlan 248
+#
+interface Ten-GigabitEthernet1/9/0/18
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/9/0/19
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/9/0/20
+ port link-mode bridge
+ port access vlan 172
+#
+interface Ten-GigabitEthernet1/9/0/21
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 101
+#
+interface Ten-GigabitEthernet1/9/0/22
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 101
+#
+interface Ten-GigabitEthernet1/9/0/23
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 102
+#
+interface Ten-GigabitEthernet1/9/0/24
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 102
+#
+interface Ten-GigabitEthernet1/9/0/25
+ port link-mode bridge
+ port access vlan 9
+#
+interface Ten-GigabitEthernet1/9/0/26
+ port link-mode bridge
+ port access vlan 9
+#
+interface Ten-GigabitEthernet1/9/0/27
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 104
+#
+interface Ten-GigabitEthernet1/9/0/28
+ port link-mode bridge
+ shutdown
+#
+interface Ten-GigabitEthernet2/9/0/1
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 11 41
+ port trunk pvid vlan 11
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 241
+#
+interface Ten-GigabitEthernet2/9/0/2
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 11 41
+ port trunk pvid vlan 11
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 241
+#
+interface Ten-GigabitEthernet2/9/0/3
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 12 42
+ port trunk pvid vlan 12
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 242
+#
+interface Ten-GigabitEthernet2/9/0/4
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 12 42
+ port trunk pvid vlan 12
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 242
+#
+interface Ten-GigabitEthernet2/9/0/5
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 13 43
+ port trunk pvid vlan 13
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 243
+#
+interface Ten-GigabitEthernet2/9/0/6
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 13 43
+ port trunk pvid vlan 13
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 243
+#
+interface Ten-GigabitEthernet2/9/0/7
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 2 14 44
+ port trunk pvid vlan 14
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 244
+#
+interface Ten-GigabitEthernet2/9/0/8
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 2 14 44
+ port trunk pvid vlan 14
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 244
+#
+interface Ten-GigabitEthernet2/9/0/9
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 15 45
+ port trunk pvid vlan 15
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 245
+#
+interface Ten-GigabitEthernet2/9/0/10
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 15 45
+ port trunk pvid vlan 15
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 245
+#
+interface Ten-GigabitEthernet2/9/0/11
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 16 46
+ port trunk pvid vlan 16
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 246
+#
+interface Ten-GigabitEthernet2/9/0/12
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 16 46
+ port trunk pvid vlan 16
+ sflow sampling-rate 1000
+ sflow flow collector 1
+ sflow counter interval 30
+ sflow counter collector 1
+ port link-aggregation group 246
+#
+interface Ten-GigabitEthernet2/9/0/13
+ port link-mode bridge
+ port access vlan 250
+#
+interface Ten-GigabitEthernet2/9/0/14
+ port link-mode bridge
+ port access vlan 10
+#
+interface Ten-GigabitEthernet2/9/0/15
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet2/9/0/16
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet2/9/0/17
+ port link-mode bridge
+ port access vlan 10
+#
+interface Ten-GigabitEthernet2/9/0/18
+ port link-mode bridge
+ port access vlan 10
+#
+interface Ten-GigabitEthernet2/9/0/19
+ port link-mode bridge
+ description connected-to-DR5500-interface-Ten-GigabitEthernet1/1/2
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9
+ port trunk pvid vlan 4
+ mac-address multicast 03bf-ac1c-0405 vlan 4
+#
+interface Ten-GigabitEthernet2/9/0/20
+ port link-mode bridge
+ description connected-to-DR5500-interface-Ten-GigabitEthernet1/2/2
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 10
+ port trunk pvid vlan 10
+#
+interface Ten-GigabitEthernet2/9/0/21
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 102
+#
+interface Ten-GigabitEthernet2/9/0/22
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 102
+#
+interface Ten-GigabitEthernet2/9/0/23
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 101
+#
+interface Ten-GigabitEthernet2/9/0/24
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 101
+#
+interface Ten-GigabitEthernet2/9/0/25
+ port link-mode bridge
+ port access vlan 9
+#
+interface Ten-GigabitEthernet2/9/0/26
+ port link-mode bridge
+ port access vlan 9
+#
+interface Ten-GigabitEthernet2/9/0/27
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 4 9 to 10
+ port trunk pvid vlan 10
+ port link-aggregation group 104
+#
+interface Ten-GigabitEthernet2/9/0/28
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/9/0/29
+#
+interface Ten-GigabitEthernet1/9/0/30
+#
+interface Ten-GigabitEthernet1/9/0/31
+#
+interface Ten-GigabitEthernet1/9/0/32
+#
+interface Ten-GigabitEthernet2/9/0/29
+#
+interface Ten-GigabitEthernet2/9/0/30
+#
+interface Ten-GigabitEthernet2/9/0/31
+#
+interface Ten-GigabitEthernet2/9/0/32
+#
+ospf 1
+ import-route direct
+ import-route static
+ area 0.0.0.0
+  network 10.0.14.0 0.0.0.255
+  network 10.0.13.0 0.0.0.255
+  network 10.0.11.0 0.0.0.255
+  network 10.0.12.0 0.0.0.255
+  network 10.0.15.0 0.0.0.255
+  network 10.0.16.0 0.0.0.255
+#
+ ip route-static 0.0.0.0 0.0.0.0 10.0.250.250
+#
+ info-center loghost 10.0.10.6
+ info-center loghost 10.0.10.72
+ info-center loghost 10.0.10.73
+#
+ dhcp enable
+#
+ ntp-service unicast-server 10.0.10.12
+ ntp-service unicast-server 10.0.10.14
+#
+ ssh server enable
+ sftp server enable
+ ssh user admin service-type all authentication-type password
+#
+ arp static 172.28.4.5 03bf-ac1c-0405 4 Bridge-Aggregation101
+#
+ sflow agent ip 10.0.14.2
+ sflow collector 1 ip 10.0.10.76 description "CLI Collector"
+#
+ load xml-configuration
+#
+ load tr069-configuration
+#
+user-interface aux 1/0 2/1
+user-interface vty 0 3
+ authentication-mode scheme
+ protocol inbound telnet
+user-interface vty 4 15
+ authentication-mode scheme
+ protocol inbound ssh
+#
+irf-port 1/1
+ port group interface Ten-GigabitEthernet1/9/0/29 mode normal
+ port group interface Ten-GigabitEthernet1/9/0/30 mode normal
+ port group interface Ten-GigabitEthernet1/9/0/31 mode normal
+ port group interface Ten-GigabitEthernet1/9/0/32 mode normal
+#
+irf-port 2/2
+ port group interface Ten-GigabitEthernet2/9/0/29 mode normal
+ port group interface Ten-GigabitEthernet2/9/0/30 mode normal
+ port group interface Ten-GigabitEthernet2/9/0/31 mode normal
+ port group interface Ten-GigabitEthernet2/9/0/32 mode normal
+#
+return</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════ -->
+    <footer>
+        <p>HP Comware Switch Architecture Reference — Access · Distribution · Core</p>
+        <p style="margin-top: 4px; opacity: 0.6;">Generated for CyberDefend Network Documentation</p>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">↑</button>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════ -->
+    <script>
+        /* --- Theme Toggle --- */
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        function setTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('switch-layer-theme', t);
+        }
+        themeBtn.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        const saved = localStorage.getItem('switch-layer-theme');
+        if (saved) setTheme(saved);
+
+        /* --- Line Counts --- */
+        function countLines(id) {
+            const el = document.getElementById(id);
+            const span = document.getElementById(id.replace('Code', 'Lines'));
+            if (el && span) {
+                const n = el.textContent.split('\n').length;
+                span.textContent = n + ' lines';
+            }
+        }
+        countLines('accessCode');
+        countLines('distCode');
+        countLines('coreCode');
+
+        /* --- Expand / Collapse Config --- */
+        function toggleConfig(id, btn) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('expanded')) {
+                el.classList.remove('expanded');
+                btn.textContent = '▼ Expand All';
+            } else {
+                el.classList.add('expanded');
+                btn.textContent = '▲ Collapse';
+            }
+        }
+
+        /* --- Copy Config --- */
+        function copyConfig(id, btn) {
+            const el = document.getElementById(id);
+            const text = el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                /* Fallback for older browsers */
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        /* --- Scroll: Active Nav + Scroll-to-Top --- */
+        const sections = document.querySelectorAll('.layer-section');
+        const navLinks = document.querySelectorAll('.side-nav a');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function updateNav() {
+            let current = '';
+            sections.forEach(sec => {
+                const top = sec.getBoundingClientRect().top;
+                if (top < window.innerHeight * 0.4) {
+                    current = sec.id;
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-section') === current);
+            });
+
+            /* Scroll-to-top visibility */
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
