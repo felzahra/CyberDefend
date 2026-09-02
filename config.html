@@ -989,13 +989,13 @@ interface GigabitEthernet1/0/28
 #
  snmp-agent
  snmp-agent local-engineid 800063A203D07E2880300D
- snmp-agent community write Dp@_L@n 
- snmp-agent community read Dpa_Lan 
+ snmp-agent community write H3!98aW 
+ snmp-agent community read H3!98awR 
  snmp-agent log all
  snmp-agent sys-info version all
- snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname Dp@_L@n v2c
- snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname Dp@_L@n v2c
- snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname Dp@_L@n v2c
+ snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname H3!98awR v2c
+ snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname H3!98awR v2c
+ snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname H3!98awR v2c
  snmp-agent trap queue-size 500
  snmp-agent trap life 600
 #
@@ -2222,14 +2222,14 @@ ospf 1
 #
  snmp-agent
  snmp-agent local-engineid 800063A203D07E287B5553
- snmp-agent community write Dp@_L@n
- snmp-agent community read Dpa_Lan
+ snmp-agent community write H3!98awW
+ snmp-agent community read H3!98awR
  snmp-agent log all
  snmp-agent sys-info version all
  snmp-agent group v3 network-team
- snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname Dp@_L@n v3
- snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname Dp@_L@n v3
- snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname Dp@_L@n v3
+ snmp-agent target-host trap address udp-domain 10.0.10.72 params securityname H3!98awR v3
+ snmp-agent target-host trap address udp-domain 10.0.10.73 params securityname H3!98awR v3
+ snmp-agent target-host trap address udp-domain 10.0.10.74 params securityname H3!98awR v3
  snmp-agent usm-user v3 NNM network-team cipher authentication-mode md5 $c$3$3Gai5LRORKR1tmSBJVZ1Q/VlxKxGbidbZ6Ie0LWIpozKTA== privacy-mode aes128 $c$3$MXuPQURiru1tD8e99lW1RZ+eEdEfKHLUjN10uCia8i5Yog==
  snmp-agent trap enable default-route
  snmp-agent trap source Vlan-interface244
