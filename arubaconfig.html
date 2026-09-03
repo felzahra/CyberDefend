@@ -1,0 +1,3374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARUBA · Switch Layers — Access · Distribution · Core</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           ROOT VARIABLES — DARK
+           ═══════════════════════════════════════════ */
+        :root {
+            --bg: #050505;
+            --fg: #e0e0e0;
+            --quiet: #777;
+            --loud: #fff;
+            --hairline: #1a1a1a;
+            --darkened: #0c0c0c;
+            --selected: #141414;
+            --card: #0e0e0e;
+            --code-bg: #080808;
+            --code-fg: #b0bec5;
+
+            /* ACCESS */
+            --acc-bg: #06101e;
+            --acc-border: #1565c0;
+            --acc-text: #42a5f5;
+            --acc-glow: rgba(21,101,192,0.15);
+            --acc-header: linear-gradient(135deg, #0a1a3a 0%, #06101e 50%, #0d1f3c 100%);
+            --acc-accent: #29b6f6;
+
+            /* DISTRIBUTION */
+            --dist-bg: #140a24;
+            --dist-border: #7b1fa2;
+            --dist-text: #ce93d8;
+            --dist-glow: rgba(123,31,162,0.15);
+            --dist-header: linear-gradient(135deg, #1a0e35 0%, #140a24 50%, #200f3a 100%);
+            --dist-accent: #ba68c8;
+
+            /* CORE */
+            --core-bg: #1a0e08;
+            --core-border: #e65100;
+            --core-text: #ff8a65;
+            --core-glow: rgba(230,81,0,0.15);
+            --core-header: linear-gradient(135deg, #2a1508 0%, #1a0e08 50%, #331a0a 100%);
+            --core-accent: #ffab40;
+        }
+
+        /* ═══════════════════════════════════════════
+           ROOT VARIABLES — LIGHT
+           ═══════════════════════════════════════════ */
+        html[data-theme="light"] {
+            --bg: #f0f2f5;
+            --fg: #2c3e50;
+            --quiet: #78909c;
+            --loud: #1a1a2e;
+            --hairline: #dde1e6;
+            --darkened: #fff;
+            --selected: #e8eaf0;
+            --card: #fff;
+            --code-bg: #f5f5f5;
+            --code-fg: #37474f;
+
+            --acc-bg: #e3f2fd;
+            --acc-border: #1565c0;
+            --acc-text: #0d47a1;
+            --acc-glow: rgba(21,101,192,0.08);
+            --acc-header: linear-gradient(135deg, #bbdefb 0%, #e3f2fd 50%, #90caf9 100%);
+            --acc-accent: #0277bd;
+
+            --dist-bg: #f3e5f5;
+            --dist-border: #7b1fa2;
+            --dist-text: #6a1b9a;
+            --dist-glow: rgba(123,31,162,0.08);
+            --dist-header: linear-gradient(135deg, #e1bee7 0%, #f3e5f5 50%, #ce93d8 100%);
+            --dist-accent: #6a1b9a;
+
+            --core-bg: #fff3e0;
+            --core-border: #e65100;
+            --core-text: #bf360c;
+            --core-glow: rgba(230,81,0,0.08);
+            --core-header: linear-gradient(135deg, #ffe0b2 0%, #fff3e0 50%, #ffcc80 100%);
+            --core-accent: #e65100;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.7;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* ═══════════════════════════════════════════
+           FIXED SIDE NAV
+           ═══════════════════════════════════════════ */
+        .side-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 16px;
+            padding: 10px 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .side-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--quiet);
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+        .side-nav a .nav-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .side-nav a.acc-link .nav-dot { background: var(--acc-border); }
+        .side-nav a.dist-link .nav-dot { background: var(--dist-border); }
+        .side-nav a.core-link .nav-dot { background: var(--core-border); }
+
+        .side-nav a.acc-link.active { color: var(--acc-text); background: var(--acc-glow); }
+        .side-nav a.acc-link.active .nav-dot { box-shadow: 0 0 12px var(--acc-border); border-color: var(--acc-accent); transform: scale(1.2); }
+        .side-nav a.dist-link.active { color: var(--dist-text); background: var(--dist-glow); }
+        .side-nav a.dist-link.active .nav-dot { box-shadow: 0 0 12px var(--dist-border); border-color: var(--dist-accent); transform: scale(1.2); }
+        .side-nav a.core-link.active { color: var(--core-text); background: var(--core-glow); }
+        .side-nav a.core-link.active .nav-dot { box-shadow: 0 0 12px var(--core-border); border-color: var(--core-accent); transform: scale(1.2); }
+
+        .side-nav a:hover { color: var(--loud); }
+
+        .side-nav .nav-label {
+            display: none;
+            position: absolute;
+            right: calc(100% + 10px);
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .side-nav a:hover .nav-label { display: block; }
+
+        /* ═══════════════════════════════════════════
+           TOP BAR
+           ═══════════════════════════════════════════ */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 32px;
+            background: var(--darkened);
+            border-bottom: 1px solid var(--hairline);
+            backdrop-filter: blur(12px);
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo {
+            width: 40px; height: 40px;
+            background: var(--acc-border);
+            color: #fff;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+        .top-bar h1 { font-size: 1.1rem; font-weight: 800; color: var(--loud); }
+        .top-bar h1 span { display: block; font-size: 0.58rem; color: var(--quiet); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn {
+            cursor: pointer;
+            border: 1px solid var(--hairline);
+            padding: 7px 16px;
+            background: var(--bg);
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--fg);
+            transition: 0.2s;
+        }
+        .theme-btn:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+
+        /* ═══════════════════════════════════════════
+           LAYER SECTION — COMMON
+           ═══════════════════════════════════════════ */
+        .layer-section {
+            position: relative;
+            overflow: hidden;
+        }
+        .layer-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            z-index: 10;
+        }
+        .layer-section.access::before { background: linear-gradient(90deg, var(--acc-border), var(--acc-accent), var(--acc-border)); }
+        .layer-section.dist::before { background: linear-gradient(90deg, var(--dist-border), var(--dist-accent), var(--dist-border)); }
+        .layer-section.core::before { background: linear-gradient(90deg, var(--core-border), var(--core-accent), var(--core-border)); }
+
+        /* ═══════════════════════════════════════════
+           LAYER HERO BANNER
+           ═══════════════════════════════════════════ */
+        .layer-hero {
+            padding: 80px 48px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .layer-section.access .layer-hero { background: var(--acc-header); }
+        .layer-section.dist .layer-hero { background: var(--dist-header); }
+        .layer-section.core .layer-hero { background: var(--core-header); }
+
+        .layer-hero::after {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 350px; height: 350px;
+            border-radius: 50%;
+            opacity: 0.06;
+        }
+        .layer-section.access .layer-hero::after { background: var(--acc-accent); }
+        .layer-section.dist .layer-hero::after { background: var(--dist-accent); }
+        .layer-section.core .layer-hero::after { background: var(--core-accent); }
+
+        .layer-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .layer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .layer-section.access .layer-badge { background: var(--acc-border); color: #fff; }
+        .layer-section.dist .layer-badge { background: var(--dist-border); color: #fff; }
+        .layer-section.core .layer-badge { background: var(--core-border); color: #fff; }
+
+        .layer-hero h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+        .layer-section.access .layer-hero h2 { color: var(--acc-text); }
+        .layer-section.dist .layer-hero h2 { color: var(--dist-text); }
+        .layer-section.core .layer-hero h2 { color: var(--core-text); }
+
+        .layer-hero p {
+            font-size: 1.05rem;
+            color: var(--quiet);
+            max-width: 650px;
+            line-height: 1.7;
+        }
+        .layer-hero .hero-chips {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .hero-chip {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid;
+        }
+        .layer-section.access .hero-chip { color: var(--acc-text); border-color: var(--acc-border); background: rgba(21,101,192,0.1); }
+        .layer-section.dist .hero-chip { color: var(--dist-text); border-color: var(--dist-border); background: rgba(123,31,162,0.1); }
+        .layer-section.core .hero-chip { color: var(--core-text); border-color: var(--core-border); background: rgba(230,81,0,0.1); }
+
+        /* ═══════════════════════════════════════════
+           TOPOLOGY MINI DIAGRAM
+           ═══════════════════════════════════════════ */
+        .topo-box {
+            margin: 0 48px 0;
+            padding: 24px 28px;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .layer-section.access .topo-box { background: var(--acc-bg); border: 1px solid var(--acc-border); color: var(--acc-text); }
+        .layer-section.dist .topo-box { background: var(--dist-bg); border: 1px solid var(--dist-border); color: var(--dist-text); }
+        .layer-section.core .topo-box { background: var(--core-bg); border: 1px solid var(--core-border); color: var(--core-text); }
+
+        .topo-box .highlight-box {
+            display: inline;
+            background: rgba(255,255,255,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        html[data-theme="light"] .topo-box .highlight-box { background: rgba(0,0,0,0.08); }
+
+        /* ═══════════════════════════════════════════
+           CHARACTERISTICS CARDS
+           ═══════════════════════════════════════════ */
+        .chars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            padding: 0 48px;
+            margin-bottom: 36px;
+        }
+        .char-card {
+            padding: 18px 20px;
+            border-radius: 14px;
+            border: 1px solid var(--hairline);
+            background: var(--card);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .char-card:hover { transform: translateY(-2px); }
+        .layer-section.access .char-card:hover { border-color: var(--acc-border); }
+        .layer-section.dist .char-card:hover { border-color: var(--dist-border); }
+        .layer-section.core .char-card:hover { border-color: var(--core-border); }
+
+        .char-card .char-icon { font-size: 1.4rem; margin-bottom: 8px; }
+        .char-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--loud); margin-bottom: 4px; }
+        .char-card p { font-size: 0.72rem; color: var(--quiet); line-height: 1.5; }
+
+        /* ═══════════════════════════════════════════
+           CONFIG SECTION
+           ═══════════════════════════════════════════ */
+        .config-section {
+            padding: 0 48px 60px;
+        }
+        .config-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .config-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--loud);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .config-actions { display: flex; gap: 8px; }
+        .config-btn {
+            padding: 7px 18px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--hairline);
+            background: var(--darkened);
+            color: var(--fg);
+            transition: 0.2s;
+        }
+        .config-btn:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+        .config-btn.copied { background: #00c853; color: #fff; border-color: #00c853; }
+
+        .config-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--hairline);
+            background: var(--code-bg);
+        }
+        .config-label-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 18px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .layer-section.access .config-label-bar { background: var(--acc-border); color: #fff; }
+        .layer-section.dist .config-label-bar { background: var(--dist-border); color: #fff; }
+        .layer-section.core .config-label-bar { background: var(--core-border); color: #fff; }
+
+        .config-label-bar .line-count { opacity: 0.7; font-weight: 500; }
+
+        .config-code {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 20px 24px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.74rem;
+            line-height: 1.75;
+            color: var(--code-fg);
+            white-space: pre;
+            tab-size: 2;
+            transition: max-height 0.4s ease;
+        }
+        .config-code.expanded { max-height: none; }
+        .config-code::-webkit-scrollbar { width: 6px; }
+        .config-code::-webkit-scrollbar-track { background: var(--code-bg); }
+        .config-code::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        html[data-theme="light"] .config-code::-webkit-scrollbar-thumb { background: #ccc; }
+
+        .config-code .comment { color: #546e7a; }
+        .config-code .cmd { color: #00e676; }
+        .config-code .val { color: #80deea; }
+        .config-code .kw { color: #ffab40; }
+        .config-code .iface { color: #ce93d8; }
+        html[data-theme="light"] .config-code .cmd { color: #00897b; }
+        html[data-theme="light"] .config-code .val { color: #00838f; }
+        html[data-theme="light"] .config-code .kw { color: #e65100; }
+        html[data-theme="light"] .config-code .iface { color: #7b1fa2; }
+
+        /* ═══════════════════════════════════════════
+           SECTION DIVIDER
+           ═══════════════════════════════════════════ */
+        .section-divider {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+        }
+        .divider-1::before { background: linear-gradient(90deg, transparent, var(--dist-border), transparent); }
+        .divider-2::before { background: linear-gradient(90deg, transparent, var(--core-border), transparent); }
+
+        .section-divider .divider-icon {
+            position: relative;
+            z-index: 2;
+            background: var(--bg);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 1px solid var(--hairline);
+        }
+        .divider-1 .divider-icon { color: var(--dist-text); border-color: var(--dist-border); }
+        .divider-2 .divider-icon { color: var(--core-text); border-color: var(--core-border); }
+
+        /* ═══════════════════════════════════════════
+           CALLOUT
+           ═══════════════════════════════════════════ */
+        .callout {
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 0 48px 24px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.info { background: var(--acc-bg); border-left: 4px solid var(--acc-border); }
+        .callout.warn { background: #1a1500; border-left: 4px solid #f9a825; }
+        html[data-theme="light"] .callout.warn { background: #fff8e1; }
+        .callout strong { color: var(--loud); }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.72rem;
+            color: var(--quiet);
+            border-top: 1px solid var(--hairline);
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLL TO TOP
+           ═══════════════════════════════════════════ */
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--darkened);
+            border: 1px solid var(--hairline);
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--fg);
+            z-index: 999;
+            transition: 0.2s;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .scroll-top:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
+        .scroll-top.visible { display: flex; }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .side-nav { display: none; }
+            .layer-hero { padding: 50px 24px 40px; }
+            .layer-hero h2 { font-size: 2.2rem; }
+            .topo-box { margin: 0 24px; padding: 16px; font-size: 0.62rem; }
+            .chars-grid { padding: 0 24px; grid-template-columns: 1fr 1fr; }
+            .config-section { padding: 0 24px 40px; }
+            .callout { margin: 0 24px 20px; }
+            .top-bar { padding: 12px 20px; }
+        }
+        @media (max-width: 600px) {
+            .layer-hero h2 { font-size: 1.7rem; }
+            .chars-grid { grid-template-columns: 1fr; }
+            .hero-chips { gap: 6px; }
+            .hero-chip { font-size: 0.65rem; padding: 4px 10px; }
+        }
+
+        /* ═══════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .layer-section { animation: fadeUp 0.5s ease; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════
+         FIXED SIDE NAVIGATION
+         ═══════════════════════════════════════════ -->
+    <nav class="side-nav" id="sideNav" aria-label="Layer navigation">
+        <a href="#access" class="acc-link active" data-section="access">
+            <span class="nav-dot"></span>
+            <span class="nav-text">ACCESS</span>
+            <span class="nav-label">Edge / Access Layer</span>
+        </a>
+        <a href="#distribution" class="dist-link" data-section="distribution">
+            <span class="nav-dot"></span>
+            <span class="nav-text">DIST</span>
+            <span class="nav-label">Distribution Layer</span>
+        </a>
+        <a href="#core" class="core-link" data-section="core">
+            <span class="nav-dot"></span>
+            <span class="nav-text">CORE</span>
+            <span class="nav-label">Core Layer</span>
+        </a>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════
+         TOP BAR
+         ═══════════════════════════════════════════ -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="top-logo">H</div>
+            <h1>ARUBA Switch Layers<span>NETWORK ARCHITECTURE REFERENCE</span></h1>
+        </div>
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙 Dark</button>
+    </header>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                    ACCESS / EDGE LAYER                     ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="access" class="layer-section access">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 2 — EDGE</div>
+                <h2>Access Switch<br>Edge Layer</h2>
+                <p>End-device connectivity. PoE for phones and cameras. Access ports with VLAN assignment. Uplink to Distribution via LACP trunk. No routing — pure Layer 2 forwarding.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">Layer 2 Only</span>
+                    <span class="hero-chip">PoE Enabled</span>
+                    <span class="hero-chip">STP Edge Port</span>
+                    <span class="hero-chip">LACP Uplink</span>
+                    <span class="hero-chip">VLAN Access</span>
+                    <span class="hero-chip">IRF Pair</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Access layer topology">
+  ┌─────────────────────────────────────────────────────────────┐
+  │                    <span class="highlight-box">ACCESS LAYER — E401 (You Are Here)</span>              │
+  │                                                             │
+  │   [PC] [Phone] [Camera] [Printer] [PC] [Phone] [Camera]     │
+  │     │     │       │        │       │     │       │          │
+  │   Gi0/3 Gi0/4  Gi0/5    Gi0/6   Gi0/7 Gi0/8  Gi0/9        │
+  │     └───────┴───────┴────────┴───────┴───────┴──────┘       │
+  │                          │                                  │
+  │                          │
+  │                    Gi0/1 │ Gi0/2                            │
+  │                    ┌─────┴─────┐                            │
+  │                    │ LACP Trunk │ ← vlan all, PVID 244      │
+  │                    └─────┬─────┘                            │
+  │                          │                                   │
+  │  ════════════════════════╪══════════════════════════════    │
+  │                    DISTRIBUTION (ND4)                        │
+  └─────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🔌</div>
+                <h4>PoE Power</h4>
+                <p>Ports 3-24 provide PoE for IP phones, cameras, APs. Power priority configured per profile.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🔗</div>
+                <h4>LACP Uplink</h4>
+                <p>2x GE ports in dynamic LACP to ND4 distribution. Trunk allows all VLANs, PVID 244 for management.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🏷️</div>
+                <h4>VLAN Access</h4>
+                <p>End-device ports configured as access VLAN (112, 44, 34, etc.). Voice VLAN 44 for IP phones.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🛡️</div>
+                <h4>STP Edge</h4>
+                <p>All access ports set as edge ports for fast convergence. BPDUGuard recommended but not shown.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👥</div>
+                <h4>IRF Stack</h4>
+                <p>Two physical switches stacked via IRF using 10GE ports. Appears as single logical device.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📡</div>
+                <h4>sFlow + SNMP</h4>
+                <p>Traffic sampling to collector 10.0.10.76. SNMP traps to NMS servers for monitoring.</p>
+            </div>
+        </div>
+
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <div><strong>Representative Config:</strong> No access switch config was provided in the source. This is a reconstructed E401 config based on the ND4 distribution switch configuration, showing the exact port types, VLAN assignments, and uplink design used in this network.</div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 E401 — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('accessCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('accessCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME E401 — ARUBA COMWARE V5.20</span>
+                    <span class="line-count" id="accessLines"></span>
+                </div>
+                <pre class="config-code" id="accessCode">#
+
+
+ND4-E425# display current-configuration 
+; JL258A Configuration Editor; Created on release #WC.16.10.0009
+; Ver #14:67.6f.f8.1d.9b.3f.bf.bb.ef.7c.59.fc.6b.fb.9f.fc.ff.ff.37.ef:44
+hostname "ND4-E425"
+module 1 type jl258a
+trunk 9-10 trk1 lacp
+timesync ntp
+ntp server 10.0.2.2
+ntp enable
+ip access-list extended "100"
+     10 deny ip 10.0.136.213 0.0.0.0 10.0.244.35 0.0.0.0
+   exit
+ip default-gateway 10.0.244.1
+ip route 0.0.0.0 0.0.0.0 10.0.14.41
+ip route 0.0.0.0 0.0.0.0 10.0.244.1
+snmp-server community "public"
+vlan 1
+   name "DEFAULT_VLAN"
+   no untagged 1-8,Trk1
+   ip address dhcp-bootp
+   ipv6 enable
+   ipv6 address dhcp full
+   exit
+   name "video"
+   no ip address
+   exit
+vlan 44
+   name "voice-phone"
+   tagged 1-8,Trk1
+   no ip address
+   voice
+   exit
+vlan 126
+   name "logistic-MTS"
+   tagged Trk1
+   no ip address
+   exit
+vlan 136
+   name "VLAN136"
+   no ip address
+   exit
+vlan 140
+   name "Hardware-Lab"
+   untagged 1-8
+   tagged Trk1
+   no ip address
+   exit
+vlan 142
+   name "VLAN142"
+   no ip address
+   exit
+vlan 244
+   name "Switch-Managment"
+   untagged Trk1
+   ip address 10.0.244.35 255.255.255.0
+   exit
+spanning-tree Trk1 priority 4
+allow-unsupported-transceiver
+no tftp server
+no autorun
+no dhcp config-file-update
+no dhcp image-file-update
+no dhcp tr69-acs-url
+password manager
+#
+return </pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         DIVIDER
+         ═══════════════════════════════════════════ -->
+    <div class="section-divider divider-1">
+        <span class="divider-icon">▼ DISTRIBUTION LAYER ▼</span>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                   DISTRIBUTION LAYER                       ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="distribution" class="layer-section dist">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 2/3 — AGGREGATION</div>
+                <h2>Distribution Switch<br>ND4</h2>
+                <p>VLAN routing gateway for all downstream access switches. DHCP relay, OSPF peering to Core, IRF stacking with MAD, and 24x LACP downlinks to edge switches. The bridge between Access and Core.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">L2/L3 Routing</span>
+                    <span class="hero-chip">DHCP Relay</span>
+                    <span class="hero-chip">OSPF Area 0</span>
+                    <span class="hero-chip">24x LACP Downlinks</span>
+                    <span class="hero-chip">IRF + MAD</span>
+                    <span class="hero-chip">VLAN GW</span>
+                    <span class="hero-chip">UDP Helper</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Distribution layer topology">
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                  <span class="highlight-box">DISTRIBUTION LAYER — ND4 (You Are Here)</span>            │
+  │                                                                  │
+  │  E401  E402  E403  E404  E405  E406 ... E420  E421  E422  E423  E424  │
+  │    │    │    │    │    │         │    │    │    │    │              │
+  │  LA-1 LA-2 LA-3 LA-4 LA-5 LA-6   LA-20 LA-21 LA-22 LA-23 LA-24  │
+  │    │    │    │    │    │         │    │    │    │    │              │
+  │    └────┴────┴────┴────┴────┬────┴────┴────┴────┴────┘              │
+  │                              │                                    │
+  │              ┌───────────────┴───────────────┐                     │
+  │              │     ND4 (IRF Pair)            │                     │
+  │              │  Distribution Switch          │                     │
+  │              │  ● VLAN Interfaces (GW)       │                     │
+  │              │  ● DHCP Relay                 │                     │
+  │              │  ● OSPF → Core                │                     │
+  │              └───────────────┬───────────────┘                     │
+  │                     4x 10GE │ (LACP Trunk)                        │
+  │                     VLAN 14 │ OSPF Peer                          │
+  │  ═══════════════════════════╪═════════════════════════════════    │
+  │                          CORE (DPA-Core)                         │
+  └──────────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🌐</div>
+                <h4>VLAN Gateway</h4>
+                <p>Serves as the default gateway for 20+ VLANs (112, 126-137, 140, 142-146, etc.). Each VLAN interface has a /24 IP.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📨</div>
+                <h4>DHCP Relay</h4>
+                <p>Relays DHCP requests to 3 servers: 10.0.10.12, 10.0.10.13, 10.0.10.14. UDP helper also configured for broadcast services.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🗺️</div>
+                <h4>OSPF Peer</h4>
+                <p>OSPF Area 0 on VLAN 14 (10.0.14.1). Static default route via 10.0.14.2 (Core). Redistributes direct and static.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">⛓️</div>
+                <h4>24x LACP Downlinks</h4>
+                <p>Bridge-Aggregation 1-24, each connecting to one access switch (E401-E424). Dynamic LACP with MAD enabled.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👥</div>
+                <h4>IRF + MAD</h4>
+                <p>Two chassis in IRF domain 4. MAD (Multi-Active Detection) via ARP on Vlan-interface244. Prevents split-brain.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">📊</div>
+                <h4>sFlow + SNMP v3</h4>
+                <p>sFlow to 10.0.10.76:6343 on all uplink/downlink ports. SNMP v3 with MD5+AES128 for secure NMS integration.</p>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 ND4 — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('distCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('distCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME ND4 — ARUBA COMWARE V5.20.99</span>
+                    <span class="line-count" id="distLines"></span>
+                </div>
+                <pre class="config-code" id="distCode">#
+ND4-Secondary# show running-config 
+Current configuration:
+!
+!Version ArubaOS-CX GL.10.07.0004
+!export-password: default
+hostname ND4-Secondary
+banner motd $
+
+
+*****************************************************************************
+*        Damietta port authority  Network Installation Project 2021         *
+*                                                                           *
+*                            ##        ######   ########                    *
+*                          #####     ##            ##                       *
+*                         ##   ##    ##            ##                       *
+*                        #########   ##            ##                       *
+*                        ##     ##     ######      ##                       *
+*                                                                           *
+*****************************************************************************
+*   WARNING:                                                                *
+*              This system is restricted solely to ACT authorized users     *
+*                                                                           * 
+*                  UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED!              *
+*                                                                           *
+*                   ALL CONNECTIONS AND KEYSTROKES ARE LOGGED               *
+*                                                                           *
+*                                                                           *
+*                                                                           *
+*              Deployed by Advanced Computer Technology ACT                 *
+*                                                                           *
+*                                                                           *
+*****************************************************************************
+
+$
+user admin group administrators password ciphertext AQBapYjoqedKsoEMw/89SHdFnpseFtZqNKdZjW1oMEutqC5pYgAAAE62fD7z7rrYMyR5Q00dRrwEyvd8qMLSbGJluMp0X6ZGBgsqfhCWJHN2aWoG8EexLsGa516dotIaRJkoOjeYHrLNM7ztWj4RIMRT5qixBmwRoqgTGjQLurpo3ObUCbNSjuJ1
+user manager group administrators password ciphertext AQBapXT1JYWR8qtxRwOgeZa5mBBppzHKMmYEAjgLqsadMsTDYgAAAAEnkHog6o/llHPgbbI1QewBoW0GVT8mFS3M+Vp/BXkXVjLZ5DoNn21RjNI+i/sZTEne8IYqPJfBKyo70wSB452lfNqqEILqUfUphSm4wkeqOTGCpcvKrNMlIpZ7eoLblfR5
+clock timezone africa/cairo
+sflow collector 10.0.10.76
+sflow agent-ip 10.0.2.43
+ntp server 10.0.2.2
+!
+!
+!
+!
+!                                                              
+logging 10.0.10.72
+ssh server vrf default
+ssh server vrf mgmt
+vlan 1
+    vsx-sync
+vlan 2
+    name Switch-Management
+    vsx-sync
+vlan 4
+    name Data
+    vsx-sync
+vlan 14
+    vsx-sync
+vlan 25
+vlan 34
+    name Video
+    vsx-sync
+vlan 44
+    name ip-phone
+    voice
+    vsx-sync
+    description ip-phone
+vlan 124
+    vsx-sync
+vlan 125
+    vsx-sync
+vlan 126
+    name logistic-126
+    vsx-sync
+vlan 127
+    name Takaeb-akhshab
+    vsx-sync
+vlan 128
+    vsx-sync
+vlan 129
+    name Refaat-el-gamel
+    vsx-sync
+vlan 130
+    name kasher-refaat-elgamel
+    vsx-sync
+vlan 131
+    name Mothtathmeren-F1-el-rehab
+    vsx-sync                                                   
+vlan 132
+vlan 133
+    name NOC
+    vsx-sync
+vlan 134
+    name Gamarek
+    vsx-sync
+vlan 135
+    name Operation-Engineers
+    vsx-sync
+vlan 136
+    name infrastructure-Engineers
+    vsx-sync
+vlan 137
+    name Rekaba-saderat
+    vsx-sync
+vlan 138
+    vsx-sync
+vlan 139
+    vsx-sync
+vlan 140
+    name HW-LAB
+    vsx-sync
+vlan 141
+    vsx-sync
+vlan 142
+    name logistic-142
+    vsx-sync
+    description Data
+vlan 143
+    name new-estesmary
+    vsx-sync
+vlan 144
+    name newestesmarry
+    vsx-sync
+vlan 145
+    name newestesmary
+    vsx-sync
+vlan 146
+    name new estesmary
+    vsx-sync
+vlan 147
+    vsx-sync                                                   
+vlan 148
+    vsx-sync
+vlan 149
+    vsx-sync
+vlan 150
+vlan 200
+    name kamerat-morakaba
+    vsx-sync
+vlan 244
+    name Managment-ND to Edge
+    vsx-sync
+vlan 999
+    name DPA Access Points
+    vsx-sync
+spanning-tree mode rpvst
+spanning-tree
+interface mgmt
+    no shutdown
+    ip static 10.0.3.43/24
+    default-gateway 10.0.3.41
+system interface-group 1 speed 10g
+    !interface group 1 contains ports 1/1/1-1/1/12
+system interface-group 2 speed 10g
+    !interface group 2 contains ports 1/1/13-1/1/24
+system interface-group 3 speed 10g
+    !interface group 3 contains ports 1/1/25-1/1/36
+system interface-group 4 speed 10g
+    !interface group 4 contains ports 1/1/37-1/1/48
+interface lag 1 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 2 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 3 multi-chassis                                  
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 4 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 5 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 6 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 7 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 8 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 9 multi-chassis
+    vsx-sync vlans                                             
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 10 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 11 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 12 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 13 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 14 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 15 multi-chassis
+    vsx-sync vlans
+    no shutdown                                                
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 16 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 17 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 18 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 19 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 20 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 21 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing                                                 
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 22 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 23 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 24 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 25 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 26 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 27 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244                                      
+    vlan trunk allowed all
+    lacp mode active
+interface lag 28 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 29 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 30 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 31 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 32 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 33 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all                                     
+    lacp mode active
+interface lag 34 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 35 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 36 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 37 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 38 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 39 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active                                           
+interface lag 40 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 41 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 42 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 43 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 44 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 45 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 46 multi-chassis                                 
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 47 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+    lacp mode active
+interface lag 128
+    no shutdown
+    description ISL-link
+    no routing
+    vlan trunk native 1 tag
+    vlan trunk allowed all
+    lacp mode active
+interface lag 244 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 14
+    vlan trunk allowed all
+    lacp mode active
+interface 1/1/1
+    no shutdown
+    speed 1000-full
+    lag 1
+interface 1/1/2
+    speed 1000-full
+    lag 2
+interface 1/1/3
+    no shutdown
+    speed 1000-full
+    lag 3
+interface 1/1/4
+    no shutdown
+    speed 1000-full
+    lag 4
+interface 1/1/5                                                
+    speed 1000-full
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+interface 1/1/6
+    no shutdown
+    speed 1000-full
+    lag 6
+interface 1/1/7
+    no shutdown
+    speed 1000-full
+    lag 7
+interface 1/1/8
+    no shutdown
+    speed 1000-full
+        !actual speed auto 10g
+    lag 8
+interface 1/1/9
+    no shutdown
+    speed 1000-full
+    lag 9
+interface 1/1/10
+    no shutdown
+    speed 1000-full
+    lag 10
+interface 1/1/11
+    no shutdown
+    speed 1000-full
+    lag 11
+interface 1/1/12
+    no shutdown
+    lag 12
+interface 1/1/13
+    no shutdown
+    lag 13
+interface 1/1/14
+    no shutdown
+    speed 1000-full
+    lag 14
+interface 1/1/15
+    no shutdown
+    speed 1000-full
+    lag 15                                                     
+interface 1/1/16
+    no shutdown
+    speed 1000-full
+    lag 16
+interface 1/1/17
+    no shutdown
+    speed 1000-full
+        !actual speed auto 10g
+    lag 17
+interface 1/1/18
+    no shutdown
+    speed 1000-full
+    lag 18
+interface 1/1/19
+    no shutdown
+    lag 19
+interface 1/1/20
+    no shutdown
+    lag 20
+interface 1/1/21
+    speed 1000-full
+    lag 21
+interface 1/1/22
+    speed 1000-full
+    no routing
+    vlan trunk native 244
+    vlan trunk allowed all
+interface 1/1/23
+    no shutdown
+    speed 1000-full
+    lag 23
+interface 1/1/24
+    no shutdown
+    speed 1000-full
+    lag 24
+interface 1/1/25
+    no shutdown
+    lag 25
+interface 1/1/26
+    no shutdown
+    lag 26
+interface 1/1/27
+    no shutdown                                                
+    lag 27
+interface 1/1/28
+    no shutdown
+    lag 28
+interface 1/1/29
+    no shutdown
+    lag 29
+interface 1/1/30
+    no shutdown
+    lag 30
+interface 1/1/31
+    no shutdown
+    lag 31
+interface 1/1/32
+    no shutdown
+    lag 32
+interface 1/1/33
+    no shutdown
+    lag 33
+interface 1/1/35
+    no shutdown
+    lag 35
+interface 1/1/36
+    no shutdown
+    lag 36
+interface 1/1/37
+    no shutdown
+    lag 37
+interface 1/1/38
+    no shutdown
+    lag 38
+interface 1/1/39
+    no shutdown
+    lag 39
+interface 1/1/40
+    no shutdown
+    lag 40
+interface 1/1/41
+    no shutdown
+    lag 41
+interface 1/1/42
+    no shutdown
+    lag 42                                                     
+interface 1/1/43
+    no shutdown
+    lag 43
+interface 1/1/44
+    no shutdown
+    lag 44
+interface 1/1/45
+    no shutdown
+    lag 45
+interface 1/1/46
+    no shutdown
+    lag 46
+interface 1/1/47
+    no shutdown
+    lag 47
+interface 1/1/48
+    no shutdown
+    description Keepalive-link
+    ip address 10.0.4.42/24
+interface 1/1/49
+    no shutdown
+interface 1/1/53
+    no shutdown
+    lag 244
+interface 1/1/54
+    no shutdown
+    lag 244
+interface 1/1/55
+    no shutdown
+    lag 128
+interface 1/1/56
+    no shutdown
+    lag 128
+interface vlan 2
+    vsx-sync active-gateways
+    ip address 10.0.2.43/24
+    active-gateway ip mac 02:02:00:04:41:01
+    active-gateway ip 10.0.2.41
+    ip ospf 1 area 0.0.0.0
+interface vlan 14
+    vsx-sync active-gateways
+    ip address 10.0.14.43/24
+    active-gateway ip mac 02:01:00:00:41:14                    
+    active-gateway ip 10.0.14.1
+    ip ospf 1 area 0.0.0.0
+interface vlan 44
+    vsx-sync active-gateways
+    ip address 10.0.44.3/24
+    active-gateway ip mac 02:01:00:04:41:01
+    active-gateway ip 10.0.44.1
+interface vlan 124
+    vsx-sync active-gateways
+    ip address 10.0.124.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.124.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 125
+    vsx-sync active-gateways
+    ip address 10.0.125.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.125.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 126
+    vsx-sync active-gateways
+    ip address 10.0.126.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.126.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 127
+    vsx-sync active-gateways
+    ip address 10.0.127.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.127.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0                                     
+interface vlan 128
+    vsx-sync active-gateways
+    ip address 10.0.128.3/24
+    active-gateway ip mac 02:01:28:04:41:28
+    active-gateway ip 10.0.128.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 129
+    vsx-sync active-gateways
+    ip address 10.0.129.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.129.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 130
+    vsx-sync active-gateways
+    ip address 10.0.130.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.130.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 131
+    vsx-sync active-gateways
+    ip address 10.0.131.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.131.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 132
+    vsx-sync active-gateways
+    ip address 10.0.132.3/24
+    active-gateway ip 10.0.132.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14                               
+    ip ospf 1 area 0.0.0.0
+interface vlan 133
+    vsx-sync active-gateways
+    ip address 10.0.133.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.133.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 134
+    vsx-sync active-gateways
+    ip address 10.0.134.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.134.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 135
+    vsx-sync active-gateways
+    ip address 10.0.135.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.135.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 136
+    vsx-sync active-gateways
+    ip address 10.0.136.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.136.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 137
+    vsx-sync active-gateways
+    ip address 10.0.137.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.137.1
+    ip helper-address 10.0.10.12                               
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 138
+    vsx-sync active-gateways
+    ip address 10.0.138.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.138.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 139
+    vsx-sync active-gateways
+    ip address 10.0.139.3/24
+    active-gateway ip mac 02:44:44:04:41:01
+    active-gateway ip 10.0.139.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 140
+    vsx-sync active-gateways
+    ip address 10.0.140.3/24
+    active-gateway ip mac 02:01:40:04:41:01
+    active-gateway ip 10.0.140.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 141
+    vsx-sync active-gateways
+    ip address 10.0.141.3/24
+    active-gateway ip mac 02:01:40:04:41:01
+    active-gateway ip 10.0.140.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 142
+    vsx-sync active-gateways
+    ip address 10.0.142.3/24
+    active-gateway ip mac 02:01:26:04:41:01                    
+    active-gateway ip 10.0.142.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 143
+    vsx-sync active-gateways
+    ip address 10.0.143.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.143.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 144
+    vsx-sync active-gateways
+    ip address 10.0.144.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.144.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 145
+    vsx-sync active-gateways
+    ip address 10.0.145.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.145.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 146
+    vsx-sync active-gateways
+    ip address 10.0.146.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.146.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 147
+    vsx-sync active-gateways                                   
+    ip address 10.0.147.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.147.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 148
+    vsx-sync active-gateways
+    ip address 10.0.148.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.148.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 149
+    vsx-sync active-gateways
+    ip address 10.0.149.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.149.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 150
+    vsx-sync active-gateways
+    ip address 10.0.150.3/24
+    active-gateway ip mac 02:01:26:04:41:01
+    active-gateway ip 10.0.150.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+interface vlan 244
+    vsx-sync active-gateways
+    ip address 10.0.244.3/24
+    active-gateway ip mac 02:01:00:04:41:01
+    active-gateway ip 10.0.244.1
+    ip ospf 1 area 0.0.0.0
+snmp-server community DPA-ISFP
+vsx
+    system-mac 02:01:00:04:00:04                               
+    inter-switch-link lag 128
+    role secondary
+    keepalive peer 10.0.4.41 source 10.0.4.42
+    vsx-sync vsx-global
+ip route 0.0.0.0/0 10.0.14.2
+!
+!
+!
+!
+!
+router ospf 1
+    redistribute connected
+    redistribute static
+    area 0.0.0.0
+https-server rest access-mode read-only
+https-server vrf default
+https-server vrf mgmt
+
+return</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         DIVIDER
+         ═══════════════════════════════════════════ -->
+    <div class="section-divider divider-2">
+        <span class="divider-icon">▼ CORE LAYER ▼</span>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║                       CORE LAYER                           ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+    <section id="core" class="layer-section core">
+        <div class="layer-hero">
+            <div class="layer-hero-inner">
+                <div class="layer-badge">◆ LAYER 3 — BACKBONE</div>
+                <h2>Core Switch<br>DPA-Core</h2>
+                <p>The network backbone. OSPF Area 0 hub for all 6 distribution switches. Server farm connectivity, WAN uplinks, firewall integration, ACL filtering, and the default gateway to the internet. STP root bridge with priority 0.</p>
+                <div class="hero-chips">
+                    <span class="hero-chip">OSPF Area 0 Hub</span>
+                    <span class="hero-chip">STP Root (Priority 0)</span>
+                    <span class="hero-chip">6x Dist LACP</span>
+                    <span class="hero-chip">Server Farm Trunks</span>
+                    <span class="hero-chip">WAN Uplinks</span>
+                    <span class="hero-chip">ACL Filtering</span>
+                    <span class="hero-chip">IRF Chassis</span>
+                    <span class="hero-chip">Default Route</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="topo-box" role="img" aria-label="Core layer topology">
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                   <span class="highlight-box">CORE LAYER — DPA-Core (You Are Here)</span>              │
+  │                                                                     │
+  │  ND1        ND2        ND3        ND4        ND5        ND6         │
+  │  │          │          │          │          │          │           │
+  │  LA-241     LA-242     LA-243     LA-244     LA-245     LA-246      │
+  │  VLAN 11    VLAN 12    VLAN 13    VLAN 14    VLAN 15    VLAN 16     │
+  │    │          │          │          │          │          │           │
+  │    └──────────┴──────────┴──────────┴──────────┴──────────┘           │
+  │                          │                                          │
+  │            ┌─────────────┴─────────────┐                            │
+  │            │    DPA-Core (IRF Pair)     │                            │
+  │            │  ● OSPF Area 0 (Hub)       │                            │
+  │            │  ● STP Root (Priority 0)   │                            │
+  │            │  ● Default Route → WAN     │                            │
+  │            └──┬──────┬──────┬──────┬───┘                            │
+  │               │      │      │      │                                │
+  │          Server  Server Backup WAN  FortiGate                      │
+  │          Farm-1  Farm-2  Sys   Uplinks  Mgmt                       │
+  │                                                                     │
+  │  ACL 3000: deny dst 10.0.8.0/24 | permit src 172.28.0.0/16         │
+  └─────────────────────────────────────────────────────────────────────┘</div>
+
+        <div class="chars-grid">
+            <div class="char-card">
+                <div class="char-icon">🗺️</div>
+                <h4>OSPF Area 0 Hub</h4>
+                <p>Peers with all 6 distribution switches via dedicated OSPF VLANs (11-16). Redistributes direct and static routes into OSPF.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👑</div>
+                <h4>STP Root Bridge</h4>
+                <p>STP instance 0 priority set to 0 — the absolute root for the entire Layer 2 topology. All distribution switches converge to this.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🏗️</div>
+                <h4>Server Farm Trunks</h4>
+                <p>4x LACP trunks (101-104) to server farms and backup systems. Carrying VLANs 4 (VM Desktops), 9 (Server Mgmt), 10 (Server Farm).</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🌍</div>
+                <h4>WAN + Default Route</h4>
+                <p>Default route 0.0.0.0/0 via 10.0.250.250. VLAN 441 (WAN) ports, VLAN 250 for upstream routing. Internet egress point.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🛡️</div>
+                <h4>ACL 3000</h4>
+                <p>Filters traffic: denies destination 10.0.8.0/24, permits source 172.28.0.0/16. Applied for security segmentation.</p>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">🖥️</div>
+                <h4>Direct Server Ports</h4>
+                <p>48x GE access ports per chassis for direct server connections: IPS Mgmt (254), Wireless Guest (253), FortiGate (252), DMZ (292), etc.</p>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <div class="config-header">
+                <h3>📋 DPA-Core — Full Running Config</h3>
+                <div class="config-actions">
+                    <button class="config-btn" onclick="toggleConfig('coreCode', this)">▼ Expand All</button>
+                    <button class="config-btn" onclick="copyConfig('coreCode', this)">📋 Copy</button>
+                </div>
+            </div>
+            <div class="config-wrap">
+                <div class="config-label-bar">
+                    <span>SYSNAME DPA-Core — ARUBA COMWARE V5.20.105</span>
+                    <span class="line-count" id="coreLines"></span>
+                </div>
+                <pre class="config-code" id="coreCode">#
+  DPA-Core-Primary# show running-config 
+Current configuration:
+!
+!Version ArubaOS-CX FL.10.05.0040
+!export-password: default
+hostname DPA-Core-Primary
+banner motd $
+
+
+*****************************************************************************
+*        Damietta port authority  Network Installation Project 2021         *
+*                                                                           *
+*                            ##        ######   ########                    *
+*                          #####     ##            ##                       *
+*                         ##   ##    ##            ##                       *
+*                        #########   ##            ##                       *
+*                        ##     ##     ######      ##                       *
+*                                                                           *
+*****************************************************************************
+*   WARNING:                                                                *
+*              This system is restricted solely to ACT authorized users     *
+*                                                                           * 
+*                  UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED!              *
+*                                                                           *
+*                   ALL CONNECTIONS AND KEYSTROKES ARE LOGGED               *
+*                                                                           *
+*                                                                           *
+*                                                                           *
+*              Deployed by Advanced Computer Technology ACT                 *
+*                                                                           *
+*                                                                           *
+*****************************************************************************
+
+$
+allow-unsupported-transceiver
+user admin group administrators password ciphertext AQBapfr8IhPoX55BfDmRckA98aawEvy3mMsikFCb8efrZn9+YgAAAOj+AEossk1rMCauiC/r2j6sB7xjR0ZcWFEGCiSQJeq3Jn1+WqBCEk8OHPSmzbqXz9BnFYzymne+77LexWNl81sRKus0x5UooghtAL5PSVxepja0Ij9v+TjnxBRh/KQljCkK
+user manager group administrators password ciphertext AQBape/2wD1ZzvHeafnpzOGVmmB89/SwLsfg9CGziKONqJsMYgAAAJLjaSCxBll10EuyxYvpVNFUSxJeORly3QuN7TKJr11r6Rw6BnPdSm5fr1ueAcQ3KwzXqwSg5yXfbFyn6TtpVEDSzOug/X3P9UDECdLgsaM5Zv07e1SGn+8WpOy5tWJ6yn4y
+user monitor group operators password ciphertext AQBapT6Ri804U/e23U11Kv+IJPvMq7dPE8Q1qVVic9VGBQV9YgAAABvfXr7Cb2f3gKG99QfglitQDldeVdMYmhCrLUhtJ53/BrPBHRvAy6MB+6t6GirT8XGDDiqqLHsi31Y6FgihUA48Yc97ZJ++jYR3wA5qFfe6bHXx1jc2iDFmM1BiEIpEyo22
+module 1/3 product-number r0x42a
+module 1/4 product-number r0x42a
+module 1/5 product-number r0x42a
+module 1/6 product-number r0x44a
+module 1/7 product-number r0x45a
+module 1/8 product-number r0x45a
+module 1/9 product-number r0x45a                               
+module 1/11 product-number r0x42a
+clock timezone eet
+sflow collector 10.0.10.76
+sflow agent-ip 10.0.2.3
+ntp enable
+ntp vrf mgmt
+ntp master vrf default stratum 2
+!
+!
+!
+!
+ssh server vrf default
+ssh server vrf mgmt
+access-list ip test
+vlan 1
+    vsx-sync
+vlan 2
+    name Switch-Management
+    vsx-sync
+vlan 4
+    name VM-Desktops-Servers
+    vsx-sync
+vlan 7
+    name Test
+    vsx-sync
+vlan 8
+    name New_Servers
+    vsx-sync
+vlan 9
+    name Server-managment
+    vsx-sync
+vlan 10
+    name Server-farm
+    vsx-sync
+vlan 11
+    name OSPF-ND1
+    vsx-sync
+vlan 12
+    name OSPF-ND2
+    vsx-sync
+vlan 13
+    name OSPF-ND3
+    vsx-sync                                                   
+vlan 14
+    name OSPF-ND4
+    vsx-sync
+vlan 15
+    name OSPF-ND5
+    vsx-sync
+vlan 16
+    name OSPF-ND6
+    vsx-sync
+vlan 17
+    name OSPF-ND7
+    vsx-sync
+vlan 18
+    name OSPF-ND8
+    vsx-sync
+vlan 47
+    name Voice-Server
+    vsx-sync
+vlan 136
+    vsx-sync
+vlan 172
+    name Rekaba
+    vsx-sync
+vlan 192
+    name custom-wan-192.168.1.x
+    vsx-sync
+vlan 239
+    name Wimax
+    vsx-sync
+vlan 240
+    name MTS
+    vsx-sync
+    description connection-to-MTS-Datacenter
+vlan 241
+vlan 250
+    name PA
+    vsx-sync
+vlan 251
+    name Fortigate
+    vsx-sync
+vlan 252
+    name Forti-analyzer
+    vsx-sync                                                   
+vlan 254
+    name SEC-Management
+    vsx-sync
+vlan 272
+    name Leased-line
+    vsx-sync
+vlan 300
+    name Taxes
+    vsx-sync
+vlan 305
+    name G2G
+    vsx-sync
+vlan 306
+    name Data Bank
+    vsx-sync
+vlan 307
+    vsx-sync
+    description Maritime_Sector
+vlan 372
+    vsx-sync
+vlan 376
+    name Hawyat_Ocr_Test
+    vsx-sync
+vlan 380
+    name DACT_Fiber_DC
+    vsx-sync
+vlan 392
+    vsx-sync
+vlan 441
+    name WAN
+vlan 472
+    vsx-sync
+vlan 888
+    name test
+vlan 999
+    name DPA Access Points
+    vsx-sync
+spanning-tree mode rpvst
+spanning-tree
+spanning-tree priority 0
+spanning-tree rpvst-mstp-interconnect-vlan 8
+interface mgmt
+    no shutdown                                                
+    ip static 10.0.3.2/24
+    default-gateway 10.0.3.1
+interface lag 1 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description PA to Core
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 2 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Fortinet to Core
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 3 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Fortinet to Core
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 4 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description PA to Core
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 30 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 40 multi-chassis
+    vsx-sync vlans                                             
+    no shutdown
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface lag 101 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Server-Farm-old
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 4,8-10
+    lacp mode active
+interface lag 102 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Server-Farm-old
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 4,8-10
+    lacp mode active
+interface lag 103 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Server-Farm-old
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 4,9-10
+    lacp mode active
+interface lag 104 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Server-Farm-old
+    no routing
+    vlan trunk native 9
+    vlan trunk allowed 4,9-10
+    lacp mode active
+interface lag 105 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Virtual connect 1
+    no routing
+    vlan trunk native 1                                        
+    vlan trunk allowed 4,8-10
+    lacp mode active
+interface lag 106 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description Store-once
+    no routing
+    vlan trunk native 9
+    vlan trunk allowed 4,9-10
+    lacp mode active
+interface lag 107 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description synergy-mangament
+    no routing
+    vlan access 9
+    lacp mode active
+interface lag 111 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description core-EXtension-sw 10.0.10.105
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 9-10
+    lacp mode active
+interface lag 112 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description core-EXtension-sw 10.0.10.106
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 9-10,47
+    lacp mode active
+interface lag 113 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description core-EXtension-sw 10.0.10.104
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed all
+    lacp mode active
+interface lag 128
+    no shutdown                                                
+    description ISL-link
+    no routing
+    vlan trunk native 1 tag
+    vlan trunk allowed all
+    lacp mode active
+interface lag 241 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND1
+    no routing
+    vlan trunk native 11
+    vlan trunk allowed all
+    lacp mode active
+interface lag 242 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND2
+    no routing
+    vlan trunk native 12
+    vlan trunk allowed all
+    lacp mode active
+interface lag 243 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND3
+    no routing
+    vlan trunk native 13
+    vlan trunk allowed all
+    lacp mode active
+interface lag 244 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description CORE-ND4
+    no routing
+    vlan trunk native 14
+    vlan trunk allowed all
+    lacp mode active
+interface lag 245 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND5
+    no routing
+    vlan trunk native 15                                       
+    vlan trunk allowed all
+    lacp mode active
+interface lag 246 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND6
+    no routing
+    vlan trunk native 16
+    vlan trunk allowed all
+    lacp mode active
+interface lag 247 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND7
+    no routing
+    vlan trunk native 17
+    vlan trunk allowed all
+    lacp mode active
+interface lag 248 multi-chassis
+    vsx-sync vlans
+    no shutdown
+    description LA-ND8
+    no routing
+    vlan trunk native 18
+    vlan trunk allowed all
+    lacp mode active
+interface 1/3/1
+    no shutdown
+    description Dpa Access Points
+    no routing
+    vlan access 999
+interface 1/3/2
+    no shutdown
+    description Wan
+    no routing
+    vlan access 441
+interface 1/3/3
+    no shutdown
+    description Leased-line
+    no routing
+    vlan access 472
+interface 1/3/4
+    no shutdown                                                
+    description Leased-line
+    no routing
+    vlan access 472
+interface 1/3/5
+    no shutdown
+    description G2G
+    no routing
+    vlan access 305
+interface 1/3/6
+    no shutdown
+    description MTS
+    no routing
+    vlan access 239
+interface 1/3/7
+    no shutdown
+    description Custom to FrotiGate
+    no routing
+    vlan access 392
+interface 1/3/8
+    no shutdown
+    no routing
+    vlan access 307
+interface 1/3/9
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/10
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/11
+    no shutdown
+    description shahn-water
+    no routing
+    vlan access 8
+interface 1/3/12
+    no shutdown
+    description NODE0 MGMNT
+    no routing
+    vlan access 9
+interface 1/3/13                                               
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/14
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/15
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/16
+    no shutdown
+    description Data Bank
+    no routing
+    vlan access 306
+interface 1/3/17
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/18
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/19
+    no shutdown
+    description Maritime_Sector
+    no routing
+    vlan access 307
+interface 1/3/20
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/3/21
+    no shutdown
+    description Server-managment
+    no routing                                                 
+    vlan access 9
+interface 1/3/22
+    no shutdown
+    description Veeam-server ILO
+    no routing
+    vlan access 9
+interface 1/3/23
+    no shutdown
+    description Store-once ILo
+    no routing
+    vlan access 9
+interface 1/3/24
+    no shutdown
+    description Tape-library
+    no routing
+    vlan access 9
+interface 1/3/25
+    no shutdown
+    description Rekaba
+    no routing
+    vlan access 372
+interface 1/3/26
+    no shutdown
+    description MTS
+    no routing
+    vlan access 240
+interface 1/3/27
+    no shutdown
+    description Taxes
+    no routing
+    vlan access 300
+interface 1/3/28
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/4/1
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/4/2
+    no shutdown
+    description Haweyat-Router
+    no routing                                                 
+    vlan access 10
+interface 1/4/3
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/4/4
+    no shutdown
+    description DCHC_Taxes
+    no routing
+    vlan access 8
+interface 1/4/5
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/4/7
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/4/8
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/4/9
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 441
+interface 1/4/10
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 472
+interface 1/4/11
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 305
+interface 1/4/12                                               
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 392
+interface 1/4/13
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/14
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/15
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/16
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/17
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/18
+    no shutdown
+    description BKpSRV55
+    no routing
+    vlan access 10
+interface 1/4/19
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/20
+    no shutdown
+    description Server-farm
+    no routing                                                 
+    vlan access 306
+interface 1/4/21
+    no shutdown
+    description Server-farm
+    no routing
+    vlan access 9
+interface 1/4/22
+    no shutdown
+    description Veeam-server ILO
+    no routing
+    vlan access 9
+interface 1/4/23
+    no shutdown
+    description Store-once ILo
+    no routing
+    vlan access 9
+interface 1/4/24
+    no shutdown
+    description Tape-library
+    no routing
+    vlan access 9
+interface 1/4/25
+    no shutdown
+    description core-Extension-sw-10.0.10.105
+    lag 111
+interface 1/4/26
+    no shutdown
+    description core-Extension-sw-10.0.10.106
+    lag 112
+interface 1/4/27
+    no shutdown
+    description core-Extension-sw-10.0.10.104
+    lag 113
+interface 1/4/28
+    no shutdown
+    no routing
+    vlan access 372
+interface 1/5/1
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/2                                                
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/3
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/4
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/5
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/6
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/7
+    no shutdown
+    description Test
+    no routing
+    vlan access 1
+interface 1/5/8
+    no shutdown
+    description MGMT-Firewall
+    no routing
+    vlan access 254
+interface 1/5/9
+    no shutdown
+    description Voice-server
+    no routing
+    vlan access 47
+interface 1/5/10
+    no shutdown
+    description Voice-server
+    no routing                                                 
+    vlan access 47
+interface 1/5/11
+    no shutdown
+    no routing
+    vlan access 392
+interface 1/5/12
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/13
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/14
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/15
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/16
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/17
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/18
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/19
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/5/20
+    no shutdown
+    no routing
+    vlan access 10
+interface 1/5/21
+    no shutdown                                                
+    no routing
+    vlan access 2
+interface 1/5/22
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/23
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/24
+    no shutdown
+    routing
+    description Keepalive
+    ip address 10.0.4.2/24
+interface 1/5/25
+    no shutdown
+    description Damietta_Alliance
+    no routing
+    vlan access 1
+interface 1/5/26
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/27
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/5/28
+    no shutdown
+    description Frotinet-analyzer
+    no routing
+    vlan access 252
+interface 1/6/1
+    no shutdown
+    description LA-ND1
+    lag 241
+interface 1/6/2
+    no shutdown
+    description LA-ND1
+    lag 241
+interface 1/6/3
+    no shutdown                                                
+    description LA-ND2
+    lag 242
+interface 1/6/4
+    no shutdown
+    description LA-ND2
+    lag 242
+interface 1/6/5
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/7
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/8
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/9
+    no shutdown
+    description LA-ND5
+    lag 245
+interface 1/6/10
+    no shutdown
+    description LA-ND5
+    lag 245
+interface 1/6/11
+    no shutdown
+    description LA-ND6
+    lag 246
+interface 1/6/12
+    no shutdown
+    description LA-ND6
+    lag 246
+interface 1/6/13
+    no shutdown
+    description LA-ND7
+    lag 247
+interface 1/6/14                                               
+    no shutdown
+    description LA-ND7
+    lag 247
+interface 1/6/15
+    no shutdown
+    description LA-ND8
+    lag 248
+interface 1/6/16
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/17
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/18
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/19
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/20
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/21
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/22
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/23
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/24
+    no shutdown
+    no routing
+    vlan access 1                                              
+interface 1/6/25
+    no shutdown
+    description DACT_Fiber_DC
+    no routing
+    vlan access 380
+interface 1/6/26
+    no shutdown
+    description Wimax
+    no routing
+    vlan access 1
+interface 1/6/27
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/28
+    no shutdown
+    description Rekaba
+    no routing
+    vlan access 372
+interface 1/6/29
+    no shutdown
+    description Hawyat_Ocr
+    no routing
+    vlan access 376
+interface 1/6/30
+    no shutdown
+    description Damietta_alliance
+    no routing
+    vlan access 1
+interface 1/6/31
+    no shutdown
+    description VLAN 4-DR
+    no routing
+    vlan trunk native 4
+    vlan trunk allowed all
+interface 1/6/32
+    no shutdown
+    description VLAN 10-DR
+    no routing
+    vlan access 10
+interface 1/6/33
+    no shutdown
+    description Server-Farm-old                                
+    lag 101
+interface 1/6/34
+    no shutdown
+    description Server-Farm-old
+    lag 101
+interface 1/6/35
+    no shutdown
+    description Server-Farm-old
+    lag 102
+interface 1/6/36
+    no shutdown
+    description Server-Farm-old
+    lag 102
+interface 1/6/37
+    no shutdown
+    description D2D4420
+    no routing
+    vlan trunk native 10
+    vlan trunk allowed 4,8-10
+interface 1/6/38
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/39
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/6/40
+    no shutdown
+    description Server-managment
+    no routing
+    vlan access 9
+interface 1/6/41
+    no shutdown
+    description Node0_ISCSI_p1
+    no routing
+    vlan access 9
+interface 1/6/42
+    no shutdown
+    description Node0_ISCSI_p2
+    no routing
+    vlan access 9                                              
+interface 1/6/43
+    no shutdown
+    description Node0_ISCSI_p3
+    no routing
+    vlan access 9
+interface 1/6/44
+    no shutdown
+    description Node0_ISCSI_p4
+    no routing
+    vlan access 9
+interface 1/6/45
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/6/46
+    no shutdown
+    description Sygy mgmt
+    no routing
+    vlan access 9
+interface 1/6/47
+    no shutdown
+    description Veeam-backup
+    lag 104
+interface 1/6/48
+    no shutdown
+    description Store-once
+    lag 106
+interface 1/7/1
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/2
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/3
+    no shutdown
+    description CORE-ND3
+    lag 243
+interface 1/7/4
+    no shutdown
+    description CORE-ND4
+    lag 244                                                    
+interface 1/7/5
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/7
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/8
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/9
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/10
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/11
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/7/12
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/1
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/2
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/3
+    no shutdown
+    description CORE-ND3                                       
+    lag 243
+interface 1/8/4
+    no shutdown
+    description CORE-ND4
+    lag 244
+interface 1/8/5
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/7
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/8/8
+    no shutdown
+    lag 40
+interface 1/8/9
+    no shutdown
+    description Virtual connect 1
+    lag 105
+interface 1/8/10
+    no shutdown
+    description Fortinet to Core
+    lag 2
+interface 1/8/11
+    no shutdown
+    description PA-Core
+    lag 1
+interface 1/8/12
+    no shutdown
+    description VSX
+    lag 128
+interface 1/9/1
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/2
+    no shutdown
+    no routing                                                 
+    vlan access 1
+interface 1/9/3
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/4
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/5
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/7
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/9/8
+    no shutdown
+    lag 30
+interface 1/9/9
+    no shutdown
+    description Virtual-Connect 2
+    lag 105
+interface 1/9/10
+    no shutdown
+    description Fortinet to Core
+    lag 3
+interface 1/9/11
+    no shutdown
+    description PA-Core
+    lag 4
+interface 1/9/12
+    no shutdown
+    description VSX
+    lag 128
+interface 1/11/1
+    no shutdown
+    no routing                                                 
+    vlan access 1
+interface 1/11/2
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/3
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/4
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/5
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/6
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/7
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/8
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/9
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/10
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/11
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/12
+    no shutdown                                                
+    no routing
+    vlan access 1
+interface 1/11/13
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/14
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/15
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/16
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/17
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/18
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/19
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/20
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/21
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/22
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/23                                              
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/24
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/25
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/26
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/27
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/11/28
+    no shutdown
+    no routing
+    vlan access 1
+interface vlan 1
+    ip dhcp
+interface vlan 2
+    vsx-sync active-gateways
+    ip address 10.0.2.2/24
+    active-gateway ip mac 02:01:00:00:00:02
+    active-gateway ip 10.0.2.1
+interface vlan 4
+    vsx-sync active-gateways
+    ip address 172.28.4.13/22
+    active-gateway ip mac 02:01:72:00:00:02
+    active-gateway ip 172.28.4.1
+    ip helper-address 10.0.10.12
+    ip helper-address 10.0.10.13
+    ip helper-address 10.0.10.14
+    ip ospf 1 area 0.0.0.0
+    ip igmp enable
+    arp ipv4 172.28.4.30 mac 03:BF:AC:1C:04:1E
+    arp ipv4 172.28.4.40 mac 03:BF:AC:1C:04:28
+interface vlan 8                                               
+interface vlan 11
+    vsx-sync active-gateways
+    ip address 10.0.11.3/24
+    active-gateway ip mac 02:01:00:00:00:11
+    active-gateway ip 10.0.11.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 12
+    vsx-sync active-gateways
+    ip address 10.0.12.3/24
+    active-gateway ip mac 02:01:00:00:00:12
+    active-gateway ip 10.0.12.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 13
+    vsx-sync active-gateways
+    ip address 10.0.13.3/24
+    active-gateway ip mac 02:01:00:00:00:13
+    active-gateway ip 10.0.13.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 14
+    vsx-sync active-gateways
+    ip address 10.0.14.3/24
+    active-gateway ip mac 02:01:00:00:00:14
+    active-gateway ip 10.0.14.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 15
+    vsx-sync active-gateways
+    ip address 10.0.15.3/24
+    active-gateway ip mac 02:01:00:00:00:15
+    active-gateway ip 10.0.15.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 16
+    vsx-sync active-gateways
+    ip address 10.0.16.3/24
+    active-gateway ip mac 02:01:00:00:00:16
+    active-gateway ip 10.0.16.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 17
+    vsx-sync active-gateways
+    ip address 10.0.17.3/24
+    active-gateway ip mac 02:01:00:00:00:17
+    active-gateway ip 10.0.17.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 18                                              
+    vsx-sync active-gateways
+    ip address 10.0.18.3/24
+    active-gateway ip mac 02:01:00:00:00:18
+    active-gateway ip 10.0.18.2
+    ip ospf 1 area 0.0.0.0
+interface vlan 47
+    vsx-sync active-gateways
+    ip address 10.0.47.2/24
+    active-gateway ip mac 02:02:47:04:47:01
+    active-gateway ip 10.0.47.1
+interface vlan 250
+    vsx-sync active-gateways
+    ip address 10.0.250.12/24
+    active-gateway ip mac 02:02:50:04:50:01
+    active-gateway ip 10.0.250.11
+snmp-server community DPA_ISFP
+vsx
+    system-mac 02:01:00:00:00:01
+    inter-switch-link lag 128
+    role primary
+    keepalive peer 10.0.4.3 source 10.0.4.2
+    vsx-sync vsx-global
+ip route 0.0.0.0/0 10.0.250.1
+!
+!
+!
+!
+!
+router ospf 1
+    redistribute connected
+    redistribute static
+    area 0.0.0.0
+https-server vrf default
+https-server vrf mgmt
+
+return</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════ -->
+    <footer>
+        <p>ARUBA Switch Architecture Reference — Access · Distribution · Core</p>
+        <p style="margin-top: 4px; opacity: 0.6;">Generated for CyberDefend Network Documentation</p>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">↑</button>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════ -->
+    <script>
+        /* --- Theme Toggle --- */
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        function setTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('switch-layer-theme', t);
+        }
+        themeBtn.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        const saved = localStorage.getItem('switch-layer-theme');
+        if (saved) setTheme(saved);
+
+        /* --- Line Counts --- */
+        function countLines(id) {
+            const el = document.getElementById(id);
+            const span = document.getElementById(id.replace('Code', 'Lines'));
+            if (el && span) {
+                const n = el.textContent.split('\n').length;
+                span.textContent = n + ' lines';
+            }
+        }
+        countLines('accessCode');
+        countLines('distCode');
+        countLines('coreCode');
+
+        /* --- Expand / Collapse Config --- */
+        function toggleConfig(id, btn) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('expanded')) {
+                el.classList.remove('expanded');
+                btn.textContent = '▼ Expand All';
+            } else {
+                el.classList.add('expanded');
+                btn.textContent = '▲ Collapse';
+            }
+        }
+
+        /* --- Copy Config --- */
+        function copyConfig(id, btn) {
+            const el = document.getElementById(id);
+            const text = el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                /* Fallback for older browsers */
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        /* --- Scroll: Active Nav + Scroll-to-Top --- */
+        const sections = document.querySelectorAll('.layer-section');
+        const navLinks = document.querySelectorAll('.side-nav a');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function updateNav() {
+            let current = '';
+            sections.forEach(sec => {
+                const top = sec.getBoundingClientRect().top;
+                if (top < window.innerHeight * 0.4) {
+                    current = sec.id;
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-section') === current);
+            });
+
+            /* Scroll-to-top visibility */
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
