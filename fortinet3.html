@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortigate 🏡 Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e53935;
+            --primary-fg: #fff;
+            --bg: #0a0c10;
+            --card-bg: #12151b;
+            --fg: #e0e0e0;
+            --quiet: #8b9bb4;
+            --loud: #ffffff;
+            --hairline: #1e252e;
+            --code-bg: #050a10;
+            --tag-bg: #1a1f26;
+            --img-placeholder-bg: #161b22;
+            --img-placeholder-border: #30363d;
+        }
+        html[data-theme="light"] {
+            --primary: #d32f2f;
+            --primary-fg: #fff;
+            --bg: #f4f6f8;
+            --card-bg: #ffffff;
+            --fg: #2c3e50;
+            --quiet: #5c6f87;
+            --loud: #1a1a2e;
+            --hairline: #e0e6ed;
+            --code-bg: #f0f4f8;
+            --tag-bg: #eef2f7;
+            --img-placeholder-bg: #f8fafc;
+            --img-placeholder-border: #cbd5e1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.7;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* FLOATING THEME TOGGLE (No Header) */
+        .theme-btn {
+            position: fixed;
+            top: 20px; right: 20px;
+            cursor: pointer; border: 1px solid var(--hairline);
+            padding: 8px 16px; background: var(--card-bg);
+            border-radius: 20px; font-family: inherit;
+            font-weight: 600; font-size: 0.75rem; color: var(--fg);
+            transition: 0.2s; z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .article-container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        /* ARTICLE HEADER */
+        .article-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .author-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .author-avatar {
+            width: 32px; height: 32px;
+            background: var(--primary);
+            color: var(--primary-fg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem;
+        }
+        .author-name {
+            font-weight: 600; color: var(--loud); font-size: 0.9rem;
+        }
+        .article-meta {
+            font-size: 0.75rem; color: var(--quiet);
+            display: flex; gap: 8px; justify-content: center;
+            align-items: center;
+        }
+        .article-header h1 {
+            font-size: 2.5rem; font-weight: 800; color: var(--loud);
+            margin-bottom: 12px; line-height: 1.2;
+        }
+        .article-subtitle {
+            font-size: 1rem; color: var(--quiet); font-style: italic;
+        }
+
+        /* CONTENT STYLES */
+        .content p {
+            margin-bottom: 24px;
+            font-size: 1.05rem;
+            color: var(--fg);
+        }
+        .content h2 {
+            font-size: 1.6rem; font-weight: 700; color: var(--loud);
+            margin-top: 48px; margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--hairline);
+        }
+
+        /* IMAGE PLACEHOLDER */
+        .img-placeholder {
+            background: var(--img-placeholder-bg);
+            border: 2px dashed var(--img-placeholder-border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 24px 0;
+            color: var(--quiet);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .img-placeholder:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .img-placeholder span {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .figure-caption {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--quiet);
+            margin-top: -12px;
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--hairline);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #b0bec5;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .code-block .comment { color: #546e7a; font-style: italic; }
+
+        /* TAGS & LINKS */
+        .tags {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--hairline);
+        }
+        .tag {
+            background: var(--tag-bg);
+            color: var(--quiet);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: var(--primary-fg);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .download-link:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .article-header h1 { font-size: 1.8rem; }
+            .content p { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('forti_lab_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙 Dark</button>
+
+    <div class="article-container">
+        
+        <div class="article-header">
+            <div class="author-block">
+                <div class="author-avatar">Y</div>
+                <span class="author-name">Younes AIT</span>
+            </div>
+            <div class="article-meta">
+                <span>4 min read</span> · <span>Nov 17, 2019</span>
+            </div>
+            <h1>Fortigate 🏡 Lab</h1>
+            <div class="article-subtitle">By http://colortvstudio.com</div>
+        </div>
+
+        <div class="content">
+            <p>In this article, we will play with Fortigate firewall 🙃 … I will use the Fortigate’s vm image ( link 🧝 at the end) and run it on VMware Workstation, you can also test it on GNS3.</p>
+
+            <h2>Deploying the VM</h2>
+            <p>Download the files and then right-click the “FortiGate-VM64” ( legends say it is more stable ) and open it with VMware Workstation.</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 1 Image
+            </div>
+            <div class="figure-caption">Figure 1</div>
+
+            <p>Accept the terms of the licence agreement, then hit the Next button…</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 2 Image
+            </div>
+            <div class="figure-caption">Figure 2</div>
+
+            <p>Change the VM’s name or its location if necessary and click Import …</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 3 Image
+            </div>
+            <div class="figure-caption">Figure 3</div>
+
+            <h2>Initial configuration</h2>
+            <p>Launch the Fortigate VM and wait 😴 until boot is over …<br>default login is “ admin ” without a password.</p>
+            <p>Follow these commands to configure the WAN interface (port1)</p>
+            
+            <div class="code-block">config system interface
+edit port1
+set ip 192.168.1.205 255.255.255.0
+set allowaccess ssh ping http 
+end <span class="comment">(This command will save your configuration)</span></div>
+
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 4 Image
+            </div>
+            <div class="figure-caption">Figure 4 (Click on image to enlarge)</div>
+
+            <p>Then configure the default gateway ( your home router, in my case it is 192.168.1.1 ), using these commands …</p>
+            
+            <div class="code-block">conf router static
+edit 1
+set device port1
+set gateway 192.168.1.1
+end <span class="comment">(Don't forget to save your work)</span></div>
+
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 5 Image
+            </div>
+            <div class="figure-caption">Figure 5 (Click on image to enlarge)</div>
+
+            <p>Let’s ping the firewall ( port1 : 192.168.1.205 )</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 6 Image
+            </div>
+            <div class="figure-caption">Figure 6 (Click on image to enlarge)</div>
+
+            <p>Ping is 👌🏻, Now using a browser, access http://192.168.1.205</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 7 Image
+            </div>
+            <div class="figure-caption">Figure 7 (Click on image to enlarge)</div>
+
+            <p>Notice an admin button at the top !! … left click and then Change Password</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 8 Image
+            </div>
+            <div class="figure-caption">Figure 8 (Click on image to enlarge)</div>
+
+            <p>Change the timezone and configure the time manually if you want from <strong>System > Settings > Central Management</strong></p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 9 Image
+            </div>
+            <div class="figure-caption">Figure 9 (Click on image to enlarge)</div>
+
+            <p>Before going any further, verify the network connectivity from port1</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 10 Image
+            </div>
+            <div class="figure-caption">Figure 10 (Click on image to enlarge)</div>
+
+            <h2>LAN configuration (Firewall)</h2>
+            <p>In VMware right-click on FortiGate-VM64, select one of the interfaces that you will use as a LAN gateway and then click on “LAN Segments…” > Add name it and click Ok.</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 11 Image
+            </div>
+            <div class="figure-caption">Figure 11 (Click on image to enlarge)</div>
+
+            <p>Select “LAN segment” and chose the one you created. Click ok.</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 12 Image
+            </div>
+
+            <p>In the Fortigate GUI ( Graphical user interface ), go to Interfaces and edit port2(LAN)</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 13 Image
+            </div>
+            <div class="figure-caption">Figure 13 (Click on image to enlarge)</div>
+
+            <p>Give some love to port1(WAN) too 😏</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 14 Image
+            </div>
+            <div class="figure-caption">Figure 14 (Click on image to enlarge)</div>
+
+            <p>Go to <strong>Policy & Objects > IPv4 Policy > Create New</strong></p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 15 Image
+            </div>
+            <div class="figure-caption">Figure 15 (Click on image to enlarge)</div>
+
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 16 Image
+            </div>
+            <div class="figure-caption">Figure 16 (Click on image to enlarge)</div>
+
+            <h2>LAN configuration (Machine)</h2>
+            <p>Same LAN segment should be used by the virtual machine …Start the vm and check the ip address of the machine</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 17 Image
+            </div>
+
+            <p>The IP address should be assigned automatically by Fortigate.</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 18 Image
+            </div>
+
+            <p><strong>Note :</strong> The Policy configuration (Figure 16) is necessary if you want to access the internet from the machine.<br>Testing from another machine (Elementary OS) …</p>
+            
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 19 Image
+            </div>
+            <div class="figure-caption">Figure 19 (Click on image to enlarge)</div>
+
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 20 Image
+            </div>
+            <div class="figure-caption">Figure 20 (Click on image to enlarge)</div>
+
+            <div class="img-placeholder">
+                <span>🖼️</span>
+                Replace this with Figure 21 Image
+            </div>
+            <div class="figure-caption">Figure 21 (Click on image to enlarge)</div>
+
+            <p>That’s all, thank you for your time 👺</p>
+
+            <a href="https://mega.nz/#F!cU9wiQiZ!oC7_-nVRyICE1qWxQXY-3g" target="_blank" class="download-link">Link 🧝 : Fortigate VM Image</a>
+
+            <div class="tags">
+                <span class="tag">Networking</span>
+                <span class="tag">Fortinet</span>
+                <span class="tag">Fortigate</span>
+                <span class="tag">Firewall</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        function setTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('forti_lab_theme', t);
+        }
+        // Initialize button text
+        setTheme(html.getAttribute('data-theme'));
+
+        themeBtn.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+    </script>
+</body>
+</html>
