@@ -4135,6 +4135,175 @@
 				<a href="https://www.gns3.com/marketplace/appliances/arubaos-cx-simulation-software" target="_blank" class="btn-simulator">⬇️ Download ArubaOS-CX</a>
 
             </div>
+
+			<!-- ================================>
+<script>
+        const savedTheme = localStorage.getItem('cx_sim_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <div class="page-container">
+        
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <div class="top-logo">A</div>
+                <h1>Aruba AOS-CX Simulator<span>Setup & Installation Guide</span></h1>
+            </div>
+            <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙 Dark</button>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-badge">🚀 LAB SETUP GUIDE</div>
+            <h2>Getting Started with Aruba's AOS-CX Simulator</h2>
+            <p>A step-by-step guide to installing and configuring the Aruba AOS-CX Simulator using VirtualBox and GNS3 for your lab environment.</p>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <div class="step-title">Install VirtualBox and GNS3</div>
+            </div>
+            <div class="step-body">
+                <p>Start by downloading and installing both VirtualBox and GNS3 from their official websites. These tools are the backbone of the simulation environment.</p>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <div class="step-title">Import the GNS3 VM into VirtualBox</div>
+            </div>
+            <div class="step-body">
+                <ol>
+                    <li>Open VirtualBox.</li>
+                    <li>Go to <strong>File > Import Appliance</strong>, and select your GNS3 VM <code>.ova</code> file.</li>
+                    <li>After import, open the VM’s Settings.</li>
+                    <li>Under <strong>System > Processor</strong>, check the box for <strong>Enable Nested VT-x/AMD-V</strong>.</li>
+                    <li>Start the VM. You should see the message: <code>KVM support available: True</code>.</li>
+                </ol>
+                
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+<img src="https://media.licdn.com/dms/image/v2/D4D12AQGHKEVxljY_hA/article-inline_image-shrink_1500_2232/B4DZbfxEHkIAAU-/0/1747510904432?e=1790208000&v=beta&t=er1qkZKwDJLLecLza4SoCi_zuqQtDj7pw23N6HCTzLs" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+                <ol start="6">
+                    <li>In GNS3, open <strong>Preferences</strong>, go to <strong>GNS3 VM</strong>, select VirtualBox as the engine, and apply the settings.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+<img src="https://media.licdn.com/dms/image/v2/D4D12AQH5JVKpsxylLQ/article-inline_image-shrink_1000_1488/B4DZbfxL1gGYAQ-/0/1747510935989?e=1790208000&v=beta&t=fLlD4Y2yHNUf0FEtjUavM9FeBO62CraVgbpKkBN3ZPs" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+
+                <ol start="7">
+                    <li>A green indicator in the <strong>GNS3 Server Summary</strong> confirms everything is running smoothly.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+<img src="https://media.licdn.com/dms/image/v2/D4D12AQEhdoCKeVF-Sg/article-inline_image-shrink_1000_1488/B4DZbfxQRdHQAQ-/0/1747510953959?e=1790208000&v=beta&t=-w8UnNqwCrz3OF8EIH8Xnm6B8SJN6yViESskoFXsTxs" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <div class="step-title">Add the Aruba AOS-CX Appliance to GNS3</div>
+            </div>
+            <div class="step-body">
+                <ol>
+                    <li>In GNS3, go to <strong>File > Import Appliance</strong>.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+<img src="https://media.licdn.com/dms/image/v2/D4D12AQHOIhiKYU2Z5A/article-inline_image-shrink_1500_2232/B4DZbfxVpVHQAU-/0/1747510975560?e=1790208000&v=beta&t=65aaa1hl2835ElmUyJxBHzmze0Dmdc6CGMN7oGeCBms" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+
+                <ol start="2">
+                    <li>Locate and select the Aruba AOS-CX appliance file (usually a <code>.gns3a</code> file).</li>
+                    <li>Choose to install the appliance on the GNS VM and click <strong>Next</strong>.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+<img src="https://media.licdn.com/dms/image/v2/D4D12AQGDTMYhCKsc-g/article-inline_image-shrink_1500_2232/B4DZbfxbh5IAAU-/0/1747511000084?e=1790208000&v=beta&t=YJOFm39LFWyw1LrH8YZBQ23L1brn8hqZOvBORPJEd68" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+
+                <ol start="4">
+                    <li>Select the version of the VM you have downloaded, or create a new version. Enter the same version name and disk image file name (the <code>.vmdk</code> file).</li>
+					<img src="https://media.licdn.com/dms/image/v2/D4D12AQGutLAKHpagpQ/article-inline_image-shrink_1000_1488/B4DZbfxm1iH8AY-/0/1747511046511?e=1790208000&v=beta&t=KjyEerMypxOFahS9OoXa0UynAlYVaxyW_DSSJTm-Se8" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+                    <li>Import the VMDK file and complete the setup.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+					<img src="https://media.licdn.com/dms/image/v2/D4D12AQEtKB2_FttVOA/article-inline_image-shrink_1000_1488/B4DZbfxk6wG0AY-/0/1747511038565?e=1790208000&v=beta&t=kiM821BmunrT0RYHXkK_U4ob6w2QsnGjdY9nJKRqxgQ" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+
+                <ol start="6">
+                    <li>After selecting the version name, click <strong>Import</strong>, and choose the VMDK file. Once uploaded, you should see the image file ready to install. Select it and click <strong>Next</strong>, then <strong>Finish</strong>.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+					<img src="https://media.licdn.com/dms/image/v2/D4D12AQF_Nrq-4m3pHw/article-inline_image-shrink_1000_1488/B4DZbfxrcoHsAU-/0/1747511065423?e=1790208000&v=beta&t=91MxLjwmUKyLyGolWBaflr_jFvU_rKPDcDhhp7DJivA" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-num">4</div>
+                <div class="step-title">Launch Your AOS-CX Simulator</div>
+            </div>
+            <div class="step-body">
+                <ol>
+                    <li>Create a new project in GNS3.</li>
+                    <li>Drag the Aruba OS-CX switch into the workspace.</li>
+                    <li>Right-click the device and select <strong>Start</strong>.</li>
+                    <li>Right-click again and choose <strong>Console</strong> to access the command line.</li>
+                    <li>Login using the default username <code>admin</code>. If a password is required, use the one you set during setup.</li>
+                </ol>
+
+                <!-- REPLACE THIS BLOCK WITH YOUR IMAGE -->
+					<img src="https://media.licdn.com/dms/image/v2/D4D12AQGEwtkj5hvJZg/article-inline_image-shrink_1500_2232/B4DZbfxwKwGYAU-/0/1747511084694?e=1790208000&v=beta&t=3k9JRGYpWRYuUuQG_3tTvuDCZlBkY7xFPNZ__wduyLQ" alt="Description of the image" style="width: 100%; border-radius: 12px; margin: 20px 0; border: 1px solid var(--hairline);">
+
+            </div>
+        </div>
+
+        <!-- CONCLUSION -->
+        <div class="conclusion-box">
+            <h3>And You’re In. 🎉</h3>
+            <p>Once logged in, you're ready to explore the Aruba CX CLI, test configurations, and simulate real-world networking scenarios. This setup is especially useful for engineers who want lab access without physical hardware. If you're using this for certification prep (like the Aruba Certified Switching Associate or Professional), it’s an excellent training tool.</p>
+        </div>
+
+        <!-- SOURCE -->
+        <a href="https://www.linkedin.com/pulse/getting-started-arubas-aos-cx-simulator-setup-guide-ahmed-mejri-f4vpf/" target="_blank" class="source-link">
+          Source: Getting Started with Aruba's AOS-CX Simulator Setup Guide by Ahmed Mejri
+        </a>
+
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        function setTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('cx_sim_theme', t);
+        }
+        // Initialize button text based on current theme
+        setTheme(html.getAttribute('data-theme'));
+
+        themeBtn.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+    </script>
+
+
+			
         </div>
 		
  <!-- ==================== VIDEO 1 ==================== -->
