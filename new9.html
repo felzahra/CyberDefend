@@ -809,7 +809,7 @@
         <div class="logo"><div class="logo-icon">🌐</div><div class="logo-text"><h1>CyberDefend</h1><span>NETWORKING LABS</span></div></div>
         <div class="tagline">Part of Accenture | Hands-on Networking & Security Labs</div>
     </div>
-    <a href="indexlesson-22" class="back-link">← Back to Dashboard</a>
+    <a href="index.html" class="back-link">← Back to Dashboard</a>
     <button class="theme-toggle" onclick="toggleTheme()">
         <span id="themeLabel">Switch to Light Mode</span>
     </button>
@@ -853,24 +853,6 @@
         <div class="nav-item" data-lesson="21"><span class="check-icon">🖥️</span> Links in Aruba CX Simulator including OOBM on ESXi Server</div>
         <div class="nav-item" data-lesson="22"><span class="check-icon">🔧</span> How to Install Aruba Switch Simulator in GNS3</div>
 
-		 <div class="course-title-sidebar">
-        <h2> Fortinet Firewall</h2>
-    </div>
-    <div class="nav-list">
-        <div class="nav-section-label">📄 Fortinet Firewall MATERIAL (PDF)</div>
-		<div class="nav-item " data-lesson="pdff"><span class="check-icon">📄</span> FortiGate Firewall on GNS3</div>
-		<div class="nav-item " data-lesson="pdff2"><span class="check-icon">📄</span> Fortigate  Lab Topology</div>
-		<div class="nav-item " data-lesson="pdff3"><span class="check-icon">📄</span> Fortigate Initial Command Line Setup</div>
-
-
-
-        <div class="nav-section-label">📺 Fortinet Firewall VIDEOS</div>
-		<div class="nav-item" data-lesson="41"><span class="check-icon">⚙️</span> Fortinet Firewall</div>
-
-
-        <div class="nav-section-label">⬇️ Fortinet Firewall DOWNLOADS</div>
-        <div class="nav-item" data-lesson="simf"><span class="check-icon">💾</span> Download Fortinet Firewall Image</div>
-
 
 
 		
@@ -881,9 +863,9 @@
 <div class="main-content">
     <nav class="top-nav">
         <div class="top-nav-links">
-            <a href="indexlesson-22">Dashboard</a>
+            <a href="index.html">Dashboard</a>
             <div class="nav-dropdown">
-                <a href="courseslesson-22">Courses ▾</a>
+                <a href="courses.html">Courses ▾</a>
                 <div class="nav-dropdown-content">
                     <a href="2026.html">Summer Lectures</a>
                     <a href="labs.html">Curriculum</a>
@@ -904,6 +886,7 @@
 
     <div class="content-wrapper">
 
+        <!-- ==================== PDF SECTION ==================== -->
         <div id="lesson-pdf" class="pdf-card">
 <script>
     const st = localStorage.getItem('cd_theme') || 'dark';
@@ -4128,55 +4111,11 @@
 		}
 		</script>
         </div>
+        <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
 				
-<div id="lesson-pdff" class="pdf-card" style="display:none;">
-    <iframe src="fortinet.html?embed=true" style="width:100%; height:85vh; border:none; border-radius:28px;" title="Lesson Content"></iframe>
+<div id="lesson-pdfconfig" class="pdf-card" style="display:none;">
+    <iframe src="arubaconfig.html?embed=true" style="width:100%; height:85vh; border:none; border-radius:28px;" title="Lesson Content"></iframe>
 </div>
-
-<div id="lesson-pdff2" class="pdf-card" style="display:none;">
-    <iframe src="fortinet2.html?embed=true" style="width:100%; height:85vh; border:none; border-radius:28px;" title="Lesson Content"></iframe>
-</div>
-
-<div id="lesson-pdff3" class="pdf-card" style="display:none;">
-    <iframe src="fortinet3.html?embed=true" style="width:100%; height:85vh; border:none; border-radius:28px;" title="Lesson Content"></iframe>
-</div>
-
-        <div id="lesson-41" class="lesson-card" style="display:none;">
-            <div class="card-header">
-                <span class="lesson-badge">📺 VIDEO 3 / 4</span>
-                <h2>FortiGate Firewall on GNS3</h2>
-            </div>
-            <div class="lesson-tabs">
-                <button class="tab-btn-lesson active" data-tab="video13">🎬 Video</button>
-            </div>
-            <div id="video13" class="tab-content active">
-                <div class="video-container">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube-nocookie.com/embed/LsfiOPIcj2g?rel=0" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                </div>
-                <div class="description-text">
-                    <a href="https://www.youtube.com/watch?v=LsfiOPIcj2g" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
-                </div>
-            </div>
-        </div>
-
-
-		        <div id="lesson-simf" class="simulator-banner" style="display:none;">
-            <div class="simulator-banner-body">
-                <div class="sim-icon-big">💾</div>
-                <div class="sim-details">
-                    <h3>⬇️ Download Fortinet IOS images</h3>
-                    <div class="sim-links">
-                        <a href="https://github.com/hegdepavankumar/Cisco-Images-for-GNS3-and-EVE-NG" target="_blank">⬇️ Download GNS3 IOS images</a>
-                    </div>
-                </div>
-                <a href="https://github.com/hegdepavankumar/Cisco-Images-for-GNS3-and-EVE-NG" target="_blank" class="btn-simulator">⬇️ Download GNS3 IOS images</a>
-            </div>
-        </div>
-
-
-
 		
         <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
         <div id="lesson-sim3" class="simulator-banner" style="display:none;">
@@ -4197,6 +4136,7 @@
 
             </div>
 
+			<!-- ================================>
 <script>
         const savedTheme = localStorage.getItem('cx_sim_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -4429,8 +4369,7 @@
                 </div>
             </div>
         </div>
-
-	
+        <!-- ==================== VIDEO 1 ==================== -->
 
 <!-- COMMENT FAB & PANEL -->
 <button class="comment-fab" onclick="toggleComments()" title="Comments">💬<span class="comment-fab-badge">0</span></button>
