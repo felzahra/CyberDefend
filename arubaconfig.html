@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +109,7 @@
             border: 1px solid var(--hairline);
             border-radius: 16px;
             padding: 10px 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         .side-nav a {
             display: flex;
@@ -157,7 +157,7 @@
             border-radius: 6px;
             font-size: 0.65rem;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .side-nav a:hover .nav-label { display: block; }
 
@@ -238,7 +238,7 @@
             top: -80px; right: -80px;
             width: 350px; height: 350px;
             border-radius: 50%;
-            opacity: 0.06;
+            opacity: 0.1;
         }
         .layer-section.access .layer-hero::after { background: var(--acc-accent); }
         .layer-section.dist .layer-hero::after { background: var(--dist-accent); }
@@ -337,6 +337,7 @@
             border: 1px solid var(--hairline);
             background: var(--card);
             transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
         .char-card:hover { transform: translateY(-2px); }
         .layer-section.access .char-card:hover { border-color: var(--acc-border); }
@@ -518,7 +519,7 @@
             color: var(--fg);
             z-index: 999;
             transition: 0.2s;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
         .scroll-top:hover { border-color: var(--acc-accent); color: var(--acc-accent); }
         .scroll-top.visible { display: flex; }
@@ -588,7 +589,7 @@
             <div class="top-logo">H</div>
             <h1>ARUBA Switch Layers<span>NETWORK ARCHITECTURE REFERENCE</span></h1>
         </div>
-        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙 Dark</button>
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">☀️ Light</button>
     </header>
 
     <!-- ╔══════════════════════════════════════════════════════════════╗
@@ -860,6 +861,29 @@ Current configuration:
 hostname ND4-Secondary
 banner motd $ 
 
+***************************************************************************
+*        Damietta port authority  Network Installation Project 2021         *
+*                                                                           *
+*                            ##        ######   ########                    *
+*                          #####     ##            ##                       *
+*                         ##   ##    ##            ##                       *
+*                        #########   ##            ##                       *
+*                        ##     ##     ######      ##                       *
+*                                                                           *
+***************************************************************************
+*   WARNING:                                                                *
+*              This system is restricted solely to ACT authorized users     *
+*                                                                           * 
+*                  UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED!              *
+*                                                                           *
+*                   ALL CONNECTIONS AND KEYSTROKES ARE LOGGED               *
+*                                                                           *
+*                                                                           *
+*                                                                           *
+*              Deployed by Advanced Computer Technology ACT                 *
+*                                                                           *
+*                                                                           *
+***************************************************************************
 
  $ user admin group administrators password ciphertext AQBapYjoqedKsoEMw/89SHdFnpseFtZqNKdZjW1oMEutqC5pYgAAAE62fD7z7rrYMyR5Q00dRrwEyvd8qMLSbGJluMp0X6ZGBgsqfhCWJHN2aWoG8EexLsGa516dotIaRJkoOjeYHrLNM7ztWj4RIMRT5qixBmwRoqgTGjQLurpo3ObUCbNSjuJ1
 user manager group administrators password ciphertext AQBapXT1JYWR8qtxRwOgeZa5mBBppzHKMmYEAjgLqsadMsTDYgAAAAEnkHog6o/llHPgbbI1QewBoW0GVT8mFS3M+Vp/BXkXVjLZ5DoNn21RjNI+i/sZTEne8IYqPJfBKyo70wSB452lfNqqEILqUfUphSm4wkeqOTGCpcvKrNMlIpZ7eoLblfR5
@@ -1906,20 +1930,16 @@ Current configuration:
 hostname DPA-Core-Primary
 banner motd $ 
 
-*****************************************************************************
- DPA-Core-Primary# show running-config 
-Current configuration:
-!
-!Version ArubaOS-CX FL.10.05.0040
-!export-password: default
-hostname DPA-Core-Primary
-banner motd $
-
-
-*****************************************************************************
-                  *
+***************************************************************************
+*        Damietta port authority  Network Installation Project 2021         *
 *                                                                           *
-*****************************************************************************
+*                            ##        ######   ########                    *
+*                          #####     ##            ##                       *
+*                         ##   ##    ##            ##                       *
+*                        #########   ##            ##                       *
+*                        ##     ##     ######      ##                       *
+*                                                                           *
+***************************************************************************
 *   WARNING:                                                                *
 *              This system is restricted solely to ACT authorized users     *
 *                                                                           * 
@@ -1932,10 +1952,9 @@ banner motd $
 *              Deployed by Advanced Computer Technology ACT                 *
 *                                                                           *
 *                                                                           *
-*****************************************************************************
+***************************************************************************
 
-$
-allow-unsupported-transceiver
+ $ allow-unsupported-transceiver
 user admin group administrators password ciphertext AQBapfr8IhPoX55BfDmRckA98aawEvy3mMsikFCb8efrZn9+YgAAAOj+AEossk1rMCauiC/r2j6sB7xjR0ZcWFEGCiSQJeq3Jn1+WqBCEk8OHPSmzbqXz9BnFYzymne+77LexWNl81sRKus0x5UooghtAL5PSVxepja0Ij9v+TjnxBRh/KQljCkK
 user manager group administrators password ciphertext AQBape/2wD1ZzvHeafnpzOGVmmB89/SwLsfg9CGziKONqJsMYgAAAJLjaSCxBll10EuyxYvpVNFUSxJeORly3QuN7TKJr11r6Rw6BnPdSm5fr1ueAcQ3KwzXqwSg5yXfbFyn6TtpVEDSzOug/X3P9UDECdLgsaM5Zv07e1SGn+8WpOy5tWJ6yn4y
 user monitor group operators password ciphertext AQBapT6Ri804U/e23U11Kv+IJPvMq7dPE8Q1qVVic9VGBQV9YgAAABvfXr7Cb2f3gKG99QfglitQDldeVdMYmhCrLUhtJ53/BrPBHRvAy6MB+6t6GirT8XGDDiqqLHsi31Y6FgihUA48Yc97ZJ++jYR3wA5qFfe6bHXx1jc2iDFmM1BiEIpEyo22
@@ -3227,4 +3246,126 @@ router ospf 1
     area 0.0.0.0
 https-server vrf default
 https-server vrf mgmt
-#
+
+return</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════ -->
+    <footer>
+        <p>ARUBA Switch Architecture Reference — Access · Distribution · Core</p>
+        <p style="margin-top: 4px; opacity: 0.6;">Generated for CyberDefend Network Documentation</p>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">↑</button>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════ -->
+    <script>
+        /* --- Theme Toggle --- */
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        function setTheme(t) {
+            html.setAttribute('data-theme', t);
+            themeBtn.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('switch-layer-theme', t);
+        }
+        themeBtn.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        const saved = localStorage.getItem('switch-layer-theme');
+        if (saved) setTheme(saved);
+
+        /* --- Line Counts --- */
+        function countLines(id) {
+            const el = document.getElementById(id);
+            const span = document.getElementById(id.replace('Code', 'Lines'));
+            if (el && span) {
+                const n = el.textContent.split('\n').length;
+                span.textContent = n + ' lines';
+            }
+        }
+        countLines('accessCode');
+        countLines('distCode');
+        countLines('coreCode');
+
+        /* --- Expand / Collapse Config --- */
+        function toggleConfig(id, btn) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('expanded')) {
+                el.classList.remove('expanded');
+                btn.textContent = '▼ Expand All';
+            } else {
+                el.classList.add('expanded');
+                btn.textContent = '▲ Collapse';
+            }
+        }
+
+        /* --- Copy Config --- */
+        function copyConfig(id, btn) {
+            const el = document.getElementById(id);
+            const text = el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                /* Fallback for older browsers */
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        /* --- Scroll: Active Nav + Scroll-to-Top --- */
+        const sections = document.querySelectorAll('.layer-section');
+        const navLinks = document.querySelectorAll('.side-nav a');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function updateNav() {
+            let current = '';
+            sections.forEach(sec => {
+                const top = sec.getBoundingClientRect().top;
+                if (top < window.innerHeight * 0.4) {
+                    current = sec.id;
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-section') === current);
+            });
+
+            /* Scroll-to-top visibility */
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
