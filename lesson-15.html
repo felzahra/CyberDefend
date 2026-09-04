@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Networking Labs</title>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== THEME VARIABLES (LIGHT MODE DEFAULT) ========== */
+        :root {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --selected-row: #f9fbfe;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+            --dropdown-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            --dropdown-border: #e2e8f0;
+            --dropdown-hover: #f0f7fc;
+        }
+
+        /* ========== DARK MODE ========== */
+        html[data-theme="dark"] {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --selected-row: #242424;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+            --dropdown-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            --dropdown-border: #353535;
+            --dropdown-hover: #2a2a2a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; transition: background 0.3s, border-color 0.3s; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(2,179,228,0.2); transition: background 0.3s, box-shadow 0.3s; }
+        html[data-theme="dark"] .nav-logo-icon { box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 0; align-items: center; }
+
+        /* Dropdown container */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a,
+        .top-nav-links > a:not(.login-btn) {
+            color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 22px 20px; border-bottom: 2px solid transparent; display: flex; align-items: center; gap: 5px; white-space: nowrap;
+        }
+        .nav-dropdown > a:hover,
+        .top-nav-links > a:not(.login-btn):hover { color: var(--body-fg); }
+        .nav-dropdown > a.active,
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .dropdown-arrow { font-size: 0.55rem; transition: transform 0.25s ease; display: inline-block; margin-top: 1px; }
+        .nav-dropdown:hover > a .dropdown-arrow { transform: rotate(180deg); }
+
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(8px);
+            background: var(--darkened-bg); border: 1px solid var(--dropdown-border);
+            border-radius: 16px; padding: 10px; min-width: 280px;
+            box-shadow: var(--dropdown-shadow);
+            opacity: 0; visibility: hidden; pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+            z-index: 200;
+        }
+        .nav-dropdown:hover > .dropdown-menu {
+            opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-menu.wide { min-width: 360px; }
+        .dropdown-menu a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 10px; text-decoration: none;
+            color: var(--body-fg); font-size: 0.82rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+        }
+        .dropdown-menu a:hover { background: var(--dropdown-hover); color: var(--primary); }
+        .dropdown-menu a .dd-icon { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
+        .dropdown-menu a .dd-text { display: flex; flex-direction: column; }
+        .dropdown-menu a .dd-label { font-weight: 600; line-height: 1.3; }
+        .dropdown-menu a .dd-desc { font-size: 0.7rem; color: var(--body-quiet-color); font-weight: 400; margin-top: 1px; }
+        .dropdown-menu a:hover .dd-desc { color: var(--body-quiet-color); }
+        .dd-badge { font-size: 0.55rem; font-weight: 700; background: #FFD700; color: #000; padding: 2px 6px; border-radius: 4px; margin-left: auto; flex-shrink: 0; letter-spacing: 0.5px; }
+        .dropdown-divider { height: 1px; background: var(--hairline-color); margin: 6px 10px; }
+        .dropdown-scroll { max-height: 420px; overflow-y: auto; padding-right: 4px; }
+        .dropdown-scroll::-webkit-scrollbar { width: 4px; }
+        .dropdown-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        html[data-theme="dark"] .dropdown-scroll::-webkit-scrollbar-thumb { background: #444; }
+
+        .dropdown-menu.labs-grid .dropdown-scroll { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 6px; }
+        .dropdown-menu.labs-grid { min-width: 480px; }
+        .dropdown-menu.labs-grid a { padding: 8px 12px; }
+        .dropdown-menu.labs-grid .dd-icon { font-size: 0.9rem; width: 20px; }
+        .dropdown-menu.labs-grid .dd-desc { display: none; }
+
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; margin-left: 8px; }
+        .top-nav-links a.login-btn:hover { opacity: 0.9; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; transition: background 0.3s, border-color 0.3s; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb { background: #444; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 4px; }
+        .sidebar-nav ul li a { display: block; padding: 10px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.85rem; font-weight: 500; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        html[data-theme="light"] .sidebar-nav ul li a.active { background: rgba(2, 179, 228, 0.1); border-color: rgba(2, 179, 228, 0.3); }
+
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 650px; margin: 0 auto; line-height: 1.6; }
+
+        /* Labs Grid */
+        .labs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .lab-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); border-color: var(--primary); }
+        html[data-theme="dark"] .lab-card:hover { box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); }
+        .lab-image-wrapper { width: 100%; height: 220px; overflow: hidden; background: var(--body-bg); border-bottom: 1px solid var(--hairline-color); position: relative; }
+        .lab-image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .lab-card:hover .lab-image-wrapper img { transform: scale(1.05); }
+        .lab-content { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+        .lab-content h3 { font-size: 1.15rem; color: var(--body-loud-color); margin-bottom: 10px; line-height: 1.35; }
+        .lab-content p { font-size: 0.88rem; color: var(--body-quiet-color); line-height: 1.55; margin-bottom: 20px; flex: 1; }
+        .lab-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: var(--primary-fg); padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.2s; margin-top: auto; }
+        .lab-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .lab-btn-github { background: #24292f; color: #fff; border: 1px solid #444; }
+        .lab-btn-github:hover { background: #333; }
+
+        /* Lab tag badges */
+        .lab-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .lab-tag { font-size: 0.65rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--selected-bg); color: var(--body-quiet-color); border: 1px solid var(--hairline-color); }
+        .lab-tag.highlight { background: rgba(2,179,228,0.1); color: var(--primary); border-color: rgba(2,179,228,0.3); }
+        html[data-theme="dark"] .lab-tag.highlight { background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.3); }
+
+        /* Section divider */
+        .section-divider { display: flex; align-items: center; gap: 16px; margin: 40px 0 30px 0; }
+        .section-divider h2 { font-size: 1.4rem; color: var(--body-loud-color); white-space: nowrap; }
+        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--hairline-color); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; transition: background 0.3s, border-color 0.3s; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 1024px) {
+            .dropdown-menu.labs-grid { min-width: 340px; }
+            .dropdown-menu.labs-grid .dropdown-scroll { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 0 15px; flex-direction: column; gap: 0; }
+            .nav-brand { padding: 15px 0; }
+            .top-nav-links { gap: 0; flex-wrap: nowrap; overflow-x: auto; width: 100%; justify-content: flex-start; }
+            .nav-dropdown > a, .top-nav-links > a:not(.login-btn) { padding: 18px 12px; font-size: 0.8rem; }
+            .dropdown-menu { min-width: 240px !important; left: 0; transform: translateX(0) translateY(8px); }
+            .nav-dropdown:hover > .dropdown-menu { transform: translateX(0) translateY(0); }
+            .dropdown-menu.labs-grid .dropdown-scroll { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .labs-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<!-- DEFAULT TO LIGHT MODE -->
+<script>document.documentElement.setAttribute('data-theme', 'light');</script>
+
+<!-- TOP NAVIGATION BAR WITH DROPDOWNS -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html">Dashboard</a>
+        
+        <!-- COURSES DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses <span class="dropdown-arrow">▼</span></a>
+            <div class="dropdown-menu wide">
+                <div class="dropdown-scroll">
+                    <a href="2026.html"><span class="dd-icon">⬇</span><span class="dd-text"><span class="dd-label">Summer Lectures</span><span class="dd-desc">Recorded Sessions & Videos</span></span></a>
+                    <a href="labs.html"><span class="dd-icon">📚</span><span class="dd-text"><span class="dd-label">Curriculum</span><span class="dd-desc">Recorded Sessions & Videos</span></span></a>
+                    <a href="DPA.html"><span class="dd-icon">🔀</span><span class="dd-text"><span class="dd-label">DPA Summer Training Course</span><span class="dd-desc">Damietta Port Summer Training</span></span></a>
+                    <a href="level3.html"><span class="dd-icon">🔐</span><span class="dd-text"><span class="dd-label">1- Introduction to Cybersecurity</span><span class="dd-desc">Foundations & Core Concepts</span></span></a>
+                    <a href="cybersecurity-course.html"><span class="dd-icon">🔐</span><span class="dd-text"><span class="dd-label">2- Cybersecurity Course</span><span class="dd-desc">Attack Types · SIEM · Threat Hunting</span></span></a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" data-course-col="Course_3" data-course-name="Course 3" data-redirect="paid-cybersecurity-course.html" class="premium-dropdown-link">
+                        <span class="dd-icon">💎</span><span class="dd-text"><span class="dd-label">3- Cybersecurity Course</span><span class="dd-desc">Advanced Hands-on Labs</span></span><span class="dd-badge">PREMIUM</span>
+                    </a>
+                    <a href="#" data-course-col="Course_4" data-course-name="Course 4" data-redirect="paid-cybersecurity-course-2.html" class="premium-dropdown-link">
+                        <span class="dd-icon">💎</span><span class="dd-text"><span class="dd-label">4- Cybersecurity Course</span><span class="dd-desc">Advanced Hands-on Labs</span></span><span class="dd-badge">PREMIUM</span>
+                    </a>
+                    <a href="#" data-course-col="Level_1_AI" data-course-name="Level-1 AI" data-redirect="Level-1 AI.html" class="premium-dropdown-link">
+                        <span class="dd-icon">🤖</span><span class="dd-text"><span class="dd-label">Level-1 AI</span><span class="dd-desc">Artificial Intelligence Basics</span></span><span class="dd-badge">PREMIUM</span>
+                    </a>
+                    <a href="#" data-course-col="Level_2_AI" data-course-name="Level2-AI" data-redirect="Level2-AI.html" class="premium-dropdown-link">
+                        <span class="dd-icon">🧠</span><span class="dd-text"><span class="dd-label">Level2-AI</span><span class="dd-desc">Advanced AI Concepts</span></span><span class="dd-badge">PREMIUM</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="networking.html"><span class="dd-icon">🌐</span><span class="dd-text"><span class="dd-label">CyberSecurity Reading Slides</span><span class="dd-desc">Reading Slides</span></span></a>
+                    <a href="routing-switching.html"><span class="dd-icon">🛡️</span><span class="dd-text"><span class="dd-label">English CyberSecurity Course</span><span class="dd-desc">Attack Types · SIEM · Threat Hunting</span></span></a>
+                    <a href="aws foundation.html"><span class="dd-icon">☁️</span><span class="dd-text"><span class="dd-label">AWS Cloud Foundation</span><span class="dd-desc">AWS Cloud Solutions</span></span></a>
+                    <a href="digital comm.html"><span class="dd-icon">🧠</span><span class="dd-text"><span class="dd-label">Digital Comm</span><span class="dd-desc">Digital Communication</span></span></a>
+                    <a href="wireless comm.html"><span class="dd-icon">🎯</span><span class="dd-text"><span class="dd-label">Wireless Comm</span><span class="dd-desc">Wireless Communication</span></span></a>
+                </div>
+            </div>
+        </div>
+
+        <a href="messages.html">📝 Tasks & Submissions</a>
+
+        <!-- CURRICULUM DROPDOWN (Renamed from Labs) -->
+        <div class="nav-dropdown">
+            <a href="labs.html" class="active">Curriculum <span class="dropdown-arrow">▼</span></a>
+            <div class="dropdown-menu labs-grid">
+                <div class="dropdown-scroll">
+                    <a href="labs.html"><span class="dd-icon">🛡️</span><span class="dd-text"><span class="dd-label">Network Security Overview</span></span></a>
+                    <a href="network Roadmap.html"><span class="dd-icon">🗺️</span><span class="dd-text"><span class="dd-label">Network Roadmap</span></span></a>
+                    <a href="security Roadmap.html"><span class="dd-icon">🔒</span><span class="dd-text"><span class="dd-label">Security Roadmap</span></span></a>
+                    <a href="lesson-6.html"><span class="dd-icon">🔀</span><span class="dd-text"><span class="dd-label">Switching Architecture</span></span></a>
+                    <a href="lesson-7.html"><span class="dd-icon">🧱</span><span class="dd-text"><span class="dd-label">Firewall Security Architecture</span></span></a>
+                    <a href="lesson-3.html"><span class="dd-icon">🐉</span><span class="dd-text"><span class="dd-label">KALI Linux</span></span></a>
+                    <a href="kali-tools.html"><span class="dd-icon">🧰</span><span class="dd-text"><span class="dd-label">Top 50 Kali Linux Tools</span></span></a>
+                    <a href="lesson-4.html"><span class="dd-icon">🔍</span><span class="dd-text"><span class="dd-label">Vulnerability Scanners</span></span></a>
+                    <a href="nessus.html"><span class="dd-icon">📊</span><span class="dd-text"><span class="dd-label">Nessus Vulnerability Assessment</span></span></a>
+                    <a href="labs2.html" style="background:var(--selected-bg);color:var(--primary);border-radius:10px;"><span class="dd-icon">🧪</span><span class="dd-text"><span class="dd-label">Networking Labs Overview</span></span></a>
+                    <a href="lesson-8.html"><span class="dd-icon">📡</span><span class="dd-text"><span class="dd-label">Wireless Solutions</span></span></a>
+                    <a href="lesson-9.html"><span class="dd-icon">⚔️</span><span class="dd-text"><span class="dd-label">Cyber Attacks</span></span></a>
+                    <a href="lesson-10.html"><span class="dd-icon">🔧</span><span class="dd-text"><span class="dd-label">Troubleshooting</span></span></a>
+                    <a href="lesson-11.html"><span class="dd-icon">⚙️</span><span class="dd-text"><span class="dd-label">Switch Management</span></span></a>
+                    <a href="lesson-12.html"><span class="dd-icon">📞</span><span class="dd-text"><span class="dd-label">VOIP</span></span></a>
+                    <a href="lesson-13.html"><span class="dd-icon">☁️</span><span class="dd-text"><span class="dd-label">Cloud Computing</span></span></a>
+                    <a href="lesson-14.html"><span class="dd-icon">🧩</span><span class="dd-text"><span class="dd-label">Practice Labs (Packet Tracer)</span></span></a>
+                    <a href="lesson-15.html"><span class="dd-icon">🖥️</span><span class="dd-text"><span class="dd-label">Practice Labs (EVE-NG + GNS3)</span></span></a>
+                    <a href="lesson-16.html"><span class="dd-icon">🚀</span><span class="dd-text"><span class="dd-label">Practice Labs Advanced</span></span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW LABS DROPDOWN -->
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Labs <span class="dropdown-arrow">▼</span></a>
+            <div class="dropdown-menu labs-grid">
+                <div class="dropdown-scroll">
+                    <a href="Switch_Config.html"><span class="dd-icon">🔧</span><span class="dd-text"><span class="dd-label">Basic Switch Configuration</span></span></a>
+                    <a href="vlan.html"><span class="dd-icon">🔀</span><span class="dd-text"><span class="dd-label">Basic VLAN</span></span></a>
+                    <a href="static_route.html"><span class="dd-icon">🛣️</span><span class="dd-text"><span class="dd-label">Static Routing</span></span></a>
+                    <a href="ssh.html"><span class="dd-icon">🔑</span><span class="dd-text"><span class="dd-label">SSH Configuration</span></span></a>
+                    <a href="trunk.html"><span class="dd-icon">🛤️</span><span class="dd-text"><span class="dd-label">VLAN Trunking</span></span></a>
+                    <a href="router_stick.html"><span class="dd-icon">🍭</span><span class="dd-text"><span class="dd-label">Router-on-a-Stick</span></span></a>
+                    <a href="etherchannel.html"><span class="dd-icon">🔗</span><span class="dd-text"><span class="dd-label">EtherChannel</span></span></a>
+                    <a href="dhcp.html"><span class="dd-icon">🌐</span><span class="dd-text"><span class="dd-label">DHCPv4 Configuration</span></span></a>
+                    <a href="nat.html"><span class="dd-icon">🔄</span><span class="dd-text"><span class="dd-label">NAT Configuration</span></span></a>
+                    <a href="acl.html"><span class="dd-icon">🚧</span><span class="dd-text"><span class="dd-label">Access Control Lists</span></span></a>
+                    <a href="ospf.html"><span class="dd-icon">🗺️</span><span class="dd-text"><span class="dd-label">OSPF Single Area</span></span></a>
+                    <a href="hsrp.html"><span class="dd-icon">🛡️</span><span class="dd-text"><span class="dd-label">HSRP Configuration</span></span></a>
+                    <a href="stp.html"><span class="dd-icon">🌳</span><span class="dd-text"><span class="dd-label">Spanning Tree Protocol</span></span></a>
+                    <a href="mgt.html"><span class="dd-icon">⚙️</span><span class="dd-text"><span class="dd-label">Switch Management</span></span></a>
+                    <a href="voip.html"><span class="dd-icon">📞</span><span class="dd-text"><span class="dd-label">VoIP — Cisco & Avaya</span></span></a>
+                    <a href="subnetting.html"><span class="dd-icon">🧮</span><span class="dd-text"><span class="dd-label">Routing & Subnetting</span></span></a>
+                    <a href="asa.html"><span class="dd-icon">🧱</span><span class="dd-text"><span class="dd-label">ASA Firewall Configuration</span></span></a>
+                </div>
+            </div>
+        </div>
+
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-content">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="sidebar">
+        <div class="sidebar-back-btns">
+            <a href="labs.html" class="sidebar-back-btn">← Back to Labs Main</a>
+            <a href="index.html" class="sidebar-back-btn">🏠 Back to Dashboard</a>
+        </div>
+
+        <div class="sidebar-header">
+            <h3>Course Lessons</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="labs.html">Network Security Overview</a></li>
+                <li><a href="network Roadmap.html">Network Roadmap</a></li>
+                <li><a href="security Roadmap.html">Security Roadmap</a></li>
+                <li><a href="lesson-6.html">Switching Architecture</a></li>
+                <li><a href="lesson-7.html">Firewall Security Architecture</a></li>
+                <li><a href="lesson-3.html">KALI Linux</a></li>
+                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
+                <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
+                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
+                <li><a href="labs2.html" class="active">Networking Labs Overview</a></li>
+                <li><a href="lesson-8.html">Wireless Solutions</a></li>
+                <li><a href="lesson-9.html">Cyber Attacks</a></li>
+                <li><a href="lesson-10.html">Troubleshooting</a></li>
+                <li><a href="lesson-11.html">Switch Management</a></li>
+                <li><a href="lesson-12.html">VOIP</a></li>
+                <li><a href="lesson-13.html">Cloud Computing</a></li>
+                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
+                <li><a href="lesson-15.html">Practice Labs (EVE-NG + GNS3)</a></li>
+                <li><a href="lesson-16.html">Practice Labs Advanced</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="content-area">
+        <div class="page-header">
+            <h1>🧪 Networking Labs & Topologies</h1>
+            <p>Explore hands-on networking labs, topologies, and configurations built with Cisco Packet Tracer, EVE-NG, and Palo Alto firewalls.</p>
+        </div>
+
+        <!-- ===================== ENTERPRISE & CAMPUS NETWORKS ===================== -->
+        <div class="section-divider"><h2>🏢 Enterprise & Campus Networks</h2></div>
+
+        <div class="labs-grid">
+              <!-- LAB 1 - Campus Network 2 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/sd.jpg" alt="Campus Network 2" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Campus+Network+2';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Three-tier </span>
+                        <span class="lab-tag">spine-leaf </span>
+                    </div>
+                    <h3>Three-tier network (Core, Distribution and Access layers)</h3>
+                    <p>The collapsed core network design architecture(Core-Distribution layer and Access layer)
+The spine-leaf network design architecture for data centers(Spine and leaf switches) The Core routers run BGP in different autonomous systems which will enable connectivity between the three companies and the data center..</p>
+                    <a href="https://github.com/felzahra/packet-tracer-Complete-Project-All-protocols-" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+          
+            <!-- LAB 1 - Campus Network 2 -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/406343081-19aa5ad8-1eca-401b-878e-95af4db6270f.png" alt="Campus Network 2" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Campus+Network+2';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Campus</span>
+                        <span class="lab-tag">VLANs</span>
+                    </div>
+                    <h3>Campus Network Design (v2)</h3>
+                    <p>Full campus network topology built in Packet Tracer featuring multi-building connectivity, VLAN segmentation, inter-VLAN routing, and DHCP configuration for realistic enterprise deployment.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-campus-network_2" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 2 - Company Departments -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/406341401-f950155c-76ad-4f97-9866-257916ef3a66.png" alt="Company Departments Network" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Company+Departments';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Enterprise</span>
+                        <span class="lab-tag">Departments</span>
+                    </div>
+                    <h3>Company Departments Network</h3>
+                    <p>Enterprise network topology separating multiple company departments (HR, IT, Finance, Engineering) using VLANs, access control lists, and centralized routing for secure inter-department communication.</p>
+                    <a href="https://github.com/felzahra/cisco-packet-tracer-company-departments" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 3 - Secure Campus Area Network -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/406340835-7ea8879f-adc7-4708-8738-71fbbce0c598.png" alt="Secure Campus Area Network" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Secure+Campus+CAN';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Security</span>
+                        <span class="lab-tag">ACLs</span>
+                        <span class="lab-tag">Campus</span>
+                    </div>
+                    <h3>Secure Campus Area Network</h3>
+                    <p>Hardened campus network with security-first design including ACLs, port security, SSH management, DHCP snooping, and firewall zones to protect against internal and external threats.</p>
+                    <a href="https://github.com/felzahra/cisco-packet-tracer-secure-Campus-Area-Network" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 4 - Campus Network -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/406340039-32332fb8-9cc7-4750-a645-f7d50f52f3fa.png" alt="Campus Network" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Campus+Network';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Campus</span>
+                        <span class="lab-tag">Routing</span>
+                    </div>
+                    <h3>Campus Network Topology</h3>
+                    <p>Comprehensive campus network design implementing core, distribution, and access layers with static and dynamic routing, STP configuration, and end-to-end connectivity verification.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-Campus-Network" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 5 - College Campus -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/406338716-1cf8f2a5-47e1-43d1-b589-c0bf829d77cf.png" alt="College Campus Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=College+Campus';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">College</span>
+                        <span class="lab-tag">Multi-Building</span>
+                    </div>
+                    <h3>College Campus Topology</h3>
+                    <p>Large-scale college campus network spanning multiple buildings — administrative blocks, lecture halls, libraries, and dormitories — with full IP addressing schema and redundancy design.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-college-campus-topology" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== ADVANCED & SPECIALIZED LABS ===================== -->
+        <div class="section-divider"><h2>⚡ Advanced & Specialized Labs</h2></div>
+
+        <div class="labs-grid">
+            
+            <!-- LAB 6 - 3-Tier -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400191705-91b9fa95-4dba-4601-a310-311cc545888d.png" alt="3-Tier Hierarchical Switches Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=3-Tier+Architecture';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">3-Tier</span>
+                        <span class="lab-tag">Hierarchical</span>
+                    </div>
+                    <h3>3-Site Hierarchical 3-Tier Switches</h3>
+                    <p>Packet Tracer lab demonstrating a hierarchical 3-tier network architecture (Core, Distribution, Access) connecting three different sites with proper IP addressing and routing.</p>
+                    <a href="https://github.com/felzahra/packet-tracer-3-sites-Hierarchal-3-tier-switches-" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 7 - OSPF -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400035827-e590ea26-b940-4002-9c30-6e0d00e05575.png" alt="OSPF Complex Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=OSPF+Multi-Area';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">OSPF</span>
+                        <span class="lab-tag">Multi-Area</span>
+                    </div>
+                    <h3>Complex OSPF Multi-Area</h3>
+                    <p>An advanced OSPF topology featuring multiple areas (0, 47, 48, 49, 50) with loopback interfaces, LAN connections, and specific bandwidth configurations.</p>
+                    <a href="https://github.com/felzahra/ospf-complex" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 8 - Palo Alto -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/402326469-9241cf89-86fa-40c3-9b30-13ce5acc9535.jpg" alt="Palo Alto HA Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=Palo+Alto+HA';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">EVE-NG</span>
+                        <span class="lab-tag">Palo Alto</span>
+                        <span class="lab-tag">HA</span>
+                        <span class="lab-tag">Firewall</span>
+                    </div>
+                    <h3>Palo Alto High Availability (EVE-NG)</h3>
+                    <p>Palo Alto firewalls configured in High Availability (HA1/HA2) mode within an EVE-NG environment. Includes DMZ, Inside, Outside, and Management zones with Windows Server AD.</p>
+                    <a href="https://github.com/felzahra/Palot-Alto-High-Availability-in-eve-ng" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/402325297-f77b6b99-07d2-424a-9684-6618f449e782.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">EVE-NG</span>
+                        <span class="lab-tag">MPLS</span>
+                        <span class="lab-tag">BGP</span>
+                        <span class="lab-tag">VPNv4/v6</span>
+                    </div>
+                    <h3>EVE-NG MPLS Lab (VPNv4/v6 & Inter-VRF)</h3>
+                    <p>Advanced EVE-NG MPLS lab covering IPv4/IPv6, VPNv4/VPNv6, Xconnect, and inter-VRF routing with BGP and OSPF core protocols.</p>
+                    <a href="https://github.com/felzahra/eve-ng-MPLS-LAB-with-IPv6_IPv4-VPNv6_VPNv4-Xconnect-inter-VRF-routing" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401528957-0f70acc3-3e29-4944-8f60-cafa37423cb4.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">OSPF</span>
+                        <span class="lab-tag">EIGRPF</span>
+                        <span class="lab-tag">routing</span>
+                    </div>
+                    <h3>-Packet-tracer-Inter-domain-routing-OSPF-EIGRPF</h3>
+                    <p>-Packet-tracer-Inter-domain-routing-OSPF-EIGRPF</p>
+                    <a href="https://github.com/felzahra/-Packet-tracer-Inter-domain-routing-OSPF-EIGRPF" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401474455-ee6cdec7-ced5-4168-9a81-2531c95afeef.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">OSPF</span>
+                        <span class="lab-tag">HSRP</span>
+                       
+                    </div>
+                    <h3>HSRP_With_OSPF</h3>
+                    <p>HSRP_With_OSPF.</p>
+                    <a href="https://github.com/felzahra/HSRP_With_OSPF" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401472974-459f5a0b-e45e-43d6-996e-cf780974dcd0.PNG" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">PAT</span>
+                        <span class="lab-tag">NAT</span>
+                        <span class="lab-tag">HSRP</span>
+                    </div>
+                    <h3>HSRP_With_NAT_PAT-LAB</h3>
+                    <a href="https://github.com/felzahra/HSRP_With_NAT_PAT-LAB" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+            
+                                   <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401471828-2f60ad69-6972-4e66-b5b8-811ba98045b0.PNG" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">PAT</span>
+                        <span class="lab-tag">NAT</span>
+                    </div>
+                    <h3>HSRP_With_NAT_PAT-LAB</h3>
+                    <a href="https://github.com/felzahra/Network_PAT_NAT-lab" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+            
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401423677-ef608fcd-c38a-4ead-8b46-7fd57b414a38.PNG" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">Etherchannel</span>
+                       
+                    </div>
+                    <h3>Etherchannel-project</h3>
+                    <a href="https://github.com/felzahra/Etherchannel-project" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401470079-cb94da4e-71fe-4edc-90ce-cd1b99f2bc63.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">DHCP</span>
+                        <span class="lab-tag">DNS</span>
+                        <span class="lab-tag">Subnetting</span>
+                    </div>
+                    <h3>DHCP-ip-helper-addresss</h3>
+                    <p>Routers are using RIP Protocol for the communication</p>
+                    <a href="hhttps://github.com/felzahra/DHCP-ip-helper-addresss" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401416281-ee419601-9070-4bb7-9dfa-891d46488f72.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">Packet Tracer</span>
+                        <span class="lab-tag">hierarchical</span>
+                        <span class="lab-tag">campus</span>
+                        <span class="lab-tag">VOIP</span>
+                    </div>
+                    <h3>hierarchical-campus-network</h3>
+                    <a href="https://github.com/felzahra/hierarchical-campus-network" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401417655-fddc1fe2-ed1b-401e-9b94-3dd970f18c8e.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">GNS3</span>
+                        <span class="lab-tag">MPLS</span>
+                        <span class="lab-tag">GNS3</span>
+                        <span class="lab-tag">VPN</span>
+                    </div>
+                    <h3>GNS3-MPLS-VPN</h3>
+                    <a href="https://github.com/felzahra/GNS3-MPLS-VPN" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401419695-69bf19ad-5eb5-4bb6-ac21-435efc7da769.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">GNS3</span>
+                        <span class="lab-tag">MPLS</span>
+                        <span class="lab-tag">GNS3</span>
+                        <span class="lab-tag">VPN</span>
+                    </div>
+                    <h3>GNS3---MPLS</h3>
+                    <a href="https://github.com/felzahra/GNS3---MPLS" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401454672-5630d387-e8db-4899-9b8f-d4722431fc88.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">ISP</span>
+                        <span class="lab-tag">Hierarchical </span>
+                        <span class="lab-tag">Subnetting </span>
+                    </div>
+                    <h3>Company-Network-Design</h3>
+                    <a href="https://github.com/felzahra/Company-Network-Design" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/401421106-d8c86985-f6b3-4cf7-a1dc-5370b19b19bb.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">MPLS</span>
+                        <span class="lab-tag">BGP</span>
+                        <span class="lab-tag">VPNv4/v6</span>
+                    </div>
+                    <h3>Campus-Network-2</h3>
+                    <a href="https://github.com/felzahra/Campus-Network-2" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/399442156-a04f93ca-e02c-4eb1-8d76-b3e303745511.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">EVE-NG</span>
+                        <span class="lab-tag">Hierarchical</span>
+                        <span class="lab-tag">3-branches</span>
+                        <span class="lab-tag">Routing</span>
+                    </div>
+                    <h3>EVE-NG-Hierarchical-Network-campus-HQ-with-3-branches-</h3>
+                    <a href="https://github.com/felzahra/EVE-NG-Hierarchical-Network-campus-HQ-with-3-branches-" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400196247-2fcb4637-c6c7-4968-b869-933e98b61cce.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">subnetting</span>
+                    
+                    </div>
+                    <h3>packet-tracer-complex-subnetting-LAB</h3>
+                    <a href="https://github.com/felzahra/packet-tracer-complex-subnetting-LAB" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400197546-f9f480bb-197a-4c39-8a5d-0ea4921ef3b4.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">IPSEC</span>
+                        <span class="lab-tag">VPN</span>
+                    </div>
+                    <h3>IPSEC-VPN</h3>
+                    <a href="https://github.com/felzahra/IPSEC-VPN" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400198121-7cbe5b9d-cb03-40a2-b786-8641d1ed468c.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">VOIP</span>
+                        <span class="lab-tag">IP Phones.</span>
+                        <span class="lab-tag">EIGRP </span>
+                    </div>
+                    <h3>VOIP-Connection-Diagram</h3>
+                    <a href="https://github.com/felzahra/VOIP-Connection-LAB" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400198451-5f9b93fb-6054-4440-9e45-d797e02362fa.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                     
+                    </div>
+                    <h3>VALN-design-LAB-</h3>
+                    <a href="https://github.com/felzahra/VALN-design-LAB-" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400196030-0b78894e-bd93-4d2c-ae1a-eae709cc69ad.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+              
+                    </div>
+                    <h3>packet-tracer-L2-L3-etherchannel</h3>
+                    <a href="https://github.com/felzahra/packet-tracer-L2-L3-etherchannel" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+             <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400190427-95fcd559-7c86-4c0e-a758-229edc632f81.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">ACL</span>
+                     
+                    </div>
+                    <h3>PAcket-tracer-Extended-ACL</h3>
+                    <a href="https://github.com/felzahra/PAcket-tracer-Extended-ACL" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+                       			 <!-- LAB 9 - MPLS -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="sd/400196942-fe981ed3-f074-4cf4-a886-cf3725e1581c.png" alt="MPLS VRF Topology" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=MPLS+VRF';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">packet tracer</span>
+                        <span class="lab-tag">ASA</span>
+                     
+                    </div>
+                    <h3>packet-tracer-ASA-LAB2</h3>
+                    <a href="https://github.com/felzahra/packet-tracer-ASA-LAB2" target="_blank" class="lab-btn lab-btn-github">📂 View on GitHub</a>
+                </div>
+            </div>
+                       <!-- LAB 9 - MPLS -->
+
+            <!-- LAB 10 - More Labs -->
+            <div class="lab-card">
+                <div class="lab-image-wrapper">
+                    <img src="https://z-cdn-media.chatglm.cn/files/965bf6ac-1282-495d-b4df-14fc84aa9cc7.png?auth_key=1886092929-19df017e85dc4b88a8de103e934a7295-0-0457b61ef87798c25a10055124a363cf" alt="More Labs" onerror="this.src='https://placehold.co/600x400/1a2c3e/02b3e4?text=More+Labs';">
+                </div>
+                <div class="lab-content">
+                    <div class="lab-tags">
+                        <span class="lab-tag highlight">GitHub</span>
+                        <span class="lab-tag">Various</span>
+                    </div>
+                    <h3>More Labs & Solutions</h3>
+                    <p>Explore more networking labs, scripts, and solutions. Visit the GitHub profile to access all repositories and network topologies.</p>
+                    <a href="https://github.com/felzahra?tab=repositories" target="_blank" class="lab-btn">🚀 Explore All Repositories</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+                <li><a href="messages.html">Tasks & Submissions</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © CyberDefend Academy · Part of Accenture
+    </div>
+</footer>
+
+<!-- LOGIN MODAL FOR PREMIUM DROPDOWN LINKS -->
+<div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: var(--darkened-bg); color: var(--body-fg); padding: 40px; border-radius: 16px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--hairline-color);">
+        <h3 style="margin-bottom: 10px;">Login Required</h3>
+        <p id="modalCourseName" style="color: var(--body-quiet-color); margin-bottom: 25px;">Verifying access...</p>
+        <div id="modalGoogleButton" style="display: flex; justify-content: center; margin-bottom: 15px; min-height: 40px;"></div>
+        <div id="loginError"></div>
+        <br>
+        <button id="closeModalBtn" style="background: none; border: none; color: var(--body-quiet-color); cursor: pointer; text-decoration: underline; font-family: inherit; font-size: 0.9rem;">Cancel</button>
+    </div>
+</div>
+
+<script>
+    const GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
+    const PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
+    let requestedCourseColumn = null;
+    let requestedRedirectLink = 'paid-cybersecurity-course.html';
+
+    // Sheet Verification
+    async function checkCourseAccess(email, courseColumn) {
+        try {
+            const response = await fetch(PAID_COURSES_SHEET_URL);
+            const csvText = await response.text();
+            const cleanCsv = csvText.replace(/\r/g, ''); 
+            const lines = cleanCsv.split('\n');
+            if (lines.length < 2) return false;
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            const emailIndex = headers.indexOf('email');
+            const courseIndex = headers.indexOf(courseColumn.toLowerCase());
+            if (emailIndex === -1 || courseIndex === -1) return false;
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue; 
+                const row = lines[i].split(',');
+                const rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
+                const rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
+                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') return true; 
+            }
+            return false; 
+        } catch (error) { return false; }
+    }
+
+    async function handlePaidCourseLogin(response) {
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.innerHTML = "⏳ Verifying access in database..."; 
+        try {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            const userEmail = payload.email;
+            const hasAccess = await checkCourseAccess(userEmail, requestedCourseColumn);
+            if (hasAccess) {
+                localStorage.setItem('googleUserLoggedIn', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                alert("Access Granted! Redirecting...");
+                window.location.href = requestedRedirectLink;
+            } else {
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not approved for this course.";
+            }
+        } catch (error) {
+            errorDiv.innerHTML = "❌ Login failed.";
+        }
+    }
+
+    function renderGoogleButton() {
+        const container = document.getElementById('modalGoogleButton');
+        container.innerHTML = ''; 
+        if (typeof google === 'undefined' || !google.accounts) return;
+        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handlePaidCourseLogin });
+        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
+    }
+
+    function openPremiumModal(courseColumn, courseName, redirectLink) {
+        requestedCourseColumn = courseColumn;
+        requestedRedirectLink = redirectLink;
+        document.getElementById('modalCourseName').innerText = "Please log in to verify access for " + courseName + ".";
+        document.getElementById('loginError').innerHTML = "";
+        document.getElementById('loginModal').style.display = 'flex';
+        setTimeout(renderGoogleButton, 100);
+    }
+
+    document.addEventListener('click', function(event) {
+        const loginModal = document.getElementById('loginModal');
+        
+        if (event.target.closest('.premium-dropdown-link')) {
+            event.preventDefault(); event.stopPropagation();
+            const link = event.target.closest('.premium-dropdown-link');
+            openPremiumModal(
+                link.getAttribute('data-course-col'),
+                link.getAttribute('data-course-name'),
+                link.getAttribute('data-redirect')
+            );
+        }
+
+        if (event.target.closest('#closeModalBtn')) { loginModal.style.display = 'none'; }
+        if (event.target === loginModal) { loginModal.style.display = 'none'; }
+    });
+</script>
+
+</body>
+</html>
