@@ -39,7 +39,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 
 .top-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:var(--topbg);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px;transition:background .3s}
 .top-nav-left{display:flex;align-items:center;gap:12px}
-.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,153,94,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.back-to-labs{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acD);color:var(--ac);border:1px solid rgba(0,153,94,.2);border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif;cursor:pointer}
 html[data-theme="dark"] .back-to-labs{border-color:rgba(0,229,160,.2)}
 .back-to-labs:hover{background:rgba(0,153,94,.15);border-color:var(--ac);box-shadow:0 0 16px var(--acG)}
 .top-nav-links{display:flex;align-items:center;gap:4px}
@@ -104,11 +104,17 @@ html[data-theme="dark"] .sidebar-back-btn{border-color:rgba(0,229,160,.15)}
 
 .sidebar-divider{height:1px;background:var(--bdr);margin:4px 12px}
 
-/* ===== MAIN ===== */
-.main{margin-left:290px;margin-top:52px;min-height:calc(100vh - 52px);transition:margin .3s}
-.topbar{position:sticky;top:0;z-index:50;background:var(--topbg);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+/* ===== MAIN FIXES FOR FULL HEIGHT IFRAME ===== */
+.main{margin-left:290px;margin-top:52px;height:calc(100vh - 52px);display:flex;flex-direction:column;transition:margin .3s}
+.topbar{position:sticky;top:0;z-index:50;background:var(--topbg);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:10px 28px;display:flex;align-items:center;justify-content:space-between;transition:background .3s;flex-shrink:0}
 .topbar-title{font-weight:700;font-size:14px}
-.content{padding:28px;max-width:1100px}
+
+/* Content Area Split */
+#default-view { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+.content{padding:28px;max-width:1100px;margin:0 auto;width:100%;}
+
+#embedded-view { flex: 1; display: none; background: var(--bg2); overflow: hidden; position: relative; }
+#embedded-view iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: block; }
 
 /* ===== BADGES ===== */
 .st{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
@@ -142,7 +148,7 @@ html[data-theme="dark"] .st-gc{background:rgba(66,133,244,.1)}
 /* ===== LAB CARD ===== */
 .lab-card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:20px;transition:all .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:var(--fg);box-shadow:var(--shadow)}
 .lab-card:hover{border-color:var(--acG);background:var(--cardH);transform:translateY(-3px);box-shadow:var(--shadowH)}
-.lab-card .lc-main-link{position:absolute;inset:0;z-index:1}
+.lab-card .lc-main-link{position:absolute;inset:0;z-index:1;cursor:pointer}
 .lab-card .lc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:relative;z-index:2;pointer-events:none}
 .lab-card .lc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .lab-card .lc-title{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px;position:relative;z-index:2;pointer-events:none}
@@ -195,18 +201,6 @@ html[data-theme="dark"] .lab-card:hover .lc-arrow{color:#000}
 </style>
 </head>
 <body>
-  <script>
-/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href]').forEach(a => {
-        const h = a.getAttribute('href');
-        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener noreferrer');
-        }
-    });
-});
-</script>
 
 <!-- TOP NAV -->
 <nav class="top-nav">
@@ -450,276 +444,286 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="main">
   <div class="topbar">
     <div class="topbar-title"><i class="fa-solid fa-flask" style="color:var(--ac);margin-right:6px"></i>All Labs — Practice & Hands-On</div>
+    <button class="back-to-labs" id="backToLabsBtn" style="display:none;" onclick="backToLabs()"><i class="fa-solid fa-arrow-left"></i><span>Back to All Labs</span></button>
   </div>
 
-<div class="content">
+  <!-- DEFAULT GRID VIEW -->
+  <div id="default-view">
+    <div class="content">
 
-<!-- HERO -->
-<div class="hero-mini reveal">
-  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:10px">Hands-On Learning</div>
-  <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">Practice <span style="color:var(--inf)">Labs</span></h1>
-  <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">Packet Tracer, Switch Management, VoIP, Cloud, Routing, Security — all in one place.</p>
-  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
-    <span class="st st-ci"><i class="fa-solid fa-circle" style="font-size:5px"></i> Packet Tracer</span>
-    <span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> Switching</span>
-    <span class="st st-av"><i class="fa-solid fa-circle" style="font-size:5px"></i> VoIP</span>
-    <span class="st st-aw"><i class="fa-solid fa-circle" style="font-size:5px"></i> Cloud</span>
-    <span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Routing</span>
-    <span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Security</span>
+      <!-- HERO -->
+      <div class="hero-mini reveal">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:10px">Hands-On Learning</div>
+        <h1 style="font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.1;margin-bottom:12px">Practice <span style="color:var(--inf)">Labs</span></h1>
+        <p style="color:var(--mt);font-size:14px;max-width:540px;margin:0 auto 18px">Packet Tracer, Switch Management, VoIP, Cloud, Routing, Security — all in one place.</p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
+          <span class="st st-ci"><i class="fa-solid fa-circle" style="font-size:5px"></i> Packet Tracer</span>
+          <span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> Switching</span>
+          <span class="st st-av"><i class="fa-solid fa-circle" style="font-size:5px"></i> VoIP</span>
+          <span class="st st-aw"><i class="fa-solid fa-circle" style="font-size:5px"></i> Cloud</span>
+          <span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Routing</span>
+          <span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Security</span>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:36px" class="reveal">
+        <div class="stat-card"><div class="stat-num" style="color:var(--inf)">17</div><div class="stat-label">Total Labs</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--cisco)">13</div><div class="stat-label">Packet Tracer</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--avaya)">1</div><div class="stat-label">VoIP</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--aws)">1</div><div class="stat-label">Cloud</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--gd)">6</div><div class="stat-label">Categories</div></div>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="search-box reveal" style="margin-bottom:36px">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search labs... (e.g. VLAN, EC2, VoIP, OSPF)" oninput="filterLabs()">
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- PACKET TRACER LABS -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="pt-labs">
+        <div class="cat-icon" style="background:rgba(4,159,217,.1);color:var(--cisco)"><i class="fa-solid fa-network-wired"></i></div>
+        <div><div class="cat-title">Packet Tracer Labs</div><div style="font-size:12px;color:var(--mt)">Interactive configuration labs</div></div>
+        <div class="cat-count">13 labs</div>
+      </div>
+      <div class="cat-divider"></div>
+
+      <!-- Beginner -->
+      <div id="pt-beginner" style="margin-bottom:24px">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ac);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-seedling" style="margin-right:6px"></i>Beginner</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+          <div class="lab-card reveal lab-item" data-name="basic switch configuration">
+            <a href="Switch_Config.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
+            <div class="lc-title">Basic Switch Configuration</div>
+            <div class="lc-desc">Configure hostnames, passwords, banners, and basic switch settings in Packet Tracer.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Switch</span><span class="st st-ci" style="font-size:9px">CLI</span><span class="st st-ci" style="font-size:9px">Hostname</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/Switch_Config.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="basic vlan configuration">
+            <a href="vlan.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
+            <div class="lc-title">Basic VLAN Configuration</div>
+            <div class="lc-desc">Create VLANs, assign access ports, and verify connectivity between VLAN members.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">VLAN</span><span class="st st-ci" style="font-size:9px">Access Port</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/vlan.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="static routing packet tracer">
+            <a href="static_route.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
+            <div class="lc-title">Static Routing</div>
+            <div class="lc-desc">Configure static routes between routers and verify end-to-end ping connectivity.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Routing</span><span class="st st-ci" style="font-size:9px">Static</span><span class="st st-ci" style="font-size:9px">Router</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/static_route.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="ssh configuration switch">
+            <a href="ssh.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
+            <div class="lc-title">SSH Configuration</div>
+            <div class="lc-desc">Enable SSH on a switch with RSA keys, local authentication, and VTY lines.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">SSH</span><span class="st st-ci" style="font-size:9px">Security</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/ssh.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intermediate -->
+      <div id="pt-intermediate" style="margin-bottom:24px">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gd);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-fire" style="margin-right:6px"></i>Intermediate</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+          <div class="lab-card reveal lab-item" data-name="vlan trunking 802.1q">
+            <a href="trunk.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">VLAN Trunking</div>
+            <div class="lc-desc">Configure 802.1Q trunk links between switches to carry multiple VLANs.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Trunk</span><span class="st st-ci" style="font-size:9px">802.1Q</span><span class="st st-ci" style="font-size:9px">Inter-Switch</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/trunk.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="router on a stick inter vlan">
+            <a href="router_stick.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">Router-on-a-Stick</div>
+            <div class="lc-desc">Implement inter-VLAN routing using subinterfaces on a single router.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">ROAS</span><span class="st st-ci" style="font-size:9px">Subinterface</span><span class="st st-ci" style="font-size:9px">Inter-VLAN</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/router_stick.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="etherchannel lacp port channel">
+            <a href="etherchannel.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">EtherChannel</div>
+            <div class="lc-desc">Bundle multiple physical links into a single logical link using LACP/PAgP.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">LACP</span><span class="st st-ci" style="font-size:9px">Port-Channel</span><span class="st st-ci" style="font-size:9px">Redundancy</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/etherchannel.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="dhcp configuration server relay">
+            <a href="dhcp.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">DHCPv4 Configuration</div>
+            <div class="lc-desc">Configure DHCP server and relay agent to automate IP addressing.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">DHCP</span><span class="st st-ci" style="font-size:9px">IP Addressing</span><span class="st st-ci" style="font-size:9px">Relay</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/dhcp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="nat translation pat">
+            <a href="nat.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">NAT Configuration</div>
+            <div class="lc-desc">Configure static and dynamic NAT to translate private IPs to public addresses.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">NAT</span><span class="st st-ci" style="font-size:9px">PAT</span><span class="st st-ci" style="font-size:9px">Overload</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/nat.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="access control list acl standard extended">
+            <a href="acl.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+            <div class="lc-title">Access Control Lists</div>
+            <div class="lc-desc">Configure standard and extended ACLs to filter traffic based on source/destination.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">ACL</span><span class="st st-ci" style="font-size:9px">Standard</span><span class="st st-ci" style="font-size:9px">Extended</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/acl.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced -->
+      <div id="pt-advanced" style="margin-bottom:24px">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--wn);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-bolt" style="margin-right:6px"></i>Advanced</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+          <div class="lab-card reveal lab-item" data-name="ospf single area routing protocol">
+            <a href="ospf.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
+            <div class="lc-title">OSPF Single Area</div>
+            <div class="lc-desc">Configure OSPF in a single area and verify routing tables and neighbor adjacencies.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">OSPF</span><span class="st st-ci" style="font-size:9px">Dynamic</span><span class="st st-ci" style="font-size:9px">Area 0</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/ospf.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="hsrp first hop redundancy protocol">
+            <a href="hsrp.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
+            <div class="lc-title">HSRP Configuration</div>
+            <div class="lc-desc">Configure Hot Standby Router Protocol for default gateway redundancy and failover.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">HSRP</span><span class="st st-ci" style="font-size:9px">Redundancy</span><span class="st st-ci" style="font-size:9px">Failover</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/hsrp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+          <div class="lab-card reveal lab-item" data-name="spanning tree protocol stp rstp">
+            <a href="stp.html" class="lc-main-link"></a>
+            <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
+            <div class="lc-title">Spanning Tree Protocol</div>
+            <div class="lc-desc">Configure STP/RSTP to prevent loops and observe root bridge election.</div>
+            <div class="lc-tags"><span class="st st-ci" style="font-size:9px">STP</span><span class="st st-ci" style="font-size:9px">RSTP</span><span class="st st-ci" style="font-size:9px">Loop Prevention</span></div>
+            <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/stp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- SWITCH MANAGEMENT -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="switch-labs">
+        <div class="cat-icon" style="background:rgba(9,132,227,.08);color:var(--inf)"><i class="fa-solid fa-arrows-left-right"></i></div>
+        <div><div class="cat-title">Switch Management</div><div style="font-size:12px;color:var(--mt)">Remote access, RBAC, VLANs, ACLs, routing</div></div>
+        <div class="cat-count">1 lab</div>
+      </div>
+      <div class="cat-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+        <div class="lab-card reveal lab-item" data-name="switch management telnet ssh rbac vlan acl">
+          <a href="mgt.html" class="lc-main-link"></a>
+          <div class="lc-top"><div class="lc-icon" style="background:rgba(9,132,227,.08);color:var(--inf)"><i class="fa-solid fa-network-wired"></i></div><span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
+          <div class="lc-title">Switch Management — Complete Reference</div>
+          <div class="lc-desc">Telnet, SSH, HTTPS, Console, User/Priv modes, RBAC, Passwords, L2/L3, VLANs, ACLs, Routing, ROAS, Tasks.</div>
+          <div class="lc-tags"><span class="st st-ci" style="font-size:9px">14 Sections</span><span class="st st-ci" style="font-size:9px">CLI Configs</span><span class="st st-ci" style="font-size:9px">Images</span></div>
+          <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/mgt.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- VOIP -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="voip-labs">
+        <div class="cat-icon" style="background:rgba(227,25,55,.08);color:var(--avaya)"><i class="fa-solid fa-phone-volume"></i></div>
+        <div><div class="cat-title">VoIP Infrastructure</div><div style="font-size:12px;color:var(--mt)">Cisco & Avaya voice VLAN, DSL, QoS</div></div>
+        <div class="cat-count">1 lab</div>
+      </div>
+      <div class="cat-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+        <div class="lab-card reveal lab-item" data-name="voip cisco avaya voice vlan dsl qos poe">
+          <a href="voip.html" class="lc-main-link"></a>
+          <div class="lc-top"><div class="lc-icon" style="background:rgba(227,25,55,.08);color:var(--avaya)"><i class="fa-solid fa-phone"></i></div><span class="st st-av"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
+          <div class="lc-title">VoIP — Cisco & Avaya Voice VLAN</div>
+          <div class="lc-desc">Voice VLAN config, QoS marking, PoE, DSL integration, DHCP options, troubleshooting.</div>
+          <div class="lc-tags"><span class="st st-ci" style="font-size:9px">8 Sections</span><span class="st st-ci" style="font-size:9px">Topology SVG</span><span class="st st-ci" style="font-size:9px">DSCP Table</span></div>
+          <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/voip.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- CLOUD -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="cloud-labs">
+        <div class="cat-icon" style="background:rgba(255,153,0,.08);color:var(--aws)"><i class="fa-solid fa-cloud"></i></div>
+        <div><div class="cat-title">Cloud Computing</div><div style="font-size:12px;color:var(--mt)">AWS, Azure, GCP hands-on labs</div></div>
+        <div class="cat-count">1 lab</div>
+      </div>
+      <div class="cat-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+        <div class="lab-card reveal lab-item" data-name="cloud computing aws azure gcp ec2 s3 vpc iam">
+          <a href="cloud-computing.html" class="lc-main-link"></a>
+          <div class="lc-top"><div class="lc-icon" style="background:rgba(255,153,0,.08);color:var(--aws)"><i class="fa-solid fa-cloud"></i></div><span class="st st-aw"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
+          <div class="lc-title">Cloud Computing — AWS / Azure / GCP</div>
+          <div class="lc-desc">Service models, deployment types, EC2, S3, VPC, IAM, cost management, hands-on CLI labs.</div>
+          <div class="lc-tags"><span class="st st-aw" style="font-size:9px">9 Sections</span><span class="st st-aw" style="font-size:9px">CLI Labs</span><span class="st st-aw" style="font-size:9px">IAM JSON</span></div>
+          <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/cloud-computing.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- ROUTING & SUBNETTING -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="routing-labs">
+        <div class="cat-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-route"></i></div>
+        <div><div class="cat-title">Routing & Subnetting</div><div style="font-size:12px;color:var(--mt)">Static, dynamic, inter-VLAN routing, VLSM, CIDR</div></div>
+        <div class="cat-count">1 lab</div>
+      </div>
+      <div class="cat-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+        <div class="lab-card reveal lab-item" data-name="subnetting practice ipv4 ipv6 vlsm cidr">
+          <a href="subnetting.html" class="lc-main-link"></a>
+          <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-calculator"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
+          <div class="lc-title">Subnetting Practice</div>
+          <div class="lc-desc">IPv4/IPv6 subnetting exercises with CIDR, VLSM, and route summarization.</div>
+          <div class="lc-tags"><span class="st st-y" style="font-size:9px">Subnetting</span><span class="st st-y" style="font-size:9px">VLSM</span><span class="st st-y" style="font-size:9px">CIDR</span></div>
+          <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/subnetting.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- SECURITY LABS -->
+      <!-- ================================================================ -->
+      <div class="cat-header" id="security-labs">
+        <div class="cat-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-shield-halved"></i></div>
+        <div><div class="cat-title">Security Labs</div><div style="font-size:12px;color:var(--mt)">Firewall, VPN, hardening, ACLs</div></div>
+        <div class="cat-count">1 lab</div>
+      </div>
+      <div class="cat-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
+        <div class="lab-card reveal lab-item" data-name="asa firewall configuration acl nat vpn">
+          <a href="asa.html" class="lc-main-link"></a>
+          <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-fire"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
+          <div class="lc-title">ASA Firewall Configuration</div>
+          <div class="lc-desc">Configure Cisco ASA firewall with ACLs, NAT, VPN tunnels, and inspection rules.</div>
+          <div class="lc-tags"><span class="st st-r" style="font-size:9px">Firewall</span><span class="st st-r" style="font-size:9px">VPN</span><span class="st st-r" style="font-size:9px">ACL</span></div>
+          <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/asa.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /default-view -->
+
+  <!-- EMBEDDED IFRAME VIEW -->
+  <div id="embedded-view">
+    <iframe id="contentFrame" src="about:blank"></iframe>
   </div>
-</div>
 
-<!-- STATS -->
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:36px" class="reveal">
-  <div class="stat-card"><div class="stat-num" style="color:var(--inf)">17</div><div class="stat-label">Total Labs</div></div>
-  <div class="stat-card"><div class="stat-num" style="color:var(--cisco)">13</div><div class="stat-label">Packet Tracer</div></div>
-  <div class="stat-card"><div class="stat-num" style="color:var(--avaya)">1</div><div class="stat-label">VoIP</div></div>
-  <div class="stat-card"><div class="stat-num" style="color:var(--aws)">1</div><div class="stat-label">Cloud</div></div>
-  <div class="stat-card"><div class="stat-num" style="color:var(--gd)">6</div><div class="stat-label">Categories</div></div>
-</div>
-
-<!-- SEARCH -->
-<div class="search-box reveal" style="margin-bottom:36px">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="text" id="searchInput" placeholder="Search labs... (e.g. VLAN, EC2, VoIP, OSPF)" oninput="filterLabs()">
-</div>
-
-<!-- ================================================================ -->
-<!-- PACKET TRACER LABS -->
-<!-- ================================================================ -->
-<div class="cat-header" id="pt-labs">
-  <div class="cat-icon" style="background:rgba(4,159,217,.1);color:var(--cisco)"><i class="fa-solid fa-network-wired"></i></div>
-  <div><div class="cat-title">Packet Tracer Labs</div><div style="font-size:12px;color:var(--mt)">Interactive configuration labs</div></div>
-  <div class="cat-count">13 labs</div>
-</div>
-<div class="cat-divider"></div>
-
-<!-- Beginner -->
-<div id="pt-beginner" style="margin-bottom:24px">
-  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ac);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-seedling" style="margin-right:6px"></i>Beginner</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-    <div class="lab-card reveal lab-item" data-name="basic switch configuration">
-      <a href="Switch_Config.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
-      <div class="lc-title">Basic Switch Configuration</div>
-      <div class="lc-desc">Configure hostnames, passwords, banners, and basic switch settings in Packet Tracer.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Switch</span><span class="st st-ci" style="font-size:9px">CLI</span><span class="st st-ci" style="font-size:9px">Hostname</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/Switch_Config.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="basic vlan configuration">
-      <a href="vlan.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
-      <div class="lc-title">Basic VLAN Configuration</div>
-      <div class="lc-desc">Create VLANs, assign access ports, and verify connectivity between VLAN members.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">VLAN</span><span class="st st-ci" style="font-size:9px">Access Port</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/vlan.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="static routing packet tracer">
-      <a href="static_route.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
-      <div class="lc-title">Static Routing</div>
-      <div class="lc-desc">Configure static routes between routers and verify end-to-end ping connectivity.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Routing</span><span class="st st-ci" style="font-size:9px">Static</span><span class="st st-ci" style="font-size:9px">Router</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/static_route.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="ssh configuration switch">
-      <a href="ssh.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:var(--acD);color:var(--ac)"><i class="fa-solid fa-play"></i></div><span class="st st-g"><i class="fa-solid fa-circle" style="font-size:5px"></i> Beginner</span></div>
-      <div class="lc-title">SSH Configuration</div>
-      <div class="lc-desc">Enable SSH on a switch with RSA keys, local authentication, and VTY lines.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">SSH</span><span class="st st-ci" style="font-size:9px">Security</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/ssh.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- Intermediate -->
-<div id="pt-intermediate" style="margin-bottom:24px">
-  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gd);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-fire" style="margin-right:6px"></i>Intermediate</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-    <div class="lab-card reveal lab-item" data-name="vlan trunking 802.1q">
-      <a href="trunk.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">VLAN Trunking</div>
-      <div class="lc-desc">Configure 802.1Q trunk links between switches to carry multiple VLANs.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">Trunk</span><span class="st st-ci" style="font-size:9px">802.1Q</span><span class="st st-ci" style="font-size:9px">Inter-Switch</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/trunk.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="router on a stick inter vlan">
-      <a href="router_stick.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">Router-on-a-Stick</div>
-      <div class="lc-desc">Implement inter-VLAN routing using subinterfaces on a single router.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">ROAS</span><span class="st st-ci" style="font-size:9px">Subinterface</span><span class="st st-ci" style="font-size:9px">Inter-VLAN</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/router_stick.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="etherchannel lacp port channel">
-      <a href="etherchannel.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">EtherChannel</div>
-      <div class="lc-desc">Bundle multiple physical links into a single logical link using LACP/PAgP.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">LACP</span><span class="st st-ci" style="font-size:9px">Port-Channel</span><span class="st st-ci" style="font-size:9px">Redundancy</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/etherchannel.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="dhcp configuration server relay">
-      <a href="dhcp.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">DHCPv4 Configuration</div>
-      <div class="lc-desc">Configure DHCP server and relay agent to automate IP addressing.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">DHCP</span><span class="st st-ci" style="font-size:9px">IP Addressing</span><span class="st st-ci" style="font-size:9px">Relay</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/dhcp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="nat translation pat">
-      <a href="nat.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">NAT Configuration</div>
-      <div class="lc-desc">Configure static and dynamic NAT to translate private IPs to public addresses.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">NAT</span><span class="st st-ci" style="font-size:9px">PAT</span><span class="st st-ci" style="font-size:9px">Overload</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/nat.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="access control list acl standard extended">
-      <a href="acl.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-play"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-      <div class="lc-title">Access Control Lists</div>
-      <div class="lc-desc">Configure standard and extended ACLs to filter traffic based on source/destination.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">ACL</span><span class="st st-ci" style="font-size:9px">Standard</span><span class="st st-ci" style="font-size:9px">Extended</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/acl.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- Advanced -->
-<div id="pt-advanced" style="margin-bottom:24px">
-  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--wn);font-weight:600;margin-bottom:12px"><i class="fa-solid fa-bolt" style="margin-right:6px"></i>Advanced</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-    <div class="lab-card reveal lab-item" data-name="ospf single area routing protocol">
-      <a href="ospf.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
-      <div class="lc-title">OSPF Single Area</div>
-      <div class="lc-desc">Configure OSPF in a single area and verify routing tables and neighbor adjacencies.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">OSPF</span><span class="st st-ci" style="font-size:9px">Dynamic</span><span class="st st-ci" style="font-size:9px">Area 0</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/ospf.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="hsrp first hop redundancy protocol">
-      <a href="hsrp.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
-      <div class="lc-title">HSRP Configuration</div>
-      <div class="lc-desc">Configure Hot Standby Router Protocol for default gateway redundancy and failover.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">HSRP</span><span class="st st-ci" style="font-size:9px">Redundancy</span><span class="st st-ci" style="font-size:9px">Failover</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/hsrp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-    <div class="lab-card reveal lab-item" data-name="spanning tree protocol stp rstp">
-      <a href="stp.html" class="lc-main-link"></a>
-      <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-play"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
-      <div class="lc-title">Spanning Tree Protocol</div>
-      <div class="lc-desc">Configure STP/RSTP to prevent loops and observe root bridge election.</div>
-      <div class="lc-tags"><span class="st st-ci" style="font-size:9px">STP</span><span class="st st-ci" style="font-size:9px">RSTP</span><span class="st st-ci" style="font-size:9px">Loop Prevention</span></div>
-      <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/stp.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ================================================================ -->
-<!-- SWITCH MANAGEMENT -->
-<!-- ================================================================ -->
-<div class="cat-header" id="switch-labs">
-  <div class="cat-icon" style="background:rgba(9,132,227,.08);color:var(--inf)"><i class="fa-solid fa-arrows-left-right"></i></div>
-  <div><div class="cat-title">Switch Management</div><div style="font-size:12px;color:var(--mt)">Remote access, RBAC, VLANs, ACLs, routing</div></div>
-  <div class="cat-count">1 lab</div>
-</div>
-<div class="cat-divider"></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-  <div class="lab-card reveal lab-item" data-name="switch management telnet ssh rbac vlan acl">
-    <a href="mgt.html" class="lc-main-link"></a>
-    <div class="lc-top"><div class="lc-icon" style="background:rgba(9,132,227,.08);color:var(--inf)"><i class="fa-solid fa-network-wired"></i></div><span class="st st-b"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
-    <div class="lc-title">Switch Management — Complete Reference</div>
-    <div class="lc-desc">Telnet, SSH, HTTPS, Console, User/Priv modes, RBAC, Passwords, L2/L3, VLANs, ACLs, Routing, ROAS, Tasks.</div>
-    <div class="lc-tags"><span class="st st-ci" style="font-size:9px">14 Sections</span><span class="st st-ci" style="font-size:9px">CLI Configs</span><span class="st st-ci" style="font-size:9px">Images</span></div>
-    <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/mgt.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-  </div>
-</div>
-
-<!-- ================================================================ -->
-<!-- VOIP -->
-<!-- ================================================================ -->
-<div class="cat-header" id="voip-labs">
-  <div class="cat-icon" style="background:rgba(227,25,55,.08);color:var(--avaya)"><i class="fa-solid fa-phone-volume"></i></div>
-  <div><div class="cat-title">VoIP Infrastructure</div><div style="font-size:12px;color:var(--mt)">Cisco & Avaya voice VLAN, DSL, QoS</div></div>
-  <div class="cat-count">1 lab</div>
-</div>
-<div class="cat-divider"></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-  <div class="lab-card reveal lab-item" data-name="voip cisco avaya voice vlan dsl qos poe">
-    <a href="voip.html" class="lc-main-link"></a>
-    <div class="lc-top"><div class="lc-icon" style="background:rgba(227,25,55,.08);color:var(--avaya)"><i class="fa-solid fa-phone"></i></div><span class="st st-av"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
-    <div class="lc-title">VoIP — Cisco & Avaya Voice VLAN</div>
-    <div class="lc-desc">Voice VLAN config, QoS marking, PoE, DSL integration, DHCP options, troubleshooting.</div>
-    <div class="lc-tags"><span class="st st-ci" style="font-size:9px">8 Sections</span><span class="st st-ci" style="font-size:9px">Topology SVG</span><span class="st st-ci" style="font-size:9px">DSCP Table</span></div>
-    <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/voip.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-  </div>
-</div>
-
-<!-- ================================================================ -->
-<!-- CLOUD -->
-<!-- ================================================================ -->
-<div class="cat-header" id="cloud-labs">
-  <div class="cat-icon" style="background:rgba(255,153,0,.08);color:var(--aws)"><i class="fa-solid fa-cloud"></i></div>
-  <div><div class="cat-title">Cloud Computing</div><div style="font-size:12px;color:var(--mt)">AWS, Azure, GCP hands-on labs</div></div>
-  <div class="cat-count">1 lab</div>
-</div>
-<div class="cat-divider"></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-  <div class="lab-card reveal lab-item" data-name="cloud computing aws azure gcp ec2 s3 vpc iam">
-    <a href="cloud-computing.html" class="lc-main-link"></a>
-    <div class="lc-top"><div class="lc-icon" style="background:rgba(255,153,0,.08);color:var(--aws)"><i class="fa-solid fa-cloud"></i></div><span class="st st-aw"><i class="fa-solid fa-circle" style="font-size:5px"></i> Full Lab</span></div>
-    <div class="lc-title">Cloud Computing — AWS / Azure / GCP</div>
-    <div class="lc-desc">Service models, deployment types, EC2, S3, VPC, IAM, cost management, hands-on CLI labs.</div>
-    <div class="lc-tags"><span class="st st-aw" style="font-size:9px">9 Sections</span><span class="st st-aw" style="font-size:9px">CLI Labs</span><span class="st st-aw" style="font-size:9px">IAM JSON</span></div>
-    <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/cloud-computing.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-  </div>
-</div>
-
-<!-- ================================================================ -->
-<!-- ROUTING & SUBNETTING -->
-<!-- ================================================================ -->
-<div class="cat-header" id="routing-labs">
-  <div class="cat-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-route"></i></div>
-  <div><div class="cat-title">Routing & Subnetting</div><div style="font-size:12px;color:var(--mt)">Static, dynamic, inter-VLAN routing, VLSM, CIDR</div></div>
-  <div class="cat-count">1 lab</div>
-</div>
-<div class="cat-divider"></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-  <div class="lab-card reveal lab-item" data-name="subnetting practice ipv4 ipv6 vlsm cidr">
-    <a href="subnetting.html" class="lc-main-link"></a>
-    <div class="lc-top"><div class="lc-icon" style="background:rgba(225,112,85,.1);color:var(--gd)"><i class="fa-solid fa-calculator"></i></div><span class="st st-y"><i class="fa-solid fa-circle" style="font-size:5px"></i> Intermediate</span></div>
-    <div class="lc-title">Subnetting Practice</div>
-    <div class="lc-desc">IPv4/IPv6 subnetting exercises with CIDR, VLSM, and route summarization.</div>
-    <div class="lc-tags"><span class="st st-y" style="font-size:9px">Subnetting</span><span class="st st-y" style="font-size:9px">VLSM</span><span class="st st-y" style="font-size:9px">CIDR</span></div>
-    <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/subnetting.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-  </div>
-</div>
-
-<!-- ================================================================ -->
-<!-- SECURITY LABS -->
-<!-- ================================================================ -->
-<div class="cat-header" id="security-labs">
-  <div class="cat-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-shield-halved"></i></div>
-  <div><div class="cat-title">Security Labs</div><div style="font-size:12px;color:var(--mt)">Firewall, VPN, hardening, ACLs</div></div>
-  <div class="cat-count">1 lab</div>
-</div>
-<div class="cat-divider"></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" class="lab-grid">
-  <div class="lab-card reveal lab-item" data-name="asa firewall configuration acl nat vpn">
-    <a href="asa.html" class="lc-main-link"></a>
-    <div class="lc-top"><div class="lc-icon" style="background:rgba(214,48,49,.08);color:var(--wn)"><i class="fa-solid fa-fire"></i></div><span class="st st-r"><i class="fa-solid fa-circle" style="font-size:5px"></i> Advanced</span></div>
-    <div class="lc-title">ASA Firewall Configuration</div>
-    <div class="lc-desc">Configure Cisco ASA firewall with ACLs, NAT, VPN tunnels, and inspection rules.</div>
-    <div class="lc-tags"><span class="st st-r" style="font-size:9px">Firewall</span><span class="st st-r" style="font-size:9px">VPN</span><span class="st st-r" style="font-size:9px">ACL</span></div>
-    <div class="lc-footer"><a href="https://github.com/felzahra/packet-tracer-LABS/tree/main/labs/asa.html" target="_blank" class="lc-ext"><i class="fa-brands fa-github"></i> GitHub</a><div class="lc-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>
-  </div>
-</div>
-
-</div><!-- /content -->
 </div><!-- /main -->
 
 <div id="toast" class="toast"><i class="fa-solid fa-check-circle" style="color:var(--ac)"></i><span id="toastMsg">Copied!</span></div>
@@ -744,6 +748,50 @@ document.addEventListener('DOMContentLoaded', () => {
     updateIcon();
   });
 })();
+
+// ===== IFRAME LOAD LOGIC =====
+function loadInIframe(url, event) {
+  event.preventDefault();
+  document.getElementById('default-view').style.display = 'none';
+  document.getElementById('embedded-view').style.display = 'block';
+  document.getElementById('contentFrame').src = url;
+  document.getElementById('backToLabsBtn').style.display = 'inline-flex';
+  
+  let rawTitle = url.split('/').pop().replace('.html', '');
+  let title = rawTitle.replace(/_/g, ' ').replace(/-/g, ' ');
+  title = title.charAt(0).toUpperCase() + title.slice(1);
+  document.querySelector('.topbar-title').innerHTML = '<i class="fa-solid fa-book-open" style="color:var(--ac);margin-right:6px"></i>' + title;
+  
+  if (window.innerWidth <= 1024) {
+    document.getElementById('sidebar').classList.remove('show');
+    document.getElementById('mobOverlay').classList.remove('show');
+  }
+  window.scrollTo(0, 0);
+}
+
+function backToLabs() {
+  document.getElementById('embedded-view').style.display = 'none';
+  document.getElementById('default-view').style.display = 'flex'; // Re-enable flex
+  document.getElementById('contentFrame').src = 'about:blank';
+  document.getElementById('backToLabsBtn').style.display = 'none';
+  document.querySelector('.topbar-title').innerHTML = '<i class="fa-solid fa-flask" style="color:var(--ac);margin-right:6px"></i>All Labs — Practice & Hands-On';
+}
+
+// Intercept clicks on sidebar items
+document.querySelectorAll('.sb-lab-card').forEach(card => {
+  const href = card.getAttribute('href');
+  if (href && !href.startsWith('http') && !href.startsWith('#')) {
+    card.addEventListener('click', (e) => loadInIframe(href, e));
+  }
+});
+
+// Intercept clicks on main lab cards
+document.querySelectorAll('.lc-main-link').forEach(link => {
+  const href = link.getAttribute('href');
+  if (href && !href.startsWith('http') && !href.startsWith('#')) {
+    link.addEventListener('click', (e) => loadInIframe(href, e));
+  }
+});
 
 // ===== SIDEBAR SEARCH =====
 function filterSidebarLabs(){
@@ -797,16 +845,6 @@ document.getElementById('mobBtn').addEventListener('click', () => {
 document.getElementById('mobOverlay').addEventListener('click', () => {
   document.getElementById('sidebar').classList.remove('show');
   document.getElementById('mobOverlay').classList.remove('show');
-});
-
-// Close sidebar on lab card click (mobile)
-document.querySelectorAll('.sb-lab-card').forEach(card => {
-  card.addEventListener('click', () => {
-    if (window.innerWidth <= 1024) {
-      document.getElementById('sidebar').classList.remove('show');
-      document.getElementById('mobOverlay').classList.remove('show');
-    }
-  });
 });
 
 updateActive();
