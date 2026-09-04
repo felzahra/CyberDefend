@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Step by Step Aruba Switch Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000;
+            --body-fg: #e0e0e0;
+            --body-bg: #060606;
+            --body-quiet: #888;
+            --body-loud: #fff;
+            --hairline: #1a1a1a;
+            --darkened: #0e0e0e;
+            --selected: #161616;
+            --selected-row: #121212;
+            --access-bg: #0a1a2e;
+            --access-border: #1565c0;
+            --access-text: #42a5f5;
+            --dist-bg: #1a0e2e;
+            --dist-border: #7b1fa2;
+            --dist-text: #ba68c8;
+            --core-bg: #1a0e0a;
+            --core-border: #e65100;
+            --core-text: #ff8a65;
+            --vsx-bg: #0a1a0e;
+            --vsx-border: #00e676;
+            --vsx-text: #69f0ae;
+            --code-bg: #080808;
+            --code-border: #1e3a1e;
+            --warn-bg: #1a1500;
+            --warn-border: #f9a825;
+            --info-bg: #0a1520;
+            --info-border: #29b6f6;
+            --tip-bg: #0a1a0e;
+            --tip-border: #00e676;
+            --err-bg: #1a0a0a;
+            --err-border: #ef5350;
+        }
+        html[data-theme="light"] {
+            --primary: #00897b;
+            --primary-fg: #fff;
+            --body-fg: #2c3e50;
+            --body-bg: #f4f5f7;
+            --body-quiet: #78909c;
+            --body-loud: #1a1a2e;
+            --hairline: #dde1e6;
+            --darkened: #fff;
+            --selected: #e8f5e9;
+            --selected-row: #f5f5f5;
+            --access-bg: #e3f2fd;
+            --access-border: #1565c0;
+            --access-text: #0d47a1;
+            --dist-bg: #f3e5f5;
+            --dist-border: #7b1fa2;
+            --dist-text: #6a1b9a;
+            --core-bg: #fff3e0;
+            --core-border: #e65100;
+            --core-text: #bf360c;
+            --vsx-bg: #e8f5e9;
+            --vsx-border: #00897b;
+            --vsx-text: #00695c;
+            --code-bg: #f5f5f5;
+            --code-border: #c8e6c9;
+            --warn-bg: #fff8e1;
+            --warn-border: #f9a825;
+            --info-bg: #e1f5fe;
+            --info-border: #29b6f6;
+            --tip-bg: #e8f5e9;
+            --tip-border: #00897b;
+            --err-bg: #ffebee;
+            --err-border: #ef5350;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; transition: background 0.3s, color 0.3s; }
+        .page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+
+        /* TOP BAR */
+        .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+        .top-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo { width: 46px; height: 46px; background: var(--primary); color: var(--primary-fg); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; }
+        .top-left h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud); }
+        .top-left h1 span { display: block; font-size: 0.6rem; color: var(--primary); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn { cursor: pointer; border: 1px solid var(--hairline); padding: 8px 16px; background: var(--darkened); border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 0.82rem; font-weight: 600; margin-bottom: 24px; }
+        .back-link:hover { text-decoration: underline; }
+
+        /* HERO */
+        .hero { background: linear-gradient(135deg, var(--selected) 0%, var(--darkened) 100%); border: 1px solid var(--hairline); border-radius: 24px; padding: 40px 36px; margin-bottom: 32px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 240px; height: 240px; background: var(--primary); opacity: 0.04; border-radius: 50%; }
+        .hero-badge { display: inline-block; background: var(--primary); color: var(--primary-fg); font-size: 0.62rem; font-weight: 700; padding: 4px 14px; border-radius: 30px; letter-spacing: 1px; margin-bottom: 14px; }
+        .hero h2 { font-size: 2rem; font-weight: 800; color: var(--body-loud); margin-bottom: 8px; }
+        .hero p { color: var(--body-quiet); font-size: 0.9rem; max-width: 750px; }
+        .hero-meta { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+        .hero-meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--body-quiet); }
+        .hero-meta-item strong { color: var(--body-loud); }
+
+        /* ROLE BADGES */
+        .role-legend { display: flex; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
+        .role-badge { display: flex; align-items: center; gap: 7px; font-size: 0.76rem; font-weight: 600; padding: 5px 14px; border-radius: 30px; border: 1px solid; }
+        .role-badge.access { color: var(--access-text); border-color: var(--access-border); background: var(--access-bg); }
+        .role-badge.dist { color: var(--dist-text); border-color: var(--dist-border); background: var(--dist-bg); }
+        .role-badge.core { color: var(--core-text); border-color: var(--core-border); background: var(--core-bg); }
+        .role-badge.vsx { color: var(--vsx-text); border-color: var(--vsx-border); background: var(--vsx-bg); }
+        .role-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .role-dot.access { background: var(--access-border); }
+        .role-dot.dist { background: var(--dist-border); }
+        .role-dot.core { background: var(--core-border); }
+        .role-dot.vsx { background: var(--vsx-border); }
+
+        /* TOC */
+        .toc { background: var(--darkened); border: 1px solid var(--hairline); border-radius: 18px; padding: 24px 28px; margin-bottom: 32px; }
+        .toc h3 { font-size: 0.95rem; font-weight: 700; color: var(--body-loud); margin-bottom: 14px; }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+        .toc a { color: var(--primary); text-decoration: none; font-size: 0.8rem; font-weight: 500; padding: 4px 0; display: block; transition: 0.15s; }
+        .toc a:hover { text-decoration: underline; padding-left: 6px; }
+        .toc a .n { color: var(--body-quiet); font-weight: 700; margin-right: 6px; font-size: 0.72rem; }
+        @media (max-width: 600px) { .toc-grid { grid-template-columns: 1fr; } }
+
+        /* TOPOLOGY */
+        .topology-box { background: var(--darkened); border: 2px solid var(--info-border); border-radius: 20px; padding: 28px 32px; margin-bottom: 36px; }
+        .topology-box h3 { font-size: 1rem; font-weight: 700; color: var(--info-border); margin-bottom: 14px; }
+        .topo-diagram { background: var(--info-bg); border-radius: 14px; padding: 24px; font-family: 'Courier New', monospace; font-size: 0.75rem; line-height: 1.85; color: var(--body-fg); overflow-x: auto; white-space: pre; }
+        .topo-legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; }
+        .topo-legend span { font-size: 0.73rem; color: var(--body-quiet); display: flex; align-items: center; gap: 5px; }
+
+        /* SECTION */
+        .section { margin-bottom: 48px; }
+        .sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--hairline); }
+        .sec-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .sec-icon.access { background: var(--access-bg); border: 1px solid var(--access-border); }
+        .sec-icon.dist { background: var(--dist-bg); border: 1px solid var(--dist-border); }
+        .sec-icon.core { background: var(--core-bg); border: 1px solid var(--core-border); }
+        .sec-icon.vsx { background: var(--vsx-bg); border: 1px solid var(--vsx-border); }
+        .sec-head h2 { font-size: 1.35rem; font-weight: 700; color: var(--body-loud); }
+        .sec-head h2 small { display: block; font-size: 0.7rem; color: var(--body-quiet); font-weight: 500; margin-top: 2px; }
+
+        /* COMMAND EXPLANATION CARD */
+        .cmd-card { background: var(--darkened); border: 1px solid var(--hairline); border-radius: 16px; margin-bottom: 14px; overflow: hidden; transition: border-color 0.2s; }
+        .cmd-card:hover { border-color: var(--body-quiet); }
+        .cmd-card.access-card { border-left: 4px solid var(--access-border); }
+        .cmd-card.dist-card { border-left: 4px solid var(--dist-border); }
+        .cmd-card.core-card { border-left: 4px solid var(--core-border); }
+        .cmd-card.vsx-card { border-left: 4px solid var(--vsx-border); }
+        .cmd-card-head { display: flex; align-items: flex-start; gap: 14px; padding: 18px 22px 0; }
+        .cmd-num { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+        .cmd-num.access { background: var(--access-border); color: #fff; }
+        .cmd-num.dist { background: var(--dist-border); color: #fff; }
+        .cmd-num.core { background: var(--core-border); color: #fff; }
+        .cmd-num.vsx { background: var(--vsx-border); color: #000; }
+        .cmd-card-content { flex: 1; min-width: 0; }
+        .cmd-card-title { font-size: 0.95rem; font-weight: 700; color: var(--body-loud); margin-bottom: 2px; }
+        .cmd-card-category { font-size: 0.68rem; font-weight: 600; padding: 2px 10px; border-radius: 20px; display: inline-block; margin-bottom: 8px; }
+        .cmd-card-category.access { background: var(--access-bg); color: var(--access-text); }
+        .cmd-card-category.dist { background: var(--dist-bg); color: var(--dist-text); }
+        .cmd-card-category.core { background: var(--core-bg); color: var(--core-text); }
+        .cmd-card-category.vsx { background: var(--vsx-bg); color: var(--vsx-text); }
+        .cmd-card-body { padding: 0 22px 18px; }
+
+        /* CODE INLINE & BLOCKS */
+        code { font-family: 'Courier New', Consolas, monospace; font-size: 0.76rem; padding: 1px 6px; border-radius: 4px; background: var(--code-bg); border: 1px solid var(--hairline); color: var(--primary); white-space: nowrap; }
+        .code-block { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: 12px; overflow: hidden; margin: 8px 0; }
+        .code-label { background: var(--code-border); color: var(--primary-fg); font-size: 0.62rem; font-weight: 700; padding: 4px 14px; letter-spacing: 0.5px; }
+        .code-label.access { background: var(--access-border); }
+        .code-label.dist { background: var(--dist-border); }
+        .code-label.core { background: var(--core-border); }
+        .code-label.vsx { background: var(--vsx-border); }
+        pre { padding: 14px 18px; overflow-x: auto; font-family: 'Courier New', 'Consolas', monospace; font-size: 0.76rem; line-height: 1.7; color: #b0bec5; margin: 0; }
+        html[data-theme="light"] pre { color: #37474f; }
+        .cmd-hl { color: #00e676; }
+        html[data-theme="light"] .cmd-hl { color: #00897b; }
+        .cmt { color: #546e7a; font-style: italic; }
+        .val-hl { color: #80deea; }
+        html[data-theme="light"] .val-hl { color: #00838f; }
+        .prompt-hl { color: #78909c; }
+        .warn-hl { color: #ffab40; font-weight: 600; }
+        html[data-theme="light"] .warn-hl { color: #e65100; }
+
+        .copy-btn { float: right; background: var(--hairline); color: var(--body-quiet); border: none; padding: 2px 10px; border-radius: 6px; font-size: 0.62rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; margin: 4px 8px 0 0; }
+        .copy-btn:hover { background: var(--primary); color: var(--primary-fg); }
+
+        /* CALLOUT */
+        .callout { border-radius: 12px; padding: 14px 18px; margin: 12px 0; font-size: 0.8rem; line-height: 1.65; display: flex; gap: 10px; align-items: flex-start; }
+        .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); }
+        .callout.info { background: var(--info-bg); border-left: 4px solid var(--info-border); }
+        .callout.tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); }
+        .callout.err { background: var(--err-bg); border-left: 4px solid var(--err-border); }
+        .callout strong { color: var(--body-loud); }
+
+        /* COMPARE TABLE */
+        .cmp-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--hairline); font-size: 0.78rem; }
+        .cmp-table th { padding: 10px 14px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4px; text-align: left; border-bottom: 2px solid var(--hairline); }
+        .cmp-table th.concept { background: var(--selected); color: var(--body-loud); width: 20%; }
+        .cmp-table th.access { background: var(--access-bg); color: var(--access-text); border-left: 3px solid var(--access-border); }
+        .cmp-table th.dist { background: var(--dist-bg); color: var(--dist-text); border-left: 3px solid var(--dist-border); }
+        .cmp-table td { padding: 9px 14px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+        .cmp-table td.concept { background: var(--selected-row); color: var(--body-loud); font-weight: 600; }
+        .cmp-table td.access { background: var(--access-bg); border-left: 3px solid var(--access-border); }
+        .cmp-table td.dist { background: var(--dist-bg); border-left: 3px solid var(--dist-border); }
+        .cmp-table td.core { background: var(--core-bg); border-left: 3px solid var(--core-border); }
+        .cmp-table td.vsx { background: var(--vsx-bg); border-left: 3px solid var(--vsx-border); }
+        .cmp-table tr:last-child td { border-bottom: none; }
+        .cmp-table tr:hover td { filter: brightness(1.05); }
+        .cmp-table code { font-size: 0.72rem; }
+
+        /* SUMMARY BOX */
+        .summary-box { background: linear-gradient(135deg, var(--selected), var(--darkened)); border: 2px solid var(--primary); border-radius: 20px; padding: 28px 32px; margin-bottom: 36px; }
+        .summary-box h3 { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+        .summary-box ul { list-style: none; padding: 0; }
+        .summary-box li { padding: 5px 0; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px; }
+        .summary-box li::before { content: '✓'; color: var(--primary); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+
+        /* VLAN TABLE */
+        .vlan-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.78rem; }
+        .vlan-table th { background: var(--selected); color: var(--body-loud); font-weight: 700; text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--hairline); font-size: 0.72rem; }
+        .vlan-table td { padding: 7px 12px; border-bottom: 1px solid var(--hairline); }
+        .vlan-table tr:hover td { background: var(--selected-row); }
+        .vlan-table code { font-size: 0.72rem; }
+
+        /* PORT MAP TABLE */
+        .port-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.76rem; }
+        .port-table th { background: var(--selected); color: var(--body-loud); font-weight: 700; text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--hairline); font-size: 0.7rem; }
+        .port-table td { padding: 7px 12px; border-bottom: 1px solid var(--hairline); }
+        .port-table tr:hover td { background: var(--selected-row); }
+        .port-table code { font-size: 0.7rem; }
+
+        footer { text-align: center; padding: 32px 0; font-size: 0.72rem; color: var(--body-quiet); border-top: 1px solid var(--hairline); }
+
+        @media (max-width: 800px) {
+            .cmp-table { font-size: 0.7rem; }
+            .cmp-table th, .cmp-table td { padding: 7px 8px; }
+            .hero h2 { font-size: 1.4rem; }
+        }
+        @media (max-width: 600px) {
+            .page { padding: 16px 10px 60px; }
+            .hero { padding: 24px 18px; }
+            .cmd-card-head { padding: 14px 14px 0; }
+            .cmd-card-body { padding: 0 14px 14px; }
+            pre { font-size: 0.68rem; padding: 10px 12px; }
+            .topo-diagram { font-size: 0.6rem; }
+            .cmp-table, .cmp-table thead, .cmp-table tbody, .cmp-table th, .cmp-table td, .cmp-table tr { display: block; width: 100%; }
+            .cmp-table thead { display: none; }
+            .cmp-table tr { margin-bottom: 10px; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); }
+            .cmp-table td { border-left: none !important; }
+            .cmp-table td::before { content: attr(data-label); display: block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 3px; }
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
+        html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #bdbdbd; }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<div class="page">
+    <div class="top-bar">
+        <div class="top-left">
+            <div class="top-logo">🌐</div>
+            <h1>CyberDefend<span>NETWORKING LABS</span></h1>
+        </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+            <span id="themeLabel">Switch Theme</span>
+        </button>
+    </div>
+
+    <a href="index.html" class="back-link">← Back to Dashboard</a>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">COMMAND BREAKDOWN</div>
+        <h2>Aruba Access → Distribution → Core</h2>
+        <p>Every command from two real production configs explained line by line. ND2-E204 (ArubaOS-Switch access) and ND4-prim (ArubaOS-CX distribution core) from the Damietta Port Authority network.</p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">🔧 <strong>2 Real Configs</strong></div>
+            <div class="hero-meta-item">📝 <strong>50+ Commands Explained</strong></div>
+            <div class="hero-meta-item">🏢 <strong>Damietta Port Authority</strong></div>
+            <div class="hero-meta-item">⚡ <strong>VSX / MCLAG / OSPF</strong></div>
+        </div>
+        <div class="role-legend">
+            <div class="role-badge access"><div class="role-dot access"></div>Access Layer</div>
+            <div class="role-badge dist"><div class="role-dot dist"></div>Distribution Layer</div>
+            <div class="role-badge core"><div class="role-dot core"></div>Core Layer</div>
+            <div class="role-badge vsx"><div class="role-dot vsx"></div>VSX / HA</div>
+        </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <h3>📋 Table of Contents</h3>
+        <div class="toc-grid">
+            <a href="#topology"><span class="n">01</span>Network Topology</a>
+            <a href="#access-overview"><span class="n">02</span>Access Switch Overview</a>
+            <a href="#access-hostname"><span class="n">03</span>Hostname & Module</a>
+            <a href="#access-trunk"><span class="n">04</span>Trunk / LACP</a>
+            <a href="#access-route"><span class="n">05</span>IP Route</a>
+            <a href="#access-snmp"><span class="n">06</span>SNMP</a>
+            <a href="#access-vlans"><span class="n">07</span>VLAN Configuration</a>
+            <a href="#access-stp"><span class="n">08</span>Spanning Tree</a>
+            <a href="#access-misc"><span class="n">09</span>Misc (Transceiver, Password)</a>
+            <a href="#dist-overview"><span class="n">10</span>Dist/Core Switch Overview</a>
+            <a href="#dist-system"><span class="n">11</span>System Settings</a>
+            <a href="#dist-services"><span class="n">12</span>Services (NTP, sFlow, Logging)</a>
+            <a href="#dist-vlans"><span class="n">13</span>30+ VLANs</a>
+            <a href="#dist-stp"><span class="n">14</span>Spanning Tree RPVST</a>
+            <a href="#dist-mgmt"><span class="n">15</span>Out-of-Band Management</a>
+            <a href="#dist-mclag"><span class="n">16</span>47 MCLAGs Explained</a>
+            <a href="#dist-isl"><span class="n">17</span>ISL & Keepalive Links</a>
+            <a href="#dist-phys"><span class="n">18</span>Physical Port Mapping</a>
+            <a href="#dist-svi"><span class="n">19</span>SVI / Active-Gateway</a>
+            <a href="#dist-vsx"><span class="n">20</span>VSX Configuration</a>
+            <a href="#dist-routing"><span class="n">21</span>OSPF & Default Route</a>
+            <a href="#dist-rest"><span class="n">22</span>REST API & HTTPS</a>
+            <a href="#compare"><span class="n">23</span>Side-by-Side Comparison</a>
+            <a href="#summary"><span class="n">24</span>Architecture Summary</a>
+        </div>
+    </div>
+
+    <!-- TOPOLOGY -->
+    <div class="topology-box" id="topology">
+        <h3>🗺️ Damietta Port Authority — Network Topology</h3>
+        <div class="topo-diagram">
+     ┌─────────────────────────────────────────────────────────────────┐
+     │                         FIREWALL / CORE                        │
+     │                     10.0.14.2 (default route)                  │
+     └──────────┬──────────────────────────┬──────────────────────────┘
+                │                          │
+           lag 244                    lag 244 (MCLAG)
+                │                          │
+     ┌──────────┴──────────┐    ┌─────────┴──────────┐
+     │    ND4-prim        │    │    ND4-sec         │
+     │  ArubaOS-CX        │◄──►│  ArubaOS-CX        │
+     │  VSX PRIMARY       │ ISL │  VSX SECONDARY     │
+     │  10.0.2.42/24      │lag128│ 10.0.2.43/24      │
+     │  10.0.4.41 (KA)    │    │  10.0.4.42 (KA)    │
+     └──┬──┬──┬──┬──┬──┬──┘    └──┬──┬──┬──┬──┬──┬──┘
+        │  │  │  │  │  │          │  │  │  │  │  │
+     MCLAG 1-47 (LACP active, native VLAN 244, all VLANs tagged)
+        │  │  │  │  │  │          │  │  │  │  │  │
+     ┌──┴──┴──┴──┴──┴──┐    ┌───┴──┴──┴──┴──┴──┐
+     │  ND2-E204        │    │  ND2-Exxx         │
+     │  ArubaOS-Switch  │    │  ArubaOS-Switch   │
+     │  (JL258A/2540)   │    │  (Access Layer)   │
+     │  10.0.242.14/24  │    │                   │
+     │  Ports 1-8:      │    │                   │
+     │    VLAN 98       │    │                   │
+     │  Trk1→Dist:      │    │                   │
+     │    VLAN 242+98   │    │                   │
+     └──────────────────┘    └───────────────────┘
+        │  │  │  │  │  │  │  │
+      End Users / PCs / IP Phones
+      (VLAN 98 = Data for this floor)</div>
+        <div class="topo-legend">
+            <span><div class="role-dot core" style="width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--core-border)"></div> Core/Firewall</span>
+            <span><div class="role-dot dist" style="width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--dist-border)"></div> Distribution (VSX Pair)</span>
+            <span><div class="role-dot access" style="width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--access-border)"></div> Access Switches</span>
+            <span><div class="role-dot vsx" style="width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--vsx-border)"></div> VSX ISL / Keepalive</span>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ACCESS SWITCH: ND2-E204 -->
+    <!-- ============================================================ -->
+
+    <div class="section" id="access-overview">
+        <div class="sec-head">
+            <div class="sec-icon access">🏢</div>
+            <h2>ND2-E204 — Access Switch <small>ArubaOS-Switch (ProVision) · JL258A / Aruba 2540 · 10-Port</small></h2>
+        </div>
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <div>This is a <strong>layer-2 access switch</strong> running ArubaOS-Switch (formerly ProVision). It sits at the building floor level, connects end-user devices, and uplinks to the distribution core via a single LACP trunk. The model <strong>JL258A</strong> is an Aruba 2540-24G-PoE switch.</div>
+        </div>
+    </div>
+
+    <!-- Step: Hostname & Module -->
+    <div class="section" id="access-hostname">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">1</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Hostname & Module Type</div>
+                    <span class="cmd-card-category access">SYSTEM IDENTITY</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">ARUBAOS-SWITCH · ND2-E204</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="prompt-hl">ND2-E204#</span> <span class="cmd-hl">display current-configuration</span> 
+<span class="cmt">; JL258A Configuration Editor; Created on release #WC.16.10.0009</span>
+<span class="cmt">; Ver #14:67.6f.f8.1d.9b.3f.bf.bb.ef.7c.59.fc.6b.fb.9f.fc.ff.ff.37.ef:44</span>
+<span class="cmd-hl">hostname</span> <span class="val-hl">"ND2-E204"</span>
+<span class="cmd-hl">module</span> <span class="val-hl">1</span> type <span class="val-hl">jl258a</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>display current-configuration</code></td><td class="access">Shows the entire running configuration. This is the <strong>ArubaOS-Switch equivalent</strong> of Cisco's <code>show running-config</code>. Note: AOS-CX uses <code>show running-config</code> instead.</td></tr>
+                        <tr><td class="concept"><code>; JL258A Configuration Editor...</code></td><td class="access">Semicolon <code>;</code> lines are <strong>comments/metadata</strong> — not executable commands. They show the config editor version, firmware release <strong>WC.16.10.0009</strong>, and a unique config verification hash.</td></tr>
+                        <tr><td class="concept"><code>hostname "ND2-E204"</code></td><td class="access">Sets the switch's hostname to <strong>ND2-E204</strong>. The naming convention: <strong>ND</strong> = Network Device, <strong>2</strong> = Building/Floor 2, <strong>E204</strong> = Room/Equipment ID. Quotes are required in ProVision.</td></tr>
+                        <tr><td class="concept"><code>module 1 type jl258a</code></td><td class="access">Declares the hardware module in slot 1. <strong>JL258A</strong> is the Aruba part number for the 2540-24G-PoE+ switch (24× 10/100/1000 PoE+ ports + 4× SFP uplinks). This is auto-detected but stored in config for validation.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: Trunk/LACP -->
+    <div class="section" id="access-trunk">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">2</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">LACP Trunk to Distribution</div>
+                    <span class="cmd-card-category access">LINK AGGREGATION</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">TRUNK</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">trunk</span> <span class="val-hl">9-10</span> <span class="val-hl">trk1</span> <span class="val-hl">lacp</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>trunk 9-10 trk1 lacp</code></td><td class="access">Bundles <strong>physical ports 9 and 10</strong> into a single logical trunk called <strong>Trk1</strong> using the <strong>LACP (802.3ad)</strong> protocol.<br><br>• <strong>9-10</strong> = port range (SFP uplink ports on the 2540)<br>• <strong>trk1</strong> = the trunk group name (like Cisco's <code>port-channel 1</code>)<br>• <strong>lacp</strong> = enables LACP negotiation (active by default in ProVision)<br><br>This provides <strong>2 Gbps bandwidth</strong> and <strong>redundancy</strong> — if one SFP link fails, traffic continues on the other. The other end (ND4-prim) has the matching MCLAG configuration.</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Cisco vs ArubaOS-Switch trunk:</strong><br>
+                    • Cisco: <code>interface range gi0/1-2</code> → <code>channel-group 1 mode active</code><br>
+                    • ArubaOS-Switch: <code>trunk 9-10 trk1 lacp</code> (one line!)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: IP Route -->
+    <div class="section" id="access-route">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">3</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Default Route</div>
+                    <span class="cmd-card-category access">ROUTING</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">STATIC ROUTE</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">ip route</span> <span class="val-hl">0.0.0.0</span> <span class="val-hl">0.0.0.0</span> <span class="val-hl">10.0.242.1</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>ip route 0.0.0.0 0.0.0.0 10.0.242.1</code></td><td class="access">Sets a <strong>default static route</strong> (gateway of last resort). All traffic not matching a more specific route is sent to <strong>10.0.242.1</strong>.<br><br>This is the <strong>Distribution switch's SVI IP</strong> on VLAN 242 (Managment-Switch). The access switch uses this to reach the management network, NTP servers, syslog, etc.<br><br>• Syntax is identical to Cisco IOS<br>• The access switch needs this because it has an IP on VLAN 242 but doesn't run a routing protocol</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>Why does an L2 switch need a route?</strong> ArubaOS-Switch (ProVision) supports <strong>basic layer-3 static routing</strong> even on "access" switches. This route is used for <strong>out-of-band management traffic</strong> originating from the switch itself (SNMP traps, syslog, NTP, firmware downloads).</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: SNMP -->
+    <div class="section" id="access-snmp">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">4</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">SNMP Community</div>
+                    <span class="cmd-card-category access">MONITORING</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">SNMP</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">snmp-server community</span> <span class="val-hl">"public"</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>snmp-server community "public"</code></td><td class="access">Enables SNMPv1/v2c with the community string <strong>"public"</strong> for read-only access. This allows monitoring tools (like Zabbix, PRTG, or SolarWinds) to poll the switch for interface stats, CPU, memory, port status, etc.<br><br><span class="warn-hl">⚠ Security note:</span> "public" is a well-known default community string. In production, this should be changed to a unique, complex string. SNMPv3 with authentication and encryption is preferred.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: VLANs -->
+    <div class="section" id="access-vlans">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">5</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">VLAN Configuration</div>
+                    <span class="cmd-card-category access">VLAN / L2</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">VLANS</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">vlan</span> <span class="val-hl">1</span>
+   <span class="cmd-hl">name</span> <span class="val-hl">"DEFAULT_VLAN"</span>
+   <span class="cmd-hl">no untagged</span> <span class="val-hl">1-8,Trk1</span>
+   <span class="cmd-hl">ip address</span> <span class="val-hl">dhcp-bootp</span>
+   <span class="cmd-hl">ipv6 enable</span>
+   <span class="cmd-hl">ipv6 address</span> <span class="val-hl">dhcp full</span>
+   <span class="cmd-hl">exit</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">98</span>
+   <span class="cmd-hl">name</span> <span class="val-hl">"VLAN98"</span>
+   <span class="cmd-hl">untagged</span> <span class="val-hl">1-8</span>
+   <span class="cmd-hl">tagged</span> <span class="val-hl">Trk1</span>
+   <span class="cmd-hl">no ip address</span>
+   <span class="cmd-hl">exit</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">242</span>
+   <span class="cmd-hl">name</span> <span class="val-hl">"Managment-Switch"</span>
+   <span class="cmd-hl">untagged</span> <span class="val-hl">Trk1</span>
+   <span class="cmd-hl">ip address</span> <span class="val-hl">10.0.242.14</span> <span class="val-hl">255.255.255.0</span>
+   <span class="cmd-hl">exit</span></pre>
+                </div>
+
+                <h4 style="color:var(--body-loud);font-size:0.9rem;margin:16px 0 8px;">VLAN 1 — Default VLAN</h4>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>name "DEFAULT_VLAN"</code></td><td class="access">Assigns a human-readable name. VLAN 1 exists by default on all ArubaOS-Switch ports.</td></tr>
+                        <tr><td class="concept"><code>no untagged 1-8,Trk1</code></td><td class="access"><strong>Removes</strong> ports 1-8 and Trk1 from the untagged (access) membership of VLAN 1. By default, all ports are untagged in VLAN 1. This command "frees" those ports so they can be assigned to other VLANs. Without this, you can't make ports 1-8 untagged in VLAN 98.</td></tr>
+                        <tr><td class="concept"><code>ip address dhcp-bootp</code></td><td class="access">Configures the VLAN 1 SVI to obtain its IP via <strong>DHCP or BOOTP</strong>. This is the switch's management IP if no other VLAN has a static IP. In this network, it's a fallback — the real management IP is on VLAN 242.</td></tr>
+                        <tr><td class="concept"><code>ipv6 enable</code></td><td class="access">Enables IPv6 processing on this VLAN interface.</td></tr>
+                        <tr><td class="concept"><code>ipv6 address dhcp full</code></td><td class="access">Obtains a full IPv6 address via DHCPv6 (not just SLAAC). The switch gets its IPv6 address, DNS, and other options from a DHCPv6 server.</td></tr>
+                    </tbody>
+                </table>
+
+                <h4 style="color:var(--body-loud);font-size:0.9rem;margin:20px 0 8px;">VLAN 98 — Data VLAN (User Ports)</h4>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>untagged 1-8</code></td><td class="access">Assigns ports <strong>1 through 8</strong> as <strong>untagged (access) members</strong> of VLAN 98. Devices plugged into these ports send/receive <strong>untagged Ethernet frames</strong> — the switch automatically adds/removes the VLAN 98 tag internally. This is equivalent to Cisco's <code>switchport access vlan 98</code>.</td></tr>
+                        <tr><td class="concept"><code>tagged Trk1</code></td><td class="access">Makes Trk1 a <strong>tagged member</strong> of VLAN 98. Frames going out Trk1 toward the distribution switch carry an <strong>802.1Q tag with VLAN ID 98</strong>. This is how the distribution switch knows which VLAN the traffic belongs to. Equivalent to Cisco's <code>switchport trunk allowed vlan add 98</code>.</td></tr>
+                        <tr><td class="concept"><code>no ip address</code></td><td class="access">Explicitly removes any IP address from the VLAN 98 SVI. This switch doesn't need to route for VLAN 98 — the distribution core handles inter-VLAN routing.</td></tr>
+                    </tbody>
+                </table>
+
+                <h4 style="color:var(--body-loud);font-size:0.9rem;margin:20px 0 8px;">VLAN 242 — Switch Management</h4>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>untagged Trk1</code></td><td class="access">Trk1 is an <strong>untagged member</strong> of VLAN 242. This means management traffic between this switch and the distribution core on VLAN 242 flows <strong>without 802.1Q tags</strong> on this trunk.<br><br><span class="warn-hl">⚠ Important:</span> In ArubaOS-Switch, a port can only be <strong>untagged in ONE VLAN</strong>. Since Trk1 is untagged in VLAN 242, all other VLANs (like 98) must be <strong>tagged</strong> on Trk1. VLAN 242 acts as the "native VLAN" for this trunk.</td></tr>
+                        <tr><td class="concept"><code>ip address 10.0.242.14 255.255.255.0</code></td><td class="access">Assigns <strong>10.0.242.14/24</strong> as the switch's management IP address. This is how network admins SSH, SNMP-poll, or web-manage this switch. The gateway is <strong>10.0.242.1</strong> (set in the default route above), which is the distribution switch's VLAN 242 SVI.</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="callout info">
+                    <span class="callout-icon">📌</span>
+                    <div><strong>Access Switch Port Map Summary:</strong><br>
+                    • Ports <strong>1-8</strong>: Access ports, untagged VLAN 98 (user data)<br>
+                    • Ports <strong>9-10</strong>: SFP uplinks, bundled as Trk1 (LACP)<br>
+                    • Trk1 untagged: VLAN 242 (management/native)<br>
+                    • Trk1 tagged: VLAN 98 (data)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: STP -->
+    <div class="section" id="access-stp">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">6</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Spanning Tree Priority</div>
+                    <span class="cmd-card-category access">LOOP PREVENTION</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">STP</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">spanning-tree</span> <span class="val-hl">Trk1</span> <span class="val-hl">priority</span> <span class="val-hl">4</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>spanning-tree Trk1 priority 4</code></td><td class="access">Sets the <strong>Spanning Tree port priority</strong> of Trk1 to <strong>4</strong> (default is 8). Lower value = <strong>higher priority</strong> = more likely to become the <strong>root port</strong> (the port that forwards traffic toward the root bridge).<br><br>Since this access switch has only one uplink (Trk1), this setting mainly matters if there were redundant uplinks — it ensures Trk1 is preferred over any other path. The priority value is multiplied by 4096 internally (4 × 4096 = 16384 in the actual BPDU).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: Misc -->
+    <div class="section" id="access-misc">
+        <div class="cmd-card access-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num access">7</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Transceiver & Password</div>
+                    <span class="cmd-card-category access">HARDWARE / SECURITY</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label access">MISC</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">allow-unsupported-transceiver</span>
+<span class="cmd-hl">password</span> <span class="val-hl">manager</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="access">What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>allow-unsupported-transceiver</code></td><td class="access">Allows the use of <strong>third-party / non-HPE SFP/SFP+ transceivers</strong>. By default, Aruba switches reject non-certified optics and show a warning. This command bypasses that check. Common when using cheaper or specialty optics (like long-range BiDi SFPs) that aren't on HPE's compatibility list.<br><br><span class="warn-hl">⚠ Risk:</span> Unsupported transceivers may cause intermittent issues and are not covered by HPE support.</td></tr>
+                        <tr><td class="concept"><code>password manager</code></td><td class="access">Prompts to set or change the <strong>manager-level password</strong>. In ArubaOS-Switch there are two privilege levels:<br>• <strong>Operator</strong> — read-only access (like Cisco's enable level 1)<br>• <strong>Manager</strong> — full read-write access (like Cisco's enable level 15)<br><br>The actual password hash is not shown in <code>display current-configuration</code> for security — it's stored separately.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESS COMPLETE CALLOUT -->
+    <div class="callout tip" style="margin: 24px 0 48px;">
+        <span class="callout-icon">✅</span>
+        <div><strong>ND2-E204 Access Switch — Complete!</strong> This is a minimal, clean access switch config. It does exactly what an access switch should: assign user ports to a data VLAN, uplink to distribution via LACP, and have a management IP for monitoring. No routing protocols, no complex policies — keep it simple at the edge.</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- DISTRIBUTION / CORE: ND4-prim -->
+    <!-- ============================================================ -->
+
+    <div class="section" id="dist-overview">
+        <div class="sec-head">
+            <div class="sec-icon dist">🏗️</div>
+            <h2>ND4-prim — Distribution Core Switch <small>ArubaOS-CX GL.10.07.0004 · VSX Primary · 6400/8320 Series</small></h2>
+        </div>
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <div>This is the <strong>primary distribution/core switch</strong> in a <strong>VSX (Virtual Switching Extension) pair</strong>. It runs ArubaOS-CX — a modern, Linux-based OS. It handles <strong>inter-VLAN routing (OSPF), VSX high-availability, 47 MCLAG downlinks to access switches, active-gateway (like VRRP), DHCP relay, sFlow monitoring, and more</strong>. This is the brain of the network.</div>
+        </div>
+    </div>
+
+    <!-- Step: System Settings -->
+    <div class="section" id="dist-system">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">1</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">System Identity & Security</div>
+                    <span class="cmd-card-category dist">SYSTEM / AAA</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">AOS-CX · SYSTEM</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="prompt-hl">ND4-prim#</span> <span class="cmd-hl">show running-config</span> 
+<span class="cmt">Current configuration:</span>
+!
+<span class="cmt">!Version ArubaOS-CX GL.10.07.0004</span>
+<span class="cmt">!export-password: default</span>
+<span class="cmd-hl">hostname</span> <span class="val-hl">ND4-prim</span>
+<span class="cmd-hl">banner motd</span> $ 
+<span class="cmt">*****************************************************************************</span>
+<span class="cmt">*        Damietta port authority  Network Installation Project 2021         *</span>
+<span class="cmt">*****************************************************************************</span>
+ $ <span class="cmd-hl">user</span> <span class="val-hl">admin</span> group <span class="val-hl">administrators</span> password ciphertext <span class="val-hl">AQBapTbuDlH3t...</span>
+<span class="cmd-hl">user</span> <span class="val-hl">manager</span> group <span class="val-hl">administrators</span> password ciphertext <span class="val-hl">AQBapZEBYi0v...</span>
+<span class="cmd-hl">clock timezone</span> <span class="val-hl">africa/cairo</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>show running-config</code></td><td class="dist">AOS-CX uses the <strong>Cisco-style</strong> <code>show running-config</code> (unlike ProVision's <code>display current-configuration</code>). Shows the complete active configuration.</td></tr>
+                        <tr><td class="concept"><code>!Version ArubaOS-CX GL.10.07.0004</code></td><td class="dist">Firmware version. <strong>GL.10.07</strong> is a major release branch. The version number follows Aruba's scheme: GL = Global, 10.07 = release train, 0004 = patch level.</td></tr>
+                        <tr><td class="concept"><code>hostname ND4-prim</code></td><td class="dist">Sets hostname. <strong>ND4-prim</strong> = Network Device 4, VSX Primary. Its pair is <strong>ND4-sec</strong> (secondary).</td></tr>
+                        <tr><td class="concept"><code>user admin group administrators password ciphertext ...</code></td><td class="dist">Creates local user <strong>"admin"</strong> in the <strong>"administrators"</strong> group (full privileges). Password is stored as a <strong>ciphertext hash</strong> (AES-256 encrypted, not plain text).</td></tr>
+                        <tr><td class="concept"><code>clock timezone africa/cairo</code></td><td class="dist">Sets the system timezone to <strong>Africa/Cairo (EET, UTC+2)</strong>. Uses IANA timezone database names.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: Services -->
+    <div class="section" id="dist-services">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">2</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Network Services</div>
+                    <span class="cmd-card-category dist">NTP / sFLOW / LOGGING / SSH</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">SERVICES</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">sflow collector</span> <span class="val-hl">10.0.10.76</span>
+<span class="cmd-hl">sflow agent-ip</span> <span class="val-hl">10.0.2.42</span>
+<span class="cmd-hl">ntp server</span> <span class="val-hl">10.0.2.2</span>
+<span class="cmd-hl">ntp enable</span>
+<span class="cmd-hl">ntp master</span> vrf default stratum <span class="val-hl">8</span>
+<span class="cmd-hl">logging</span> <span class="val-hl">10.0.10.72</span>
+<span class="cmd-hl">ssh server</span> vrf default
+<span class="cmd-hl">ssh server</span> vrf mgmt</pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>sflow collector 10.0.10.76</code></td><td class="dist">Configures an <strong>sFlow collector</strong> at 10.0.10.76. sFlow sends <strong>packet samples and interface counters</strong> to a collector for traffic analysis.</td></tr>
+                        <tr><td class="concept"><code>ntp server 10.0.2.2</code></td><td class="dist">Points to an <strong>NTP server at 10.0.2.2</strong> for time synchronization.</td></tr>
+                        <tr><td class="concept"><code>logging 10.0.10.72</code></td><td class="dist">Sends all <strong>syslog messages</strong> to a central log server at 10.0.10.72.</td></tr>
+                        <tr><td class="concept"><code>ssh server vrf default</code></td><td class="dist">Enables the <strong>SSH server</strong> on the default VRF (data plane).</td></tr>
+                        <tr><td class="concept"><code>ssh server vrf mgmt</code></td><td class="dist">Enables SSH on the <strong>management VRF</strong> (out-of-band network).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: VLANs -->
+    <div class="section" id="dist-vlans">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">3</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">30+ VLANs with VSX Sync</div>
+                    <span class="cmd-card-category dist">VLAN DATABASE</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">VLANS (excerpt)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">vlan</span> <span class="val-hl">1</span>
+    <span class="cmd-hl">vsx-sync</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">2</span>
+    <span class="cmd-hl">name</span> <span class="val-hl">Switch-Management</span>
+    <span class="cmd-hl">vsx-sync</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">4</span>
+    <span class="cmd-hl">name</span> <span class="val-hl">Data</span>
+    <span class="cmd-hl">vsx-sync</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">44</span>
+    <span class="cmd-hl">name</span> <span class="val-hl">ip-phone</span>
+    <span class="cmd-hl">voice</span>
+    <span class="cmd-hl">vsx-sync</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">244</span>
+    <span class="cmd-hl">name</span> <span class="val-hl">Managment-ND to Edge</span>
+    <span class="cmd-hl">vsx-sync</span>
+<span class="cmd-hl">vlan</span> <span class="val-hl">999</span>
+    <span class="cmd-hl">name</span> <span class="val-hl">DPA Access Points</span>
+    <span class="cmd-hl">vsx-sync</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>vlan &lt;id&gt;</code></td><td class="dist">Creates or enters the VLAN configuration context.</td></tr>
+                        <tr><td class="concept"><code>name &lt;text&gt;</code></td><td class="dist">Assigns a descriptive name for human readability.</td></tr>
+                        <tr><td class="concept"><code>vsx-sync</code></td><td class="dist"><strong>Critical VSX command.</strong> Synchronizes this VLAN's configuration to the <strong>VSX peer (ND4-sec)</strong>. When you create a VLAN with <code>vsx-sync</code> on the primary, it's automatically created on the secondary too — <strong>zero configuration drift</strong>.</td></tr>
+                        <tr><td class="concept"><code>voice</code></td><td class="dist">Marks VLAN 44 as a <strong>voice VLAN</strong>. This triggers QoS treatment for VoIP packets.</td></tr>
+                    </tbody>
+                </table>
+
+                <h4 style="color:var(--body-loud);font-size:0.9rem;margin:20px 0 8px;">Complete VLAN Map</h4>
+                <div style="overflow-x:auto;">
+                <table class="vlan-table">
+                    <thead><tr><th>VLAN</th><th>Name</th><th>Purpose</th><th>SVI IP</th><th>OSPF</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>1</code></td><td>—</td><td>Default (untagged on ISL)</td><td>—</td><td>—</td></tr>
+                        <tr><td><code>2</code></td><td>Switch-Management</td><td>Switch management subnet</td><td>10.0.2.42/24</td><td>✅</td></tr>
+                        <tr><td><code>14</code></td><td>—</td><td>Uplink to firewall/core</td><td>10.0.14.42/24</td><td>✅</td></tr>
+                        <tr><td><code>44</code></td><td>ip-phone</td><td>Voice VLAN (QoS enabled)</td><td>10.0.44.2/24</td><td>—</td></tr>
+                        <tr><td><code>124-150</code></td><td>Various dept names</td><td>Department/user VLANs</td><td>10.0.x.2/24</td><td>✅</td></tr>
+                        <tr><td><code>244</code></td><td>Managment-ND to Edge</td><td>Mgmt to access switches</td><td>10.0.244.2/24</td><td>✅</td></tr>
+                        <tr><td><code>999</code></td><td>DPA Access Points</td><td>Wireless APs</td><td>—</td><td>—</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: STP -->
+    <div class="section" id="dist-stp">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">4</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Spanning Tree — RPVST</div>
+                    <span class="cmd-card-category dist">LOOP PREVENTION</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">STP</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">spanning-tree mode</span> <span class="val-hl">rpvst</span>
+<span class="cmd-hl">spanning-tree</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>spanning-tree mode rpvst</code></td><td class="dist">Sets the spanning tree mode to <strong>RPVST (Rapid Per-VLAN Spanning Tree)</strong>. This is the ArubaOS-CX equivalent of Cisco's <code>spanning-tree mode rapid-pvst</code>.<br><br>• <strong>Rapid</strong> = uses RSTP (802.1w) for fast convergence<br>• <strong>Per-VLAN</strong> = each VLAN has its own spanning tree instance</td></tr>
+                        <tr><td class="concept"><code>spanning-tree</code></td><td class="dist">Globally <strong>enables spanning tree</strong> on the switch.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: OOB Management -->
+    <div class="section" id="dist-mgmt">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">5</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">Out-of-Band Management Port</div>
+                    <span class="cmd-card-category dist">Oob MANAGEMENT</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">MGMT INTERFACE</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">interface mgmt</span>
+    <span class="cmd-hl">no shutdown</span>
+    <span class="cmd-hl">ip static</span> <span class="val-hl">10.0.3.42/24</span>
+    <span class="cmd-hl">default-gateway</span> <span class="val-hl">10.0.3.41</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>interface mgmt</code></td><td class="dist">Enters the configuration for the <strong>dedicated out-of-band management port</strong>. It's in its own VRF (<code>vrf mgmt</code>), completely isolated from data plane traffic.</td></tr>
+                        <tr><td class="concept"><code>ip static 10.0.3.42/24</code></td><td class="dist">Assigns a <strong>static IP address</strong> to the management port.</td></tr>
+                        <tr><td class="concept"><code>default-gateway 10.0.3.41</code></td><td class="dist">Sets the default gateway for the management VRF.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: MCLAGs -->
+    <div class="section" id="dist-mclag">
+        <div class="cmd-card core-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num core">7</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">47 Multi-Chassis LAGs (MCLAGs)</div>
+                    <span class="cmd-card-category core">VSX DOWNLINKS</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label core">MCLAG TEMPLATE (lag 1-47)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">interface lag</span> <span class="val-hl">1</span> multi-chassis
+    <span class="cmd-hl">vsx-sync</span> vlans
+    <span class="cmd-hl">no shutdown</span>
+    <span class="cmd-hl">no routing</span>
+    <span class="cmd-hl">vlan trunk native</span> <span class="val-hl">244</span>
+    <span class="cmd-hl">vlan trunk allowed</span> all
+    <span class="cmd-hl">lacp mode</span> active</pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="core">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>interface lag &lt;n&gt; multi-chassis</code></td><td class="core">Creates a <strong>Multi-Chassis LAG (MCLAG)</strong>. Unlike a regular LAG that bundles ports on a single switch, an MCLAG spans <strong>two physical switches</strong> (ND4-prim + ND4-sec). The access switch sees both distribution switches as a single logical device.</td></tr>
+                        <tr><td class="concept"><code>vsx-sync vlans</code></td><td class="core">Synchronizes this LAG's VLAN configuration to the VSX peer.</td></tr>
+                        <tr><td class="concept"><code>no routing</code></td><td class="core">Disables IP routing on this LAG — it's a pure <strong>layer-2 trunk</strong>.</td></tr>
+                        <tr><td class="concept"><code>vlan trunk native 244</code></td><td class="core">Sets <strong>VLAN 244</strong> as the <strong>native (untagged) VLAN</strong> on this trunk.</td></tr>
+                        <tr><td class="concept"><code>vlan trunk allowed all</code></td><td class="core">Allows <strong>all VLANs</strong> on this trunk.</td></tr>
+                        <tr><td class="concept"><code>lacp mode active</code></td><td class="core">Enables <strong>LACP in active mode</strong>. The switch actively sends LACPDU frames to negotiate the link aggregation.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: ISL & Keepalive -->
+    <div class="section" id="dist-isl">
+        <div class="cmd-card vsx-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num vsx">8</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">ISL Link & Uplink LAG</div>
+                    <span class="cmd-card-category vsx">VSX INTERCONNECT</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label vsx">ISL + UPLINK</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmt">! ─── ISL: Inter-Switch Link (VSX heartbeat + data sync) ───</span>
+<span class="cmd-hl">interface lag</span> <span class="val-hl">128</span>
+    <span class="cmd-hl">no shutdown</span>
+    <span class="cmd-hl">description</span> <span class="val-hl">ISL-link</span>
+    <span class="cmd-hl">no routing</span>
+    <span class="cmd-hl">vlan trunk native</span> <span class="val-hl">1</span> tag
+    <span class="cmd-hl">vlan trunk allowed</span> all
+    <span class="cmd-hl">lacp mode</span> active
+
+<span class="cmt">! ─── Uplink to Firewall/Core ───</span>
+<span class="cmd-hl">interface lag</span> <span class="val-hl">244</span> multi-chassis
+    <span class="cmd-hl">vsx-sync</span> vlans
+    <span class="cmd-hl">no shutdown</span>
+    <span class="cmd-hl">no routing</span>
+    <span class="cmd-hl">vlan trunk native</span> <span class="val-hl">14</span>
+    <span class="cmd-hl">vlan trunk allowed</span> all
+    <span class="cmd-hl">lacp mode</span> active</pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="vsx">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>interface lag 128</code></td><td class="vsx">The <strong>ISL (Inter-Switch Link)</strong> is a <strong>regular LAG</strong>, not an MCLAG. It only exists between the two VSX peers. It carries VSX control traffic and data plane traffic.</td></tr>
+                        <tr><td class="concept"><code>vlan trunk native 1 tag</code></td><td class="vsx">Sets native VLAN to 1 but with the <code>tag</code> keyword — meaning <strong>VLAN 1 frames are tagged</strong>. Aruba's recommended best practice for ISL links.</td></tr>
+                        <tr><td class="concept"><code>interface lag 244 multi-chassis</code></td><td class="vsx">The <strong>uplink to the firewall/core router</strong>, configured as an MCLAG. Both ND4-prim and ND4-sec connect to the firewall via this MCLAG.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: Keepalive -->
+    <div class="section">
+        <div class="cmd-card vsx-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num vsx">9</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">VSX Keepalive Link (Dedicated)</div>
+                    <span class="cmd-card-category vsx">VSX HEARTBEAT</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label vsx">KEEPALIVE PORT</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">interface</span> <span class="val-hl">1/1/48</span>
+    <span class="cmd-hl">no shutdown</span>
+    <span class="cmd-hl">description</span> <span class="val-hl">Keepalive-link</span>
+    <span class="cmd-hl">ip address</span> <span class="val-hl">10.0.4.41/24</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="vsx">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>interface 1/1/48</code></td><td class="vsx">A <strong>dedicated physical port</strong> used exclusively for the VSX keepalive. This is a <strong>layer-3 routed port</strong>.</td></tr>
+                        <tr><td class="concept"><code>ip address 10.0.4.41/24</code></td><td class="vsx">IP address for keepalive messages. The peer (ND4-sec) uses <strong>10.0.4.42</strong> on its keepalive port.</td></tr>
+                    </tbody>
+                </table>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>Why a separate keepalive link?</strong> The ISL (lag 128) carries VSX data + control, but if the ISL fails, the switches need an <strong>independent path</strong> to detect if the peer is truly down. Without it, a split-brain scenario could occur.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: SVI / Active-Gateway -->
+    <div class="section" id="dist-svi">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">11</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">SVI Interfaces & Active-Gateway</div>
+                    <span class="cmd-card-category dist">INTER-VLAN ROUTING / FHRP</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">SVI EXAMPLES</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">interface vlan</span> <span class="val-hl">2</span>
+    <span class="cmd-hl">vsx-sync</span> active-gateways
+    <span class="cmd-hl">ip address</span> <span class="val-hl">10.0.2.42/24</span>
+    <span class="cmd-hl">active-gateway ip</span> mac <span class="val-hl">02:02:00:04:41:01</span>
+    <span class="cmd-hl">active-gateway ip</span> <span class="val-hl">10.0.2.41</span>                                
+    <span class="cmd-hl">ip ospf</span> 1 area <span class="val-hl">0.0.0.0</span>
+
+<span class="cmd-hl">interface vlan</span> <span class="val-hl">124</span>
+    <span class="cmd-hl">vsx-sync</span> active-gateways
+    <span class="cmd-hl">ip address</span> <span class="val-hl">10.0.124.2/24</span>
+    <span class="cmd-hl">active-gateway ip</span> mac <span class="val-hl">02:01:26:04:41:01</span>
+    <span class="cmd-hl">active-gateway ip</span> <span class="val-hl">10.0.124.1</span>
+    <span class="cmd-hl">ip helper-address</span> <span class="val-hl">10.0.10.12</span>
+    <span class="cmd-hl">ip helper-address</span> <span class="val-hl">10.0.10.13</span>
+    <span class="cmd-hl">ip helper-address</span> <span class="val-hl">10.0.10.14</span>
+    <span class="cmd-hl">ip ospf</span> 1 area <span class="val-hl">0.0.0.0</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>interface vlan &lt;n&gt;</code></td><td class="dist">Creates a <strong>Switched Virtual Interface (SVI)</strong> — the layer-3 gateway for that VLAN.</td></tr>
+                        <tr><td class="concept"><code>vsx-sync active-gateways</code></td><td class="dist">Synchronizes the <strong>active-gateway configuration</strong> to the VSX peer.</td></tr>
+                        <tr><td class="concept"><code>ip address 10.0.2.42/24</code></td><td class="dist">The <strong>real IP</strong> of this SVI on ND4-prim.</td></tr>
+                        <tr><td class="concept"><code>active-gateway ip mac 02:02:...</code></td><td class="dist">Sets the <strong>virtual MAC address</strong> for the active-gateway that both VSX peers share.</td></tr>
+                        <tr><td class="concept"><code>active-gateway ip 10.0.2.41</code></td><td class="dist">The <strong>virtual IP address</strong> that serves as the default gateway for devices in this VLAN. Aruba's equivalent of <strong>VRRP/HSRP virtual IP</strong>. <strong>No election, no timers, no failover delay</strong> — faster than VRRP.</td></tr>
+                        <tr><td class="concept"><code>ip helper-address 10.0.10.12</code></td><td class="dist"><strong>DHCP relay (IP helper)</strong>. Forwards DHCP broadcasts to DHCP servers as unicast.</td></tr>
+                        <tr><td class="concept"><code>ip ospf 1 area 0.0.0.0</code></td><td class="dist">Enables <strong>OSPF</strong> on this SVI in <strong>Area 0</strong> (backbone area).</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Active-Gateway vs VRRP:</strong> Aruba's active-gateway is <strong>VSX-native</strong> and provides sub-second failover because both peers already share the MAC/IP — there's no election process.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: VSX Config -->
+    <div class="section" id="dist-vsx">
+        <div class="cmd-card vsx-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num vsx">12</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">VSX Global Configuration</div>
+                    <span class="cmd-card-category vsx">VSX / HIGH AVAILABILITY</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label vsx">VSX</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">snmp-server community</span> <span class="val-hl">H#@#123</span>
+<span class="cmd-hl">vsx</span>
+    <span class="cmd-hl">system-mac</span> <span class="val-hl">02:01:00:04:00:04</span>
+    <span class="cmd-hl">inter-switch-link</span> lag <span class="val-hl">128</span>
+    <span class="cmd-hl">role</span> primary
+    <span class="cmd-hl">keepalive peer</span> <span class="val-hl">10.0.4.42</span> source <span class="val-hl">10.0.4.41</span>
+    <span class="cmd-hl">vsx-sync</span> vsx-global</pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="vsx">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>vsx</code></td><td class="vsx">Enters the <strong>VSX configuration context</strong>.</td></tr>
+                        <tr><td class="concept"><code>system-mac 02:01:00:04:00:04</code></td><td class="vsx">Sets a <strong>unique VSX system MAC address</strong>. Both VSX peers use this same system-MAC.</td></tr>
+                        <tr><td class="concept"><code>inter-switch-link lag 128</code></td><td class="vsx">Tells VSX to use <strong>LAG 128</strong> as the ISL.</td></tr>
+                        <tr><td class="concept"><code>role primary</code></td><td class="vsx">Defines this switch as the <strong>VSX primary</strong>.</td></tr>
+                        <tr><td class="concept"><code>keepalive peer 10.0.4.42 source 10.0.4.41</code></td><td class="vsx">Configures the <strong>keepalive mechanism</strong>. The primary sends periodic keepalive packets to the peer.</td></tr>
+                        <tr><td class="concept"><code>vsx-sync vsx-global</code></td><td class="vsx">Synchronizes the <strong>VSX global configuration itself</strong> to the peer.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: Routing -->
+    <div class="section" id="dist-routing">
+        <div class="cmd-card core-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num core">13</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">OSPF & Default Route</div>
+                    <span class="cmd-card-category core">ROUTING</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label core">ROUTING</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">ip route</span> <span class="val-hl">0.0.0.0/0</span> <span class="val-hl">10.0.14.2</span>
+<span class="cmd-hl">router ospf</span> <span class="val-hl">1</span>
+    <span class="cmd-hl">redistribute connected</span>
+    <span class="cmd-hl">redistribute static</span>
+    <span class="cmd-hl">area</span> <span class="val-hl">0.0.0.0</span></pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="core">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>ip route 0.0.0.0/0 10.0.14.2</code></td><td class="core">Default route pointing to the <strong>firewall/core router at 10.0.14.2</strong>. Note the AOS-CX syntax uses <code>/0</code> CIDR notation.</td></tr>
+                        <tr><td class="concept"><code>router ospf 1</code></td><td class="core">Creates <strong>OSPF process 1</strong>.</td></tr>
+                        <tr><td class="concept"><code>redistribute connected</code></td><td class="core">Injects all <strong>directly connected subnets</strong> into OSPF.</td></tr>
+                        <tr><td class="concept"><code>redistribute static</code></td><td class="core">Injects <strong>static routes</strong> (like the default route) into OSPF.</td></tr>
+                        <tr><td class="concept"><code>area 0.0.0.0</code></td><td class="core">Defines <strong>OSPF Area 0</strong> (backbone area).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step: REST API -->
+    <div class="section" id="dist-rest">
+        <div class="cmd-card dist-card">
+            <div class="cmd-card-head">
+                <div class="cmd-num dist">14</div>
+                <div class="cmd-card-content">
+                    <div class="cmd-card-title">REST API & HTTPS Server</div>
+                    <span class="cmd-card-category dist">AUTOMATION / WEB UI</span>
+                </div>
+            </div>
+            <div class="cmd-card-body">
+                <div class="code-block">
+                    <div class="code-label dist">REST API</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd-hl">https-server rest access-mode</span> read-only
+<span class="cmd-hl">https-server</span> vrf default
+<span class="cmd-hl">https-server</span> vrf mgmt</pre>
+                </div>
+                <table class="cmp-table">
+                    <thead><tr><th class="concept">Command</th><th class="dist">Explanation</th></tr></thead>
+                    <tbody>
+                        <tr><td class="concept"><code>https-server rest access-mode read-only</code></td><td class="dist">Enables the <strong>REST API</strong> with <strong>read-only access</strong>. Allows automation tools (Ansible, Python scripts) to <code>GET</code> switch data via HTTPS REST calls.</td></tr>
+                        <tr><td class="concept"><code>https-server vrf default</code></td><td class="dist">Enables the HTTPS server on the <strong>default VRF</strong>.</td></tr>
+                        <tr><td class="concept"><code>https-server vrf mgmt</code></td><td class="dist">Enables HTTPS on the <strong>management VRF</strong>.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- COMPARISON TABLE -->
+    <!-- ============================================================ -->
+
+    <div class="section" id="compare">
+        <div class="sec-head">
+            <div class="sec-icon" style="background:var(--selected);border:1px solid var(--hairline);">⚖️</div>
+            <h2>Access vs Distribution/Core — Side by Side <small>Same task, different OS, different complexity</small></h2>
+        </div>
+        <div style="overflow-x:auto;">
+        <table class="cmp-table">
+            <thead>
+                <tr>
+                    <th class="concept">Task</th>
+                    <th class="access">ND2-E204 (Access)<br>ArubaOS-Switch</th>
+                    <th class="dist">ND4-prim (Dist/Core)<br>ArubaOS-CX</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="concept">Show Config</td>
+                    <td class="access"><code>display current-configuration</code></td>
+                    <td class="dist"><code>show running-config</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Set Hostname</td>
+                    <td class="access"><code>hostname "ND2-E204"</code></td>
+                    <td class="dist"><code>hostname ND4-prim</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Create LAG</td>
+                    <td class="access"><code>trunk 9-10 trk1 lacp</code></td>
+                    <td class="dist"><code>interface lag 1 multi-chassis</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Access Port VLAN</td>
+                    <td class="access"><code>vlan 98</code><br><code>  untagged 1-8</code></td>
+                    <td class="dist"><code>interface 1/1/1</code><br><code>  vlan access 98</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Trunk Native VLAN</td>
+                    <td class="access"><code>vlan 242</code><br><code>  untagged Trk1</code></td>
+                    <td class="dist"><code>vlan trunk native 244</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">VLAN IP (SVI)</td>
+                    <td class="access"><code>vlan 242</code><br><code>  ip address 10.0.242.14 255.255.255.0</code></td>
+                    <td class="dist"><code>interface vlan 242</code><br><code>  ip address 10.0.244.2/24</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Default Route</td>
+                    <td class="access"><code>ip route 0.0.0.0 0.0.0.0 10.0.242.1</code></td>
+                    <td class="dist"><code>ip route 0.0.0.0/0 10.0.14.2</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Virtual Gateway</td>
+                    <td class="access"><em>Not configured</em></td>
+                    <td class="dist"><code>active-gateway ip 10.0.2.41</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Routing Protocol</td>
+                    <td class="access"><em>None</em></td>
+                    <td class="dist"><code>router ospf 1</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">HA / Redundancy</td>
+                    <td class="access"><em>None</em></td>
+                    <td class="dist"><code>vsx</code><br><code>  role primary</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">STP</td>
+                    <td class="access"><code>spanning-tree Trk1 priority 4</code></td>
+                    <td class="dist"><code>spanning-tree mode rpvst</code></td>
+                </tr>
+                <tr>
+                    <td class="concept">Port Enable</td>
+                    <td class="access"><em>Enabled by default</em></td>
+                    <td class="dist"><code>no shutdown</code> required</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SUMMARY -->
+    <!-- ============================================================ -->
+
+    <div class="section" id="summary">
+        <div class="summary-box">
+            <h3>🏗️ Architecture Summary — What We Learned</h3>
+            <ul>
+                <li><strong>Access Layer (ND2-E204):</strong> Simple ArubaOS-Switch. Creates VLANs, assigns access ports, uplinks via LACP trunk. No routing, no HA. Keeps it simple and reliable at the edge.</li>
+                <li><strong>Distribution/Core (ND4-prim):</strong> Complex ArubaOS-CX. VSX pair for HA, 47 MCLAGs to access switches, inter-VLAN routing via OSPF, active-gateway for sub-second failover, DHCP relay, sFlow monitoring, centralized logging.</li>
+                <li><strong>VSX provides:</strong> Active-active forwarding (not active-standby), MCLAG for multi-chassis link aggregation, active-gateway replacing VRRP with faster failover, ISL for state sync, dedicated keepalive for split-brain prevention.</li>
+                <li><strong>Two different Aruba OSes coexist:</strong> ArubaOS-Switch (ProVision) on access switches — simple, mature. ArubaOS-CX on distribution/core — modern, Linux-based, Cisco-like CLI, REST API, VSX.</li>
+                <li><strong>Native VLAN 244</strong> serves as the management channel between distribution and access. All other VLANs are tagged on MCLAG trunks.</li>
+                <li><strong>OSPF Area 0</strong> with redistribute connected+static — simple single-area design.</li>
+                <li><strong>Three DHCP servers</strong> (10.0.10.12/13/14) provide redundancy for IP address assignment across all user VLANs.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        CyberDefend · HP Switch Course · Aruba Command Breakdown · Damietta Port Authority Network · Deployed by ACT
+    </footer>
+
+</div>
+
+<script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('cd_theme', next);
+        document.getElementById('themeLabel').textContent = next === 'dark' ? '☀ Light Mode' : '🌙 Dark Mode';
+    }
+    document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? '☀ Light Mode' : '🌙 Dark Mode';
+
+    function copyCode(btn) {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        const text = pre.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.style.background = 'var(--primary)';
+            btn.style.color = 'var(--primary-fg)';
+            setTimeout(() => {
+                btn.textContent = orig;
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 2000);
+        });
+    }
+</script>
+</body>
+</html>
