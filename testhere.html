@@ -67,7 +67,7 @@
         .chatbot-window{position:fixed;bottom:100px;right:25px;width:350px;height:450px;background:var(--darkened-bg);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;z-index:999;border:1px solid var(--hairline-color)}
         .chatbot-header{background:var(--primary);color:var(--primary-fg);padding:15px;display:flex;align-items:center;gap:10px;font-weight:700}
         .chatbot-body{flex:1;padding:15px;overflow-y:auto;background:var(--body-bg);display:flex;flex-direction:column;gap:10px}
-        .chat-msg{max-width:80%;padding:10px 14px;border-radius:12px;font-size:.85rem;line-height:1.4}
+        .chat-msg{max-width:80%;padding:10px 14px;border-radius:12px;font-size:.85rem;line-height:1.4;white-space:pre-wrap}
         .bot-msg{background:var(--darkened-bg);border:1px solid var(--hairline-color);align-self:flex-start;color:var(--body-fg)}
         .user-msg{background:var(--primary);color:var(--primary-fg);align-self:flex-end}
         .chatbot-input-area{display:flex;padding:10px;background:var(--darkened-bg);border-top:1px solid var(--hairline-color)}
@@ -462,7 +462,22 @@ var toggleBtn=document.getElementById('chatbot-toggle'),chatWindow=document.getE
 toggleBtn.addEventListener('click',function(){chatWindow.style.display=chatWindow.style.display==='flex'?'none':'flex';});
 var sendBtn=document.getElementById('chatbot-send'),inputField=document.getElementById('chatbot-input'),chatBody=document.getElementById('chatbot-body');
 
-// INTERACTIVE AI CHATBOT LOGIC (Using Pollinations.ai POST API - 100% Free, NO LOGIN REQUIRED)
+// SMART CHATBOT LOGIC: Uses Pollinations.ai, but if it fails, it uses the Local Site Database!
+function getLocalAnswer(query) {
+    let q = query.toLowerCase();
+    let matches = PAGES.filter(p => p.t.toLowerCase().includes(q) || p.d.toLowerCase().includes(q));
+    
+    if (matches.length > 0) {
+        let res = "I found this in our curriculum:\n\n";
+        matches.slice(0, 4).forEach(m => {
+            res += "• " + m.t + ": " + m.d + "\n";
+        });
+        res += "\nYou can find these in the curriculum map on the left!";
+        return res;
+    }
+    return "I'm currently offline, but you can use the 'Curriculum Map' search on the left to find courses related to: " + query;
+}
+
 async function sendMessage() {
     var text = inputField.value.trim();
     if (!text) return;
@@ -481,34 +496,18 @@ async function sendMessage() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     try {
-        // 1. Extract all course titles from the PAGES array to feed as context to the AI
-        var siteCoursesList = PAGES.map(function(p){ return p.t; }).join(', ');
+        // Try to get response from Pollinations AI
+        const prompt = "You are the CyberDefend Academy AI Assistant. Answer this cybersecurity question concisely: " + text;
+        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
         
-        // 2. Create a strong system prompt so the AI knows it's a tutor on THIS website
-        var systemPrompt = "You are the CyberDefend Academy AI Assistant, an expert cybersecurity tutor. You are integrated into the CyberDefend Academy website. Here is the list of courses and labs available on this site: " + siteCoursesList + ". If a student asks about a topic, explain it simply. If there is a relevant course or lab on the site related to their question, tell them the exact name of the course so they can find it in the curriculum map. Keep answers short and friendly.";
+        if (!response.ok) throw new Error("API Error");
         
-        // 3. Send to Pollinations API using POST (Fixes URL length limit issues)
-        const response = await fetch("https://text.pollinations.ai/openai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                model: "openai",
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: text }
-                ]
-            })
-        });
-        
-        if (!response.ok) throw new Error("Network response was not ok");
-        
-        const data = await response.json();
-        const aiText = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't process that.";
-        botMsg.innerText = aiText;
+        const aiText = await response.text();
+        botMsg.innerText = aiText || "I couldn't process that.";
         
     } catch (error) {
-        botMsg.innerText = "⚠️ Connection error. (Note: AI works best when hosted on GitHub Pages. If testing locally, try using Live Server).";
-        console.error("AI Error:", error);
+        // Fallback: If the API is down, use the local database to answer
+        botMsg.innerText = getLocalAnswer(text);
     }
     
     chatBody.scrollTop = chatBody.scrollHeight;
