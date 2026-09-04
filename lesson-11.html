@@ -152,143 +152,11 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
 </script>
 
-<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
-<nav class="top-nav">
-    <a href="index.html" class="nav-brand">
-        <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
-    </a>
-    <div class="top-nav-links">
-        <a href="index.html">Dashboard</a>
 
-        <!-- COURSES DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="courses.html">Courses ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="2026.html">Summer Lectures</a>
-                <a href="labs.html">Curriculum</a>
-                <a href="DPA.html">DPA Summer Training Course</a>
-                <a href="level3.html">1- Introduction to Cybersecurity</a>
-                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
-                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropAiBtn1">Level-1 AI</a>
-                <a href="#" id="dropAiBtn2">Level2-AI</a>
-                <a href="networking.html">CyberSecurity Reading Slides</a>
-                <a href="routing-switching.html">English CyberSecurity Course</a>
-                <a href="aws foundation.html">AWS Cloud Foundation</a>
-                <a href="digital comm.html">Digital Comm</a>
-                <a href="wireless comm.html">Wireless Comm</a>
-            </div>
-        </div>
-
-        <a href="messages.html">📝 Tasks & Submissions</a>
-
-        <!-- CURRICULUM DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="labs.html">Curriculum ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="labs.html">Network Security Overview</a>
-                <a href="network Roadmap.html">Network Roadmap</a>
-                <a href="security Roadmap.html">Security Roadmap</a>
-                <a href="lesson-6.html">Switching Architecture</a>
-                <a href="lesson-7.html">Firewall Security Architecture</a>
-                <a href="lesson-3.html">KALI Linux</a>
-                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
-                <a href="lesson-4.html">Vulnerability Scanners</a>
-                <a href="nessus.html">Nessus Vulnerability Assessment</a>
-                <a href="labs2.html">Networking Labs Overview</a>
-                <a href="lesson-8.html">Wireless Solutions</a>
-                <a href="lesson-9.html">Cyber Attacks</a>
-                <a href="lesson-10.html">Troubleshooting</a>
-                <a href="lesson-11.html">Switch Management</a>
-                <a href="lesson-12.html">VOIP</a>
-                <a href="lesson-13.html">Cloud Computing</a>
-                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
-                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
-                <a href="lesson-16.html">Practice Labs advanced</a>
-                <a href="attack-vectors.html">Cybersecurity Threats & attack vectors</a>
-            </div>
-        </div>
-
-        <!-- NEW LABS DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="lesson-14.html">Labs ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="Switch_Config.html">Basic Switch Configuration</a>
-                <a href="vlan.html">Basic VLAN</a>
-                <a href="static_route.html">Static Routing</a>
-                <a href="ssh.html">SSH Configuration</a>
-                <a href="trunk.html">VLAN Trunking</a>
-                <a href="router_stick.html">Router-on-a-Stick</a>
-                <a href="etherchannel.html">EtherChannel</a>
-                <a href="dhcp.html">DHCPv4 Configuration</a>
-                <a href="nat.html">NAT Configuration</a>
-                <a href="acl.html">Access Control Lists</a>
-                <a href="ospf.html">OSPF Single Area</a>
-                <a href="hsrp.html">HSRP Configuration</a>
-                <a href="stp.html">Spanning Tree Protocol</a>
-                <a href="mgt.html">Switch Management</a>
-                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
-                <a href="subnetting.html">Routing & Subnetting</a>
-                <a href="asa.html">ASA Firewall Configuration</a>
-            </div>
-        </div>
-
-        <!-- THEME TOGGLE BUTTON -->
-        <button id="theme-toggle" class="theme-toggle-btn">
-            <i class="fas fa-sun" id="theme-icon"></i> <span id="theme-text">Light</span>
-        </button>
-
-        <a href="login.html" class="login-btn">Login</a>
-    </div>
-</nav>
 
 <!-- MAIN CONTENT LAYOUT -->
 <div class="main-content">
-    <aside class="sidebar">
-        <div class="sidebar-back-btns">
-            <a href="index.html" class="sidebar-back-btn">← Return to Main</a>
-        </div>
-        <div class="sidebar-header">
-            <h3>Course Lessons</h3>
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a href="labs.html">Network Security Overview</a></li>
-                <li><a href="network Roadmap.html">Network Roadmap</a></li>
-                <li><a href="security Roadmap.html">Security Roadmap</a></li>
-                <li><a href="lesson-6.html">Switching Architecture</a></li>
-                <li><a href="lesson-7.html">Firewall Security Architecture</a></li>
-                <li><a href="lesson-3.html">KALI Linux</a></li>
-                <li><a href="kali-tools.html">Top 50 Kali Linux Tools</a></li>
-                <li><a href="lesson-4.html">Vulnerability Scanners</a></li>
-                <li><a href="nessus.html">Nessus Vulnerability Assessment</a></li>
-                <li><a href="labs2.html">Networking Labs Overview</a></li>
-                <li><a href="lesson-8.html">Wireless Solutions</a></li>
-                <li><a href="lesson-9.html">Cyber Attacks</a></li>
-                <li><a href="lesson-10.html">Troubleshooting</a></li>
-                <li><a href="lesson-11.html" class="active">Switch Management</a></li>
-                <li><a href="lesson-12.html">VOIP</a></li>
-                <li><a href="lesson-13.html">Cloud Computing</a></li>
-                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
-                <li><a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a></li>
-                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
-                <li><a href="attack-vectors.html">Cybersecurity Threats & attack vectors</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-
-
-
-
-
-
-
-
-
-
+   
 
 
 <div class="main">
@@ -700,15 +568,6 @@
     </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-    <div class="footer-grid">
-        <div class="footer-col"><h3>🛡️ CyberDefend Academy</h3><p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p></div>
-        <div class="footer-col"><h3>Explore</h3><ul><li><a href="index.html">Dashboard</a></li><li><a href="courses.html">Courses</a></li><li><a href="labs.html">Labs</a></li></ul></div>
-        <div class="footer-col"><h3>Stay Connected</h3><p>Want to level up your skills? Start your journey today.</p><a href="courses.html" class="footer-btn">Open learning path →</a></div>
-    </div>
-    <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
-</footer>
 
 <script>
     // Theme Toggle JS
