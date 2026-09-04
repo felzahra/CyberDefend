@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · All Courses</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== ENFORCED BRIGHT WHITE THEME ========== */
+        :root {
+            --primary: #02b3e4; --primary-fg: #ffffff; --body-fg: #1a2c3e; --body-bg: #ffffff;
+            --body-quiet-color: #5c6f87; --body-loud-color: #0b2b3b; --hairline-color: #e6edf4;
+            --border-color: #eef2f8; --darkened-bg: #ffffff; --selected-bg: #e9f4fa; --selected-row: #f9fbfe;
+            --message-warning-bg: #fef9e6; --header-bg: #ffffff; --link-fg: #02b3e4; --shadow: 0 4px 24px rgba(0,0,0,.06);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(2,179,228,0.3); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a, .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover, .nav-dropdown:hover > a, .nav-dropdown > a:hover { color: var(--body-fg); border-bottom-color: var(--primary); }
+        .top-nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; border-bottom: none; }
+        .top-nav-links a.login-btn:hover { opacity: 0.9; }
+
+        /* Dropdown */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a::after { content: ' ▾'; font-size: 0.7rem; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--darkened-bg); min-width: 260px; box-shadow: 0px 8px 20px rgba(0,0,0,0.1); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown-content a { color: var(--body-fg); padding: 10px 16px; text-decoration: none; display: block; font-size: 0.82rem; font-weight: 500; border-bottom: none; transition: background 0.2s, color 0.2s; }
+        .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        /* ========== MAIN LAYOUT ========== */
+        .main-container { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 40px; align-items: flex-start; }
+        
+        /* Left Panel */
+        .left-panel { width: 320px; flex-shrink: 0; position: sticky; top: 100px; }
+        .panel-title { font-size: 1.2rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); }
+        
+        .left-course-item { display: flex; align-items: center; gap: 15px; background: #ffffff; border: 1px solid var(--hairline-color); border-radius: 16px; padding: 12px; margin-bottom: 15px; text-decoration: none; color: var(--body-fg); transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .left-course-item:hover { border-color: var(--primary); background: var(--selected-bg); transform: translateX(5px); box-shadow: 0 4px 12px rgba(2,179,228,0.1); }
+        .left-course-img { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #ffffff; flex-shrink: 0; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .left-course-info h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--body-loud-color); }
+        .left-course-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
+
+        /* Right Panel */
+        .right-panel { flex: 1; min-width: 0; }
+        .section-title { font-size: 1.5rem; font-weight: 700; color: var(--body-loud-color); margin: 30px 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid var(--hairline-color); }
+        .section-title:first-child { margin-top: 0; }
+        .right-panel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        
+        .course-card { background: #ffffff; border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; text-decoration: none; color: var(--body-fg); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--primary); }
+        .premium-badge { position: absolute; top: 12px; right: 12px; background: #FFD700; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; z-index: 10; }
+        .card-img-header { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ffffff; position: relative; overflow: hidden; }
+        .card-img-header::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(0,0,0,0.1), transparent); }
+        .card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+        .card-body h3 { font-size: 1.2rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 10px; }
+        .card-body p { font-size: 0.9rem; color: var(--body-quiet-color); line-height: 1.5; margin-bottom: 20px; flex: 1; }
+        .card-link { color: var(--primary); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; padding: 8px 0; border-top: 1px solid var(--hairline-color); width: 100%; margin-top: auto; }
+        .card-link i { transition: transform 0.2s; }
+        .course-card:hover .card-link i { transform: translateX(4px); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: #ffffff; border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .main-container { flex-direction: column; gap: 20px; }
+            .left-panel { width: 100%; position: relative; top: 0; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<script>document.documentElement.setAttribute('data-theme', 'light');</script>
+
+<!-- ========== HEADER ========== -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-brand-text">
+            <h1>CyberDefend</h1>
+            <span>Modern cybersecurity learning platform</span>
+        </div>
+    </a>
+    <div class="top-nav-links">
+        <a href="index.html" class="active">Dashboard</a>
+        <div class="nav-dropdown">
+            <a href="courses.html">Courses</a>
+            <div class="nav-dropdown-content">
+                <a href="2026.html">Summer Lectures</a>
+                <a href="labs.html">Enterprise Security Infrastructure</a>
+                <a href="DPA.html">DPA Summer Training Course</a>
+                <a href="level3.html">1- Introduction to Cybersecurity</a>
+                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
+                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" id="dropAiBtn1">Level-1 AI</a>
+                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="networking.html">CyberSecurity Reading Slides</a>
+                <a href="routing-switching.html">English CyberSecurity Course</a>
+                <a href="aws foundation.html">AWS Cloud Foundation</a>
+                <a href="digital comm.html">Digital Comm</a>
+                <a href="wireless comm.html">Wireless Comm</a>
+                <a href="new9.html">HP | Aruba Switch</a>
+            </div>
+        </div>
+        <a href="messages.html">📝 Tasks & Submissions</a>
+        <div class="nav-dropdown">
+            <a href="labs.html">Enterprise Security Infrastructure</a>
+            <div class="nav-dropdown-content">
+                <a href="labs.html">Network Security Overview</a>
+                <a href="network Roadmap.html">Network Roadmap</a>
+                <a href="security Roadmap.html">Security Roadmap</a>
+                <a href="lesson-6.html">Switching Architecture</a>
+                <a href="lesson-7.html">Firewall Security Architecture</a>
+                <a href="lesson-3.html">KALI Linux</a>
+                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
+                <a href="lesson-4.html">Vulnerability Scanners</a>
+                <a href="nessus.html">Nessus Vulnerability Assessment</a>
+                <a href="labs2.html">Networking Labs Overview</a>
+                <a href="lesson-8.html">Wireless Solutions</a>
+                <a href="lesson-9.html">Cyber Attacks</a>
+                <a href="lesson-10.html">Troubleshooting</a>
+                <a href="lesson-11.html">Switch Management</a>
+                <a href="lesson-12.html">VOIP</a>
+                <a href="lesson-13.html">Cloud Computing</a>
+                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
+                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
+                <a href="lesson-16.html">Practice Labs advanced</a>
+            </div>
+        </div>
+        <div class="nav-dropdown">
+            <a href="paid-cybersecurity-course.html">Interactive Attack Labs</a>
+            <div class="nav-dropdown-content">
+                <a href="encyclopedia.html">The Complete Cyber Curriculum</a>
+                <a href="live-monitor.html">Live Threat Monitor</a>
+                <a href="begin1.html">Beginner Pentest Labs</a>
+                <a href="88888.html">Attack Phases</a>
+                <a href="second.html">Attack LABS p1</a>
+                <a href="third.html">Attack LABS p2</a>
+                <a href="fourth.html">Attack LABS p3</a>
+                <a href="html.html">Switch Lab</a>
+                <a href="asa-lab.html">Firewall Lab</a>
+                <a href="Firewal-Lab.html">Firewall Lab 2</a>
+                <a href="wireshark-lab.html">Wireshark Lab</a>
+                <a href="logs.html">Log Analysis</a>
+                <a href="crack.html">Exploitation & Cracking</a>
+                <a href="kali50tools.html">🐉 Top 50 Kali Tool CLI</a>
+                <a href="kali50tools3.html">🐉 Kali Toolset Console</a>
+                <a href="kali50tools2.html">🐉 Top 50 Kali Tool CLI + GUI</a>
+                <a href="BurpSuite.html">Burp Suite</a>
+                <a href="active-directory-attack-lab.html">Active Directory Attack Lab</a>
+                <a href="soc-tools.html">🛡️ 20 Essential SOC Tools</a>
+            </div>
+        </div>
+        <div class="nav-dropdown">
+            <a href="lesson-14.html">Packet Tracer Labs</a>
+            <div class="nav-dropdown-content">
+                <a href="Switch_Config.html">Basic Switch Configuration</a>
+                <a href="vlan.html">Basic VLAN</a>
+                <a href="static_route.html">Static Routing</a>
+                <a href="ssh.html">SSH Configuration</a>
+                <a href="trunk.html">VLAN Trunking</a>
+                <a href="router_stick.html">Router-on-a-Stick</a>
+                <a href="etherchannel.html">EtherChannel</a>
+                <a href="dhcp.html">DHCPv4 Configuration</a>
+                <a href="nat.html">NAT Configuration</a>
+                <a href="acl.html">Access Control Lists</a>
+                <a href="ospf.html">OSPF Single Area</a>
+                <a href="hsrp.html">HSRP Configuration</a>
+                <a href="stp.html">Spanning Tree Protocol</a>
+                <a href="mgt.html">Switch Management</a>
+                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
+                <a href="subnetting.html">Routing & Subnetting</a>
+                <a href="asa.html">ASA Firewall Configuration</a>
+            </div>
+        </div>
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+</nav>
+
+<!-- ========== MAIN LAYOUT ========== -->
+<div class="main-container">
+    
+    <!-- LEFT PANEL: 5 COURSE IMAGES/LINKS -->
+    <aside class="left-panel">
+        <div class="panel-title">Top 5 Categories</div>
+        
+        <a href="labs.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #02b3e4, #027e9e);">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Enterprise Security</h4>
+                <p>Infrastructure & Architecture</p>
+            </div>
+        </a>
+
+        <a href="paid-cybersecurity-course.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #ef4444, #c62828);">
+                <i class="fas fa-skull-crossbones"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Interactive Attack Labs</h4>
+                <p>Pentesting & Exploitation</p>
+            </div>
+        </a>
+
+        <a href="lesson-14.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #22c55e, #15803d);">
+                <i class="fas fa-network-wired"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Packet Tracer Labs</h4>
+                <p>Cisco Configuration Exercises</p>
+            </div>
+        </a>
+
+        <a href="new9.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                <i class="fas fa-server"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>HP | Aruba Switch</h4>
+                <p>Switch Configuration & Mgmt</p>
+            </div>
+        </a>
+
+        <a href="firewall-all.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <i class="fas fa-fire-flame-curved"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Firewalls (ASA|Fortinet)</h4>
+                <p>Firewall Setup & Security</p>
+            </div>
+        </a>
+    </aside>
+
+    <!-- RIGHT PANEL: COURSE CARDS -->
+    <div class="right-panel">
+        
+        <h2 class="section-title">Featured Courses</h2>
+        <div class="right-panel-grid">
+
+            <!-- Card 1 -->
+            <a href="labs.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #02b3e4, #027e9e);">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Enterprise Security Infrastructure</h3>
+                    <p>Network Tracks Explained, Roadmaps, Architecture & Security. Master enterprise-level networking and defense mechanisms.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- Card 2 -->
+            <a href="paid-cybersecurity-course.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #ef4444, #c62828);">
+                    <i class="fas fa-skull-crossbones"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Interactive Attack Labs</h3>
+                    <p>Hands-on attack simulations, Kali Linux toolset console, GUI simulations, and exploitation techniques.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- Card 3 -->
+            <a href="lesson-14.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #22c55e, #15803d);">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Packet Tracer Labs</h3>
+                    <p>Practice labs and detailed explanations of essential networking and cybersecurity terminology to build your foundation.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- Card 4 -->
+            <a href="new9.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="card-body">
+                    <h3>HP | Aruba Switch</h3>
+                    <p>Comprehensive guide to HP and Aruba switch configuration, management, and enterprise network architecture.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- Card 5 -->
+            <a href="firewall-all.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                    <i class="fas fa-fire-flame-curved"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Firewall ASA | Fortinet | Paloalto</h3>
+                    <p>Master firewall configurations across multiple vendors including Cisco ASA, Fortinet, and Palo Alto Networks.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+        </div>
+
+        <h2 class="section-title">All Other Courses</h2>
+        <div class="right-panel-grid">
+
+            <!-- Other Cards from index.html -->
+            <a href="2026.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #ef4444, #c62828);">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Summer Lectures</h3>
+                    <p>Recorded Sessions & Videos from our intensive summer training program. Stay updated with latest trends.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="Curriculum.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Curriculum & Roadmaps</h3>
+                    <p>Core Tracks, Roadmaps, Modules to guide your learning journey from beginner to advanced levels.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="DPA.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                    <i class="fas fa-building-columns"></i>
+                </div>
+                <div class="card-body">
+                    <h3>DPA Summer Training Course</h3>
+                    <p>Damietta Port Summer Training Course. Hands-on practical training focused on real-world port security infrastructure.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="level3.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #22c55e, #15803d);">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="card-body">
+                    <h3>1- Introduction to Cybersecurity</h3>
+                    <p>Foundations & Core Concepts. Perfect for beginners looking to understand the fundamentals of information security.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="cybersecurity-course.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <div class="card-body">
+                    <h3>2- Cybersecurity Course</h3>
+                    <p>Attack Types · SIEM · Threat Hunting. Dive deeper into advanced security operations and threat detection.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <div id="cyberCourseBtn" class="course-card">
+                <span class="premium-badge">PREMIUM</span>
+                <div class="card-img-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">
+                    <i class="fas fa-swords"></i>
+                </div>
+                <div class="card-body">
+                    <h3>3- Cybersecurity Course (Paid)</h3>
+                    <p>Advanced Hands-on Labs and expert-level penetration testing scenarios for paid members.</p>
+                    <div class="card-link">Get Access <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <div id="cyberCourseBtn2" class="course-card">
+                <span class="premium-badge">PREMIUM</span>
+                <div class="card-img-header" style="background: linear-gradient(135deg, #14b8a6, #0f766e);">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="card-body">
+                    <h3>4- Cybersecurity Course (Paid)</h3>
+                    <p>Master advanced cybersecurity concepts, red teaming, and enterprise defense strategies.</p>
+                    <div class="card-link">Get Access <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <div id="aiCourseBtn1" class="course-card">
+                <span class="premium-badge">PREMIUM</span>
+                <div class="card-img-header" style="background: linear-gradient(135deg, #ec4899, #be185d);">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Level-1 AI</h3>
+                    <p>Artificial Intelligence Basics. Understand how AI is transforming cybersecurity and automation.</p>
+                    <div class="card-link">Get Access <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <div id="aiCourseBtn2" class="course-card">
+                <span class="premium-badge">PREMIUM</span>
+                <div class="card-img-header" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Level2-AI</h3>
+                    <p>Advanced AI Concepts. Dive deep into machine learning algorithms for threat detection.</p>
+                    <div class="card-link">Get Access <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <a href="networking.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #0ea5e9, #0369a1);">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="card-body">
+                    <h3>CyberSecurity Reading Slides</h3>
+                    <p>Comprehensive reading slides covering all fundamental and advanced cybersecurity topics.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="routing-switching.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="card-body">
+                    <h3>English CyberSecurity Course</h3>
+                    <p>Attack Types · SIEM · Threat Hunting. Full English course for international students.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="aws foundation.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #f97316, #c2410c);">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="card-body">
+                    <h3>AWS Cloud Foundation</h3>
+                    <p>AWS Cloud Solutions. Learn the essentials of cloud security and infrastructure on Amazon Web Services.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="digital comm.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #64748b, #334155);">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Digital Comm</h3>
+                    <p>Digital Communications. Understand the protocols and transmission methods behind modern networks.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="wireless comm.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #f43f5e, #be123c);">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Wireless Comm</h3>
+                    <p>Wireless Communications. Master RF technologies, WLAN configuration, and wireless security.</p>
+                    <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>🛡️ CyberDefend Academy</h3>
+            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="labs.html">Labs</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Stay Connected</h3>
+            <p>Want to level up your skills? Start your journey today.</p>
+            <a href="courses.html" class="footer-btn">Open learning path →</a>
+        </div>
+    </div>
+    <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
+</footer>
+
+<!-- Login Modal (Required for Paid Courses) -->
+<div id="loginModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;justify-content:center;align-items:center;">
+    <div style="background:#fff;color:#1a2c3e;padding:40px;border-radius:16px;text-align:center;width:400px;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid #e6edf4;">
+        <h3 style="margin-bottom:10px;">Login Required</h3>
+        <p id="modalCourseName" style="color:#5c6f87;margin-bottom:25px;">Verifying access...</p>
+        <div id="modalGoogleButton" style="display:flex;justify-content:center;margin-bottom:15px;min-height:40px;"></div>
+        <div id="loginError"></div><br>
+        <button id="closeModalBtn" style="background:none;border:none;color:#5c6f87;cursor:pointer;text-decoration:underline;font-family:inherit;font-size:.9rem;">Cancel</button>
+    </div>
+</div>
+
+<script>
+    // Basic theme toggle if needed
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+    }
+
+    // ===== PAID COURSE MODAL LOGIC (From index.html) =====
+    var GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
+    var PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
+    var requestedCourseColumn = null;
+
+    async function checkCourseAccess(email, courseColumn) {
+        try {
+            var response = await fetch(PAID_COURSES_SHEET_URL);
+            var csvText = await response.text();
+            var cleanCsv = csvText.replace(/\r/g, '');
+            var lines = cleanCsv.split('\n');
+            if (lines.length < 2) return false;
+            var headers = lines[0].split(',').map(function(h) { return h.trim().toLowerCase(); });
+            var emailIndex = headers.indexOf('email');
+            var courseIndex = headers.indexOf(courseColumn.toLowerCase());
+            if (emailIndex === -1 || courseIndex === -1) return false;
+            for (var i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                var row = lines[i].split(',');
+                var rowEmail = row[emailIndex] ? row[emailIndex].trim().toLowerCase() : "";
+                var rowAccess = row[courseIndex] ? row[courseIndex].trim().toLowerCase() : "";
+                if (rowEmail === email.toLowerCase() && rowAccess === 'yes') return true;
+            }
+            return false;
+        } catch (e) { return false; }
+    }
+
+    async function handlePaidCourseLogin(response) {
+        var errorDiv = document.getElementById('loginError');
+        errorDiv.innerHTML = "⏳ Verifying access in database...";
+        try {
+            var payload = JSON.parse(atob(response.credential.split('.')[1]));
+            var userEmail = payload.email;
+            var hasAccess = await checkCourseAccess(userEmail, requestedCourseColumn);
+            if (hasAccess) {
+                localStorage.setItem('googleUserLoggedIn', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                var redirectLink = 'paid-cybersecurity-course.html';
+                if (requestedCourseColumn === 'Course_4') redirectLink = 'paid-cybersecurity-course-2.html';
+                else if (requestedCourseColumn === 'Level_1_AI') redirectLink = 'Level-1 AI.html';
+                else if (requestedCourseColumn === 'Level_2_AI') redirectLink = 'Level2-AI.html';
+                alert("Access Granted! Redirecting...");
+                window.location.href = redirectLink;
+            } else {
+                errorDiv.innerHTML = "❌ Access Denied. Your email is not approved for this course.";
+            }
+        } catch (e) { errorDiv.innerHTML = "❌ Login failed."; }
+    }
+
+    function renderGoogleButton() {
+        var container = document.getElementById('modalGoogleButton');
+        container.innerHTML = '';
+        if (typeof google === 'undefined' || !google.accounts) return;
+        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handlePaidCourseLogin });
+        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
+    }
+
+    document.addEventListener('click', function(event) {
+        var loginModal = document.getElementById('loginModal');
+        var courseNameText = document.getElementById('modalCourseName');
+        
+        if (event.target.closest('#cyberCourseBtn') || event.target.closest('#dropCyberBtn3')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Course_3';
+            courseNameText.innerText = "Please log in to verify access for Course 3.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        if (event.target.closest('#cyberCourseBtn2') || event.target.closest('#dropCyberBtn4')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Course_4';
+            courseNameText.innerText = "Please log in to verify access for Course 4.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        if (event.target.closest('#aiCourseBtn1') || event.target.closest('#dropAiBtn1')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Level_1_AI';
+            courseNameText.innerText = "Please log in to verify access for Level-1 AI.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        if (event.target.closest('#aiCourseBtn2') || event.target.closest('#dropAiBtn2')) {
+            event.preventDefault(); event.stopPropagation();
+            requestedCourseColumn = 'Level_2_AI';
+            courseNameText.innerText = "Please log in to verify access for Level2-AI.";
+            document.getElementById('loginError').innerHTML = "";
+            loginModal.style.display = 'flex';
+            setTimeout(renderGoogleButton, 100);
+        }
+        if (event.target.closest('#closeModalBtn')) { loginModal.style.display = 'none'; }
+        if (event.target === loginModal) { loginModal.style.display = 'none'; }
+    });
+</script>
+
+</body>
+</html>
