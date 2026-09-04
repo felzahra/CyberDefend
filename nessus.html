@@ -5,42 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>CyberDefend Academy · Nessus Vulnerability Assessment</title>
     
-    <!-- Bootstrap & Fonts & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
         :root {
-            --primary: #00e676;
-            --primary-fg: #000000;
-            --body-fg: #ffffff;
-            --body-bg: #121212;
-            --body-quiet-color: #b0b0b0;
-            --body-loud-color: #ffffff;
-            --hairline-color: #272727;
-            --border-color: #353535;
-            --darkened-bg: #1e1e1e;
-            --selected-bg: #2a2a2a;
-            --header-bg: #1a1a1a;
-            --input-bg: #242424;
+            --primary: #00e676; --primary-fg: #000000; --body-fg: #ffffff; --body-bg: #121212;
+            --body-quiet-color: #b0b0b0; --body-loud-color: #ffffff; --hairline-color: #272727;
+            --border-color: #353535; --darkened-bg: #1e1e1e; --selected-bg: #2a2a2a; --header-bg: #1a1a1a; --input-bg: #242424;
+            --dark-color: #2c3e50;
         }
-
-        /* ========== LIGHT MODE ========== */
         html[data-theme="light"] {
-            --primary: #02b3e4;
-            --primary-fg: #ffffff;
-            --body-fg: #1a2c3e;
-            --body-bg: #f5f7fc;
-            --body-quiet-color: #5c6f87;
-            --body-loud-color: #0b2b3b;
-            --hairline-color: #e6edf4;
-            --border-color: #eef2f8;
-            --darkened-bg: #ffffff;
-            --selected-bg: #e9f4fa;
-            --header-bg: #ffffff;
-            --input-bg: #f9fbfe;
+            --primary: #02b3e4; --primary-fg: #ffffff; --body-fg: #1a2c3e; --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87; --body-loud-color: #0b2b3b; --hairline-color: #e6edf4;
+            --border-color: #eef2f8; --darkened-bg: #ffffff; --selected-bg: #e9f4fa; --header-bg: #ffffff; --input-bg: #f9fbfe;
+            --dark-color: #34495e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,36 +43,9 @@
         .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
         .nav-dropdown > a:hover { color: var(--body-fg); }
         .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-        .nav-dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--darkened-bg);
-            min-width: 260px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
-            border: 1px solid var(--hairline-color);
-            border-radius: 12px;
-            padding: 8px 0;
-            z-index: 1000;
-            text-align: left;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .nav-dropdown-content a {
-            color: var(--body-fg);
-            padding: 10px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 500;
-            border-bottom: none;
-            transition: background 0.2s, color 0.2s;
-        }
-        .nav-dropdown-content a:hover {
-            background-color: var(--selected-bg);
-            color: var(--primary);
-        }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--darkened-bg); min-width: 260px; box-shadow: 0px 8px 20px rgba(0,0,0,0.25); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto; }
+        .nav-dropdown-content a { color: var(--body-fg); padding: 10px 16px; text-decoration: none; display: block; font-size: 0.82rem; font-weight: 500; border-bottom: none; transition: background 0.2s, color 0.2s; }
+        .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
         .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
         .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -109,62 +61,71 @@
         .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
         .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
         .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
-        /* Back Buttons Styling */
-.sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
-.sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
-.sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }  
+        
         /* ========== RIGHT CONTENT AREA ========== */
         .content-area { flex: 1; min-width: 0; }
         .page-header { text-align: center; margin-bottom: 40px; }
         .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
         .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
 
-        /* ========== NESSUS CONTENT STYLES ========== */
+        /* ========== CONTENT STYLES ========== */
         .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
-        
-        /* Bootstrap Overrides for Dark Mode */
-        .card { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 10px; color: var(--body-fg); }
-        .card-title { color: var(--body-loud-color); font-weight: 600; }
-        .card-text { color: var(--body-quiet-color); font-size: 0.9rem; }
-        .text-primary { color: var(--primary) !important; }
-        .text-danger { color: #ff5252 !important; }
-        .text-warning { color: #ffca28 !important; }
-        .text-success { color: #69f0ae !important; }
-        
-        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary); color: var(--primary-fg); font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
-        
-        .figure { margin: 2rem 0; display: block; }
-        .figure-img { border: 1px solid var(--hairline-color); border-radius: 8px; padding: 5px; background-color: var(--darkened-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; height: auto; }
-        .figure-caption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 0.75rem; text-align: center; font-style: italic; }
-        
-        .code-block { background-color: var(--input-bg); border-left: 4px solid var(--primary); padding: 1rem; margin: 1.5rem 0; border-radius: 4px; font-family: monospace; overflow-x: auto; color: var(--body-fg); }
-        
-        .cvss-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; color: white; font-weight: bold; font-size: 0.9rem; }
-        .cvss-critical { background-color: #dc3545; }
-        .cvss-high { background-color: #fd7e14; }
-        .cvss-medium { background-color: #ffc107; color: #212529; }
-        .cvss-low { background-color: #20c997; }
-        
-        .table-responsive { border-radius: 8px; overflow: hidden; border: 1px solid var(--hairline-color); margin: 2rem 0; }
-        .table { width: 100%; margin-bottom: 0; border-collapse: collapse; color: var(--body-fg); }
-        .table thead { background-color: var(--selected-bg); color: var(--body-loud-color); }
-        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
-        .table-hover tbody tr:hover { background-color: var(--body-bg); }
-        
-        .list-group-item { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); color: var(--body-fg); display: flex; justify-content: space-between; align-items: center; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem; }
 
-        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 4px; margin: 1.5rem 0; color: var(--body-fg); }
-        .alert-info-custom h5 { color: var(--body-loud-color); margin-bottom: 0.5rem; }
-        .alert-info-custom ul { color: var(--body-quiet-color); padding-left: 20px; margin-top: 10px; }
-        
-        .toc { background-color: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 20px; margin-bottom: 2rem; }
-        .toc h3 { color: var(--body-loud-color); margin-bottom: 15px; font-size: 1.2rem; }
-        .toc ul { padding-left: 20px; color: var(--body-quiet-color); }
+        /* TOC */
+        .toc { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+        .toc h3 { margin-bottom: 1rem; color: var(--body-loud-color); }
+        .toc ul { padding-left: 1.5rem; margin-bottom: 0; }
         .toc a { color: var(--primary); text-decoration: none; }
         .toc a:hover { text-decoration: underline; }
 
-        /* ========== LESSON NAVIGATION BUTTONS (BACK / NEXT) ========== */
+        /* Steps & Cards */
+        .step-row { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .step-col { flex: 1; min-width: 280px; }
+        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary); color: var(--primary-fg); font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
+        .step-header { display: flex; align-items: center; margin-bottom: 1rem; }
+
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 2rem 0; }
+        .figure { margin: 0; display: flex; flex-direction: column; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+        .figure:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .figure-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--hairline-color); background: var(--body-bg); }
+        .figure-body { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .figure-caption { font-size: 0.85rem; color: var(--body-quiet-color); margin-bottom: 0; font-style: italic; }
+        .figure-icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+
+        .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
+        .large-figure:hover { border-color: var(--primary); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 450px; background: var(--body-bg); }
+        .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
+
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p, .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; }
+        .alert-info-custom ul { padding-left: 20px; margin-top: 10px; }
+
+        /* Nessus Specific Styles */
+        .code-block { background-color: var(--input-bg); border-left: 4px solid var(--primary); padding: 1rem; margin: 1.5rem 0; border-radius: 4px; font-family: monospace; color: var(--primary); overflow-x: auto; font-size: 0.9rem; }
+        .table-responsive { border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 2rem 0; border: 1px solid var(--hairline-color); }
+        .table { width: 100%; border-collapse: collapse; background: var(--darkened-bg); }
+        .table thead { background-color: var(--dark-color); color: white; }
+        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
+        .table-hover tbody tr:hover { background-color: var(--selected-bg); }
+        .cvss-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; color: white; font-weight: bold; font-size: 0.9rem; }
+        .cvss-critical { background-color: #dc3545; }
+        .cvss-high { background-color: #fd7e14; }
+        .cvss-medium { background-color: #ffc107; color: #212529 !important; }
+        .cvss-low { background-color: #20c997; }
+        
+        .list-group { display: flex; flex-direction: column; }
+        .list-group-item { background: var(--darkened-bg); color: var(--body-fg); border: 1px solid var(--hairline-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .list-group-item:first-child { border-radius: 8px 8px 0 0; }
+        .list-group-item:last-child { border-radius: 0 0 8px 8px; }
+
+        /* ========== LESSON NAVIGATION BUTTONS ========== */
         .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
         .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
         .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
@@ -186,220 +147,88 @@
         @media (max-width: 900px) {
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
-            .top-nav-links a { font-size: 0.8rem; }
-            .page-header h1 { font-size: 2rem; }
-            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
-            .footer-col h3 { justify-content: center; }
-            .footer-col ul { padding: 0; }
-            .lesson-nav { flex-direction: column; gap: 15px; }
-            
-            /* Sidebar becomes horizontal/full width on mobile */
             .main-content { flex-direction: column; }
             .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
         }
     </style>
 </head>
 <body>
-<!-- CHECK SAVED THEME IMMEDIATELY -->
-<script>
-    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-</script>
+<script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
 
-<!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
-<nav class="top-nav">
-    <a href="index.html" class="nav-brand">
-        <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-brand-text"><h1>CyberDefend</h1><span>Modern cybersecurity learning platform</span></div>
-    </a>
-    <div class="top-nav-links">
-        <a href="index.html" class="active">Dashboard</a>
 
-        <!-- COURSES DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="courses.html">Courses ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="2026.html">Summer Lectures</a>
-                <a href="labs.html">Curriculum</a>
-                <a href="DPA.html">DPA Summer Training Course</a>
-                <a href="level3.html">1- Introduction to Cybersecurity</a>
-                <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
-                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropAiBtn1">Level-1 AI</a>
-                <a href="#" id="dropAiBtn2">Level2-AI</a>
-                <a href="networking.html">CyberSecurity Reading Slides</a>
-                <a href="routing-switching.html">English CyberSecurity Course</a>
-                <a href="aws foundation.html">AWS Cloud Foundation</a>
-                <a href="digital comm.html">Digital Comm</a>
-                <a href="wireless comm.html">Wireless Comm</a>
-            </div>
-        </div>
 
-        <a href="messages.html">📝 Tasks & Submissions</a>
-
-        <!-- CURRICULUM DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="labs.html">Curriculum ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="labs.html">Network Security Overview</a>
-                <a href="network Roadmap.html">Network Roadmap</a>
-                <a href="security Roadmap.html">Security Roadmap</a>
-                <a href="lesson-6.html">Switching Architecture</a>
-                <a href="lesson-7.html">Firewall Security Architecture</a>
-                <a href="lesson-3.html">KALI Linux</a>
-                <a href="kali-tools.html">Top 50 Kali Linux Tools</a>
-                <a href="lesson-4.html">Vulnerability Scanners</a>
-                <a href="nessus.html">Nessus Vulnerability Assessment</a>
-                <a href="labs2.html">Networking Labs Overview</a>
-                <a href="lesson-8.html">Wireless Solutions</a>
-                <a href="lesson-9.html">Cyber Attacks</a>
-                <a href="lesson-10.html">Troubleshooting</a>
-                <a href="lesson-11.html">Switch Management</a>
-                <a href="lesson-12.html">VOIP</a>
-                <a href="lesson-13.html">Cloud Computing</a>
-                <a href="lesson-14.html">Practice Labs (Packet Tracer)</a>
-                <a href="lesson-15.html">Practice Labs (eve-ng + Gns3)</a>
-                <a href="lesson-16.html">Practice Labs advanced</a>
-            </div>
-        </div>
-
-        <!-- NEW LABS DROPDOWN -->
-        <div class="nav-dropdown">
-            <a href="lesson-14.html">Labs ▾</a>
-            <div class="nav-dropdown-content">
-                <a href="Switch_Config.html">Basic Switch Configuration</a>
-                <a href="vlan.html">Basic VLAN</a>
-                <a href="static_route.html">Static Routing</a>
-                <a href="ssh.html">SSH Configuration</a>
-                <a href="trunk.html">VLAN Trunking</a>
-                <a href="router_stick.html">Router-on-a-Stick</a>
-                <a href="etherchannel.html">EtherChannel</a>
-                <a href="dhcp.html">DHCPv4 Configuration</a>
-                <a href="nat.html">NAT Configuration</a>
-                <a href="acl.html">Access Control Lists</a>
-                <a href="ospf.html">OSPF Single Area</a>
-                <a href="hsrp.html">HSRP Configuration</a>
-                <a href="stp.html">Spanning Tree Protocol</a>
-                <a href="mgt.html">Switch Management</a>
-                <a href="voip.html">VoIP — Cisco & Avaya Voice VLAN</a>
-                <a href="subnetting.html">Routing & Subnetting</a>
-                <a href="asa.html">ASA Firewall Configuration</a>
-            </div>
-        </div>
-
-        <a href="login.html" class="login-btn">Login</a>
-    </div>
-</nav>
-
-<!-- MAIN CONTENT WRAPPER (Flexbox Row) -->
 <div class="main-content">
-    
-    <aside class="sidebar">
-        <div class="sidebar-back-btns">
-            <!-- ONLY BACK TO DASHBOARD HERE -->
-            <a href="labs.html" class="sidebar-back-btn">← Back to Main Page</a>
-        </div>
-        <div class="sidebar-header"><h3>Course Lessons</h3></div>
-        <nav class="sidebar-nav">
-            <ul>
-                    <!-- It is best practice to remove spaces in HTML filenames -->
-                <li><a href="labs.html">Network Security Overview</a></li>
-                <li><a href="network Roadmap.html">Network Roadmap</a></li>
-                <li><a href="security Roadmap.html">Security Roadmap</a></li>
-                <li><a href="lesson-6.html"> Switching Architecture </a></li>
-                <li><a href="lesson-7.html"> Firewall Security Architecture</a></li>
-                <li><a href="lesson-3.html"> KALI Linux</a></li>
-                <li><a href="kali-tools.html"> Top 50 Kali Linux Tools</a></li>
-                <li><a href="lesson-4.html"> Vulnerability Scanners</a></li>
-                <li><a href="nessus.html" class="active">Nessus Vulnerability Assessment</a></li>
-                <li><a href="labs2.html"> Networking Labs Overview</a></li>
-
-                <li><a href="lesson-8.html">Wireless Solutions</a></li>
-                <li><a href="lesson-9.html">Cyber Attacks</a></li>
-                <li><a href="lesson-10.html">Troubleshooting</a></li>
-                <li><a href="lesson-11.html">Switch Management</a></li>
-                <li><a href="lesson-12.html">VOIP</a></li>
-                <li><a href="lesson-13.html">Cloud Computing</a></li>
-                <li><a href="lesson-14.html">Practice Labs (Packet Tracer)</a></li>
-                <li><a href="labs2.html">Practice Labs (eve-ng + Gns3)</a></li>
-                <li><a href="lesson-16.html">Practice Labs advanced</a></li>
-            </ul>
-        </nav>
-    </aside>
-
+   
 
     <!-- RIGHT CONTENT AREA -->
     <div class="content-area">
         <div class="page-header">
             <h1>Nessus Vulnerability Assessment</h1>
-            <p>A comprehensive guide to vulnerability scanning, CVE identification, and CVSS score interpretation</p>
+            <p>A comprehensive guide to vulnerability scanning, CVE identification, and CVSS score interpretation.</p>
         </div>
 
         <!-- Table of Contents -->
         <div class="toc">
             <h3>Table of Contents</h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <ul>
-                        <li><a href="#intro">1. Introduction to Nessus</a></li>
-                        <li><a href="#installation">2. Installation & Setup</a></li>
-                        <li><a href="#configuration">3. Scan Configuration</a></li>
-                        <li><a href="#launching">4. Launching a Scan</a></li>
-                        <li><a href="#results">5. Analyzing Results</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <ul>
-                        <li><a href="#cve-extraction">6. Extracting CVEs</a></li>
-                        <li><a href="#cvss">7. Understanding CVSS Scores</a></li>
-                        <li><a href="#mitre">8. Searching CVE Details in MITRE</a></li>
-                        <li><a href="#remediation">9. Remediation Strategies</a></li>
-                        <li><a href="#best-practices">10. Best Practices</a></li>
-                    </ul>
-                </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li><a href="#intro">1. Introduction to Nessus</a></li>
+                    <li><a href="#installation">2. Installation & Setup</a></li>
+                    <li><a href="#configuration">3. Scan Configuration</a></li>
+                    <li><a href="#launching">4. Launching a Scan</a></li>
+                    <li><a href="#results">5. Analyzing Results</a></li>
+                </ul>
+                <ul>
+                    <li><a href="#cve-extraction">6. Extracting CVEs</a></li>
+                    <li><a href="#cvss">7. Understanding CVSS Scores</a></li>
+                    <li><a href="#mitre">8. Searching CVE Details in MITRE</a></li>
+                    <li><a href="#remediation">9. Remediation Strategies</a></li>
+                    <li><a href="#best-practices">10. Best Practices</a></li>
+                </ul>
             </div>
         </div>
 
         <!-- Section 1: Introduction -->
         <section id="intro" class="mb-5">
             <h2 class="section-title">1. Introduction to Nessus</h2>
-            <p>Nessus is a widely-used vulnerability scanner developed by Tenable Network Security. It helps security professionals identify vulnerabilities, misconfigurations, and security issues in their IT infrastructure. Nessus scans for:</p>
+            <p class="text-block">Nessus is a widely-used vulnerability scanner developed by Tenable Network Security. It helps security professionals identify vulnerabilities, misconfigurations, and security issues in their IT infrastructure.</p>
             
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-bug text-danger me-2"></i>Vulnerabilities</h5>
-                            <p class="card-text">Software flaws that could be exploited by attackers to compromise systems.</p>
-                        </div>
+            <div class="image-grid">
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-bug"></i></div>
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-bug text-danger"></i></div>
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Vulnerabilities</h5>
+                        <p class="figure-caption">Software flaws that could be exploited by attackers to compromise systems.</p>
                     </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-sliders text-warning me-2"></i>Misconfigurations</h5>
-                            <p class="card-text">Improper settings that could expose systems to unnecessary risk.</p>
-                        </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-sliders"></i></div>
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-sliders text-warning"></i></div>
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Misconfigurations</h5>
+                        <p class="figure-caption">Improper settings that could expose systems to unnecessary risk.</p>
                     </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-shield-virus text-success me-2"></i>Malware</h5>
-                            <p class="card-text">Detection of known malware on systems and networks.</p>
-                        </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-shield-virus"></i></div>
+                    <div class="figure-body">
+                        <div class="figure-icon"><i class="fas fa-shield-virus text-success"></i></div>
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Malware</h5>
+                        <p class="figure-caption">Detection of known malware on systems and networks.</p>
                     </div>
-                </div>
+                </figure>
             </div>
             
-            <figure class="figure">
-                <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/cve_analysis_screenshot_rev.png" class="figure-img img-fluid rounded" alt="Nessus Dashboard">
-                <figcaption class="figure-caption">Figure 1: Nessus Dashboard Overview - Main interface showing scan summary, vulnerabilities by severity, and recent activity.</figcaption>
+            <figure class="large-figure">
+                <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/cve_analysis_screenshot_rev.png" alt="Nessus Dashboard">
+                <figcaption>Figure 1: Nessus Dashboard Overview - Main interface showing scan summary, vulnerabilities by severity, and recent activity.</figcaption>
             </figure>
             
-            <div class="alert alert-info-custom">
-                <h5><i class="fas fa-info-circle me-2"></i>Key Features</h5>
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-info-circle"></i> Key Features</h4>
                 <ul>
                     <li>Comprehensive plugin-based scanning with frequent updates</li>
                     <li>Detailed vulnerability reports with remediation guidance</li>
@@ -413,25 +242,24 @@
         <section id="installation" class="mb-5">
             <h2 class="section-title">2. Installation & Setup</h2>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-3">
+            <div class="step-row">
+                <div class="step-col">
+                    <div class="step-header">
                         <span class="step-number">1</span>
-                        <h4 class="mb-0">Download Nessus</h4>
+                        <h4>Download Nessus</h4>
                     </div>
-                    <p>Visit the Tenable website and download the appropriate Nessus version for your operating system.</p>
-                    <figure class="figure">
-                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/download-nessus-for-kali.png" class="figure-img img-fluid rounded" alt="Nessus Download Page">
-                        <figcaption class="figure-caption">Figure 2: Nessus Download Page - Shows different versions available for various OS.</figcaption>
+                    <p class="text-block" style="margin-top:0">Visit the Tenable website and download the appropriate Nessus version for your operating system.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/download-nessus-for-kali.png" alt="Nessus Download Page">
+                        <figcaption>Figure 2: Nessus Download Page.</figcaption>
                     </figure>
                 </div>
-                
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-3">
+                <div class="step-col">
+                    <div class="step-header">
                         <span class="step-number">2</span>
-                        <h4 class="mb-0">Install Nessus</h4>
+                        <h4>Install Nessus</h4>
                     </div>
-                    <p>Run the installer and follow the installation wizard. For Windows, run the executable; for Linux, use your package manager.</p>
+                    <p class="text-block" style="margin-top:0">Run the installer and follow the installation wizard.</p>
                     <div class="code-block">
 # For Debian/Ubuntu
 sudo dpkg -i Nessus-x.x.x-debian6_amd64.deb
@@ -441,29 +269,28 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
                     </div>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-3">
+
+            <div class="step-row">
+                <div class="step-col">
+                    <div class="step-header">
                         <span class="step-number">3</span>
-                        <h4 class="mb-0">Activate Nessus</h4>
+                        <h4>Activate Nessus</h4>
                     </div>
-                    <p>Navigate to https://localhost:8834 to access the Nessus web interface. You'll need to create an admin account and activate using your activation code.</p>
-                    <figure class="figure">
-                        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20230118124830/Picture11.png" class="figure-img img-fluid rounded" alt="Nessus Activation">
-                        <figcaption class="figure-caption">Figure 3: Nessus Activation Screen - Web interface showing initial setup wizard.</figcaption>
+                    <p class="text-block" style="margin-top:0">Navigate to https://localhost:8834 to access the web interface. Create an admin account and activate using your code.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20230118124830/Picture11.png" alt="Nessus Activation">
+                        <figcaption>Figure 3: Nessus Activation Screen.</figcaption>
                     </figure>
                 </div>
-                
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-3">
+                <div class="step-col">
+                    <div class="step-header">
                         <span class="step-number">4</span>
-                        <h4 class="mb-0">Initialize Plugins</h4>
+                        <h4>Initialize Plugins</h4>
                     </div>
-                    <p>Nessus will download and compile plugins. This process may take several minutes depending on your system and network speed.</p>
-                    <figure class="figure">
-                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/nessus-plugin-download-kali.png" class="figure-img img-fluid rounded" alt="Plugin Initialization">
-                        <figcaption class="figure-caption">Figure 4: Nessus Plugin Initialization - Progress bar showing plugin download.</figcaption>
+                    <p class="text-block" style="margin-top:0">Nessus will download and compile plugins. This may take several minutes.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://www.stationx.net/wp-content/uploads/2024/03/nessus-plugin-download-kali.png" alt="Plugin Initialization">
+                        <figcaption>Figure 4: Plugin Initialization Progress.</figcaption>
                     </figure>
                 </div>
             </div>
@@ -472,377 +299,160 @@ sudo rpm -ivh Nessus-x.x.x-es7.x86_64.rpm
         <!-- Section 3: Scan Configuration -->
         <section id="configuration" class="mb-5">
             <h2 class="section-title">3. Scan Configuration</h2>
-            
-            <div class="d-flex align-items-center mb-3">
+            <div class="step-header">
                 <span class="step-number">1</span>
-                <h4 class="mb-0">Access Scans Menu</h4>
+                <h4>Access Scans Menu</h4>
             </div>
-            <p>From the main dashboard, click on "Scans" in the top navigation menu, then click "New Scan" to create a new scan configuration.</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QzhysYBT0hudUmBu8WopFg.png" class="figure-img img-fluid rounded" alt="New Scan Button">
-                <figcaption class="figure-caption">Figure 5: Creating a New Scan - Scans menu with "New Scan" button highlighted.</figcaption>
+            <p class="text-block">From the main dashboard, click on "Scans" in the top navigation menu, then click "New Scan".</p>
+            <figure class="large-figure">
+                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QzhysYBT0hudUmBu8WopFg.png" alt="New Scan Button">
+                <figcaption>Figure 5: Creating a New Scan.</figcaption>
             </figure>
-            
-            <div class="d-flex align-items-center mb-3">
+
+            <div class="step-header">
                 <span class="step-number">2</span>
-                <h4 class="mb-0">Select Scan Template</h4>
+                <h4>Select Scan Template</h4>
             </div>
-            <p>Choose a scan template based on your assessment goals. Common templates include:</p>
+            <p class="text-block">Choose a scan template based on your assessment goals.</p>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                        <tr>
-                            <th>Template</th>
-                            <th>Description</th>
-                            <th>Use Case</th>
-                        </tr>
+                        <tr><th>Template</th><th>Description</th><th>Use Case</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Basic Network Scan</td>
-                            <td>Standard vulnerability scan</td>
-                            <td>General vulnerability assessment</td>
-                        </tr>
-                        <tr>
-                            <td>Advanced Scan</td>
-                            <td>Highly configurable scan</td>
-                            <td>Custom vulnerability assessments</td>
-                        </tr>
-                        <tr>
-                            <td>Credentialed Patch Audit</td>
-                            <td>Checks for missing patches</td>
-                            <td>Patch management verification</td>
-                        </tr>
+                        <tr><td>Basic Network Scan</td><td>Standard vulnerability scan</td><td>General vulnerability assessment</td></tr>
+                        <tr><td>Advanced Scan</td><td>Highly configurable scan</td><td>Custom vulnerability assessments</td></tr>
+                        <tr><td>Credentialed Patch Audit</td><td>Checks for missing patches</td><td>Patch management verification</td></tr>
                     </tbody>
                 </table>
             </div>
-            <figure class="figure">
-                <img src="https://www.tenable.com/sites/drupal.dmz.tenablesecurity.com/files/images/blog/How%20To-%20Run%20Your%20First%20Vulnerability%20Scan%20with%20Nessus_1.png" class="figure-img img-fluid rounded" alt="Scan Templates">
-                <figcaption class="figure-caption">Figure 6: Selecting a Scan Template - Gallery of available scan templates.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">3</span>
-                <h4 class="mb-0">Configure Scan Settings</h4>
-            </div>
-            <p>Enter scan details and target information (Name, Description, Targets: IP addresses, hostnames, or CIDR ranges).</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*dy2WVvLOhinj7zIZUQj3Jw.png" class="figure-img img-fluid rounded" alt="Scan Configuration">
-                <figcaption class="figure-caption">Figure 7: Configuring Scan Settings - Form showing scan name, description, and target fields.</figcaption>
-            </figure>
         </section>
 
         <!-- Section 4: Launching a Scan -->
         <section id="launching" class="mb-5">
             <h2 class="section-title">4. Launching a Scan</h2>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">1</span>
-                <h4 class="mb-0">Save and Launch</h4>
+            <div class="step-row">
+                <div class="step-col">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <h4>Save and Launch</h4>
+                    </div>
+                    <p class="text-block" style="margin-top:0">After configuring your scan, click "Save" and then "Launch".</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QYDfNmOQ6jo9MWMqK7IEfw.png" alt="Launch Scan">
+                        <figcaption>Figure 6: Launching a Scan.</figcaption>
+                    </figure>
+                </div>
+                <div class="step-col">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <h4>Monitor Progress</h4>
+                    </div>
+                    <p class="text-block" style="margin-top:0">Monitor the scan progress from the Scans page to see status and completion percentage.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://miro.medium.com/v2/resize:fit:1200/1*noT7wO57AWNtFvSqh1aC_Q.jpeg" alt="Scan Progress">
+                        <figcaption>Figure 7: Monitoring Scan Progress.</figcaption>
+                    </figure>
+                </div>
             </div>
-            <p>After configuring your scan, click "Save" and then "Launch" to start the scan.</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*QYDfNmOQ6jo9MWMqK7IEfw.png" class="figure-img img-fluid rounded" alt="Launch Scan">
-                <figcaption class="figure-caption">Figure 8: Launching a Scan - Save and Launch buttons highlighted.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">2</span>
-                <h4 class="mb-0">Monitor Scan Progress</h4>
-            </div>
-            <p>Monitor the scan progress from the Scans page. You can see the status, completion percentage, and time remaining.</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1200/1*noT7wO57AWNtFvSqh1aC_Q.jpeg" class="figure-img img-fluid rounded" alt="Scan Progress">
-                <figcaption class="figure-caption">Figure 9: Monitoring Scan Progress - Shows status with progress bar and estimated time.</figcaption>
-            </figure>
         </section>
 
         <!-- Section 5: Analyzing Results -->
         <section id="results" class="mb-5">
             <h2 class="section-title">5. Analyzing Results</h2>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">1</span>
-                <h4 class="mb-0">View Scan Results</h4>
+            <div class="step-row">
+                <div class="step-col">
+                    <div class="step-header"><span class="step-number">1</span><h4>View Results</h4></div>
+                    <p class="text-block" style="margin-top:0">Click on the scan name to view detailed results and an overview of vulnerabilities by severity.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlJFkAgfCo-xVkeLuBHlWXNDO8fmWZs8pPB0riQaSu87P2b1IzWBbGkabY&s=10" alt="Results Dashboard">
+                        <figcaption>Figure 8: Scan Results Dashboard.</figcaption>
+                    </figure>
+                </div>
+                <div class="step-col">
+                    <div class="step-header"><span class="step-number">2</span><h4>Examine Vulnerabilities</h4></div>
+                    <p class="text-block" style="margin-top:0">Click on a vulnerability to view detailed information including description, CVSS score, and solution.</p>
+                    <figure class="large-figure" style="margin-top:1rem;">
+                        <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/CVSS%20Exploitability%20%28E%29%20and%20Remediation%20Level%20%28RL%29%20Risk%20Matrices_rev.png" alt="Vulnerability Details">
+                        <figcaption>Figure 9: Vulnerability Details View.</figcaption>
+                    </figure>
+                </div>
             </div>
-            <p>Once the scan completes, click on the scan name to view detailed results. The results dashboard provides an overview of vulnerabilities by severity.</p>
-            <figure class="figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlJFkAgfCo-xVkeLuBHlWXNDO8fmWZs8pPB0riQaSu87P2b1IzWBbGkabY&s=10" class="figure-img img-fluid rounded" alt="Results Dashboard">
-                <figcaption class="figure-caption">Figure 10: Scan Results Dashboard - Vulnerability counts by severity (Critical, High, Medium, Low, Info).</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">2</span>
-                <h4 class="mb-0">Examine Individual Vulnerabilities</h4>
-            </div>
-            <p>Click on a vulnerability to view detailed information including description, CVSS score, affected hosts, and solution.</p>
-            <figure class="figure">
-                <img src="https://www.tenable.com/sites/default/files/images/sc-dashboards/CVSS%20Exploitability%20%28E%29%20and%20Remediation%20Level%20%28RL%29%20Risk%20Matrices_rev.png" class="figure-img img-fluid rounded" alt="Vulnerability Details">
-                <figcaption class="figure-caption">Figure 11: Examining Vulnerability Details - Detailed view showing description, CVSS, and solution.</figcaption>
-            </figure>
-        </section>
-
-        <!-- Section 6: Extracting CVEs -->
-        <section id="cve-extraction" class="mb-5">
-            <h2 class="section-title">6. Extracting CVEs from Scan Results</h2>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">1</span>
-                <h4 class="mb-0">Identify CVE References</h4>
-            </div>
-            <p>Within each vulnerability detail page, look for the "References" section which contains links to CVEs and other security advisories.</p>
-            <figure class="figure">
-                <img src="https://docs.tenable.com/cyber-exposure-studies/nis-2-directive/Content/Resources/Images/nis-2-assets/TenableOTVulnerabilities.png" class="figure-img img-fluid rounded" alt="CVE References">
-                <figcaption class="figure-caption">Figure 12: Identifying CVE References - Shows the References section with CVE links highlighted.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">2</span>
-                <h4 class="mb-0">Export Results</h4>
-            </div>
-            <p>To extract all CVEs at once, export the scan results in CSV or PDF format by clicking "Export" at the top of the results page.</p>
-            <figure class="figure">
-                <img src="https://www.infosecmatter.com/wp-content/uploads/2020/03/00-export-nessus-csv.jpg" class="figure-img img-fluid rounded" alt="Export Results">
-                <figcaption class="figure-caption">Figure 13: Exporting Scan Results - Shows export options with CSV and PDF formats.</figcaption>
-            </figure>
-
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">3</span>
-                <h4 class="mb-0">Extract CVEs from CSV</h4>
-            </div>
-            <p>If you exported as CSV, open the file in Excel and look for the "CVE" column. You can filter this column to get a list of all unique CVEs.</p>
-            <figure class="figure">
-                <img src="https://docs.tenable.com/vulnerability-management/Content/Resources/Local/Images/VM/software-export.png" class="figure-img img-fluid rounded" alt="CSV Extract">
-                <figcaption class="figure-caption">Figure 14: Extracting CVEs from CSV - CSV file in Excel with the CVE column highlighted.</figcaption>
-            </figure>
         </section>
 
         <!-- Section 7: CVSS Scores -->
         <section id="cvss" class="mb-5">
             <h2 class="section-title">7. Understanding CVSS Scores</h2>
+            <p class="text-block">The Common Vulnerability Scoring System (CVSS) provides a standardized way to assess the severity of security vulnerabilities (0 to 10).</p>
             
-            <p>The Common Vulnerability Scoring System (CVSS) provides a standardized way to assess the severity of security vulnerabilities. Nessus displays CVSS scores for each vulnerability it identifies.</p>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h4>CVSS Severity Ratings</h4>
-                    <p>CVSS scores range from 0 to 10, with higher scores indicating more severe vulnerabilities:</p>
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="cvss-badge cvss-critical">Critical</span>
-                            <span>9.0 - 10.0</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="cvss-badge cvss-high">High</span>
-                            <span>7.0 - 8.9</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="cvss-badge cvss-medium">Medium</span>
-                            <span>4.0 - 6.9</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="cvss-badge cvss-low">Low</span>
-                            <span>0.1 - 3.9</span>
-                        </li>
-                    </ul>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <h4 style="margin-bottom:1rem; color:var(--body-loud-color);">CVSS Severity Ratings</h4>
+                    <div class="list-group">
+                        <div class="list-group-item"><span class="cvss-badge cvss-critical">Critical</span><span>9.0 - 10.0</span></div>
+                        <div class="list-group-item"><span class="cvss-badge cvss-high">High</span><span>7.0 - 8.9</span></div>
+                        <div class="list-group-item"><span class="cvss-badge cvss-medium">Medium</span><span>4.0 - 6.9</span></div>
+                        <div class="list-group-item"><span class="cvss-badge cvss-low">Low</span><span>0.1 - 3.9</span></div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <figure class="figure">
-                        <img src="https://www.hackingloops.com/wp-content/uploads/2019/10/nessus-reports.png" class="figure-img img-fluid rounded" alt="CVSS Score">
-                        <figcaption class="figure-caption">Figure 15: CVSS Score in Nessus - Shows a vulnerability with CVSS score highlighted.</figcaption>
+                <div>
+                    <figure class="large-figure" style="margin:0;">
+                        <img src="https://www.hackingloops.com/wp-content/uploads/2019/10/nessus-reports.png" alt="CVSS Score">
+                        <figcaption>Figure 10: CVSS Score in Nessus.</figcaption>
                     </figure>
                 </div>
             </div>
-            
-            <h4>CVSS Vector Components</h4>
-            <p>The CVSS vector string provides additional details about how the score was calculated. It includes metrics for Attack Vector (AV), Attack Complexity (AC), Privileges Required (PR), User Interaction (UI), Scope (S), Confidentiality (C), Integrity (I), and Availability (A).</p>
-            
-            <figure class="figure">
-                <img src="https://chandanbn.github.io/cvss/cvss-calculator-screenshot.png" class="figure-img img-fluid rounded" alt="CVSS Vector">
-                <figcaption class="figure-caption">Figure 16: CVSS Vector String - Shows the CVSS vector string with each component labeled.</figcaption>
-            </figure>
-        </section>
-
-        <!-- Section 8: MITRE CVE Search -->
-        <section id="mitre" class="mb-5">
-            <h2 class="section-title">8. Searching CVE Details in MITRE</h2>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">1</span>
-                <h4 class="mb-0">Access MITRE CVE Database</h4>
-            </div>
-            <p>Go to the MITRE CVE database at <a href="https://cve.mitre.org" target="_blank" style="color: var(--primary);">https://cve.mitre.org</a> or the NVD at <a href="https://nvd.nist.gov" target="_blank" style="color: var(--primary);">https://nvd.nist.gov</a>.</p>
-            <figure class="figure">
-                <img src="https://industrialcyber.co/wp-content/uploads/2025/04/2025.04.23-MITRE-ATTCK-v17-offers-broader-platform-coverage-enhanced-defensive-guidance-threat-intelligence-tracking.webp" class="figure-img img-fluid rounded" alt="MITRE Homepage">
-                <figcaption class="figure-caption">Figure 17: MITRE CVE Database Homepage - Homepage with search box highlighted.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">2</span>
-                <h4 class="mb-0">Search for Specific CVE</h4>
-            </div>
-            <p>Enter the CVE ID (e.g., CVE-2021-44228) extracted from Nessus into the search box and submit the search.</p>
-            <figure class="figure">
-                <img src="https://cdn.prod.website-fields.com/62aa011c5ccb574e8fd82c77/62b9b47dbb097b7d6fdd928b_cve-2021-44228.jpeg" class="figure-img img-fluid rounded" alt="CVE Search">
-                <figcaption class="figure-caption">Figure 18: Searching for a Specific CVE - Search box with a CVE ID entered.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">3</span>
-                <h4 class="mb-0">Review CVE Details</h4>
-            </div>
-            <p>The CVE entry will display detailed information including description, affected products, references, and CVSS score.</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1400/1*mNBX6FqR0I3taTsZ2_FJPg.png" class="figure-img img-fluid rounded" alt="CVE Details">
-                <figcaption class="figure-caption">Figure 19: CVE Details Page - Shows detailed information about the CVE including description and references.</figcaption>
-            </figure>
-            
-            <div class="d-flex align-items-center mb-3">
-                <span class="step-number">4</span>
-                <h4 class="mb-0">Cross-Reference with NVD</h4>
-            </div>
-            <p>For additional details, especially CVSS score breakdowns, cross-reference the CVE with the NVD (National Vulnerability Database).</p>
-            <figure class="figure">
-                <img src="https://miro.medium.com/v2/resize:fit:1400/1*9K7ZVsd6Yk6Y8t_cD1XOQQ.png" class="figure-img img-fluid rounded" alt="NVD Entry">
-                <figcaption class="figure-caption">Figure 20: NVD CVE Entry - Shows the same CVE in NVD with detailed CVSS score breakdown.</figcaption>
-            </figure>
         </section>
 
         <!-- Section 9: Remediation -->
         <section id="remediation" class="mb-5">
             <h2 class="section-title">9. Remediation Strategies</h2>
-            
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-shield-alt text-primary me-2"></i>Patch Management</h5>
-                            <p class="card-text">Apply security patches released by vendors to address identified vulnerabilities. Prioritize based on severity and system criticality.</p>
-                        </div>
+            <div class="image-grid">
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-shield-alt"></i></div>
+                    <div class="figure-body">
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Patch Management</h5>
+                        <p class="figure-caption">Apply security patches released by vendors to address identified vulnerabilities.</p>
                     </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-sliders text-success me-2"></i>Configuration Changes</h5>
-                            <p class="card-text">Modify system configurations to reduce exposure, such as disabling unnecessary services, restricting access, or hardening settings.</p>
-                        </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-sliders"></i></div>
+                    <div class="figure-body">
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Configuration Changes</h5>
+                        <p class="figure-caption">Modify system configurations like disabling unnecessary services or restricting access.</p>
                     </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-network-wired text-warning me-2"></i>Network Segmentation</h5>
-                            <p class="card-text">Isolate critical systems or vulnerable services using network segmentation to limit potential attack paths.</p>
-                        </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-network-wired"></i></div>
+                    <div class="figure-body">
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Network Segmentation</h5>
+                        <p class="figure-caption">Isolate critical systems using network segmentation to limit potential attack paths.</p>
                     </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-tasks text-danger me-2"></i>Virtual Patching</h5>
-                            <p class="card-text">Implement temporary security controls through WAF rules, IPS signatures, or other security tools while permanent fixes are developed.</p>
-                        </div>
+                </figure>
+                <figure class="figure">
+                    <div class="figure-img" style="display:flex; align-items:center; justify-content:center; font-size: 2rem; color: var(--primary); background: var(--selected-bg);"><i class="fas fa-tasks"></i></div>
+                    <div class="figure-body">
+                        <h5 style="color:var(--body-loud-color); margin-bottom:5px;">Virtual Patching</h5>
+                        <p class="figure-caption">Implement temporary security controls through WAF rules or IPS signatures.</p>
                     </div>
-                </div>
-            </div>
-            
-            <figure class="figure">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4s5Ppnah-2oAWczpXrLCcFIgpcOkDZ_-vAfx2QeEm4MD7JJ93CMzk3Cs&s=10" class="figure-img img-fluid rounded" alt="Remediation Workflow">
-                <figcaption class="figure-caption">Figure 21: Remediation Workflow - Flowchart from vulnerability discovery to remediation and verification.</figcaption>
-            </figure>
-        </section>
-
-        <!-- Section 10: Best Practices -->
-        <section id="best-practices" class="mb-5">
-            <h2 class="section-title">10. Best Practices</h2>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-calendar-check text-primary me-2"></i>Regular Scanning Schedule</h5>
-                            <p class="card-text">Establish a regular scanning cadence based on risk:</p>
-                            <ul>
-                                <li>External-facing systems: Weekly</li>
-                                <li>Critical internal systems: Bi-weekly</li>
-                                <li>Standard internal systems: Monthly</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-key text-success me-2"></i>Credentialed Scanning</h5>
-                            <p class="card-text">Enable authenticated scans for more comprehensive results:</p>
-                            <ul>
-                                <li>Local credentials for systems</li>
-                                <li>Domain credentials for Windows environments</li>
-                                <li>SSH keys for Linux/Unix systems</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <figure class="figure">
-                <img src="https://www.tenable.com/sites/drupal.dmz.tenablesecurity.com/files/images/blog/VulnMgmt-MAIN.png" class="figure-img img-fluid rounded" alt="Management Dashboard">
-                <figcaption class="figure-caption">Figure 22: Vulnerability Management Dashboard - Shows trend charts and metrics for vulnerability management.</figcaption>
-            </figure>
-        </section>
-        
-        <!-- Conclusion -->
-        <section class="mb-5">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Conclusion</h2>
-                    <p class="card-text">Nessus provides a powerful platform for identifying and managing vulnerabilities in your environment. By following this guide, you can effectively scan for vulnerabilities, extract CVE information, understand CVSS scores, and research detailed vulnerability information in the MITRE CVE database.</p>
-                    <p class="card-text">Remember that vulnerability scanning is just one component of a comprehensive security program. Combine regular scanning with patch management, configuration hardening, and security awareness to build a robust defense against evolving threats.</p>
-                </div>
+                </figure>
             </div>
         </section>
 
-        <!-- LESSON NAVIGATION BUTTONS (PREV / NEXT) -->
+        <!-- LESSON NAVIGATION BUTTONS -->
         <div class="lesson-nav">
-            <a href="labs.html" class="nav-btn prev">
-                <i class="fas fa-arrow-left"></i> Return Back
+            <a href="lesson-4.html" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Vulnerability Scanners
             </a>
-            <a href="lesson-3.html" class="nav-btn next">
-                Next Lesson <i class="fas fa-arrow-right"></i>
+            <a href="labs2.html" class="nav-btn next">
+                Networking Labs Overview <i class="fas fa-arrow-right"></i>
             </a>
         </div>
 
     </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-    <div class="footer-grid">
-        <div class="footer-col">
-            <h3>🛡️ CyberDefend Academy</h3>
-            <p>Part of Accenture. We provide modern cybersecurity training, hands-on labs, and industry-recognized certifications to empower next-gen defenders.</p>
-        </div>
-        <div class="footer-col">
-            <h3>Explore</h3>
-            <ul>
-                <li><a href="index.html">Dashboard</a></li>
-                <li><a href="courses.html">Courses</a></li>
-                <li><a href="labs.html">Labs</a></li>
-                <li><a href="messages.html">Tasks & Submissions</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h3>Stay Connected</h3>
-            <p>Want to level up your skills? Start your journey today and become a certified cybersecurity professional.</p>
-            <a href="courses.html" class="footer-btn">Open learning path →</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        © CyberDefend Academy · Part of Accenture
-    </div>
-</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
