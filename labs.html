@@ -41,60 +41,50 @@
         .nav-dropdown > a:hover { color: var(--body-fg); }
         .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .nav-dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--darkened-bg);
-            min-width: 260px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
-            border: 1px solid var(--hairline-color);
-            border-radius: 12px;
-            padding: 8px 0;
-            z-index: 1000;
-            text-align: left;
-            max-height: 400px;
-            overflow-y: auto;
+            display: none; position: absolute; top: 100%; left: 0; background-color: var(--darkened-bg);
+            min-width: 260px; box-shadow: 0px 8px 20px rgba(0,0,0,0.25); border: 1px solid var(--hairline-color);
+            border-radius: 12px; padding: 8px 0; z-index: 1000; text-align: left; max-height: 400px; overflow-y: auto;
         }
-        .nav-dropdown-content a {
-            color: var(--body-fg);
-            padding: 10px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 500;
-            border-bottom: none;
-            transition: background 0.2s, color 0.2s;
-        }
-        .nav-dropdown-content a:hover {
-            background-color: var(--selected-bg);
-            color: var(--primary);
-        }
+        .nav-dropdown-content a { color: var(--body-fg); padding: 10px 16px; text-decoration: none; display: block; font-size: 0.82rem; font-weight: 500; border-bottom: none; transition: background 0.2s, color 0.2s; }
+        .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
         .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
         .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         /* ========== MAIN CONTENT & LAYOUT ========== */
-        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; position: relative; }
+        
+        /* ===== SIDEBAR TOGGLE BUTTON (ENHANCED & BOLDER) ===== */
+        .sidebar-toggle-btn {
+            position: absolute; left: 300px; top: 10px; z-index: 50;
+            width: 30px; height: 50px; background: var(--primary); border: none;
+            color: var(--primary-fg); border-radius: 0 12px 12px 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold;
+            transition: left 0.3s ease, transform 0.2s ease; box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+        }
+        .sidebar-toggle-btn:hover { transform: scale(1.1); box-shadow: 4px 4px 12px rgba(0,0,0,0.4); }
+        body.sidebar-collapsed .sidebar-toggle-btn { left: 0; }
+        body.sidebar-collapsed .sidebar { display: none; }
+
         .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
         .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
         .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
-        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; transition: display 0.3s; }
         .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
         .sidebar-nav ul { list-style: none; }
         .sidebar-nav ul li { margin-bottom: 8px; }
-        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; cursor: pointer; }
         .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
         .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
         
-        .content-area { flex: 1; min-width: 0; }
+        .content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .page-header { text-align: center; margin-bottom: 40px; }
         .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
         .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
         
         /* Card Grid for Sub-pages */
         .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .topic-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s; text-decoration: none; }
+        .topic-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s; text-decoration: none; cursor: pointer; }
         .topic-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .topic-body { padding: 24px; }
         .topic-icon { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
@@ -104,10 +94,16 @@
 
         /* Previous / Next Buttons CSS */
         .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
-        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; cursor: pointer; }
         .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
         .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
         .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* IFRAME EMBEDDED VIEW FIXES - FULL HEIGHT */
+        #default-view { display: flex; flex-direction: column; }
+        #embedded-view { display: none; width: 100%; height: calc(100vh - 140px); background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; overflow: hidden; }
+        #embedded-view iframe { width: 100%; height: 100%; border: none; display: block; }
+        #backBtn { margin-bottom: 20px; align-self: flex-start; display: none; }
 
         footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
@@ -123,23 +119,13 @@
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
             .main-content { flex-direction: column; }
-            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .sidebar-toggle-btn { display: none; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; display: block !important; }
+            #embedded-view { height: 100vh; }
         }
     </style>
 </head>
 <body>
-    <script>
-/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a[href]').forEach(a => {
-        const h = a.getAttribute('href');
-        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener noreferrer');
-        }
-    });
-});
-</script>
 <script>const savedTheme = localStorage.getItem('cd_theme') || 'dark'; document.documentElement.setAttribute('data-theme', savedTheme);</script>
 
 <!-- TOP NAVIGATION TABS WITH DROPDOWNS -->
@@ -200,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="attack-vectors.html">Cybersecurity Threats & attack vectors</a>
                 <a href="soc-analyst.html">SOC Analyst </a>
                 <a href="web-app-pentest.html">Web App Pentesting </a>
-
             </div>
         </div>
 
@@ -233,6 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
 </nav>
 
 <div class="main-content">
+    
+    <!-- SIDEBAR TOGGLE BUTTON (MORE PROMINENT) -->
+    <button id="sidebarToggle" class="sidebar-toggle-btn" title="Hide/Show Panel">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
     <aside class="sidebar">
         <div class="sidebar-back-btns">
             <!-- ONLY BACK TO DASHBOARD HERE -->
@@ -241,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="sidebar-header"><h3>Course Lessons</h3></div>
         <nav class="sidebar-nav">
             <ul>
-                    <!-- It is best practice to remove spaces in HTML filenames -->
+                <!-- It is best practice to remove spaces in HTML filenames -->
                 <li><a href="labs.html" class="active">Network Security Overview</a></li>
                 <li><a href="network Roadmap.html">Network Roadmap</a></li>
                 <li><a href="security Roadmap.html">Security Roadmap</a></li>
@@ -265,205 +256,214 @@ document.addEventListener('DOMContentLoaded', () => {
                  <li><a href="attack-vectors.html">Cybersecurity Threats & attack vectors</a></li>
                     <li><a href="soc-analyst.html">SOC Analyst </a></li>
                 <li><a href="web-app-pentest.html">Web App Pentesting </a></li>
-
-                
-
-                
             </ul>
         </nav>
     </aside>
 
     <div class="content-area">
-        <div class="page-header">
-            <h1> Enterprise Security Infrastructure</h1>
-            <h2> Network & Cybersecurity Terms Explained </h2>
-            <p>Network Tracks Explained, Roadmaps, Architecture & Security</p>
+        
+        <!-- BACK BUTTON (Visible only when iframe is loaded) -->
+        <button class="nav-btn" id="backBtn" onclick="backToGrid()">
+            <i class="fas fa-arrow-left"></i> Back to Lessons
+        </button>
+
+        <!-- DEFAULT GRID VIEW -->
+        <div id="default-view">
+            <div class="page-header">
+                <h1> Enterprise Security Infrastructure</h1>
+                <h2> Network & Cybersecurity Terms Explained </h2>
+                <p>Network Tracks Explained, Roadmaps, Architecture & Security</p>
+            </div>
+
+            <div class="topic-grid">
+                <a href="network Roadmap.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-road"></i></div>
+                        <h3>Network Roadmap</h3>
+                        <p>Essential networking fundamentals, protocols, and architectures to build your foundation.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="security Roadmap.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lock"></i></div>
+                        <h3>Security Roadmap</h3>
+                        <p>Step-by-step guide to learning cybersecurity from beginner to advanced professional.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-6.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-network-wired"></i></div>
+                        <h3>Switching Architecture</h3>
+                        <p>Understand LAN switching, VLANs, STP, and hierarchical network design.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-7.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-fire"></i></div>
+                        <h3>Firewall Security Architecture</h3>
+                        <p>Explore firewall technologies, DMZ setups, packet filtering, and access control lists.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-3.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fab fa-linux"></i></div>
+                        <h3>KALI Linux</h3>
+                        <p>Setup, configuration, and basic usage of the premier penetration testing OS.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="kali-tools.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-tools"></i></div>
+                        <h3>Top 50 Kali Linux Tools</h3>
+                        <p>Comprehensive guide to the 50 most essential tools for security professionals.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-4.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-search"></i></div>
+                        <h3>Vulnerability Scanners</h3>
+                        <p>Learn how to identify weaknesses in systems using automated scanning tools.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="nessus.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-bug"></i></div>
+                        <h3>Nessus Vulnerability Assessment</h3>
+                        <p>Deep dive into using Nessus for comprehensive network and host vulnerability scanning.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="labs2.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-flask"></i></div>
+                        <h3>Networking Labs Overview</h3>
+                        <p>Hands-on networking labs and topologies built with Cisco Packet Tracer and EVE-NG.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-8.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Wireless Solutions</h3>
+                        <p>Wireless Solutions concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-9.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Cyber Attacks</h3>	
+                        <p>most common and dangerous cyber attacks used by threat actors to compromise systems</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-10.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Troubleshooting</h3>
+                        <p>Managing switch crashes, recovering IOS images , Backups via TFTP</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-11.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Switch Management</h3>
+                        <p>From console cables to layer 3 routing - master enterprise switch configuration, security, and architecture.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-12.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>VOIP</h3>
+                        <p>Advanced security concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="lesson-13.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Cloud Computing</h3>
+                        <p>Advanced security concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                  <a href="lesson-14.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Practice Labs (PAcket Tracer)</h3>
+                        <p>Advanced security concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                  <a href="lesson-15.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Practice Labs (GNS3+ Eveng)</h3>
+                        <p>Advanced security concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                  <a href="lesson-16.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Advanced Practice Labs </h3>
+                        <p>Advanced security concepts and practical applications.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                  <a href="attack-vectors.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Cybersecurity Threats & attack vectors</h3>
+                        <p>A comprehensive mapping of attack vectors to each layer.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                       <a href="soc-analyst.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>SOC Analyst</h3>
+                        <p>(SOC) Analyst is the first line of defense.</p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                       <a href="web-app-pentest.html" class="topic-card">
+                    <div class="topic-body">
+                        <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Web App Pentesting</h3>
+                        <p>Web application penetration testing is the process of simulating attacks on a web application to identify security weaknesses before malicious actors do. </p>
+                        <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- CLEAN PREVIOUS / NEXT BUTTONS -->
+            <div class="lesson-nav">
+                <!-- Change href to the previous page -->
+                <a href="labs.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </a>
+                <!-- Change href to the next page -->
+                <a href="ids-ips.html" class="nav-btn next">
+                    Next <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
 
- <div class="topic-grid">
+        <!-- EMBEDDED IFRAME VIEW -->
+        <div id="embedded-view">
+            <iframe id="contentFrame" src="about:blank"></iframe>
+        </div>
 
-    <a href="network Roadmap.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-road"></i></div>
-            <h3>Network Roadmap</h3>
-            <p>Essential networking fundamentals, protocols, and architectures to build your foundation.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="security Roadmap.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lock"></i></div>
-            <h3>Security Roadmap</h3>
-            <p>Step-by-step guide to learning cybersecurity from beginner to advanced professional.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-6.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-network-wired"></i></div>
-            <h3>Switching Architecture</h3>
-            <p>Understand LAN switching, VLANs, STP, and hierarchical network design.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-7.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-fire"></i></div>
-            <h3>Firewall Security Architecture</h3>
-            <p>Explore firewall technologies, DMZ setups, packet filtering, and access control lists.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-3.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fab fa-linux"></i></div>
-            <h3>KALI Linux</h3>
-            <p>Setup, configuration, and basic usage of the premier penetration testing OS.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="kali-tools.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-tools"></i></div>
-            <h3>Top 50 Kali Linux Tools</h3>
-            <p>Comprehensive guide to the 50 most essential tools for security professionals.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-4.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-search"></i></div>
-            <h3>Vulnerability Scanners</h3>
-            <p>Learn how to identify weaknesses in systems using automated scanning tools.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="nessus.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-bug"></i></div>
-            <h3>Nessus Vulnerability Assessment</h3>
-            <p>Deep dive into using Nessus for comprehensive network and host vulnerability scanning.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="labs2.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-flask"></i></div>
-            <h3>Networking Labs Overview</h3>
-            <p>Hands-on networking labs and topologies built with Cisco Packet Tracer and EVE-NG.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-8.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Wireless Solutions</h3>
-            <p>Wireless Solutions concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-9.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Cyber Attacks</h3>	
-            <p>most common and dangerous cyber attacks used by threat actors to compromise systems</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-10.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Troubleshooting</h3>
-            <p>Managing switch crashes, recovering IOS images , Backups via TFTP</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-11.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Switch Management</h3>
-            <p>From console cables to layer 3 routing - master enterprise switch configuration, security, and architecture.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-12.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>VOIP</h3>
-            <p>Advanced security concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-    <a href="lesson-13.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Cloud Computing</h3>
-            <p>Advanced security concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-      <a href="lesson-14.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Practice Labs (PAcket Tracer)</h3>
-            <p>Advanced security concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-      <a href="lesson-15.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Practice Labs (GNS3+ Eveng)</h3>
-            <p>Advanced security concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-      <a href="lesson-16.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Advanced Practice Labs </h3>
-            <p>Advanced security concepts and practical applications.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-      <a href="attack-vectors.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Cybersecurity Threats & attack vectors</h3>
-            <p>A comprehensive mapping of attack vectors to each layer.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-           <a href="soc-analyst.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>SOC Analyst</h3>
-            <p>(SOC) Analyst is the first line of defense.</p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-           <a href="web-app-pentest.html" class="topic-card">
-        <div class="topic-body">
-            <div class="topic-icon"><i class="fas fa-lightbulb"></i></div>
-            <h3>Web App Pentesting</h3>
-            <p>Web application penetration testing is the process of simulating attacks on a web application to identify security weaknesses before malicious actors do. </p>
-            <span class="topic-link">View Lesson <i class="fas fa-arrow-right"></i></span>
-        </div>
-    </a>
-
-</div>
-
-        <!-- CLEAN PREVIOUS / NEXT BUTTONS -->
-        <div class="lesson-nav">
-            <!-- Change href to the previous page -->
-            <a href="labs.html" class="nav-btn prev">
-                <i class="fas fa-arrow-left"></i> Previous
-            </a>
-            <!-- Change href to the next page -->
-            <a href="ids-ips.html" class="nav-btn next">
-                Next <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
     </div>
 </div>
 
@@ -475,5 +475,53 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="footer-bottom">© CyberDefend Academy · Part of Accenture</div>
 </footer>
+
+<script>
+// ===== SIDEBAR TOGGLE LOGIC =====
+document.getElementById('sidebarToggle').addEventListener('click', function() {
+    document.body.classList.toggle('sidebar-collapsed');
+    const icon = this.querySelector('i');
+    if (document.body.classList.contains('sidebar-collapsed')) {
+        icon.classList.remove('fa-chevron-left');
+        icon.classList.add('fa-chevron-right');
+    } else {
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-left');
+    }
+});
+
+// ===== IFRAME LOAD LOGIC =====
+function loadInIframe(url, event) {
+  event.preventDefault();
+  document.getElementById('default-view').style.display = 'none';
+  document.getElementById('embedded-view').style.display = 'block';
+  document.getElementById('contentFrame').src = url;
+  document.getElementById('backBtn').style.display = 'inline-flex';
+  window.scrollTo(0, 0);
+}
+
+function backToGrid() {
+  document.getElementById('embedded-view').style.display = 'none';
+  document.getElementById('default-view').style.display = 'flex';
+  document.getElementById('contentFrame').src = 'about:blank';
+  document.getElementById('backBtn').style.display = 'none';
+}
+
+// Intercept clicks on sidebar items
+document.querySelectorAll('.sidebar-nav ul li a').forEach(link => {
+  const href = link.getAttribute('href');
+  if (href && !href.startsWith('http') && !href.startsWith('#')) {
+    link.addEventListener('click', (e) => loadInIframe(href, e));
+  }
+});
+
+// Intercept clicks on main topic cards
+document.querySelectorAll('.topic-card').forEach(card => {
+  const href = card.getAttribute('href');
+  if (href && !href.startsWith('http') && !href.startsWith('#')) {
+    card.addEventListener('click', (e) => loadInIframe(href, e));
+  }
+});
+</script>
 </body>
 </html>
