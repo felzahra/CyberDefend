@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>CyberDefend Academy · Main Dashboard</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- ADDED PUTER.JS FOR FREE AI CHATBOT API -->
+    <script src="https://js.puter.com/v2/"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
@@ -40,13 +42,10 @@
         .sidebar-apk-btn:hover{background:#444}
         .content-area{flex:1;overflow-y:auto;padding:0 0 40px;text-align:center;background:var(--body-bg)}
 
-		
-		.top-nav { display: flex; align-items: center; justify-content: center; padding: 14px 20px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 6px 10px; }
-		.top-nav-links { display: flex; gap: 6px 14px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 100%; }      
-	    .top-nav-links>a,.nav-dropdown>a{color:var(--body-quiet-color);text-decoration:none;font-size:.9rem;font-weight:600;transition:.2s;padding:5px 0;border-bottom:2px solid transparent}
-        
-
-		.top-nav-links>a:hover,.nav-dropdown:hover>a,.nav-dropdown>a:hover{color:var(--body-fg);border-bottom-color:var(--primary)}
+        .top-nav { display: flex; align-items: center; justify-content: center; padding: 14px 20px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 6px 10px; }
+        .top-nav-links { display: flex; gap: 6px 14px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 100%; }      
+        .top-nav-links>a,.nav-dropdown>a{color:var(--body-quiet-color);text-decoration:none;font-size:.9rem;font-weight:600;transition:.2s;padding:5px 0;border-bottom:2px solid transparent}
+        .top-nav-links>a:hover,.nav-dropdown:hover>a,.nav-dropdown>a:hover{color:var(--body-fg);border-bottom-color:var(--primary)}
         .top-nav-links a.active{color:var(--primary);border-bottom:2px solid var(--primary)}
         .top-nav-links a.login-btn{background:var(--primary);color:var(--primary-fg);padding:8px 18px;border-radius:8px;border-bottom:none}
         .top-nav-links a.login-btn:hover{opacity:.9}
@@ -106,7 +105,6 @@
         .path-card .node-group{opacity:0;transform:scale(.3)}
         .path-card.visible .node-group{animation:popIn .4s ease forwards}
         @keyframes popIn{to{opacity:1;transform:scale(1)}}
-        /* SEARCH */
         #inlineSearchWrap{position:relative}
         #inlineSearchWrap .search-icon-bg{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;z-index:1;opacity:.5}
         #inlineSearch{padding-left:42px!important}
@@ -136,6 +134,29 @@
         .search-indexed-dot.indexing{background:#f59e0b;animation:pulse 1s ease infinite}
         .search-indexed-dot.ready{background:#22c55e;animation:none}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+        /* ===== TREE MENU CSS ===== */
+        .sidebar-tree-section { padding: 10px 20px; border-top: 1px solid var(--hairline-color); margin-top: 10px; }
+        .sidebar-tree-title { font-size: .8rem; font-weight: 700; color: var(--body-quiet-color); text-transform: uppercase; margin-bottom: 10px; letter-spacing: .5px; }
+        .tree-controls { display: flex; gap: 6px; margin-bottom: 12px; }
+        .tree-search { flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--hairline-color); background: var(--body-bg); color: var(--body-fg); font-size: .75rem; outline: none; transition: border-color .2s; }
+        .tree-search:focus { border-color: var(--primary); }
+        .tree-btn { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--hairline-color); background: var(--selected-bg); color: var(--body-fg); cursor: pointer; font-size: .65rem; font-weight: 600; transition: .2s; text-transform: uppercase; }
+        .tree-btn:hover { border-color: var(--primary); color: var(--primary); }
+        ul.tree, ul.tree ul { list-style: none; margin: 0; padding: 0; }
+        ul.tree ul { margin-left: 18px; border-left: 1px dashed var(--hairline-color); padding-left: 12px; display: none; }
+        ul.tree li { margin: 6px 0; position: relative; }
+        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--body-fg); font-size: 0.84rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        ul.tree li > span:hover, ul.tree li > a:hover { background: var(--selected-bg); color: var(--primary); }
+        ul.tree li > a.active { background: var(--selected-bg); color: var(--primary); font-weight: 700; }
+        .toggle-icon { width: 16px; text-align: center; font-size: 0.7rem; color: var(--body-quiet-color); transition: transform 0.2s; flex-shrink: 0; }
+        .expanded > .toggle-icon { transform: rotate(90deg); }
+        .level-1 > span, .level-1 > a { font-weight: 700; font-size: 0.88rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--hairline-color); padding-bottom: 8px; margin-bottom: 4px; }
+        .level-1 > span:hover, .level-1 > a:hover { background: transparent; }
+        .level-2 > a, .level-2 > span { font-weight: 600; font-size: 0.82rem; }
+        .level-3 > a, .level-3 > span { font-size: 0.78rem; color: var(--body-quiet-color); font-weight: 400; }
+        .level-3 > a:hover { color: var(--primary); }
+        
         @media(max-width:780px){.sidebar{display:none}.content-area{width:100%}.top-nav{padding:15px 20px;justify-content:center}.top-nav-links{gap:15px;flex-wrap:wrap;justify-content:center}.top-nav-links>a,.nav-dropdown>a{font-size:.8rem}.hero-card{padding:28px;margin:20px auto}#loginModal>div{width:90%;padding:30px 20px}#inlineSearchWrap{max-width:100%!important}}
     </style>
 </head>
@@ -161,6 +182,18 @@
     </div>
     <a href="comments.html" class="sidebar-announ-btn">📢 Announcements & FAQ</a>
     <a href="https://drive.google.com/drive/folders/10PVVRv2NkD7oRvSrJfzkun0NQ3KYc7wO?usp=sharing" target="_blank" class="sidebar-apk-btn">📱 Download Mobile APP APK</a>
+    
+    <!-- TREE MENU WITH CONTROLS -->
+    <div class="sidebar-tree-section">
+        <div class="sidebar-tree-title">Curriculum Map</div>
+        <div class="tree-controls">
+            <input type="text" id="treeSearch" placeholder="Filter curriculum..." class="tree-search">
+            <button id="expandAll" class="tree-btn">Expand</button>
+            <button id="collapseAll" class="tree-btn">Collapse</button>
+        </div>
+        <ul class="tree" id="sidebarTree"></ul>
+    </div>
+
     <div style="margin-top:auto;padding:20px;font-size:.65rem;color:var(--body-quiet-color);border-top:1px solid var(--hairline-color);">⚡ Complete cybersecurity training</div>
 </div>
 
@@ -297,6 +330,7 @@
             <a href="digital comm.html" class="course-card"><div class="course-icon">🧠</div><h3>Digital Comm</h3><p>Digital Communications</p></a>
             <a href="wireless comm.html" class="course-card"><div class="course-icon">🎯️</div><h3>Wireless Comm</h3><p>Wireless Communications</p></a>
             <a href="new9.html" class="course-card"><div class="course-icon">🎯️</div><h3>HP | Aruba Switch</h3><p>HP | Aruba Switch</p></a>
+            <a href="firewall-all.html" class="course-card"><div class="course-icon">🎯️</div><h3>Firewall ASA | Fortinet | Paloalto </h3><p>HP | Aruba Switch</p></a>
         </div>
         <a href="cybersecurity-course.html" class="btn-large">Start Cybersecurity Course →</a>
     </div>
@@ -316,8 +350,8 @@
 
 <button class="chatbot-toggle" id="chatbot-toggle">💬</button>
 <div class="chatbot-window" id="chatbot-window">
-    <div class="chatbot-header"><span>🛡️</span><div>CyberDefend Assistant<br><small style="font-size:.7rem;font-weight:400;">Typically replies instantly</small></div></div>
-    <div class="chatbot-body" id="chatbot-body"><div class="chat-msg bot-msg">Hello! Welcome to CyberDefend Academy. How can I help you today?</div></div>
+    <div class="chatbot-header"><span>🛡️</span><div>CyberDefend AI Assistant<br><small style="font-size:.7rem;font-weight:400;">Powered by Puter.js (Free)</small></div></div>
+    <div class="chatbot-body" id="chatbot-body"><div class="chat-msg bot-msg">Hello! I am the CyberDefend AI Assistant. Ask me anything about cybersecurity, networking, or our labs!</div></div>
     <div class="chatbot-input-area">
         <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Type your message...">
         <button class="chatbot-send" id="chatbot-send">➤</button>
@@ -330,15 +364,10 @@ document.addEventListener('DOMContentLoaded',function(){document.querySelectorAl
 
 <script>
 /* =============================================================
-   SEARCH ENGINE — Every word from every page is searchable.
-   labs.html has ALL its text pre-embedded below.
-   Other pages are fetched in background to extract their text.
+   SEARCH ENGINE
    ============================================================= */
-
-/* ---------- ALL TEXT FROM labs.html PASTE (every word) ---------- */
 var LABS_FULL_TEXT = "Enterprise Security Infrastructure Curriculum Complete curriculum map covering network architecture security defense attack simulation labs vulnerability management and hands-on Packet Tracer exercises all in one place Attack Interactive Lab Modules Hands-on Attack and Defense Labs Live Threat Monitor Beginner Pentest Lab Lab Setup EVE-NG and Kali Nmap Port Scanning Wireshark Traffic Analysis Metasploit Basics Exploiting vsftpd Backdoor Attack Phases Lab Reconnaissance Scanning Exploitation Privilege Escalation Lateral Movement Data Exfiltration Erasing Evidence Attack LABS p1 ARP Spoofing MITM DNS Spoofing Rogue DHCP Server Wireless Evil Twin SQL Injection Cross-Site Scripting XSS Data Exfiltration DNS Tunnel Lateral Movement Pass-the-Hash Phishing Campaign GoPhish Password Brute Force Buffer Overflow Exploit Linux Privilege Escalation Attack LABS p2 EternalBlue Exploit Active Directory Kerberoasting LFI to RCE Log Poisoning AWS S3 Bucket Exfiltration Command Injection Windows Persistence Registry Attack LABS p3 Apache Struts 2 RCE VSFTPD Backdoor Exploit Shellshock CGI RCE Local Privilege Escalation Network Pivoting Route SOCKS Switch LAB VLANs and 802.1Q Trunking Inter-VLAN Routing ROAS Switch Port Security Wireshark ARP Spoofing Analysis Wireshark DNS Exfiltration Analysis ASA Firewall Lab ASA Basic Setup and Security Levels Network Objects and Dynamic NAT Access Control Lists Permit Web Static NAT Publishing Web Server ACL Block Deny Attacker IP Firewall Lab 2 Interfaces and Zones Routing Security Policies NAT Rules Bandwidth QoS VPN Configuration Logging and Alerts Wireshark GUI Labs HTTP Credentials TCP SYN Flood DoS ARP Spoofing and DHCP Log Analysis Windows Event Logs Linux Auth Logs Cisco Switch Logs SIEM EDR Correlation Apache Web Logs Firewall Logs Active Directory Logs AWS CloudTrail Logs Exploitation and Cracking Recon and Nmap Web Enumeration Metasploit Exploit Hash Cracking John Wi-Fi Cracking SQL Injection SSH Brute Force Buffer Overflow Linux Privilege Escalation Active Directory Attack Windows SAM Cracking Email Phishing Active Directory Attack Lab User Enumeration Group and ACL Discovery BloodHound Mapping Domain Admin Path Kali Toolset Console Wireshark T-Shark THC Hydra SQLmap Nikto Nmap Top 50 Kali Tool CLI and GUI Burp Suite Roadmaps and Overview Network Overview Network Roadmap Network Tracks Certification Hierarchy Virtualization Network Simulation Programs Essential Tool Downloads Network Engineer Roadmap Security Roadmap Cyber Security Skills You Must Learn Comprehensive Cybersecurity Skills Roadmap Top 10 Websites Every Cybersecurity Learner Should Know Penetration Testing Concepts Top Bug Bounty Tools Kali Cheatsheet 20 Essential SOC Tools for Every SOC Analyst Types of Malware Cybersecurity Terms Explained Simply Cybersecurity Threats in OSI Model Penetration Testing Fundamentals Essential Ethical Hacking Tools Types of Internet Threats Defensive Linux Security Tools Offensive Linux Security Blue Team vs Red Team How Hackers Get Access Linux Forensic Artifacts Anti-Phishing Tools Attack Today Defend Forever Free Steganography Tools Top 10 Cybersecurity Websites Top 10 Cybersecurity Platforms SOC Logs Eyes and Ears of Cybersecurity 30 Days 30 Topics SOC Analyst Learning Plan Bug Bounty and Recon Cheatsheet Cybersecurity Skills Roadmap Architecture and Devices Switching Architecture Port Overview and Geography Network Infrastructure Devices Access Layer and IP Phone Bridging Network Cables and Testing Tools Fiber Optic Infrastructure SFP Modules and Splicing Underground Infrastructure and Fiber Cut Mapping Network Monitoring with Zabbix Phase 2 Six-Area Segmentation Design Switch Management Remote Management SSH Secure Management Methods User Mode vs Privileged Mode RBAC and Security Delegation Password Management L2 vs L3 Switching SVI Inter-VLAN Routing Default Gateway Redundancy and High Availability Access Port vs Trunk Port VLANs Access Control Lists Routing Static Dynamic and Default Router on a Stick Wireless Solutions Closed APN and Microwave Architecture SOTI Real-Time Monitoring and Vehicle Mount Terminals VMT Centralized Management via SOTI MobiControl Enterprise RFID and Logistics Tracking RFID Network Architecture Active vs Passive RFID Tags Vehicle Detection and Gate Automation Logistics Yard Management and Exit Processing RFID Hardware and Reader Connectivity RFID Infrastructure Tags and Readers Crosstalk Server Readers to Infrastructure Switches VOIP Network Topology Cisco VOIP Switch Configuration DSL Integration with VoIP Troubleshooting Security and Defense Firewall Security Architecture Introduction to Firewalls Firewall Packet Filtering Access Control Lists ACL and Policies Example Firewall Rule Table Applying Layered Security Defense in Depth Application Attacks Network Attacks Authentication Factors MFA Intrusion Detection IDS vs Prevention IPS IDS IPS Tuning and The Confusion Matrix Open-Source IDS IPS Tools Snort and Suricata Example IDS Alerts Table Demilitarized Zone DMZ Network Address Translation NAT Virtual Private Networks VPN Centralized Logging SIEM EDR and XDR Antivirus Detection Methods Cyber Attacks Types of Cyber Attacks STRIDE THREAT MODELING Social Engineering Attacks Phishing Vishing Pretexting Tailgating Baiting Network-Based Attacks DDoS MITM DNS Spoofing Cache Poisoning Session Hijacking Application and Web Attacks SQL Injection XSS CSRF Broken Authentication Directory Traversal Malware-Based Attacks Ransomware Trojans Worms Spyware Adware Cryptocurrency Advanced and Persistent Threats APT Zero-Day Exploits Supply Chain Attack Polymorphic Metamorphic Malware Risk Assessment Matrices RISK ANALYSIS TECHNIQUES 20 Essential SOC Tools Linux and Vulnerability Management KALI Linux Kali Linux Setup Labs and Penetration Testing Download and Installation Kali Linux Metasploitable 2 Building a Virtual Penetration Testing Lab Integrating Kali with GNS3 and EVE-NG How to Use Kali for Penetration Testing Top 50 Kali Linux Tools Wireless Security Testing Aircrack-ng Reaver Wifite Exploitation Frameworks Metasploit BeEF SET Password Cracking John Hashcat Hydra Medusa Vulnerability Analysis OpenVAS Lynis Wapiti Forensics and Info Gathering Maltego Recon-ng theHarvester Dmitry Autopsy Reverse Engineering Ghidra Radare2 GDB Exploitation Development MSFVenom Searchsploit Pattern Create Spoofing and MITM Ettercap Bettercap Responder Mobile Security ADB MobSF Frida Cryptography and Stego Hashid Steghide Binwalk Post-Exploitation Mimikatz PowerSploit Evil-WinRM Reporting and Docs Dradis Faraday CherryTree Pipal Advanced Integration Tool Chaining Custom Dev Vulnerability Scanners The Penetration Testing Cycle False Positives and Negatives Types of Vulnerability Scanners Top Vulnerability Scanning Tools Reconnaissance and OSINT Tools Shodan The Search Engine for the Internet of Things WHOIS Google Dorks Google Hacking Bug Bounty Hunting Nessus Vulnerability Assessment Nessus Installation and Setup Scan Configuration Analyzing Results Extracting CVEs from Scan Results Export Results Understanding CVSS Scores Searching CVE Details in MITRE Cross-Reference with NVD Remediation Strategies Best Practices Attack Simulation and Labs Attack Simulation Course Structure Getting Started Where to Start and Install CVE CVSS and MITRE ATT and CK Fundamentals and Architecture CIA Triad AAA Auth Authz Acct Cryptography and Hashing OSI Model and Protocols GRC Gov Risk Compliance NIST CSF ISO 27001 PCI-DSS Risk Management Network Defense Blue Team Firewalls and ACLs IDS IPS Snort SOC and SIEM Monitoring Zero Trust Arch Offensive Ops Red Team Recon Nmap Vuln Scanning Nessus Nmap Web App Attacks OWASP SQL Injection SQLi admin OR 1 equals 1 sqlmap Use Prepared Statements Parameterized Queries Executing malicious SQL commands to dump databases or bypass logins Cross-Site Scripting XSS img src x onerror alert 1 Burp Suite Output encoding HTML escaping and CSP Injecting client-side scripts into web pages viewed by other users CSRF img src bank.com transfer to attacker OWASP ZAP Anti-CSRF tokens Forcing an authenticated user to execute unwanted actions SSRF localhost admin panel Burp Suite Whitelist allowed domains for server requests Forcing a server to make requests to internal resources XXE ENTITY xxe SYSTEM file etc passwd Burp Suite Disable DTD processing in XML parsers Exploiting XML parsers to read local files or initiate SSRF LFI page dot dot dot etc passwd Burp Suite Whitelist allowed files strip dot dot Including local files on the server through the web browser RFI page http attacker.com shell.txt Burp Suite Disable allow url include in PHP Including remote files often leading to RCE Command Injection semicolon cat etc shadow Commix Use safe APIs avoid shell commands Executing operating system commands on the host server IDOR GET api users 1001 to 1002 Burp Suite Strict access control checks on objects Accessing objects directly by manipulating IDs Metasploit Framework EternalBlue MS17-010 use exploit windows smb ms17 010 eternalblue Metasploit Apply MS17-010 patch block SMB SMBv1 remote code execution flaw used by WannaCry BlueKeep CVE-2019-0708 use exploit windows rdp cve 2019 0708 bluekeep rce Metasploit Patch RDP disable NLA RDP vulnerability allowing pre-auth RCE Log4Shell CVE-2021-44228 jndi ldap attacker.com x Metasploit Update Log4j block outbound LDAP JNDI injection in Apache Log4j leading to RCE VSFTPD Backdoor use exploit unix ftp vsftpd 234 backdoor Metasploit Update VSFTPD Malicious backdoor inserted into the VSFTPD source code Shellshock use exploit multi http apache mod cgi bash env exec Metasploit Update Bash Bash vulnerability allowing execution of commands via environment variables Active Directory Attacks Kerberoasting GetUserSPNs.py corp.local user pass request Impacket Strong passwords for Service Accounts Requesting TGS tickets for services and cracking them offline AS-REP Roasting GetNPUsers.py corp.local usersfile users.txt Impacket Disable Do not require Kerberos preauth Requesting AS-REP tickets for users with preauth disabled Pass-the-Hash PtH crackmapexec smb 10.0.0.5 admin H aad3b CrackMapExec Disable NTLM enforce Kerberos Authenticating using an NTLM hash instead of a password Golden Ticket mimikatz kerberos golden user Admin krbtgt HASH Mimikatz Protect KRBTGT reset password twice Forging TGTs using the KRBTGT hash DCSync mimikatz lsadump dcsync user Administrator Mimikatz Restrict Replication privileges Simulating a Domain Controller to request password hashes DFIR Forensics and IR Log Analysis grep Memory Forensics Volatility Incident Response PICERL Cloud Security AWS S3 and IAM Container Security DevSecOps SAST and Code Scanning CI CD Pipeline Security Malware Analysis Static Analysis Dynamic Analysis Sandbox The Kali Linux Arsenal Info Gathering and OSINT Nmap nmap sV sC 10.10.10.5 Network Mapper Network discovery and security auditing Maltego maltego OSINT Graphing Graphical link analysis for OSINT gathering Recon-ng recon-ng Web Recon Full-featured web reconnaissance framework theHarvester theHarvester d target.com b google Email Subdomain Gather emails subdomains and employee names Shodan shodan search apache Search Engine Search engine for Internet-connected devices Web Application Tools Burp Suite burpsuite and Web Proxy Graphical tool to intercept and modify web traffic OWASP ZAP zap-cli quick-scan http target Web Scanner Open-source alternative to Burp Suite SQLmap sqlmap u http target id 1 dump SQLi Automation Automates the detection and exploitation of SQLi Nikto nikto h http target Web Server Scanner Scans for dangerous files and outdated software Gobuster gobuster dir u http target w wordlist Directory Brute-force Finds hidden directories and files Exploitation Frameworks Metasploit msfconsole Exploitation The industry standard for exploit development and execution Searchsploit searchsploit apache 2.4 Exploit DB Command line search for Exploit-DB BeEF ./beef Browser Exploit Focuses on the web browser to launch client-side attacks SET setoolkit Social Engineering Framework for phishing and social engineering attacks Password Cracking Hashcat hashcat m 1000 hash.txt rockyou.txt GPU Cracker World fastest password cracker using GPU John the Ripper john wordlist rockyou.txt hashes.txt CPU Cracker Autodetects and cracks password hashes Hydra hydra l admin P rockyou.txt ssh 10.10.10.5 Online Brute-force Fast network logon cracker Medusa medusa h 10.10.10.5 u admin P rockyou.txt M ssh Online Brute-force Parallel network logon cracker Sniffing and Spoofing Wireshark tshark i eth0 Packet Analyzer Interactively dump and analyze network traffic Bettercap bettercap iface eth0 MITM Powerful flexible tool to perform MITM attacks Ettercap ettercap T M arp target gateway MITM Comprehensive suite for man-in-the-middle attacks Responder responder I eth0 wrf LLMNR NBT-NS Poisoner Answers NBT-NS queries to capture NTLMv2 hashes Post-Exploitation Mimikatz sekurlsa logonpasswords Credential Dumping Extracts plaintext passwords hashes and Kerberos tickets BloodHound Invoke-BloodHound CollectionMethod All AD Graphing Identifies complex attack paths in Active Directory Evil-WinRM evil-winrm i 10.10.10.5 u admin p pass WinRM Shell Ultimate WinRM shell for hacking PowerSploit Invoke-Mimikatz PowerShell Framework PowerShell post-exploitation framework Forensics and Stego Volatility volatility f mem.raw pslist Memory Forensics Extracts artifacts from memory dumps Autopsy autopsy and Disk Forensics GUI for The Sleuth Kit to analyze disk images Binwalk binwalk e firmware.bin Firmware Analyzer Searches binary images for embedded files Steghide steghide extract sf image.jpg Steganography Hides and extracts data in image audio files CyberSecurity Course Structure Core Tracks and Modules with Attack Data Practice Labs Packet Tracer EVE-NG GNS3 Advanced Packet Tracer Labs Basic Switch Configuration Basic VLAN Configuration Static Routing SSH Configuration VLAN Trunking Router-on-a-Stick EtherChannel DHCPv4 Configuration NAT Configuration Access Control Lists OSPF Single Area HSRP Configuration Spanning Tree Protocol Switch Management VoIP Cisco and Avaya Voice VLAN Routing and Subnetting ASA Firewall Configuration EVE-NG and GNS3 Labs Practice Labs EVE-NG and GNS3 EVE-NG Network Topology Building GNS3 Virtual Lab Setup Kali Linux Integration with EVE-NG Multi-Vendor Network Simulation SD-WAN Lab Topology BGP Routing Lab Advanced Practice Labs Part of Accenture";
 
-/* ---------- PAGE REGISTRY ---------- */
 var PAGES=[
 {t:'Enterprise Security Infrastructure',u:'labs.html',d:'Network Tracks, Roadmaps, Architecture & Security',c:'cat-course',_content:LABS_FULL_TEXT},
 {t:'Summer Lectures',u:'2026.html',d:'Recorded Sessions & Videos',c:'cat-course',_content:null},
@@ -415,95 +444,15 @@ var PAGES=[
 {t:'Login',u:'login.html',d:'Sign in to your account',c:'cat-other',_content:null}
 ];
 
-/* ---------- SEARCH HELPERS ---------- */
-function getSnippet(fullText,queryWords,maxLen){
-    maxLen=maxLen||120;var lower=fullText.toLowerCase(),bestIdx=-1;
-    for(var w=0;w<queryWords.length;w++){var idx=lower.indexOf(queryWords[w]);if(idx!==-1&&(bestIdx===-1||idx<bestIdx))bestIdx=idx;}
-    if(bestIdx===-1)return fullText.substring(0,maxLen)+'...';
-    var start=Math.max(0,bestIdx-30),end=Math.min(fullText.length,bestIdx+80),snippet='';
-    if(start>0)snippet+='...';snippet+=fullText.substring(start,end);if(end<fullText.length)snippet+='...';return snippet;
-}
-function highlightWords(text,queryWords){
-    var result=text;
-    for(var w=0;w<queryWords.length;w++){var word=queryWords[w];if(word.length<2)continue;var regex=new RegExp('('+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');result=result.replace(regex,'<span class="highlight">$1</span>');}
-    return result;
-}
-function highlightTitle(title,query){
-    var qL=query.toLowerCase(),tL=title.toLowerCase(),idx=tL.indexOf(qL);
-    if(idx===-1)return title;
-    return title.substring(0,idx)+'<span class="highlight">'+title.substring(idx,idx+query.length)+'</span>'+title.substring(idx+query.length);
-}
-
-/* ---------- THE SEARCH FUNCTION ---------- */
-function search(q){
-    var list=document.getElementById('inlineResults');
-    if(!q.trim()){list.style.display='none';list.innerHTML='';return;}
-    var words=q.toLowerCase().split(/\s+/).filter(function(w){return w.length>1;});
-    if(!words.length){list.style.display='none';list.innerHTML='';return;}
-
-    var results=PAGES.filter(function(p){
-        var searchable=(p.t+' '+p.d).toLowerCase();
-        if(p._content)searchable+=' '+p._content.toLowerCase();
-        for(var i=0;i<words.length;i++){if(searchable.indexOf(words[i])!==-1)return true;}
-        return false;
-    }).sort(function(a,b){
-        var aT=a.t.toLowerCase(),bT=b.t.toLowerCase(),qL=q.toLowerCase();
-        if(aT.startsWith(qL)&&!bT.startsWith(qL))return -1;
-        if(!aT.startsWith(qL)&&bT.startsWith(qL))return 1;
-        return aT.localeCompare(bT);
-    });
-
-    var countHTML='<div class="search-count-inline">'+results.length+' result'+(results.length!==1?'s':'')+' found for "'+q+'"</div>';
-
-    if(!results.length){
-        list.innerHTML=countHTML+'<div class="empty-state"><span>😕</span><p>No results found. Try different keywords.</p></div>';
-        list.style.display='block';return;
-    }
-
-    var html=countHTML;
-    for(var i=0;i<results.length;i++){
-        var r=results[i];
-        var displayTitle=highlightTitle(r.t,q);
-        var icon='📄';
-        if(r.c==='cat-course')icon='📘';else if(r.c==='cat-lab')icon='🧪';
-        else if(r.c==='cat-tool')icon='🛠️';else if(r.c==='cat-roadmap')icon='🗺️';
-        else if(r.c==='cat-network')icon='🌐';
-        var snippetHTML='';
-        if(r._content){var raw=getSnippet(r._content,words,140);snippetHTML='<div class="result-snippet">'+highlightWords(raw,words)+'</div>';}
-        html+='<a href="'+r.u+'" class="result-item"><div class="result-icon '+r.c+'">'+icon+'</div><div class="result-info"><div class="result-title">'+displayTitle+'</div><div class="result-desc">'+r.d+'</div>'+snippetHTML+'</div><div class="result-arrow">→</div></a>';
-    }
-    list.innerHTML=html;list.style.display='block';
-}
-
-/* ---------- BACKGROUND INDEXER (for pages OTHER than labs.html) ---------- */
+function getSnippet(fullText,queryWords,maxLen){maxLen=maxLen||120;var lower=fullText.toLowerCase(),bestIdx=-1;for(var w=0;w<queryWords.length;w++){var idx=lower.indexOf(queryWords[w]);if(idx!==-1&&(bestIdx===-1||idx<bestIdx))bestIdx=idx;}if(bestIdx===-1)return fullText.substring(0,maxLen)+'...';var start=Math.max(0,bestIdx-30),end=Math.min(fullText.length,bestIdx+80),snippet='';if(start>0)snippet+='...';snippet+=fullText.substring(start,end);if(end<fullText.length)snippet+='...';return snippet;}
+function highlightWords(text,queryWords){var result=text;for(var w=0;w<queryWords.length;w++){var word=queryWords[w];if(word.length<2)continue;var regex=new RegExp('('+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');result=result.replace(regex,'<span class="highlight">$1</span>');}return result;}
+function highlightTitle(title,query){var qL=query.toLowerCase(),tL=title.toLowerCase(),idx=tL.indexOf(qL);if(idx===-1)return title;return title.substring(0,idx)+'<span class="highlight">'+title.substring(idx,idx+query.length)+'</span>'+title.substring(idx+query.length);}
+function search(q){var list=document.getElementById('inlineResults');if(!q.trim()){list.style.display='none';list.innerHTML='';return;}var words=q.toLowerCase().split(/\s+/).filter(function(w){return w.length>1;});if(!words.length){list.style.display='none';list.innerHTML='';return;}var results=PAGES.filter(function(p){var searchable=(p.t+' '+p.d).toLowerCase();if(p._content)searchable+=' '+p._content.toLowerCase();for(var i=0;i<words.length;i++){if(searchable.indexOf(words[i])!==-1)return true;}return false;}).sort(function(a,b){var aT=a.t.toLowerCase(),bT=b.t.toLowerCase(),qL=q.toLowerCase();if(aT.startsWith(qL)&&!bT.startsWith(qL))return -1;if(!aT.startsWith(qL)&&bT.startsWith(qL))return 1;return aT.localeCompare(bT);});var countHTML='<div class="search-count-inline">'+results.length+' result'+(results.length!==1?'s':'')+' found for "'+q+'"</div>';if(!results.length){list.innerHTML=countHTML+'<div class="empty-state"><span>😕</span><p>No results found. Try different keywords.</p></div>';list.style.display='block';return;}var html=countHTML;for(var i=0;i<results.length;i++){var r=results[i];var displayTitle=highlightTitle(r.t,q);var icon='📄';if(r.c==='cat-course')icon='📘';else if(r.c==='cat-lab')icon='🧪';else if(r.c==='cat-tool')icon='🛠️';else if(r.c==='cat-roadmap')icon='🗺️';else if(r.c==='cat-network')icon='🌐';var snippetHTML='';if(r._content){var raw=getSnippet(r._content,words,140);snippetHTML='<div class="result-snippet">'+highlightWords(raw,words)+'</div>';}html+='<a href="'+r.u+'" class="result-item"><div class="result-icon '+r.c+'">'+icon+'</div><div class="result-info"><div class="result-title">'+displayTitle+'</div><div class="result-desc">'+r.d+'</div>'+snippetHTML+'</div><div class="result-arrow">→</div></a>';}list.innerHTML=html;list.style.display='block';}
 var indexDone=0,indexTotal=0,indexFinished=false;
 function extractText(html){try{var doc=new DOMParser().parseFromString(html,'text/html');var rm=doc.querySelectorAll('script,style,noscript,meta,link,svg');for(var i=0;i<rm.length;i++)rm[i].remove();var text=(doc.body.textContent||doc.body.innerText||'');return text.replace(/\s+/g,' ').trim();}catch(e){return '';}}
 function updateIndexDot(){var dot=document.getElementById('indexDot');if(!dot)return;if(indexFinished){dot.className='search-indexed-dot ready';dot.title='Search ready';}else{dot.className='search-indexed-dot indexing';dot.title='Indexing... ('+indexDone+'/'+indexTotal+')';}}
-
-function startIndexer(){
-    var localPages=[];
-    for(var i=0;i<PAGES.length;i++){var url=PAGES[i].u;if(url&&!url.startsWith('http')&&!url.startsWith('https')&&!url.startsWith('#')&&!PAGES[i]._content){localPages.push(PAGES[i]);}}
-    indexTotal=localPages.length;indexDone=0;indexFinished=false;
-    if(indexTotal===0){indexFinished=true;updateIndexDot();return;}
-    var batchSize=3,batchDelay=200,idx=0;
-    function processNext(){
-        if(idx>=localPages.length){indexFinished=true;updateIndexDot();var cv=document.getElementById('inlineSearch').value;if(cv.trim())search(cv);return;}
-        var batchEnd=Math.min(idx+batchSize,localPages.length),promises=[];
-        for(var j=idx;j<batchEnd;j++){(function(page){promises.push(fetch(page.u,{method:'GET'}).then(function(resp){if(!resp.ok)throw new Error(resp.status);return resp.text();}).then(function(html){page._content=extractText(html);}).catch(function(){}).finally(function(){indexDone++;updateIndexDot();}));})(localPages[j]);}
-        idx=batchEnd;Promise.all(promises).then(function(){setTimeout(processNext,batchDelay);});
-    }
-    processNext();
-}
-
-/* ---------- WIRE UP SEARCH INPUT ---------- */
-var inlineSearchInput=document.getElementById('inlineSearch');
-var inlineResultsDiv=document.getElementById('inlineResults');
-var searchDebounce=null;
-inlineSearchInput.addEventListener('input',function(){clearTimeout(searchDebounce);var val=this.value;searchDebounce=setTimeout(function(){search(val);},120);});
-inlineSearchInput.addEventListener('focus',function(){if(this.value.trim())search(this.value);});
-document.addEventListener('click',function(e){var wrap=document.getElementById('inlineSearchWrap');if(wrap&&!wrap.contains(e.target)){inlineResultsDiv.style.display='none';}});
-inlineSearchInput.addEventListener('keydown',function(e){if(e.key==='Escape'){inlineResultsDiv.style.display='none';this.blur();}});
-startIndexer();
+function startIndexer(){var localPages=[];for(var i=0;i<PAGES.length;i++){var url=PAGES[i].u;if(url&&!url.startsWith('http')&&!url.startsWith('https')&&!url.startsWith('#')&&!PAGES[i]._content){localPages.push(PAGES[i]);}}indexTotal=localPages.length;indexDone=0;indexFinished=false;if(indexTotal===0){indexFinished=true;updateIndexDot();return;}var batchSize=3,batchDelay=200,idx=0;function processNext(){if(idx>=localPages.length){indexFinished=true;updateIndexDot();var cv=document.getElementById('inlineSearch').value;if(cv.trim())search(cv);return;}var batchEnd=Math.min(idx+batchSize,localPages.length),promises=[];for(var j=idx;j<batchEnd;j++){(function(page){promises.push(fetch(page.u,{method:'GET'}).then(function(resp){if(!resp.ok)throw new Error(resp.status);return resp.text();}).then(function(html){page._content=extractText(html);}).catch(function(){}).finally(function(){indexDone++;updateIndexDot();}));})(localPages[j]);}idx=batchEnd;Promise.all(promises).then(function(){setTimeout(processNext,batchDelay);});}processNext();}
+var inlineSearchInput=document.getElementById('inlineSearch');var inlineResultsDiv=document.getElementById('inlineResults');var searchDebounce=null;inlineSearchInput.addEventListener('input',function(){clearTimeout(searchDebounce);var val=this.value;searchDebounce=setTimeout(function(){search(val);},120);});inlineSearchInput.addEventListener('focus',function(){if(this.value.trim())search(this.value);});document.addEventListener('click',function(e){var wrap=document.getElementById('inlineSearchWrap');if(wrap&&!wrap.contains(e.target)){inlineResultsDiv.style.display='none';}});inlineSearchInput.addEventListener('keydown',function(e){if(e.key==='Escape'){inlineResultsDiv.style.display='none';this.blur();}});startIndexer();
 </script>
 
 <script>
@@ -514,8 +463,53 @@ var requestedCourseColumn=null;
 var toggleBtn=document.getElementById('chatbot-toggle'),chatWindow=document.getElementById('chatbot-window');
 toggleBtn.addEventListener('click',function(){chatWindow.style.display=chatWindow.style.display==='flex'?'none':'flex';});
 var sendBtn=document.getElementById('chatbot-send'),inputField=document.getElementById('chatbot-input'),chatBody=document.getElementById('chatbot-body');
-async function sendMessage(){var text=inputField.value.trim();if(!text)return;var userMsg=document.createElement('div');userMsg.classList.add('chat-msg','user-msg');userMsg.innerText=text;chatBody.appendChild(userMsg);inputField.value='';chatBody.scrollTop=chatBody.scrollHeight;try{await fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec",{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});}catch(e){}setTimeout(function(){var botMsg=document.createElement('div');botMsg.classList.add('chat-msg','bot-msg');botMsg.innerText="Thank you! We will get back to you soon.";chatBody.appendChild(botMsg);chatBody.scrollTop=chatBody.scrollHeight;},800);}
-sendBtn.addEventListener('click',sendMessage);inputField.addEventListener('keypress',function(e){if(e.key==='Enter')sendMessage();});
+
+// INTERACTIVE AI CHATBOT LOGIC (Using Puter.js - Free, No API Key Needed)
+async function sendMessage() {
+    var text = inputField.value.trim();
+    if (!text) return;
+    
+    // User Message UI
+    var userMsg = document.createElement('div');
+    userMsg.classList.add('chat-msg', 'user-msg');
+    userMsg.innerText = text;
+    chatBody.appendChild(userMsg);
+    inputField.value = '';
+    chatBody.scrollTop = chatBody.scrollHeight;
+    
+    // Bot Typing Indicator
+    var botMsg = document.createElement('div');
+    botMsg.classList.add('chat-msg', 'bot-msg');
+    botMsg.innerText = "🤖 Thinking...";
+    chatBody.appendChild(botMsg);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    try {
+        // Keep logging to Google Sheets if you still want a record
+        fetch("https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec", {
+            method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify({message: text})
+        });
+
+        // Call Puter.js AI API
+        const response = await puter.ai.chat([
+            { role: "system", content: "You are CyberDefend AI Assistant, a helpful cybersecurity tutor for CyberDefend Academy. Keep answers concise, friendly, and focused on cybersecurity, networking, and IT." },
+            { role: "user", content: text }
+        ]);
+        
+        // Extract text safely
+        let aiText = response?.message?.content || response?.text || "I'm sorry, I encountered an error processing your request.";
+        botMsg.innerText = aiText;
+    } catch (error) {
+        botMsg.innerText = "⚠️ Connection error. Please try again.";
+        console.error("Puter AI Error:", error);
+    }
+    
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+sendBtn.addEventListener('click', sendMessage); 
+inputField.addEventListener('keypress', function(e){ if(e.key==='Enter') sendMessage(); });
+
 async function checkCourseAccess(email,courseColumn){try{var response=await fetch(PAID_COURSES_SHEET_URL);var csvText=await response.text();var cleanCsv=csvText.replace(/\r/g,'');var lines=cleanCsv.split('\n');if(lines.length<2)return false;var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase();});var emailIndex=headers.indexOf('email');var courseIndex=headers.indexOf(courseColumn.toLowerCase());if(emailIndex===-1||courseIndex===-1)return false;for(var i=1;i<lines.length;i++){if(!lines[i].trim())continue;var row=lines[i].split(',');var rowEmail=row[emailIndex]?row[emailIndex].trim().toLowerCase():"";var rowAccess=row[courseIndex]?row[courseIndex].trim().toLowerCase():"";if(rowEmail===email.toLowerCase()&&rowAccess==='yes')return true;}return false;}catch(e){return false;}}
 async function handlePaidCourseLogin(response){var errorDiv=document.getElementById('loginError');errorDiv.innerHTML="⏳ Verifying access in database...";try{var payload=JSON.parse(atob(response.credential.split('.')[1]));var userEmail=payload.email;var hasAccess=await checkCourseAccess(userEmail,requestedCourseColumn);if(hasAccess){localStorage.setItem('googleUserLoggedIn','true');document.getElementById('loginModal').style.display='none';var redirectLink='paid-cybersecurity-course.html';if(requestedCourseColumn==='Course_4')redirectLink='paid-cybersecurity-course-2.html';else if(requestedCourseColumn==='Level_1_AI')redirectLink='Level-1 AI.html';else if(requestedCourseColumn==='Level_2_AI')redirectLink='Level2-AI.html';alert("Access Granted! Redirecting...");window.location.href=redirectLink;}else{errorDiv.innerHTML="❌ Access Denied. Your email is not approved for this course.";}}catch(e){errorDiv.innerHTML="❌ Login failed.";}}
 function renderGoogleButton(){var container=document.getElementById('modalGoogleButton');container.innerHTML='';if(typeof google==='undefined'||!google.accounts)return;google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handlePaidCourseLogin});google.accounts.id.renderButton(container,{theme:'outline',size:'large',width:300,text:'signin_with'});}
@@ -524,38 +518,227 @@ document.addEventListener('click',function(event){var loginModal=document.getEle
 /* ========== ROADMAP ========== */
 var CC=['#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#f43f5e','#10b981','#f59e0b','#6366f1','#84cc16','#e11d48'];
 var playlists=[
-{title:'CyberSecurity Roadmap',desc:'Network Fundamentals, firewalls, Linux, KALI, Pentest',icon:'fa-network-wired',color:'#02b3e4',steps:[
-{n:'Networking CCNA R&S',l:'https://www.youtube.com/watch?v=VMI1z5h5Jy4&list=PLLlr6jKKdyK3JYsGq_jEcNx-EHF4lqXHP'},
-{n:'CCNA Security',l:'https://www.youtube.com/watch?v=8SPaWhv-9H8&list=PLLlr6jKKdyK2GhxtDaFympthZ2OvsvuZZ'},
-{n:'Linux Operating System',l:'https://www.youtube.com/watch?v=EIjr6HSTJss&list=PLLlr6jKKdyK0Cc3Bm-3kFutfwIgMlgcT9'},
-{n:'Programming & Scripting',l:'https://www.youtube.com/watch?v=mvZHDpCHphk&list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs'},
-{n:'CompTIA Security+',l:'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7'},
-{n:'Penetration Testing',l:'https://www.youtube.com/watch?v=eUPk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs'},
-{n:'Kali Linux Ethical Hacking',l:'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1Ue1UideULQvEgCgQ3a1B'},
-{n:'Web Application Penetration',l:'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4'},
-{n:'Blue Teaming / SOC Analyst',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ'},
-{n:'30-Day SOC Analyst Challenge',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6'}]},
-{title:'WebSite Roadmap',desc:'Networking and Cybersecurity Courses | Interactive Labs',icon:'fa-skull-crossbones',color:'#ef4444',steps:[
-{n:'Summer Lectures',l:'2026.html'},{n:'DPA Summer Training Course',l:'DPA.html'},{n:'Enterprise Security Infrastructure',l:'labs.html'},{n:'Network Terms | Command Lines',l:'lesson-14.html'},{n:'1- Introduction to Cybersecurity',l:'level3.html'},{n:'2-Cybersecurity Course',l:'cybersecurity-course.html'},{n:'English CyberSecurity Course',l:'routing-switching.html'},{n:'Interactive Attack Labs',l:'paid-cybersecurity-course.html'},{n:'CyberSecurity Reading Slides',l:'networking.html'},{n:'AWS Cloud Foundation',l:'aws foundation.html'}]},
-{title:'Network Beginner Roadmap',desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',icon:'fa-graduation-cap',color:'#22c55e',steps:[
-{n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},
-{n:'Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},
-{n:'IP Address & Subnetting',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H'},
-{n:'CCNA Course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},
-{n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},
-{n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},
-{n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},
-{n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},
-{n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},
-{n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},
-{n:'VMware Windows VM',l:'https://youtu.be/t3PAufBUX9o'},
-{n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},
-{n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},
-{n:'Download Tools',l:'https://filecr.com/home/?'}]}
+{title:'CyberSecurity Roadmap',desc:'Network Fundamentals, firewalls, Linux, KALI, Pentest',icon:'fa-network-wired',color:'#02b3e4',steps:[{n:'Networking CCNA R&S',l:'https://www.youtube.com/watch?v=VMI1z5h5Jy4&list=PLLlr6jKKdyK3JYsGq_jEcNx-EHF4lqXHP'},{n:'CCNA Security',l:'https://www.youtube.com/watch?v=8SPaWhv-9H8&list=PLLlr6jKKdyK2GhxtDaFympthZ2OvsvuZZ'},{n:'Linux Operating System',l:'https://www.youtube.com/watch?v=EIjr6HSTJss&list=PLLlr6jKKdyK0Cc3Bm-3kFutfwIgMlgcT9'},{n:'Programming & Scripting',l:'https://www.youtube.com/watch?v=mvZHDpCHphk&list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs'},{n:'CompTIA Security+',l:'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7'},{n:'Penetration Testing',l:'https://www.youtube.com/watch?v=eUPk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs'},{n:'Kali Linux Ethical Hacking',l:'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1Ue1UideULQvEgCgQ3a1B'},{n:'Web Application Penetration',l:'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4'},{n:'Blue Teaming / SOC Analyst',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ'},{n:'30-Day SOC Analyst Challenge',l:'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6'}]},
+{title:'WebSite Roadmap',desc:'Networking and Cybersecurity Courses | Interactive Labs',icon:'fa-skull-crossbones',color:'#ef4444',steps:[{n:'Summer Lectures',l:'2026.html'},{n:'DPA Summer Training Course',l:'DPA.html'},{n:'Enterprise Security Infrastructure',l:'labs.html'},{n:'Network Terms | Command Lines',l:'lesson-14.html'},{n:'1- Introduction to Cybersecurity',l:'level3.html'},{n:'2-Cybersecurity Course',l:'cybersecurity-course.html'},{n:'English CyberSecurity Course',l:'routing-switching.html'},{n:'Interactive Attack Labs',l:'paid-cybersecurity-course.html'},{n:'CyberSecurity Reading Slides',l:'networking.html'},{n:'AWS Cloud Foundation',l:'aws foundation.html'}]},
+{title:'Network Beginner Roadmap',desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',icon:'fa-graduation-cap',color:'#22c55e',steps:[{n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},{n:'Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},{n:'IP Address & Subnetting',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H'},{n:'CCNA Course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},{n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},{n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},{n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},{n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},{n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},{n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},{n:'VMware Windows VM',l:'https://youtu.be/t3PAufBUX9o'},{n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},{n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},{n:'Download Tools',l:'https://filecr.com/home/?'}]}
 ];
 function buildSVG(pl){var cols=3,count=pl.steps.length,rows=Math.ceil((count+2)/cols),rowH=120,startY=58,padX=110,colW=280,svgW=padX*2+colW*(cols-1),svgH=startY+(rows-1)*rowH+50,nodes=[];nodes.push({label:'START',link:null,color:'#22c55e',type:'terminal'});pl.steps.forEach(function(s,i){nodes.push({label:s.n,link:s.l,color:CC[i%CC.length],type:'step'});});nodes.push({label:'FINISH',link:null,color:'#ef4444',type:'terminal'});var positions=nodes.map(function(_,i){var row=Math.floor(i/cols),col=i%cols;if(row%2===1)col=cols-1-col;return{x:padX+col*colW,y:startY+row*rowH};});var d='M '+positions[0].x+','+positions[0].y;for(var i=1;i<positions.length;i++){var p=positions[i-1],c=positions[i],pRow=Math.floor((i-1)/cols),cRow=Math.floor(i/cols);if(cRow!==pRow){var bulge=c.x>svgW/2?90:-90;d+=' C '+(p.x+bulge)+','+p.y+' '+(c.x+bulge)+','+c.y+' '+c.x+','+c.y;}else{d+=' L '+c.x+','+c.y;}}var svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" xmlns="http://www.w3.org/2000/svg" style="min-width:'+svgW+'px;width:100%;height:auto;display:block"><defs>';var fb=pl.icon.replace(/[^a-z]/gi,'');nodes.forEach(function(n,i){svg+='<filter id="glow_'+fb+'_'+i+'" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur"/><feFlood flood-color="'+n.color+'" flood-opacity="0.5" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';});svg+='</defs><path class="road-bg" d="'+d+'"/><path class="road-surface" d="'+d+'"/><path class="road-dash" d="'+d+'"/>';nodes.forEach(function(n,i){var x=positions[i].x,y=positions[i].y,row=Math.floor(i/cols),labelAbove=row%2===1,labelY=labelAbove?y-32:y+38,subY=labelAbove?y-20:y+50,r=n.type==='terminal'?20:22,delay=0.3+i*0.12,filterId='glow_'+fb+'_'+i;if(n.link){svg+='<a href="'+n.link+'" class="node-group" style="--glow:'+n.color+';animation-delay:'+delay+'s" filter="url(#'+filterId+')">';}else{svg+='<g class="node-group" style="--glow:'+n.color+';animation-delay:'+delay+'s" filter="url(#'+filterId+')">';}svg+='<circle class="node-circle" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+n.color+'"/>';if(n.type==='terminal'){svg+='<text class="start-finish-text" x="'+x+'" y="'+y+'">'+n.label+'</text>';}else{svg+='<text class="node-text" x="'+x+'" y="'+y+'">'+i+'</text>';}svg+='<text class="node-label" x="'+x+'" y="'+labelY+'">'+n.label+'</text>';if(n.type==='step'){svg+='<text class="node-sublabel" x="'+x+'" y="'+subY+'">Step '+i+'</text>';}if(n.link){svg+='</a>';}else{svg+='</g>';}});svg+='</svg>';return svg;}
 function renderPlaylists(){var wrap=document.getElementById('cardsWrap');wrap.innerHTML=playlists.map(function(pl,pi){var svgContent=buildSVG(pl);return '<div class="path-card" id="pc'+pi+'"><div class="card-head"><div class="card-head-left"><div class="card-icon" style="background:'+pl.color+'"><i class="fa-solid '+pl.icon+'"></i></div><div><h3>'+pl.title+'</h3><p>'+pl.desc+'</p></div></div><div class="card-badge">'+pl.steps.length+' Steps</div></div><div class="svg-wrap">'+svgContent+'</div></div>';}).join('');var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.15});document.querySelectorAll('.path-card').forEach(function(c){obs.observe(c);});}
 renderPlaylists();
 </script>
+
+<!-- ===================== SCRIPT FOR LEFT SIDEBAR TREE MENU ===================== -->
+<script>
+    // DATA 0: Main Courses (Extracted from Dashboard Grid)
+    const coursesCategory = {
+        title: "Courses",
+        icon: "fa-graduation-cap",
+        children: [
+            { title: "Summer Lectures", link: "2026.html" },
+            { title: "Curriculum & Roadmaps", link: "Curriculum.html" },
+            { title: "Enterprise Security Infrastructure", link: "labs.html" },
+            { title: "DPA Summer Training Course", link: "DPA.html" },
+            { title: "Introduction to Cybersecurity", link: "level3.html" },
+            { title: "Cybersecurity Course", link: "cybersecurity-course.html" },
+            { title: "Network Terms | Packet Tracer Labs", link: "lesson-14.html" },
+            { title: "Essential Tools | Interactive Attack Labs", link: "paid-cybersecurity-course.html" },
+            { title: "CyberSecurity Reading Slides", link: "networking.html" },
+            { title: "English CyberSecurity Course", link: "routing-switching.html" },
+            { title: "AWS Cloud Foundation", link: "aws foundation.html" },
+            { title: "Digital Comm", link: "digital comm.html" },
+            { title: "Wireless Comm", link: "wireless comm.html" },
+            { title: "HP | Aruba Switch", link: "new9.html" },
+            { title: "Firewall ASA | Fortinet | Paloalto", link: "firewall-all.html" }
+        ]
+    };
+
+    // DATA 1: Interactive Lab Modules
+    const interactiveLabs = { title: "Interactive Lab Modules", icon: "fa-flask", children: [
+        { title: "Live Threat Monitor", link: "live-monitor.html" },
+        { title: "Beginner Pentest Lab", link: "begin1.html", children: ["Lab Setup (EVE-NG & Kali)", "Nmap Port Scanning", "Wireshark Traffic Analysis", "Metasploit Basics", "Exploiting vsftpd Backdoor"] },
+        { title: "Attack Phases Lab", link: "88888.html", children: ["Reconnaissance", "Scanning", "Exploitation", "Privilege Escalation", "Lateral Movement", "Data Exfiltration", "Erasing Evidence"] },
+        { title: "Attack LABS p1", link: "second.html", children: ["ARP Spoofing MITM", "DNS Spoofing", "Rogue DHCP Server", "Wireless Evil Twin", "SQL Injection", "Cross-Site Scripting (XSS)", "Data Exfiltration (DNS Tunnel)", "Lateral Movement (Pass-the-Hash)", "Phishing Campaign (GoPhish)", "Password Brute Force", "Buffer Overflow Exploit", "Linux Privilege Escalation"] },
+        { title: "Attack LABS p2", link: "third.html", children: ["EternalBlue Exploit", "Active Directory Kerberoasting", "LFI to RCE (Log Poisoning)", "AWS S3 Bucket Exfiltration", "Command Injection", "Windows Persistence (Registry)"] },
+        { title: "Attack LABS p3", link: "fourth.html", children: ["Apache Struts 2 RCE", "VSFTPD Backdoor Exploit", "Shellshock (CGI) RCE", "Local Privilege Escalation", "Network Pivoting (Route +SOCKS)"] },
+        { title: "Switch LAB", link: "html.html", children: ["VLANs & 802.1Q Trunking", "Inter-VLAN Routing (ROAS)", "Switch Port Security", "Wireshark: ARP Spoofing Analysis", "Wireshark: DNS Exfiltration Analysis"] },
+        { title: "ASA Firewall Lab", link: "asa-lab.html", children: ["ASA Basic Setup & Security Levels", "Network Objects & Dynamic NAT", "Access Control Lists (Permit Web)", "Static NAT (Publishing Web Server)", "ACL Block - Deny Attacker IP"] },
+        { title: "Firewall Lab 2", link: "Firewal-Lab.html", children: ["1. Interfaces & Zones", "2. Routing", "3. Security Policies", "4. NAT Rules", "5. Bandwidth (QoS)", "6. VPN Configuration", "7. Logging & Alerts"] },
+        { title: "Wireshark GUI Labs", link: "wireshark-lab.html", children: ["HTTP Credentials", "TCP SYN Flood DoS", "ARP Spoofing & DHCP"] },
+        { title: "Log Analysis", link: "logs.html", children: ["Windows Event Logs", "Linux Auth Logs", "Cisco Switch Logs", "SIEM / EDR Correlation", "Apache Web Logs", "Firewall Logs", "Active Directory Logs", "AWS CloudTrail Logs"] },
+        { title: "Exploitation & Cracking", link: "crack.html", children: ["1. Recon & Nmap", "2. Web Enumeration", "3. Metasploit Exploit", "4. Hash Cracking (John)", "5. Wi-Fi Cracking", "6. SQL Injection", "7. SSH Brute Force", "8. Buffer Overflow", "9. Linux Privilege Escalation", "10. Active Directory Attack", "11. Windows SAM Cracking", "12. Email Phishing"] },
+        { title: "Active Directory Attack Lab", link: "active-directory-attack-lab.html", children: ["1. User Enumeration", "2. Group & ACL Discovery", "3. BloodHound Mapping", "4. Domain Admin Path"] },
+        { title: "Kali Toolset Console", link: "kali50tools3.html", children: ["Wireshark / T-Shark", "THC Hydra", "SQLmap", "Nikto", "Nmap"] },
+        { title: "Top 50 Kali Tool CLI+ GUI", link: "kali50tools2.html", children: [ { title: "Burp Suite", link: "BurpSuite.html" } ] }
+    ]};
+    const data1 = [interactiveLabs];
+
+    // DATA 2: Main Curriculum
+    const curriculum1 = [
+        { title: "Roadmaps & Overview", icon: "fa-map-location-dot", children: [
+            { title: "Network Overview", children: [ { title: "Network Roadmap", link: "network Roadmap.html", children: ["Network Tracks", "Certification Hierarchy", "Virtualization", "Network Simulation Programs", "Essential Tool Downloads", "Network Engineer Roadmap"] } ] },
+            { title: "Security Roadmap", link: "security Roadmap.html", children: ["Cyber Security Skills You Must Learn", "Comprehensive Cybersecurity Skills Roadmap", "Top 10 Websites Every Cybersecurity Learner Should Know", "Penetration Testing Concepts", "Top Bug Bounty Tools Kali Cheatsheet", "20 Essential SOC Tools for Every SOC Analyst", "Types of Malware", "Cybersecurity Terms Explained Simply"] },
+            { title: "Cybersecurity Terms Explained", link: "attack-vectors.html", children: ["Cybersecurity Threats in OSI Model", "Penetration Testing Fundamentals", "Essential Ethical Hacking Tools", "Types of Internet Threats", "Defensive Linux Security Tools", "Offensive Linux Security", "Blue Team vs Red Team", "How Hackers Get Access", "Linux Forensic Artifacts", "Anti-Phishing Tools", "Attack Today. Defend Forever.", "Free Steganography Tools", "Cybersecurity Roadmap", "Top 10 Cybersecurity Websites", "Top 10 Cybersecurity Platforms", "SOC Logs: Eyes & Ears of Cybersecurity", "30 Days, 30 Topics: SOC Analyst Learning Plan", "Bug Bounty & Recon Cheatsheet", "Cybersecurity Skills Roadmap"] }
+        ]},
+        { title: "Architecture & Devices", icon: "fa-network-wired", children: [
+            { title: "Switching Architecture", link: "lesson-6.html", children: ["Port Overview & Geography", "Network Infrastructure Devices", "Access Layer & IP Phone Bridging", "Network Cables & Testing Tools", "Fiber Optic Infrastructure, SFP Modules & Splicing", "Underground Infrastructure & Fiber Cut Mapping", "Network Monitoring with Zabbix", "Phase 2: Six-Area Segmentation Design"] },
+            { title: "Switch Management", link: "lesson-11.html", children: ["Remote Management", "SSH", "Secure Management Methods", "User Mode vs Privileged Mode", "RBAC & Security Delegation", "Password Management", "L2 vs L3 Switching", "SVI Inter-VLAN Routing", "Default Gateway", "Redundancy & High Availability", "Access Port vs Trunk Port", "VLANs", "Access Control Lists", "Routing: Static, Dynamic & Default", "Router on a Stick"] },
+            { title: "Wireless Solutions", link: "lesson-8.html", children: ["Closed APN & Microwave Architecture", "SOTI Real-Time Monitoring & Vehicle Mount Terminals (VMT)", "Centralized Management via SOTI MobiControl", "Enterprise RFID & Logistics Tracking", "RFID Network Architecture", "Active vs. Passive RFID Tags", "Vehicle Detection & Gate Automation", "Logistics Yard Management & Exit Processing", "RFID Hardware & Reader Connectivity", "RFID Infrastructure: Tags & Readers", "Crosstalk Server", "Readers to Infrastructure Switches"] },
+            { title: "VOIP", link: "lesson-12.html", children: ["Network Topology", "Cisco VOIP Switch Configuration", "DSL Integration with VoIP", "Troubleshooting"] }
+        ]},
+        { title: "Security & Defense", icon: "fa-shield-halved", children: [
+            { title: "Firewall Security Architecture", link: "lesson-7.html", children: ["Introduction to Firewalls", "Firewall: Packet Filtering", "Access Control Lists (ACL) & Policies", "Example Firewall Rule Table", "Applying Layered Security (Defense in Depth)", "Application Attacks", "Network Attacks", "Authentication Factors (MFA)", "Intrusion Detection (IDS) vs Prevention (IPS)", "IDS/IPS Tuning & The Confusion Matrix", "Open-Source IDS/IPS Tools: Snort & Suricata", "Example IDS Alerts Table", "Demilitarized Zone (DMZ)", "Network Address Translation (NAT)", "Virtual Private Networks (VPN)", "Centralized Logging, SIEM, EDR & XDR", "Antivirus Detection Methods"] },
+            { title: "Cyber Attacks", link: "lesson-9.html", children: ["Types of Cyber Attacks", "STRIDE THREAT MODELING", "Social Engineering Attacks", "Network-Based Attacks", "Application & Web Attacks", "Malware-Based Attacks", "Advanced & Persistent Threats", "Risk Assessment Matrices", "RISK ANALYSIS TECHNIQUES"] },
+            { title: "20 Essential SOC Tools", link: "soc-tools.html" }
+        ]},
+        { title: "Linux & Vulnerability Mgmt", icon: "fa-bug", children: [
+            { title: "KALI Linux", link: "lesson-3.html", children: ["Kali Linux: Setup, Labs & Penetration Testing", "Download & Installation (Kali Linux | Metasploitable 2)", "Building a Virtual Penetration Testing Lab", "Integrating Kali with GNS3 & EVE-NG", "How to Use Kali for Penetration Testing"] },
+            { title: "Top 50 Kali Linux Tools", link: "kali-tools.html", children: ["Wireless Security Testing", "Exploitation Frameworks", "Password Cracking", "Vulnerability Analysis", "Forensics & Info Gathering", "Reverse Engineering", "Exploitation Development", "Spoofing & MITM", "Mobile Security", "Cryptography & Stego", "Post-Exploitation", "Reporting & Docs", "Advanced Integration"] },
+            { title: "Vulnerability Scanners", link: "lesson-4.html", children: ["The Penetration Testing Cycle", "False Positives & Negatives", "Types of Vulnerability Scanners", "Top Vulnerability Scanning Tools", "Reconnaissance & OSINT Tools", "Shodan", "WHOIS", "Google Dorks", "Bug Bounty Hunting"] },
+            { title: "Nessus Vulnerability Assessment", link: "nessus.html", children: ["Nessus Installation & Setup", "Scan Configuration", "Analyzing Results", "Extracting CVEs", "Export Results", "Understanding CVSS Scores", "Searching CVE Details", "Cross-Reference with NVD", "Remediation Strategies", "Best Practices"] }
+        ]},
+        { title: "Attack Simulation & Labs", icon: "fa-skull", children: [
+            { title: "Attack Simulation Course Structure", children: [] }
+        ]},
+        { title: "Troubleshooting & Voice", icon: "fa-wrench", children: [
+            { title: "Troubleshooting", link: "lesson-10.html", children: ["Switch IOS Crash & Rommon Recovery", "Configuration File Management", "TFTP Server & IOS Transfers", "Upgrading the IOS Image", "Step-by-Step: IOS Recovery via TFTP Lab", "Preparing the TFTP Transfer", "Switch Troubleshooting & Network Incidents", "Switch Module Replacement", "SFP Module & Fiber Cable Speed Mismatches", "Backup Config.cfg Through TFTP", "The Management VLAN Incident", "DHCP Conflict & APIPA Problem", "Network Time Protocol (NTP)", "System Logging (Syslog)", "Simple Network Management Protocol (SNMP)"] }
+        ]},
+        { title: "Cloud & Practice Labs", icon: "fa-cloud", children: [
+            { title: "Cloud Computing", link: "lesson-13.html", children: ["Cloud Service Models", "Deployment Models", "Major Cloud Providers", "Core Cloud Services", "Security & IAM", "Cost Management", "Hands-On Labs"] },
+            { title: "Networking Labs Overview", link: "labs2.html", children: ["Enterprise & Campus Networks Labs"] }
+        ]}
+    ];
+    const data2 = curriculum1;
+
+    // DATA 3: Course Structure with Attack Data
+    const data3 = [
+      { cat: "Getting Started", icon: "fa-rocket", modules: [ { title: "Where to Start & Install" }, { title: "CVE, CVSS & MITRE ATT&CK" } ]},
+      { cat: "Fundamentals & Architecture", icon: "fa-seedling", modules: [ { title: "CIA Triad" }, { title: "AAA (Auth, Authz, Acct)" }, { title: "Cryptography & Hashing" }, { title: "OSI Model & Protocols" } ]},
+      { cat: "GRC (Gov, Risk, Compliance)", icon: "fa-balance-scale", modules: [ { title: "NIST CSF" }, { title: "ISO 27001" }, { title: "PCI-DSS" }, { title: "Risk Management" } ]},
+      { cat: "Network Defense (Blue Team)", icon: "fa-shield-halved", modules: [ { title: "Firewalls & ACLs" }, { title: "IDS/IPS (Snort)" }, { title: "SOC & SIEM Monitoring" }, { title: "Zero Trust Arch" } ]},
+      { cat: "Offensive Ops (Red Team)", icon: "fa-skull", modules: [ 
+          { title: "Recon (Nmap)" }, { title: "Vuln Scanning (Nessus/Nmap)" }, 
+          { title: "Web App Attacks (OWASP)", children: ["SQL Injection (SQLi)", "Cross-Site Scripting (XSS)", "CSRF", "SSRF", "XXE", "LFI", "RFI", "Command Injection", "IDOR"] }, 
+          { title: "Metasploit Framework", children: ["EternalBlue (MS17-010)", "BlueKeep (CVE-2019-0708)", "Log4Shell (CVE-2021-44228)", "VSFTPD Backdoor", "Shellshock"] }, 
+          { title: "Active Directory Attacks", children: ["Kerberoasting", "AS-REP Roasting", "Pass-the-Hash (PtH)", "Golden Ticket", "DCSync"] } 
+      ]},
+      { cat: "DFIR (Forensics & IR)", icon: "fa-magnifying-glass-chart", modules: [ { title: "Log Analysis (grep)" }, { title: "Memory Forensics (Volatility)" }, { title: "Incident Response (PICERL)" } ]},
+      { cat: "Cloud Security", icon: "fa-cloud", modules: [ { title: "AWS S3 & IAM" }, { title: "Container Security" } ]},
+      { cat: "DevSecOps", icon: "fa-code-branch", modules: [ { title: "SAST & Code Scanning" }, { title: "CI/CD Pipeline Security" } ]},
+      { cat: "Malware Analysis", icon: "fa-virus", modules: [ { title: "Static Analysis" }, { title: "Dynamic Analysis (Sandbox)" } ]},
+      { cat: "The Kali Linux Arsenal", icon: "fa-dragon", modules: [ 
+          { title: "Info Gathering & OSINT", children: ["Nmap", "Maltego", "Recon-ng", "theHarvester", "Shodan"] }, 
+          { title: "Web Application Tools", children: ["Burp Suite", "OWASP ZAP", "SQLmap", "Nikto", "Gobuster"] }, 
+          { title: "Exploitation Frameworks", children: ["Metasploit", "Searchsploit", "BeEF", "SET"] }, 
+          { title: "Password Cracking", children: ["Hashcat", "John the Ripper", "Hydra", "Medusa"] }, 
+          { title: "Sniffing & Spoofing", children: ["Wireshark", "Bettercap", "Ettercap", "Responder"] }, 
+          { title: "Post-Exploitation", children: ["Mimikatz", "BloodHound", "Evil-WinRM", "PowerSploit"] }, 
+          { title: "Forensics & Stego", children: ["Volatility", "Autopsy", "Binwalk", "Steghide"] } 
+      ]}
+    ];
+    data2[4].children[0].children = data3; // Inject data3 into Data 2
+
+    // DATA 4: Practice Labs
+    const data4 = [
+      { title: "Packet Tracer Labs", icon: "fa-network-wired", children: [
+          { title: "Basic Switch Configuration", link: "Switch_Config.html" }, { title: "Basic VLAN Configuration", link: "vlan.html" }, { title: "Static Routing", link: "static_route.html" }, { title: "SSH Configuration", link: "ssh.html" }, { title: "VLAN Trunking", link: "trunk.html" }, { title: "Router-on-a-Stick", link: "router_stick.html" }, { title: "EtherChannel", link: "etherchannel.html" }, { title: "DHCPv4 Configuration", link: "dhcp.html" }, { title: "NAT Configuration", link: "nat.html" }, { title: "Access Control Lists", link: "acl.html" }, { title: "OSPF Single Area", link: "ospf.html" }, { title: "HSRP Configuration", link: "hsrp.html" }, { title: "Spanning Tree Protocol", link: "stp.html" }, { title: "Switch Management", link: "mgt.html" }, { title: "VoIP — Cisco & Avaya Voice VLAN", link: "voip.html" }, { title: "Routing & Subnetting", link: "subnetting.html" }, { title: "ASA Firewall Configuration", link: "asa.html" }
+      ]},
+      { title: "EVE-NG & GNS3 Labs", icon: "fa-cubes", children: [
+          { title: "Practice Labs (EVE-NG + GNS3)", link: "lesson-15.html", children: [ "EVE-NG Network Topology Building", "GNS3 Virtual Lab Setup", "Kali Linux Integration with EVE-NG", "Multi-Vendor Network Simulation", "SD-WAN Lab Topology", "BGP Routing Lab" ] }
+      ]},
+      { title: "Advanced Practice Labs", icon: "fa-layer-group", children: [
+          { title: "Advanced Labs Overview", link: "lesson-16.html", children: [ "Enterprise Campus Network Design", "Multi-Site VPN Topology", "DMZ Deployment Lab", "High Availability (HSRP + VRRP)", "QoS & Traffic Shaping", "Network Automation with Python" ] }
+      ]},
+      { title: "Cloud Hands-On Labs", icon: "fa-cloud", children: [
+          { title: "Cloud Computing Labs", link: "lesson-13.html", children: [ "AWS S3 Bucket Policies", "IAM Role & Policy Configuration", "VPC & Subnet Design", "Security Group Rules", "Azure Network Security Groups", "GCP Firewall Rules" ] }
+      ]}
+    ];
+
+    function renderSidebarTree(nodes, parentElement, level, prefix) {
+        let counter = 1;
+        nodes.forEach(node => {
+            if (typeof node === 'string') { node = { title: node, link: null, children: null }; }
+            const li = document.createElement('li');
+            li.className = `level-${level}`;
+            const itemElement = node.link ? document.createElement('a') : document.createElement('span');
+            if (node.link) {
+                itemElement.href = node.link;
+                if (!node.link.startsWith('#') && !node.link.startsWith('javascript:')) {
+                    itemElement.target = '_blank'; itemElement.rel = 'noopener noreferrer';
+                }
+            } else { itemElement.href = '#'; }
+            let rawTitle = node.cat || node.title || node.name || "";
+            let title = rawTitle.replace(/^\d+[\.\)\-]\s*/, "").trim();
+            let numPrefix = prefix ? `${prefix}.${counter}` : `${counter}`;
+            let displayTitle = `${numPrefix}. ${title}`;
+            counter++;
+            let iconHtml = '';
+            if (level === 1) iconHtml = `<i class="fas ${node.icon || 'fa-folder'}" style="color: var(--primary); margin-right: 8px;"></i>`;
+            if (level > 1 && (node.children || node.modules || node.data)) iconHtml = `<i class="fas fa-chevron-right toggle-icon"></i>`;
+            if (level > 1 && !node.children && !node.modules && !node.data) iconHtml = `<i class="far fa-circle toggle-icon" style="font-size: 6px; color: var(--fg-muted);"></i>`;
+            itemElement.innerHTML = `${iconHtml} ${displayTitle}`;
+            li.appendChild(itemElement);
+            const children = node.children || node.modules || node.data;
+            if (children && children.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'sub-tree';
+                renderSidebarTree(children, ul, level + 1, numPrefix);
+                li.appendChild(ul);
+                itemElement.addEventListener('click', (e) => {
+                    if (!node.link) { e.preventDefault(); }
+                    itemElement.classList.toggle('expanded');
+                    ul.style.display = ul.style.display === 'block' ? 'none' : 'block';
+                });
+            } else if (!node.link) {
+                itemElement.style.cursor = 'default';
+                itemElement.addEventListener('click', function(e) { e.preventDefault(); });
+            }
+            parentElement.appendChild(li);
+        });
+    }
+
+    // Combine all data to render
+    const allTreeData = [coursesCategory, ...data1, ...data2, ...data4];
+    renderSidebarTree(allTreeData, document.getElementById('sidebarTree'), 1, '');
+
+    // Tree Controls Logic
+    document.getElementById('expandAll').addEventListener('click', () => {
+        document.querySelectorAll('#sidebarTree .sub-tree').forEach(ul => {
+            ul.style.display = 'block';
+            ul.previousElementSibling.classList.add('expanded');
+        });
+    });
+    document.getElementById('collapseAll').addEventListener('click', () => {
+        document.querySelectorAll('#sidebarTree .sub-tree').forEach(ul => {
+            ul.style.display = 'none';
+            ul.previousElementSibling.classList.remove('expanded');
+        });
+    });
+    document.getElementById('treeSearch').addEventListener('input', function() {
+        const term = this.value.toLowerCase().trim();
+        const allLis = document.querySelectorAll('#sidebarTree li');
+        const allUls = document.querySelectorAll('#sidebarTree .sub-tree');
+        
+        if (!term) {
+            allLis.forEach(li => li.style.display = '');
+            allUls.forEach(ul => ul.style.display = 'none'); // collapse back
+            return;
+        }
+        allLis.forEach(li => li.style.display = 'none');
+        allUls.forEach(ul => ul.style.display = 'block'); // expand for visibility
+        
+        allLis.forEach(li => {
+            const text = li.querySelector('a, span')?.textContent.toLowerCase() || '';
+            if (text.includes(term)) {
+                li.style.display = '';
+                let parent = li.parentElement.closest('li');
+                while(parent) {
+                    parent.style.display = '';
+                    parent = parent.parentElement.closest('li');
+                }
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
