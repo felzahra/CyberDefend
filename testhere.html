@@ -854,7 +854,6 @@
     });
 
     // ========== LESSON ORDER ==========
-    // Added Cisco lessons to the beginning of the array
     const lessonOrder = ['ciscopdf1', 'ciscopdf2', 'ciscovid1', 'ciscovid2', 'ciscosim', 'pdf', 'pdf2', 'pdfc', 'pdf4', 'pdf5', '0', '5', '1', '2', '3', '4', 'sim', 'sim2', '11', '12', '13', 'pdf3', 'pdfconfig', 'sim3', '20', '21', '22'];
     let currentIndex = 0;
 
@@ -953,6 +952,12 @@
         const badge = document.querySelector('.comment-fab-badge');
         badge.textContent = parseInt(badge.textContent) + 1;
     }
+
+    // ========== INITIALIZE DEFAULT LESSON ON PAGE LOAD ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load the very first lesson in the array (ciscopdf1) by default
+        showLesson('ciscopdf1'); 
+    });
 </script>
 </body>
 </html>
