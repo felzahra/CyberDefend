@@ -115,19 +115,29 @@
         
         /* ANIMATED TOPOLOGY */
         .topology-container { background: var(--darkened-bg); border: 2px solid var(--hairline-color); border-radius: 20px; padding: 40px 20px; margin: 30px 0; position: relative; overflow: hidden; }
-        .topo-grid { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; gap: 20px; }
-        .topo-node { background: var(--selected-bg); border: 2px solid var(--primary); padding: 15px 25px; border-radius: 12px; text-align: center; font-weight: 700; color: var(--body-loud-color); box-shadow: 0 4px 15px rgba(250, 88, 45, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .topo-main { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; gap: 20px; }
+        .topo-node { background: var(--selected-bg); border: 2px solid var(--primary); padding: 15px 25px; border-radius: 12px; text-align: center; font-weight: 700; color: var(--body-loud-color); box-shadow: 0 4px 15px rgba(250, 88, 45, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 120px; }
         .topo-node i { font-size: 2rem; color: var(--primary); }
         .topo-node span { font-size: 0.85rem; }
         .topo-node.firewall { background: var(--primary); color: white; border-color: white; }
         .topo-node.firewall i { color: white; }
+        .topo-node.dmz { border-color: #29b6f6; }
+        .topo-node.dmz i { color: #29b6f6; }
         
         .cable-container { flex: 1; height: 4px; background: var(--hairline-color); position: relative; overflow: hidden; border-radius: 2px; }
         .cable-container::before { content: ''; position: absolute; top: 0; left: -30%; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, var(--primary), transparent); animation: dataFlow 1.5s infinite linear; }
         
+        .dmz-wrapper { display: flex; flex-direction: column; align-items: center; margin-top: 30px; }
+        .vertical-cable { width: 4px; height: 40px; background: var(--hairline-color); position: relative; overflow: hidden; }
+        .vertical-cable::before { content: ''; position: absolute; top: -30%; left: 0; height: 30%; width: 100%; background: linear-gradient(180deg, transparent, #29b6f6, transparent); animation: dataFlowV 1.5s infinite linear; }
+
         @keyframes dataFlow {
             0% { left: -30%; }
             100% { left: 100%; }
+        }
+        @keyframes dataFlowV {
+            0% { top: -30%; }
+            100% { top: 100%; }
         }
 
         footer { text-align: center; padding: 32px 0; font-size: 0.75rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); margin-top: 40px; }
@@ -154,12 +164,12 @@
     <div class="hero">
         <div class="hero-badge">FIREWALL CONFIGURATION</div>
         <h2>Palo Alto Firewall - Complete Setup</h2>
-        <p>Learn how to install Palo Alto PA-VM on EVE-NG/GNS3, configure interfaces, routing, Security Policies (Allow/Deny), and NAT from scratch.</p>
+        <p>Learn how to install Palo Alto PA-VM on EVE-NG/GNS3, configure interfaces, routing, Security Policies (Allow/Deny), DMZ setup, and NAT from scratch.</p>
     </div>
 
     <!-- ANIMATED TOPOLOGY -->
     <div class="topology-container">
-        <div class="topo-grid">
+        <div class="topo-main">
             <div class="topo-node">
                 <i class="fas fa-network-wired"></i>
                 <span>Trust LAN<br>(10.0.0.0/24)</span>
@@ -175,10 +185,19 @@
                 <span>Untrust WAN<br>(ISP)</span>
             </div>
         </div>
+
+        <!-- DMZ Branch -->
+        <div class="dmz-wrapper">
+            <div class="vertical-cable"></div>
+            <div class="topo-node dmz" style="margin-top: 0;">
+                <i class="fas fa-server"></i>
+                <span>DMZ Zone<br>(172.16.50.0/24)<br>Web Server</span>
+            </div>
+        </div>
         <div style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--body-quiet-color);">
             <i class="fas fa-circle" style="color: var(--primary); font-size: 8px; animation: blink 1s infinite;"></i> Live Traffic Flow Simulation
+            <style>@keyframes blink { 50% { opacity: 0.3; } }</style>
         </div>
-        <style>@keyframes blink { 50% { opacity: 0.3; } }</style>
     </div>
 
     <!-- TOC -->
@@ -187,10 +206,10 @@
         <div class="toc-grid">
             <a href="#install"><span class="toc-num">1.</span> Installation on EVE-NG / GNS3</a>
             <a href="#init"><span class="toc-num">2.</span> Initial CLI Configuration</a>
-            <a href="#interfaces"><span class="toc-num">3.</span> Interfaces & Zones</a>
+            <a href="#interfaces"><span class="toc-num">3.</span> Interfaces & Zones (incl. DMZ)</a>
             <a href="#routing"><span class="toc-num">4.</span> Virtual Router & Routes</a>
             <a href="#policy"><span class="toc-num">5.</span> Security Policies (Allow/Deny)</a>
-            <a href="#nat"><span class="toc-num">6.</span> NAT Policies</a>
+            <a href="#nat"><span class="toc-num">6.</span> NAT Policies (Outbound & DMZ)</a>
             <a href="#commit"><span class="toc-num">7.</span> Commit & Verify</a>
         </div>
     </div>
@@ -276,14 +295,14 @@
     <div class="section" id="interfaces">
         <div class="sec-head">
             <div class="sec-icon">🔌</div>
-            <h2>3. Network Interfaces & Zones<small>Layer 3 configuration</small></h2>
+            <h2>3. Network Interfaces & Zones<small>Layer 3 configuration (Trust, Untrust, DMZ)</small></h2>
         </div>
         <div class="step">
             <div class="step-head">
                 <div class="step-num">1</div>
                 <div class="step-content">
                     <div class="step-title">Configure Physical Interfaces</div>
-                    <div class="step-desc">Assign IP addresses to ethernet1/1 (Trust) and ethernet1/2 (Untrust).</div>
+                    <div class="step-desc">Assign IP addresses to ethernet1/1 (Trust), ethernet1/2 (Untrust), and ethernet1/3 (DMZ).</div>
                 </div>
             </div>
             <div class="step-body">
@@ -296,7 +315,11 @@
 
 <span class="comment"># Untrust Interface (WAN)</span>
 <span class="cmd">set</span> network interface ethernet ethernet1/2 layer3 ip <span class="val">203.0.113.2/30</span>
-<span class="cmd">set</span> network interface ethernet ethernet1/2 comment <span class="val">Untrust-WAN</span></pre>
+<span class="cmd">set</span> network interface ethernet ethernet1/2 comment <span class="val">Untrust-WAN</span>
+
+<span class="comment"># DMZ Interface (Public Servers)</span>
+<span class="cmd">set</span> network interface ethernet ethernet1/3 layer3 ip <span class="val">172.16.50.1/24</span>
+<span class="cmd">set</span> network interface ethernet ethernet1/3 comment <span class="val">DMZ-Servers</span></pre>
                 </div>
             </div>
         </div>
@@ -305,7 +328,7 @@
                 <div class="step-num">2</div>
                 <div class="step-content">
                     <div class="step-title">Create Zones</div>
-                    <div class="step-desc">Bind interfaces to security zones.</div>
+                    <div class="step-desc">Bind interfaces to security zones. Enable User-ID on Trust.</div>
                 </div>
             </div>
             <div class="step-body">
@@ -317,7 +340,10 @@
 <span class="cmd">set</span> zone Trust enable-user-identification yes
 
 <span class="comment"># Untrust Zone</span>
-<span class="cmd">set</span> zone Untrust network layer3 ethernet1/2</pre>
+<span class="cmd">set</span> zone Untrust network layer3 ethernet1/2
+
+<span class="comment"># DMZ Zone</span>
+<span class="cmd">set</span> zone DMZ network layer3 ethernet1/3</pre>
                 </div>
             </div>
         </div>
@@ -327,14 +353,15 @@
     <div class="section" id="routing">
         <div class="sec-head">
             <div class="sec-icon">🛤️</div>
-            <h2>4. Virtual Router & Static Routes<small>Default route to ISP</small></h2>
+            <h2>4. Virtual Router & Static Routes<small>Default route to ISP & DMZ routing</small></h2>
         </div>
         <div class="code-block">
             <div class="code-label">CLI CONFIGURATION</div>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><span class="comment"># Add interfaces to Virtual Router</span>
+            <pre><span class="comment"># Add all interfaces to Virtual Router</span>
 <span class="cmd">set</span> network virtual-router default interface ethernet1/1
 <span class="cmd">set</span> network virtual-router default interface ethernet1/2
+<span class="cmd">set</span> network virtual-router default interface ethernet1/3
 
 <span class="comment"># Create Default Route (0.0.0.0/0) pointing to ISP Gateway</span>
 <span class="cmd">set</span> network virtual-router default routing-table ip static-route <span class="val">Default-Route</span> destination <span class="val">0.0.0.0/0</span>
@@ -346,8 +373,9 @@
     <div class="section" id="policy">
         <div class="sec-head">
             <div class="sec-icon">🛡️</div>
-            <h2>5. Security Policies (Allow / Deny)<small>Permit internal traffic, block inbound</small></h2>
+            <h2>5. Security Policies (Allow / Deny)<small>Internal, Internet, and DMZ Access</small></h2>
         </div>
+        
         <div class="step">
             <div class="step-head">
                 <div class="step-num">1</div>
@@ -371,20 +399,45 @@
                 </div>
             </div>
         </div>
+
         <div class="step">
             <div class="step-head">
                 <div class="step-num">2</div>
                 <div class="step-content">
-                    <div class="step-title">Deny All Inbound (Untrust to Trust)</div>
-                    <div class="step-desc">Default deny rule to block all unsolicited inbound traffic.</div>
+                    <div class="step-title">Allow Internet to DMZ Web Server (Untrust to DMZ)</div>
+                    <div class="step-desc">Allow public users to access the Web Server in the DMZ on ports 80/443.</div>
                 </div>
             </div>
             <div class="step-body">
                 <div class="code-block">
                     <div class="code-label">CLI CONFIGURATION</div>
                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Deny-Inbound</span>
+                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Allow-Inbound-Web-to-DMZ</span>
     from <span class="val">Untrust</span>
+    to <span class="val">DMZ</span>
+    source <span class="val">any</span>
+    destination <span class="val">172.16.50.10</span> <span class="comment"># Web Server IP</span>
+    application <span class="val">[ web-browsing ssl ]</span>
+    service <span class="val">application-default</span>
+    action <span class="val">allow</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-title">Deny DMZ to Trust (Zone Isolation)</div>
+                    <div class="step-desc">Prevent compromised DMZ servers from lateral movement into the internal LAN.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Deny-DMZ-to-Trust</span>
+    from <span class="val">DMZ</span>
     to <span class="val">Trust</span>
     source <span class="val">any</span>
     destination <span class="val">any</span>
@@ -400,12 +453,22 @@
     <div class="section" id="nat">
         <div class="sec-head">
             <div class="sec-icon">🌐</div>
-            <h2>6. NAT Policies<small>Source NAT for Internet Access</small></h2>
+            <h2>6. NAT Policies<small>Outbound Source NAT & Inbound Destination NAT</small></h2>
         </div>
-        <div class="code-block">
-            <div class="code-label">CLI CONFIGURATION</div>
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><span class="comment"># Outbound Source NAT (Dynamic IP and Port)</span>
+
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Outbound Source NAT (Trust to Untrust)</div>
+                    <div class="step-desc">Translate internal LAN IPs to the Firewall's WAN IP.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Outbound Source NAT (Dynamic IP and Port)</span>
 <span class="cmd">set</span> rulebase nat rules <span class="val">Outbound-NAT</span>
     from <span class="val">Trust</span>
     to <span class="val">Untrust</span>
@@ -415,6 +478,33 @@
         translated-address <span class="val">interface-address</span>
             interface <span class="val">ethernet1/2</span>
             ip-address <span class="val">203.0.113.2</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">Inbound Destination NAT (Port Forwarding to DMZ)</div>
+                    <div class="step-desc">Forward public HTTP/HTTPS traffic hitting the WAN IP to the DMZ Web Server.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Destination NAT for Web Server (Port 80)</span>
+<span class="cmd">set</span> rulebase nat rules <span class="val">DNAT-Web-Server-80</span>
+    from <span class="val">Untrust</span>
+    to <span class="val">Untrust</span>
+    source <span class="val">any</span>
+    destination <span class="val">203.0.113.2</span>
+    destination-port <span class="val">80</span>
+    to-destination <span class="val">172.16.50.10</span>
+    to-destination-port <span class="val">80</span></pre>
+                </div>
+            </div>
         </div>
     </div>
 
