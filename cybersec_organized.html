@@ -46,7 +46,7 @@
         #sidebarToggle {
             position: fixed;
             top: 18px; 
-            left: 320px; /* Width of sidebar */
+            left: 320px; 
             z-index: 9999;
             width: 24px;
             height: 44px;
@@ -104,28 +104,8 @@
 
         .content-wrapper { flex: 1; width: 100%; display: flex; flex-direction: column; padding: 0; box-sizing: border-box; min-height: 0; }
         
-        /* WELCOME / DEFAULT CONTENT */
-        .welcome-container { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
-        .welcome-container h1 { font-size: 2.5rem; margin-bottom: 16px; color: var(--body-loud-color); }
-        .welcome-container p { font-size: 1.1rem; color: var(--body-quiet-color); margin-bottom: 32px; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .info-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 32px; transition: transform 0.2s, border-color 0.2s; }
-        .info-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .info-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 16px; }
-        .info-card h3 { font-size: 1.2rem; margin-bottom: 12px; color: var(--body-loud-color); }
-        .info-card p { font-size: 0.9rem; color: var(--body-quiet-color); margin: 0; }
-
-        /* FAQ SECTION */
-        .faq-section { margin-top: 60px; }
-        .faq-item { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
-        .faq-q { padding: 18px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--body-loud-color); }
-        .faq-q i { transition: transform 0.3s; }
-        .faq-item.active .faq-q i { transform: rotate(180deg); }
-        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 24px; color: var(--body-quiet-color); font-size: 0.9rem; line-height: 1.6; }
-        .faq-item.active .faq-a { max-height: 200px; padding: 0 24px 18px; }
-
         /* IFRAME STYLES */
-        .lab-iframe { width: 100%; flex: 1; border: none; display: none; min-height: 0; }
+        .lab-iframe { width: 100%; flex: 1; border: none; display: block; min-height: 0; }
 
         footer { text-align: center; margin-top: auto; font-size: 0.8rem; color: var(--body-quiet-color); padding: 20px 40px; border-top: 1px solid var(--hairline-color); background: var(--header-bg); flex-shrink: 0; }
 
@@ -169,10 +149,10 @@
     </div>
     <div class="nav-list">
         <div class="nav-section-label">🚀 START HERE: INSTALLATIONS</div>
-        <div class="nav-item active" data-url="welcome.html"><span class="check-icon">🏠</span> Welcome & Overview</div>
+        <div class="nav-item active" data-url="welcome.html"><span class="check-icon">🧱</span> Welcome & Overview</div>
         <div class="nav-item" data-url="install_gns3.html"><span class="check-icon">💾</span> Install GNS3 & EVE-NG</div>
-        <div class="nav-item" data-url="install_paloalto.html"><span class="check-icon">🔥</span> Install Palo Alto Firewall</div>
-        <div class="nav-item" data-url="install_fortinet.html"><span class="check-icon">🛡️</span> Install Fortinet Firewall</div>
+        <div class="nav-item" data-url="install_paloalto.html"><span class="check-icon">🧱</span> Install Palo Alto Firewall</div>
+        <div class="nav-item" data-url="install_fortinet.html"><span class="check-icon">🧱</span> Install Fortinet Firewall</div>
         <div class="nav-item" data-url="install_cisco.html"><span class="check-icon">🌐</span> Install Cisco IOS Images</div>
 
         
@@ -181,57 +161,42 @@
         <div class="nav-item" data-url="tools_wireshark.html"><span class="check-icon">🦈</span> Wireshark Analysis</div>
         <div class="nav-item" data-url="tools_nmap.html"><span class="check-icon">📡</span> Nmap Scanning</div>
         <div class="nav-item" data-url="tools_metasploit.html"><span class="check-icon">💣</span> Metasploit Framework</div>
-		<div class="nav-section-label"> Cybersecurity Fundamentals Begin Here</div>
-	    <div class="nav-item" data-url="encyclopedia.html"><span class="check-icon">1️⃣  </span> Cybersecurity Fundamentals</div>      
-		<div class="nav-item" data-url="lesson-16.html"><span class="check-icon">2️⃣️</span>Cybersecurity Fundamentals p2</div>  
-		<div class="nav-item" data-url="attack-vectors.html"><span class="check-icon">3️⃣ </span> Cybersecurity Fundamentals p3</div>      
-		
-	    <div class="nav-item" data-url="lesson-4.html"><span class="check-icon"> 4️⃣️  </span> Vulnerability Scanners</div>      
-	    <div class="nav-item" data-url="nessus.html"><span class="check-icon">5️⃣️  </span> Nessus Vulnerability Assessment</div>      
-	    <div class="nav-item" data-url="lesson-9.html"><span class="check-icon"> 6️⃣ </span> Cyber Attacks</div>      
-	    <div class="nav-item" data-url="kali-tools.html"><span class="check-icon"> ️7️⃣️  </span>  Top 50 Kali Linux Tools</div>      
-	    <div class="nav-item" data-url="soc-analyst.html"><span class="check-icon">8️⃣ </span> SOC Analyst</div>      
-	    <div class="nav-item" data-url="web-app-pentest.html"><span class="check-icon">  9️⃣  </span> Web App Pentesting</div>     
+        <div class="nav-section-label"> Cybersecurity Fundamentals Begin Here</div>
+        <div class="nav-item" data-url="encyclopedia.html"><span class="check-icon">1️⃣  </span> Cybersecurity Fundamentals</div>      
+        <div class="nav-item" data-url="lesson-16.html"><span class="check-icon">2️⃣️</span>Cybersecurity Fundamentals p2</div>  
+        <div class="nav-item" data-url="attack-vectors.html"><span class="check-icon">3️⃣ </span> Cybersecurity Fundamentals p3</div>      
+        
+        <div class="nav-item" data-url="lesson-4.html"><span class="check-icon"> 4️⃣️  </span> Vulnerability Scanners</div>      
+        <div class="nav-item" data-url="nessus.html"><span class="check-icon">5️⃣️  </span> Nessus Vulnerability Assessment</div>      
+        <div class="nav-item" data-url="lesson-9.html"><span class="check-icon"> 6️⃣ </span> Cyber Attacks</div>      
+        <div class="nav-item" data-url="kali-tools.html"><span class="check-icon"> ️7️⃣️  </span>  Top 50 Kali Linux Tools</div>      
+        <div class="nav-item" data-url="soc-analyst.html"><span class="check-icon">8️⃣ </span> SOC Analyst</div>      
+        <div class="nav-item" data-url="web-app-pentest.html"><span class="check-icon">  9️⃣  </span> Web App Pentesting</div>     
 
-	
-     
-
-
-
-
-
-
-
-
-		
-
+    
         <div class="nav-section-label">⚔️ ATTACK LABS</div>
         <div class="nav-item" data-url="attack_mitm.html"><span class="check-icon">🕵️</span> Man-in-the-Middle (MITM)</div>
         <div class="nav-item" data-url="attack_ddos.html"><span class="check-icon">💥</span> DDoS Attack Lab</div>
         <div class="nav-item" data-url="attack_phishing.html"><span class="check-icon">📧</span> Phishing Simulation</div>
         <div class="nav-item" data-url="attack_ransomware.html"><span class="check-icon">🔒</span> Ransomware Simulation</div>
-		
-		
-		
-		<div class="nav-item" data-url="live-monitor.html"><span class="check-icon">🟢</span> Live Threat Monitor</div>
-		<div class="nav-item" data-url="begin1.html"><span class="check-icon">🟢</span> Beginner Pentest Labs</div>
-		<div class="nav-item" data-url="88888.html"><span class="check-icon">🟢</span> Attack Phases</div>
-		<div class="nav-item" data-url="second.html"><span class="check-icon">🟢</span> Attack LABS p1</div>
-		<div class="nav-item" data-url="third.html"><span class="check-icon">🟢</span> Attack LABS p2</div>
-		<div class="nav-item" data-url="fourth.html"><span class="check-icon">🟢</span>Attack LABS p3</div>
-		<div class="nav-item" data-url="wireshark-lab.html"><span class="check-icon">🟢</span> Wireshark GUI Labs</div>
-		<div class="nav-item" data-url="logs.html"><span class="check-icon">🟢</span> Log Analysis</div>
-		<div class="nav-item" data-url="crack.html"><span class="check-icon">🟢</span> Exploitation & Cracking</div>
-		<div class="nav-item" data-url="kali50tools.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI</div>
-		<div class="nav-item" data-url="kali50tools3.html"><span class="check-icon">🐉</span> Kali Toolset Console</div>
-		<div class="nav-item" data-url="kali50tools2.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI+ GUI</div>
-		<div class="nav-item" data-url="BurpSuite.html"><span class="check-icon">🟢</span> Burp Suite</div>
-		<div class="nav-item" data-url="active-directory-attack-lab.html"><span class="check-icon">🟢</span> Active Directory Attack Lab</div>
-		<div class="nav-item" data-url="soc-tools.html"><span class="check-icon">🟢</span> 20 Essential SOC Tools</div>
-
-
-	 
-
+        
+        
+        
+        <div class="nav-item" data-url="live-monitor.html"><span class="check-icon">🟢</span> Live Threat Monitor</div>
+        <div class="nav-item" data-url="begin1.html"><span class="check-icon">🟢</span> Beginner Pentest Labs</div>
+        <div class="nav-item" data-url="88888.html"><span class="check-icon">🟢</span> Attack Phases</div>
+        <div class="nav-item" data-url="second.html"><span class="check-icon">🟢</span> Attack LABS p1</div>
+        <div class="nav-item" data-url="third.html"><span class="check-icon">🟢</span> Attack LABS p2</div>
+        <div class="nav-item" data-url="fourth.html"><span class="check-icon">🟢</span>Attack LABS p3</div>
+        <div class="nav-item" data-url="wireshark-lab.html"><span class="check-icon">🟢</span> Wireshark GUI Labs</div>
+        <div class="nav-item" data-url="logs.html"><span class="check-icon">🟢</span> Log Analysis</div>
+        <div class="nav-item" data-url="crack.html"><span class="check-icon">🟢</span> Exploitation & Cracking</div>
+        <div class="nav-item" data-url="kali50tools.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI</div>
+        <div class="nav-item" data-url="kali50tools3.html"><span class="check-icon">🐉</span> Kali Toolset Console</div>
+        <div class="nav-item" data-url="kali50tools2.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI+ GUI</div>
+        <div class="nav-item" data-url="BurpSuite.html"><span class="check-icon">🟢</span> Burp Suite</div>
+        <div class="nav-item" data-url="active-directory-attack-lab.html"><span class="check-icon">🟢</span> Active Directory Attack Lab</div>
+        <div class="nav-item" data-url="soc-tools.html"><span class="check-icon">🟢</span> 20 Essential SOC Tools</div>
 
         <div class="nav-section-label">📺 Roadmaps</div>
         <div class="nav-item" data-url="Roadmaps.html"><span class="check-icon">🎬</span> Roadmap</div>
@@ -258,58 +223,8 @@
     </nav>
 
     <div class="content-wrapper" id="contentWrapper">
-        
-        <!-- DEFAULT WELCOME CONTENT -->
-        <div class="welcome-container" id="welcomeContent">
-            <h1>Welcome to the CyberDefend Hub</h1>
-            <p>Select a lab or tool from the left panel to begin your training. Start with the installations if you are setting up your environment for the first time.</p>
-            
-            <div class="cards-grid">
-                <div class="info-card">
-                    <i class="fas fa-rocket"></i>
-                    <h3>Step 1: Install Lab</h3>
-                    <p>Install GNS3 or EVE-NG, then load your firewall and router images. Click "Install GNS3" to begin.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-network-wired"></i>
-                    <h3>Step 2: Build Topology</h3>
-                    <p>Drag and drop devices to build the enterprise network topology (Access, Dist, Core, FW).</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-syringe"></i>
-                    <h3>Step 3: Execute Attacks</h3>
-                    <p>Use Kali Linux to launch simulated attacks against your network infrastructure.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Step 4: Mitigate</h3>
-                    <p>Configure Palo Alto and Fortinet firewalls to detect and block the attacks.</p>
-                </div>
-            </div>
-
-            <!-- FAQ SECTION -->
-            <div class="faq-section">
-                <h2 style="margin-bottom: 20px; color: var(--body-loud-color);">Frequently Asked Questions</h2>
-                
-                <div class="faq-item">
-                    <div class="faq-q" onclick="toggleFAQ(this)">Where do I start? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-a">If you are new to network labs, start with the "Install GNS3 & EVE-NG" link in the left panel. Once your simulator is running, proceed to install the firewall images (Palo Alto, Fortinet).</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-q" onclick="toggleFAQ(this)">How do I simulate an attack? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-a">Navigate to the "Attack Labs" section in the left panel. Each lab contains step-by-step instructions on how to use tools like Kali Linux, Nmap, and Metasploit to simulate the attack.</div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-q" onclick="toggleFAQ(this)">What if the page is blank when I click a link? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-a">The hub loads separate HTML files. Ensure that the files (e.g., <code>install_gns3.html</code>) exist in the same directory structure as this main page.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- IFRAME FOR LABS -->
-        <iframe class="lab-iframe" id="labFrame" src="about:blank"></iframe>
+        <!-- IFRAME FOR LABS (welcome.html loads here by default) -->
+        <iframe class="lab-iframe" id="labFrame" src="welcome.html"></iframe>
     </div>
 
     <footer>
@@ -334,7 +249,6 @@
     // NAVIGATION & IFRAME LOADING LOGIC
     const navItems = document.querySelectorAll('.nav-item[data-url]');
     const labFrame = document.getElementById('labFrame');
-    const welcomeContent = document.getElementById('welcomeContent');
 
     navItems.forEach(item => {
         item.addEventListener('click', function() {
@@ -344,19 +258,15 @@
             navItems.forEach(n => n.classList.remove('active'));
             this.classList.add('active');
 
-            // Load content
-            if (url === 'welcome.html' || url === '#') {
-                labFrame.style.display = 'none';
-                welcomeContent.style.display = 'block';
-            } else {
+            // Load content into iframe
+            if (url && url !== '#') {
                 labFrame.src = url;
                 labFrame.style.display = 'block';
-                welcomeContent.style.display = 'none';
             }
         });
     });
 
-    // THEME TOGGLE
+    // THEME TOGGLE (Updated to send theme to iframe)
     function toggleTheme() {
         const html = document.documentElement;
         const current = html.getAttribute('data-theme');
@@ -364,14 +274,20 @@
         html.setAttribute('data-theme', next);
         localStorage.setItem('cd_theme', next);
         document.getElementById('themeLabel').textContent = next === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        
+        // Send theme update to the iframe (welcome.html)
+        if (labFrame.contentWindow) {
+            labFrame.contentWindow.postMessage({ type: 'themeUpdate', theme: next }, '*');
+        }
     }
     document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
 
-    // FAQ ACCORDION
-    function toggleFAQ(element) {
-        const parent = element.parentElement;
-        parent.classList.toggle('active');
-    }
+    // Send initial theme to iframe once it loads
+    labFrame.onload = function() {
+        if (labFrame.contentWindow) {
+            labFrame.contentWindow.postMessage({ type: 'themeUpdate', theme: savedTheme }, '*');
+        }
+    };
 </script>
 </body>
 </html>
