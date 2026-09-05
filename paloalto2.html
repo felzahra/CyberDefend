@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · Palo Alto Advanced Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #fa582d; /* Palo Alto Orange */
+            --primary-fg: #ffffff;
+            --body-fg: #e0e0e0;
+            --body-bg: #0a0a0a;
+            --body-quiet-color: #9e9e9e;
+            --body-loud-color: #ffffff;
+            --hairline-color: #1e1e1e;
+            --border-color: #2a2a2a;
+            --darkened-bg: #111111;
+            --selected-bg: #1a1a1a;
+            --selected-row: #151515;
+            --header-bg: #0f0f0f;
+            --link-fg: #fa582d;
+            --code-bg: #0d0d0d;
+            --code-border: #3a1e1e;
+            --warn-bg: #1a1500;
+            --warn-border: #f9a825;
+            --info-bg: #0a1520;
+            --info-border: #29b6f6;
+            --tip-bg: #0a1a0e;
+            --tip-border: #00e676;
+            --vpn-color: #ab47bc;
+        }
+        html[data-theme="light"] {
+            --primary: #fa582d;
+            --primary-fg: #ffffff;
+            --body-fg: #2c3e50;
+            --body-bg: #f8f9fa;
+            --body-quiet-color: #607d8b;
+            --body-loud-color: #1a1a2e;
+            --hairline-color: #e0e0e0;
+            --border-color: #e0e0e0;
+            --darkened-bg: #ffffff;
+            --selected-bg: #fff3e0;
+            --selected-row: #f5f5f5;
+            --header-bg: #ffffff;
+            --link-fg: #e64a19;
+            --code-bg: #f5f5f5;
+            --code-border: #ffe0b2;
+            --warn-bg: #fff8e1;
+            --warn-border: #f9a825;
+            --info-bg: #e1f5fe;
+            --info-border: #29b6f6;
+            --tip-bg: #e8f5e9;
+            --tip-border: #00897b;
+            --vpn-color: #8e24aa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; transition: background 0.3s, color 0.3s; }
+        .page-container { max-width: 1000px; margin: 0 auto; padding: 40px 24px 80px; }
+        
+        .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
+        .top-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo { width: 44px; height: 44px; background: var(--primary); color: var(--primary-fg); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .top-bar h1 { font-size: 1.4rem; font-weight: 800; color: var(--body-loud-color); }
+        .top-bar h1 span { display: block; font-size: 0.6rem; color: var(--primary); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 16px; background: var(--darkened-bg); border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .hero { background: linear-gradient(135deg, var(--selected-bg) 0%, var(--darkened-bg) 100%); border: 1px solid var(--hairline-color); border-radius: 24px; padding: 40px 36px; margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: var(--primary); opacity: 0.04; border-radius: 50%; }
+        .hero-badge { display: inline-block; background: var(--primary); color: var(--primary-fg); font-size: 0.65rem; font-weight: 700; padding: 4px 14px; border-radius: 30px; letter-spacing: 1px; margin-bottom: 14px; }
+        .hero h2 { font-size: 2rem; font-weight: 800; color: var(--body-loud-color); margin-bottom: 8px; }
+        .hero p { color: var(--body-quiet-color); font-size: 0.92rem; max-width: 700px; }
+
+        .toc { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 28px 32px; margin-bottom: 40px; }
+        .toc h3 { font-size: 1rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+        .toc a { color: var(--link-fg); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 5px 0; display: block; transition: 0.15s; }
+        .toc a:hover { text-decoration: underline; padding-left: 6px; }
+        .toc a .toc-num { color: var(--body-quiet-color); font-weight: 700; margin-right: 6px; font-size: 0.75rem; }
+        @media (max-width: 600px) { .toc-grid { grid-template-columns: 1fr; } }
+
+        .section { margin-bottom: 48px; }
+        .sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid var(--hairline-color); }
+        .sec-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; background: var(--selected-bg); border: 1px solid var(--hairline-color); color: var(--primary); }
+        .sec-head h2 { font-size: 1.4rem; font-weight: 700; color: var(--body-loud-color); }
+        .sec-head h2 small { display: block; font-size: 0.72rem; color: var(--body-quiet-color); font-weight: 500; margin-top: 2px; }
+
+        .step { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 18px; margin-bottom: 16px; overflow: hidden; transition: border-color 0.2s; }
+        .step:hover { border-color: var(--primary); }
+        .step-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px 0; }
+        .step-num { width: 32px; height: 32px; background: var(--primary); color: var(--primary-fg); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+        .step-content { flex: 1; min-width: 0; }
+        .step-title { font-size: 1.05rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 4px; }
+        .step-desc { font-size: 0.85rem; color: var(--body-quiet-color); margin-bottom: 12px; line-height: 1.6; }
+        .step-body { padding: 0 24px 20px; }
+
+        .code-block { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: 14px; overflow: hidden; margin-bottom: 8px; }
+        .code-label { background: var(--code-border); color: var(--primary-fg); font-size: 0.65rem; font-weight: 700; padding: 4px 14px; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: transparent; border: none; color: var(--primary-fg); cursor: pointer; font-size: 0.65rem; font-weight: 600; opacity: 0.8; }
+        .copy-btn:hover { opacity: 1; }
+        pre { padding: 16px 20px; overflow-x: auto; font-family: 'Courier New', 'Consolas', monospace; font-size: 0.78rem; line-height: 1.7; color: #d4d4d4; }
+        html[data-theme="light"] pre { color: #333; }
+        .cmd { color: #fa582d; } html[data-theme="light"] .cmd { color: #d32f2f; }
+        .comment { color: #546e7a; font-style: italic; }
+        .val { color: #80deea; } html[data-theme="light"] .val { color: #00838f; }
+
+        .callout { border-radius: 14px; padding: 16px 20px; margin: 12px 0; font-size: 0.82rem; line-height: 1.6; display: flex; gap: 12px; align-items: flex-start; }
+        .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); }
+        .callout.info { background: var(--info-bg); border-left: 4px solid var(--info-border); }
+        .callout.tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); }
+        .callout strong { color: var(--body-loud-color); }
+
+        .config-img { width: 100%; max-width: 800px; border-radius: 12px; border: 1px solid var(--hairline-color); margin: 16px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        
+        /* ANIMATED VPN TOPOLOGY */
+        .topology-container { background: var(--darkened-bg); border: 2px solid var(--hairline-color); border-radius: 20px; padding: 40px 20px; margin: 30px 0; position: relative; overflow: hidden; }
+        .topo-main { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; gap: 20px; }
+        .topo-node { background: var(--selected-bg); border: 2px solid var(--primary); padding: 15px 25px; border-radius: 12px; text-align: center; font-weight: 700; color: var(--body-loud-color); box-shadow: 0 4px 15px rgba(250, 88, 45, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 120px; }
+        .topo-node i { font-size: 2rem; color: var(--primary); }
+        .topo-node span { font-size: 0.85rem; }
+        .topo-node.firewall { background: var(--primary); color: white; border-color: white; }
+        .topo-node.firewall i { color: white; }
+        
+        .vpn-tunnel { flex: 1; height: 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .vpn-line { width: 100%; height: 4px; background: var(--hairline-color); position: relative; overflow: hidden; border-radius: 2px; }
+        .vpn-line::before { content: ''; position: absolute; top: 0; left: -30%; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, var(--vpn-color), transparent); animation: vpnFlow 2s infinite linear; }
+        .vpn-label { position: absolute; top: -25px; background: var(--vpn-color); color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; }
+        
+        @keyframes vpnFlow {
+            0% { left: -30%; }
+            100% { left: 100%; }
+        }
+
+        footer { text-align: center; padding: 32px 0; font-size: 0.75rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); margin-top: 40px; }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<div class="page-container">
+    <div class="top-bar">
+        <div class="top-left">
+            <div class="top-logo">🛡️</div>
+            <h1>CyberDefend<span>SECURITY LABS</span></h1>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()">
+            <span id="themeLabel">Switch Theme</span>
+        </button>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">NGFW ADVANCED CONFIGURATION</div>
+        <h2>Palo Alto NGFW Features</h2>
+        <p>Master Next-Generation Firewall capabilities: Application & URL Filtering, Threat Prevention (AV/Anti-Spyware), SSL Decryption, and Site-to-Site IPsec VPN.</p>
+    </div>
+
+    <!-- ANIMATED VPN TOPOLOGY -->
+    <div class="topology-container">
+        <div class="topo-main">
+            <div class="topo-node">
+                <i class="fas fa-building"></i>
+                <span>Site A<br>10.0.0.0/24</span>
+            </div>
+            <div class="vpn-tunnel">
+                <div class="vpn-label">IPsec VPN Tunnel</div>
+                <div class="vpn-line"></div>
+            </div>
+            <div class="topo-node firewall">
+                <i class="fas fa-fire"></i>
+                <span>PA-FW-01<br>PA-VM</span>
+            </div>
+            <div class="vpn-tunnel">
+                <div class="vpn-line"></div>
+            </div>
+            <div class="topo-node firewall">
+                <i class="fas fa-fire"></i>
+                <span>PA-FW-02<br>PA-VM</span>
+            </div>
+            <div class="vpn-tunnel">
+                <div class="vpn-line"></div>
+            </div>
+            <div class="topo-node">
+                <i class="fas fa-building"></i>
+                <span>Site B<br>192.168.1.0/24</span>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--body-quiet-color);">
+            <i class="fas fa-circle" style="color: var(--vpn-color); font-size: 8px; animation: blink 1s infinite;"></i> Encrypted Traffic Flow Simulation
+            <style>@keyframes blink { 50% { opacity: 0.3; } }</style>
+        </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <h3>📋 Table of Contents</h3>
+        <div class="toc-grid">
+            <a href="#app-id"><span class="toc-num">1.</span> Application & URL Filtering</a>
+            <a href="#threat"><span class="toc-num">2.</span> Threat Prevention (Antivirus)</a>
+            <a href="#decryption"><span class="toc-num">3.</span> SSL Decryption (Forward Proxy)</a>
+            <a href="#vpn"><span class="toc-num">4.</span> Site-to-Site IPsec VPN</a>
+            <a href="#commit"><span class="toc-num">5.</span> Commit & Verify</a>
+        </div>
+    </div>
+
+    <!-- 1. APPLICATION & URL FILTERING -->
+    <div class="section" id="app-id">
+        <div class="sec-head">
+            <div class="sec-icon">🌐</div>
+            <h2>1. Application & URL Filtering<small>Blocking specific apps and websites</small></h2>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Block Social Media & File Sharing</div>
+                    <div class="step-desc">Use App-ID to block applications like Facebook, Torrents, and Netflix regardless of port or protocol.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Block-Social-Media</span>
+    from <span class="val">Trust</span>
+    to <span class="val">Untrust</span>
+    source <span class="val">any</span>
+    destination <span class="val">any</span>
+    application <span class="val">[ facebook-base bittorrent netflix-streaming ]</span>
+    service <span class="val">application-default</span>
+    action <span class="val">deny</span></pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">URL Filtering (Block Categories)</div>
+                    <div class="step-desc">Block entire URL categories like gambling or adult content.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Block-Gambling-URLs</span>
+    from <span class="val">Trust</span>
+    to <span class="val">Untrust</span>
+    source <span class="val">any</span>
+    destination <span class="val">any</span>
+    application <span class="val">web-browsing</span>
+    category <span class="val">gambling</span>
+    service <span class="val">application-default</span>
+    action <span class="val">deny</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. THREAT PREVENTION -->
+    <div class="section" id="threat">
+        <div class="sec-head">
+            <div class="sec-icon">🦠</div>
+            <h2>2. Threat Prevention<small>Antivirus, Anti-Spyware, & Vulnerability Protection</small></h2>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Create Security Profiles</div>
+                    <div class="step-desc">Define Antivirus and Anti-Spyware profiles to inspect traffic.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Create Antivirus Profile</span>
+<span class="cmd">set</span> shared profiles virus <span class="val">Strict-AV</span>
+    decoder http action <span class="val">drop</span>
+    decoder smtp action <span class="val">drop</span>
+    decoder ftp action <span class="val">drop</span>
+
+<span class="comment"># Create Anti-Spyware Profile</span>
+<span class="cmd">set</span> shared profiles spyware <span class="val">Strict-AS</span>
+    rules threat severities <span class="val">[ critical high medium ]</span>
+    rules threat action <span class="val">drop</span></pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">Attach Profiles to Security Rule</div>
+                    <div class="step-desc">Apply the Threat Prevention profiles to your Allow-Outbound-Web rule.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> rulebase security rules <span class="val">Allow-Outbound-Web</span>
+    profile-setting profiles
+        virus <span class="val">Strict-AV</span>
+        spyware <span class="val">Strict-AS</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SSL DECRYPTION -->
+    <div class="section" id="decryption">
+        <div class="sec-head">
+            <div class="sec-icon">🔓</div>
+            <h2>3. SSL Decryption (Forward Proxy)<small>Inspecting HTTPS Traffic</small></h2>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Generate SSL Certificate</div>
+                    <div class="step-desc">Create a self-signed CA certificate for SSL Forward Proxy.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> shared certificate <span class="val">Forward-Trust-Cert</span>
+    key-type RSA
+    rsa-key-size 2048
+    certificate-signed-by <span class="val">Forward-Trust-Cert</span>
+    name <span class="val">Forward-Trust-Cert</span>
+    algorithm RSA
+    common <span class="val">Forward-Trust-Cert</span>
+    ca yes</pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">Create Decryption Profile & Rule</div>
+                    <div class="step-desc">Decrypt SSL traffic going from Trust to Untrust.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Create Decryption Profile</span>
+<span class="cmd">set</span> shared profiles decryption <span class="val">SSL-Forward-Profile</span>
+    ssl-forward-proxy yes
+
+<span class="comment"># Create Decryption Rule</span>
+<span class="cmd">set</span> rulebase decryption rules <span class="val">Decrypt-Outbound</span>
+    from <span class="val">Trust</span>
+    to <span class="val">Untrust</span>
+    source <span class="val">any</span>
+    destination <span class="val">any</span>
+    application <span class="val">[ ssl web-browsing ]</span>
+    service <span class="val">any</span>
+    action <span class="val">decrypt</span>
+    profile <span class="val">SSL-Forward-Profile</span>
+    certificate <span class="val">Forward-Trust-Cert</span></pre>
+                </div>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>Warning:</strong> SSL Decryption requires a lot of CPU. Do not decrypt everything (like banking or financial sites) to avoid performance degradation and privacy issues.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. IPSEC VPN -->
+    <div class="section" id="vpn">
+        <div class="sec-head">
+            <div class="sec-icon">🔒</div>
+            <h2>4. Site-to-Site IPsec VPN<small>Connecting two sites securely</small></h2>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Configure IKE Gateway</div>
+                    <div class="step-desc">Define the Phase 1 parameters and peer IP.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> network ike gateway <span class="val">IKE-GW-SiteB</span>
+    authentication pre-shared-key key <span class="val">MySecretKey123!</span>
+    protocol ikev2
+    ikev2
+    peer-id-type ipaddr
+    peer-address <span class="val">203.0.113.10</span> <span class="comment"># Remote Site B WAN IP</span>
+    local-address <span class="val">203.0.113.2</span> <span class="comment"># Local Site A WAN IP</span>
+    protocol-version ikev2</pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">Configure IPsec Crypto Profile</div>
+                    <div class="step-desc">Define the Phase 2 parameters (ESP, DH Group, Auth).</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> network ipsec-crypto-profiles ipsec-crypto-profiles <span class="val">IPsec-Prof-SiteB</span>
+    esp encryption aes-256-gcm
+    esp authentication sha1
+    dh-group group14
+    lifetime hours 8</pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-title">Create Tunnel Interface & Bind to VR</div>
+                    <div class="step-desc">Create a tunnel interface and assign it to the default virtual router.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> network interface tunnel tunnel.1 ip <span class="val">172.16.100.1/30</span>
+<span class="cmd">set</span> zone VPN network tunnel tunnel.1
+<span class="cmd">set</span> network virtual-router default interface tunnel.1</pre>
+                </div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <div class="step-title">Create IPsec Tunnel</div>
+                    <div class="step-desc">Tie together IKE Gateway, IPsec Profile, and Tunnel Interface.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label">CLI CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="cmd">set</span> network ipsec-tunnels <span class="val">IPsec-Tunnel-SiteB</span>
+    auto-key ike-gateway <span class="val">IKE-GW-SiteB</span>
+    auto-key ipsec-crypto-profile <span class="val">IPsec-Prof-SiteB</span>
+    tunnel-interface tunnel.1</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. COMMIT -->
+    <div class="section" id="commit">
+        <div class="sec-head">
+            <div class="sec-icon">✅</div>
+            <h2>5. Commit & Verify<small>Apply changes to running config</small></h2>
+        </div>
+        <div class="code-block">
+            <div class="code-label">PALO ALTO CLI</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment"># Save and apply all configurations</span>
+<span class="cmd">commit</span>
+<span class="comment"># Verify IPsec VPN Tunnel Status</span>
+<span class="cmd">show</span> vpn ike-sa
+<span class="comment"># Verify Decryption Status</span>
+<span class="cmd">show</span> decryption stats</pre>
+        </div>
+        <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <div>For the VPN to work, you must also add a Security Policy allowing traffic from Trust to VPN zone, and a static route pointing traffic for the remote subnet (192.168.1.0/24) to tunnel.1.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>CyberDefend Network Academy — Palo Alto Advanced Lab Guide</p>
+    </footer>
+</div>
+
+<script>
+function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('cd_theme', next);
+    document.getElementById('themeLabel').textContent = next === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+}
+document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
+function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => { 
+        btn.textContent = 'Copied!'; 
+        setTimeout(() => btn.textContent = 'Copy', 1500); 
+    });
+}
+</script>
+</body>
+</html>
