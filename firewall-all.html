@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend · Fortinet Firewall Course</title>
+    <title>CyberDefend · Security Labs</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -61,7 +61,7 @@
         .back-link:hover { background: var(--selected-bg); }
         .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 16px 20px; border-radius: 10px; width: calc(100% - 40px); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
         .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
-        .course-title-sidebar { padding: 0 20px 16px; margin-top: 10px; border-bottom: 1px solid var(--hairline-color); }
+        .course-title-sidebar { padding: 0 20px 16px; margin-top: 20px; border-bottom: 1px solid var(--hairline-color); }
         .course-title-sidebar h2 { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
         .nav-list { padding: 16px 0; }
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 12px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; color: var(--body-fg); }
@@ -190,7 +190,7 @@
             <div class="logo-icon">🛡️</div>
             <div class="logo-text">
                 <h1>CyberDefend</h1>
-                <span>FORTINET LABS</span>
+                <span>SECURITY LABS</span>
             </div>
         </div>
         <div class="tagline">Part of Accenture | Hands-on Networking & Security Labs</div>
@@ -199,12 +199,33 @@
     <button class="theme-toggle" onclick="toggleTheme()">
         <span id="themeLabel">Switch to Light Mode</span>
     </button>
+
+    <!-- ==================== CISCO ASA FIREWALL SECTION ==================== -->
+    <div class="course-title-sidebar">
+        <h2>Cisco ASA Firewall</h2>
+    </div>
+    <div class="nav-list">
+        <div class="nav-section-label">📄 ASA MATERIAL (HTML)</div>
+        <div class="nav-item active" data-lesson="asapdf1"><span class="check-icon">📄</span> Configure a Cisco ASA Firewall</div>
+        <div class="nav-item" data-lesson="asapdf2"><span class="check-icon">📄</span> ASA Firewall Labs</div>
+		<div class="nav-item" data-lesson="asapdf3"><span class="check-icon">📄</span> 		Interactive ASA Firewall Lab</div>
+
+        
+        <div class="nav-section-label">📺 ASA VIDEOS</div>
+        <div class="nav-item" data-lesson="asavid1"><span class="check-icon">📺</span> Cisco ASA Video 1</div>
+        <div class="nav-item" data-lesson="asavid2"><span class="check-icon">📺</span> Cisco ASA Video 2</div>
+        
+        <div class="nav-section-label">⬇️ ASA DOWNLOADS</div>
+        <div class="nav-item" data-lesson="asadl"><span class="check-icon">💾</span> Download ASA Images</div>
+    </div>
+
+    <!-- ==================== FORTINET FIREWALL SECTION ==================== -->
     <div class="course-title-sidebar">
         <h2>Fortinet Firewall</h2>
     </div>
     <div class="nav-list">
         <div class="nav-section-label">📄 FORTIGATE MATERIAL (HTML)</div>
-        <div class="nav-item active" data-lesson="pdff"><span class="check-icon">📄</span> FortiGate Firewall on GNS3</div>
+        <div class="nav-item" data-lesson="pdff"><span class="check-icon">📄</span> FortiGate Firewall on GNS3</div>
         <div class="nav-item" data-lesson="pdff2"><span class="check-icon">📄</span> Fortigate Lab Topology</div>
         <div class="nav-item" data-lesson="pdff3"><span class="check-icon">📄</span> Fortigate Initial Command Line Setup</div>
 
@@ -216,7 +237,25 @@
         <div class="nav-section-label">⬇️ FORTIGATE DOWNLOADS</div>
         <div class="nav-item" data-lesson="simf"><span class="check-icon">💾</span> Download Fortinet Images</div>
     </div>
-    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ Fortinet Firewall Course</div>
+
+    <!-- ==================== PALO ALTO FIREWALL SECTION ==================== -->
+    <div class="course-title-sidebar">
+        <h2>Palo Alto Firewall</h2>
+    </div>
+    <div class="nav-list">
+        <div class="nav-section-label">📄 PALO ALTO MATERIAL (HTML)</div>
+        <div class="nav-item" data-lesson="papdf1"><span class="check-icon">📄</span> Palo Alto on GNS3</div>
+        <div class="nav-item" data-lesson="papdf2"><span class="check-icon">📄</span> Palo Alto Lab Topology</div>
+        
+        <div class="nav-section-label">📺 PALO ALTO VIDEOS</div>
+        <div class="nav-item" data-lesson="pavid1"><span class="check-icon">📺</span> Palo Alto Video 1</div>
+        <div class="nav-item" data-lesson="pavid2"><span class="check-icon">📺</span> Palo Alto Video 2</div>
+        
+        <div class="nav-section-label">⬇️ PALO ALTO DOWNLOADS</div>
+        <div class="nav-item" data-lesson="padl"><span class="check-icon">💾</span> Download Palo Alto Images</div>
+    </div>
+    
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ Security Labs Course</div>
 </div>
 
 <div class="main-content">
@@ -244,8 +283,82 @@
             <button class="nav-btn nav-btn-next" id="btnNext" onclick="navigate(1)">Next →</button>
         </div>
 
+        <!-- ==================== ASA HTML 1 ==================== -->
+        <div id="lesson-asapdf1" class="pdf-card">
+            <iframe src="asa.html?embed=true" title="Configure a Cisco ASA Firewall"></iframe>
+        </div>
+
+        <!-- ==================== ASA HTML 2 ==================== -->
+        <div id="lesson-asapdf2" class="pdf-card" style="display:none;">
+            <iframe src="asa-lab.html?embed=true" title="ASA Firewall Labs"></iframe>
+        </div>
+		<!-- ==================== ASA HTML 2 ==================== -->
+        <div id="lesson-asapdf3" class="pdf-card" style="display:none;">
+            <iframe src="Firewal-Lab.html?embed=true" title="Interactive ASA Firewall Lab"></iframe>
+        </div>
+
+        <!-- ==================== ASA VIDEO 1 ==================== -->
+        <div id="lesson-asavid1" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 1</span>
+                <h2>Cisco ASA Firewall Video 1</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="asavid1_tab">🎬 Video</button>
+            </div>
+            <div id="asavid1_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/UP9MM8yoL_w" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Cisco ASA Firewall lab walkthrough.</p>
+                    <a href="https://www.youtube.com/watch?v=UP9MM8yoL_w" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+		
+		
+        <!-- ==================== ASA VIDEO 2 ==================== -->
+        <div id="lesson-asavid2" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 2</span>
+                <h2>Cisco ASA Firewall Video 2</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="asavid2_tab">🎬 Video</button>
+            </div>
+            <div id="asavid2_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VIDEO_ID_ASA_2" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Cisco ASA Firewall advanced configuration.</p>
+                    <a href="https://www.youtube.com/watch?v=VIDEO_ID_ASA_2" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ASA DOWNLOAD ==================== -->
+        <div id="lesson-asadl" class="simulator-banner" style="display:none;">
+            <div class="simulator-banner-body">
+                <div class="sim-icon-big">💾</div>
+                <div class="sim-details">
+                    <h3>Practice Cisco ASA on Packet Tracer</h3>
+                    <p>Practice Cisco ASA on Packet Tracer</p>
+                    <div class="sim-links">
+                        <a href="#" target="_blank">Practice Cisco ASA on Packet Tracer</a>
+                    </div>
+                </div>
+                <a href="#" target="_blank" class="btn-simulator">Practice Cisco ASA on Packet Tracer</a>
+            </div>
+        </div>
+
         <!-- ==================== FORTINET HTML 1 ==================== -->
-        <div id="lesson-pdff" class="pdf-card">
+        <div id="lesson-pdff" class="pdf-card" style="display:none;">
             <iframe src="fortinet.html?embed=true" title="FortiGate Firewall on GNS3"></iframe>
         </div>
 
@@ -259,27 +372,7 @@
             <iframe src="fortinet3.html?embed=true" title="Fortigate Initial Command Line Setup"></iframe>
         </div>
 
-        <!-- ==================== FORTINET VIDEO 1 ==================== -->
-        <div id="lesson-41" class="lesson-card" style="display:none;">
-            <div class="card-header">
-                <span class="lesson-badge">📺 VIDEO 1</span>
-                <h2>Fortinet Firewall Video 1</h2>
-            </div>
-            <div class="lesson-tabs">
-                <button class="tab-btn-lesson active" data-tab="video41">🎬 Video</button>
-            </div>
-            <div id="video41" class="tab-content active">
-                <div class="video-container">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/UP9MM8yoL_w" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <div class="description-text">
-                    <p>Fortinet Firewall lab walkthrough.</p>
-                    <a href="https://www.youtube.com/watch?v=UP9MM8yoL_w" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
-                </div>
-            </div>
-        </div>
+
 
         <!-- ==================== FORTINET VIDEO 2 ==================== -->
         <div id="lesson-42" class="lesson-card" style="display:none;">
@@ -340,6 +433,75 @@
             </div>
         </div>
 
+        <!-- ==================== PALO ALTO HTML 1 ==================== -->
+        <div id="lesson-papdf1" class="pdf-card" style="display:none;">
+            <iframe src="paloalto1.html?embed=true" title="Palo Alto on GNS3"></iframe>
+        </div>
+
+        <!-- ==================== PALO ALTO HTML 2 ==================== -->
+        <div id="lesson-papdf2" class="pdf-card" style="display:none;">
+            <iframe src="paloalto2.html?embed=true" title="Palo Alto Lab Topology"></iframe>
+        </div>
+
+        <!-- ==================== PALO ALTO VIDEO 1 ==================== -->
+        <div id="lesson-pavid1" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 1</span>
+                <h2>Palo Alto Firewall Video 1</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="pavid1_tab">🎬 Video</button>
+            </div>
+            <div id="pavid1_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VIDEO_ID_PA_1" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Palo Alto Firewall lab walkthrough.</p>
+                    <a href="https://www.youtube.com/watch?v=VIDEO_ID_PA_1" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PALO ALTO VIDEO 2 ==================== -->
+        <div id="lesson-pavid2" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 2</span>
+                <h2>Palo Alto Firewall Video 2</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="pavid2_tab">🎬 Video</button>
+            </div>
+            <div id="pavid2_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VIDEO_ID_PA_2" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Palo Alto Firewall advanced configuration.</p>
+                    <a href="https://www.youtube.com/watch?v=VIDEO_ID_PA_2" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PALO ALTO DOWNLOAD ==================== -->
+        <div id="lesson-padl" class="simulator-banner" style="display:none;">
+            <div class="simulator-banner-body">
+                <div class="sim-icon-big">💾</div>
+                <div class="sim-details">
+                    <h3>⬇️ Download Palo Alto Images</h3>
+                    <p>Download Palo Alto Firewall images for GNS3 & EVE-NG.</p>
+                    <div class="sim-links">
+                        <a href="#" target="_blank">⬇️ Download Palo Alto Images</a>
+                    </div>
+                </div>
+                <a href="#" target="_blank" class="btn-simulator">⬇️ Download Images</a>
+            </div>
+        </div>
+
     </div>
 
     <!-- COMMENT FAB & PANEL -->
@@ -367,7 +529,7 @@
 
 <script>
     // ========== LESSON ORDER ==========
-    const lessonOrder = ['pdff', 'pdff2', 'pdff3', '41', '42', '43', 'simf'];
+    const lessonOrder = ['asapdf1', 'asapdf2', 'asavid1', 'asavid2', 'asadl', 'pdff', 'pdff2', 'pdff3', '41', '42', '43', 'simf', 'papdf1', 'papdf2', 'pavid1', 'pavid2', 'padl'];
     let currentIndex = 0;
 
     function showLesson(id) {
@@ -439,13 +601,13 @@
         }
     }
     
-    // Set initial label
+    // Set initial label and load first lesson
     document.addEventListener('DOMContentLoaded', function() {
         const label = document.getElementById('themeLabel');
         if (label) {
             label.textContent = savedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
         }
-        showLesson('pdff'); // Load first lesson by default
+        showLesson('asapdf1'); // Load first ASA lesson by default
     });
 
     // ========== COMMENTS ==========
