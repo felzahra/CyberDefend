@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · HP Switch Lab Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #e0e0e0;
+            --body-bg: #0a0a0a;
+            --body-quiet-color: #9e9e9e;
+            --body-loud-color: #ffffff;
+            --hairline-color: #1e1e1e;
+            --border-color: #2a2a2a;
+            --darkened-bg: #111111;
+            --selected-bg: #1a1a1a;
+            --selected-row: #151515;
+            --header-bg: #0f0f0f;
+            --link-fg: #00e676;
+            --error-fg: #ef5350;
+            --message-error-bg: #1a0a0a;
+            --message-success-bg: #0a1a0e;
+            --close-button-hover-bg: #333333;
+            --code-bg: #0d0d0d;
+            --code-border: #1e3a1e;
+            --step-num-bg: #00e676;
+            --step-num-fg: #000;
+            --warn-bg: #1a1500;
+            --warn-border: #f9a825;
+            --info-bg: #0a1520;
+            --info-border: #29b6f6;
+            --tip-bg: #0a1a0e;
+            --tip-border: #00e676;
+        }
+        html[data-theme="light"] {
+            --primary: #00897b;
+            --primary-fg: #ffffff;
+            --body-fg: #2c3e50;
+            --body-bg: #f8f9fa;
+            --body-quiet-color: #607d8b;
+            --body-loud-color: #1a1a2e;
+            --hairline-color: #e0e0e0;
+            --border-color: #e0e0e0;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e0f2f1;
+            --selected-row: #f5f5f5;
+            --header-bg: #ffffff;
+            --link-fg: #00897b;
+            --error-fg: #d32f2f;
+            --message-error-bg: #ffebee;
+            --message-success-bg: #e8f5e9;
+            --close-button-hover-bg: #bdbdbd;
+            --code-bg: #f5f5f5;
+            --code-border: #c8e6c9;
+            --step-num-bg: #00897b;
+            --step-num-fg: #fff;
+            --warn-bg: #fff8e1;
+            --warn-border: #f9a825;
+            --info-bg: #e1f5fe;
+            --info-border: #29b6f6;
+            --tip-bg: #e8f5e9;
+            --tip-border: #00897b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; transition: background 0.3s, color 0.3s; }
+        .page-container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+        .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
+        .top-logo { width: 44px; height: 44px; background: var(--primary); color: var(--primary-fg); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .top-bar h1 { font-size: 1.4rem; font-weight: 800; color: var(--body-loud-color); }
+        .top-bar h1 span { display: block; font-size: 0.6rem; color: var(--primary); font-weight: 600; letter-spacing: 1.5px; }
+        .theme-btn { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 16px; background: var(--darkened-bg); border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--link-fg); text-decoration: none; font-size: 0.82rem; font-weight: 600; margin-bottom: 28px; transition: 0.2s; }
+        .back-link:hover { text-decoration: underline; }
+        .hero { background: linear-gradient(135deg, var(--selected-bg) 0%, var(--darkened-bg) 100%); border: 1px solid var(--hairline-color); border-radius: 24px; padding: 40px 36px; margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: var(--primary); opacity: 0.04; border-radius: 50%; }
+        .hero-badge { display: inline-block; background: var(--primary); color: var(--primary-fg); font-size: 0.65rem; font-weight: 700; padding: 4px 14px; border-radius: 30px; letter-spacing: 1px; margin-bottom: 14px; }
+        .hero h2 { font-size: 2rem; font-weight: 800; color: var(--body-loud-color); margin-bottom: 8px; }
+        .hero p { color: var(--body-quiet-color); font-size: 0.92rem; max-width: 700px; }
+        .hero-meta { display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap; }
+        .hero-meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--body-quiet-color); }
+        .hero-meta-item strong { color: var(--body-loud-color); }
+        .toc { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 28px 32px; margin-bottom: 40px; }
+        .toc h3 { font-size: 1rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+        .toc a { color: var(--link-fg); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 5px 0; display: block; transition: 0.15s; }
+        .toc a:hover { text-decoration: underline; padding-left: 6px; }
+        .toc a .toc-num { color: var(--body-quiet-color); font-weight: 700; margin-right: 6px; font-size: 0.75rem; }
+        @media (max-width: 600px) { .toc-grid { grid-template-columns: 1fr; } }
+        .topology-box { background: var(--darkened-bg); border: 2px solid var(--info-border); border-radius: 20px; padding: 28px 32px; margin-bottom: 40px; }
+        .topology-box h3 { font-size: 1rem; font-weight: 700; color: var(--info-border); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .topology-diagram { background: var(--info-bg); border-radius: 14px; padding: 24px; font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.8; color: var(--body-fg); overflow-x: auto; white-space: pre; }
+        .topology-legend { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+        .topology-legend span { font-size: 0.75rem; color: var(--body-quiet-color); display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .section { margin-bottom: 48px; }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid var(--hairline-color); }
+        .section-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .section-icon.green { background: var(--message-success-bg); border: 1px solid var(--tip-border); }
+        .section-icon.blue { background: var(--info-bg); border: 1px solid var(--info-border); }
+        .section-icon.orange { background: var(--warn-bg); border: 1px solid var(--warn-border); }
+        .section-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--body-loud-color); }
+        .section-header h2 small { display: block; font-size: 0.72rem; color: var(--body-quiet-color); font-weight: 500; margin-top: 2px; }
+        .step { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 18px; margin-bottom: 16px; overflow: hidden; transition: border-color 0.2s; }
+        .step:hover { border-color: var(--close-button-hover-bg); }
+        .step-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px 0; }
+        .step-num { width: 32px; height: 32px; background: var(--step-num-bg); color: var(--step-num-fg); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+        .step-content { flex: 1; min-width: 0; }
+        .step-title { font-size: 1.05rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 4px; }
+        .step-desc { font-size: 0.85rem; color: var(--body-quiet-color); margin-bottom: 12px; line-height: 1.6; }
+        .step-body { padding: 0 24px 20px; }
+        .code-block { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: 14px; overflow: hidden; margin-bottom: 8px; }
+        .code-label { background: var(--code-border); color: var(--primary-fg); font-size: 0.65rem; font-weight: 700; padding: 4px 14px; letter-spacing: 0.5px; }
+        .code-label.access { background: #1565c0; }
+        .code-label.dist { background: #6a1b9a; }
+        .code-label.both { background: #00838f; }
+        .code-label.irf { background: #d84315; }
+        .code-label.ospf { background: #2e7d32; }
+        .code-label.snmp { background: #4527a0; }
+        pre { padding: 16px 20px; overflow-x: auto; font-family: 'Courier New', 'Consolas', monospace; font-size: 0.78rem; line-height: 1.7; color: #b0bec5; }
+        html[data-theme="light"] pre { color: #37474f; }
+        .cmd { color: #00e676; }
+        html[data-theme="light"] .cmd { color: #00897b; }
+        .comment { color: #546e7a; font-style: italic; }
+        .prompt { color: #78909c; }
+        html[data-theme="light"] .prompt { color: #90a4ae; }
+        .highlight { color: #ffab40; font-weight: 600; }
+        html[data-theme="light"] .highlight { color: #e65100; }
+        .val { color: #80deea; }
+        html[data-theme="light"] .val { color: #00838f; }
+        .callout { border-radius: 14px; padding: 16px 20px; margin: 12px 0; font-size: 0.82rem; line-height: 1.6; display: flex; gap: 12px; align-items: flex-start; }
+        .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+        .callout.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); color: var(--body-fg); }
+        .callout.info { background: var(--info-bg); border-left: 4px solid var(--info-border); color: var(--body-fg); }
+        .callout.tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: var(--body-fg); }
+        .callout strong { color: var(--body-loud-color); }
+        .config-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.8rem; }
+        .config-table th { background: var(--selected-bg); color: var(--body-loud-color); font-weight: 700; text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--hairline-color); font-size: 0.75rem; letter-spacing: 0.3px; }
+        .config-table td { padding: 10px 14px; border-bottom: 1px solid var(--hairline-color); color: var(--body-fg); }
+        .config-table tr:hover td { background: var(--selected-row); }
+        .config-table code { background: var(--code-bg); border: 1px solid var(--hairline-color); padding: 1px 6px; border-radius: 5px; font-size: 0.75rem; font-family: 'Courier New', monospace; color: var(--primary); }
+        .copy-btn { float: right; background: var(--hairline-color); color: var(--body-quiet-color); border: none; padding: 2px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; margin: 4px 8px 0 0; }
+        .copy-btn:hover { background: var(--primary); color: var(--primary-fg); }
+        .summary-box { background: linear-gradient(135deg, var(--selected-bg), var(--darkened-bg)); border: 2px solid var(--primary); border-radius: 20px; padding: 28px 32px; margin-bottom: 40px; }
+        .summary-box h3 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+        .summary-box ul { list-style: none; padding: 0; }
+        .summary-box li { padding: 6px 0; font-size: 0.85rem; color: var(--body-fg); display: flex; align-items: flex-start; gap: 8px; }
+        .summary-box li::before { content: '\2713'; color: var(--primary); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+        .range-note { background: var(--selected-row); border-radius: 10px; padding: 12px 16px; margin: 8px 0; font-size: 0.8rem; color: var(--body-quiet-color); border-left: 3px solid var(--primary); }
+        footer { text-align: center; padding: 32px 0; font-size: 0.75rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); }
+        @media (max-width: 600px) {
+            .page-container { padding: 20px 14px 60px; }
+            .hero { padding: 28px 20px; }
+            .hero h2 { font-size: 1.5rem; }
+            .step-head { padding: 16px 16px 0; }
+            .step-body { padding: 0 16px 16px; }
+            pre { font-size: 0.7rem; padding: 12px 14px; }
+            .topology-diagram { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<div class="page-container">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="top-logo">🌐</div>
+            <h1>CyberDefend<span>NETWORKING LABS</span></h1>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()"><span id="themeLabel">☀️ Light Mode</span></button>
+    </div>
+
+    <a href="hp-switch.html" class="back-link">← Back to HP Switch Course</a>
+
+    <div class="hero">
+        <div class="hero-badge">LAB GUIDE</div>
+        <h2>HP Comware Switch Configuration — Step by Step</h2>
+        <p>Complete command reference to build an HP campus network from scratch. Covers access switch (ND1-E101) and distribution switch (ND1) with VLANs, link aggregation, IRF, OSPF, SNMP, and more.</p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">📘 <strong>2 Switches</strong></div>
+            <div class="hero-meta-item">📋 <strong>50+ Steps</strong></div>
+            <div class="hero-meta-item">⏱️ <strong>~3 Hours</strong></div>
+            <div class="hero-meta-item">🔧 <strong>Comware v5.20</strong></div>
+        </div>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h3>📋 Table of Contents</h3>
+        <div class="toc-grid">
+            <a href="#topology"><span class="toc-num">0.</span> Network Topology</a>
+            <a href="#part1"><span class="toc-num">1.</span> Part 1 — ND1-E101 Access Switch</a>
+            <a href="#s1-1"><span class="toc-num">1.1</span> Hostname & Super Password</a>
+            <a href="#s1-2"><span class="toc-num">1.2</span> Enable Telnet & SSH</a>
+            <a href="#s1-3"><span class="toc-num">1.3</span> Create VLANs</a>
+            <a href="#s1-4"><span class="toc-num">1.4</span> Configure User Accounts</a>
+            <a href="#s1-5"><span class="toc-num">1.5</span> Management VLAN Interface</a>
+            <a href="#s1-6"><span class="toc-num">1.6</span> Access Ports (VLAN 50 + PoE)</a>
+            <a href="#s1-7"><span class="toc-num">1.7</span> Trunk Uplink (E1/0/23)</a>
+            <a href="#s1-8"><span class="toc-num">1.8</span> Management Port (E1/0/24)</a>
+            <a href="#s1-9"><span class="toc-num">1.9</span> Link Aggregation Uplink</a>
+            <a href="#s1-10"><span class="toc-num">1.10</span> Default Route</a>
+            <a href="#s1-11"><span class="toc-num">1.11</span> SNMP Configuration</a>
+            <a href="#s1-12"><span class="toc-num">1.12</span> VTY Lines</a>
+            <a href="#part2"><span class="toc-num">2.</span> Part 2 — ND1 Distribution Switch</a>
+            <a href="#s2-1"><span class="toc-num">2.1</span> Trunk Ports (Module 1)</a>
+            <a href="#s2-2"><span class="toc-num">2.2</span> Trunk Ports with sFlow (Module 2)</a>
+            <a href="#s2-3"><span class="toc-num">2.3</span> Ten-Gigabit Uplinks</a>
+            <a href="#s2-4"><span class="toc-num">2.4</span> OSPF Routing</a>
+            <a href="#s2-5"><span class="toc-num">2.5</span> Static Default Route</a>
+            <a href="#s2-6"><span class="toc-num">2.6</span> SNMP v2c & v3</a>
+            <a href="#s2-7"><span class="toc-num">2.7</span> DHCP & NTP</a>
+            <a href="#s2-8"><span class="toc-num">2.8</span> sFlow Configuration</a>
+            <a href="#s2-9"><span class="toc-num">2.9</span> IRF Configuration</a>
+            <a href="#verify"><span class="toc-num">3.</span> Verification Commands</a>
+        </div>
+    </div>
+
+    <!-- TOPOLOGY -->
+    <div class="topology-box" id="topology">
+        <h3>🗺️ Network Topology Overview</h3>
+        <div class="topology-diagram">
+     ┌─────────────────────────────────────────────────────────────┐
+     │                    CORE / ROUTER                           │
+     │                  10.0.11.2 (VLAN 11)                       │
+     └──────────────────────────┬──────────────────────────────────┘
+                                │  Trunk (VLAN 11) — LAG 41
+                                │  Ten-Gig links × 4
+                ┌───────────────┴───────────────┐
+                │     ND1 (Distribution)         │
+                │   HP Comware — IRF Chassis     │
+                │                               │
+                │  GE1/0/4~23  → LAG 4~23       │
+                │  GE2/0/1~8  → LAG 1~8         │
+                │  GE2/0/10~21 → LAG 19~21      │
+                │  GE1/0/32   → Access VLAN 241 │
+                │  Mgmt: 10.0.11.1 (VLAN 11)    │
+                │  OSPF Area 0                   │
+                │  sFlow → 10.0.10.76            │
+                └───┬────┬────┬────┬────┬────┬───┘
+                    │    │    │    │    │    │  Trunk (LAG)
+              ┌─────┘    │    │    │    │    └─────┐
+              │  ┌───────┘    │    │    └───────┐  │
+              │  │  ┌─────────┘    └─────────┐  │  │
+              ▼  ▼  ▼                       ▼  ▼  ▼
+         ┌─────────┐ ┌─────────┐       ┌─────────┐
+         │ND1-E101 │ │ND2-E101 │  ...  │NDx-E101 │
+         │(Access)  │ │(Access)  │       │(Access)  │
+         │         │ │         │       │         │
+         │E1/0/1~22│ │E1/0/1~22│       │E1/0/1~22│
+         │→VLAN 50 │ │→VLAN 50 │       │→VLAN 50 │
+         │(Hybrid) │ │(Hybrid) │       │(Hybrid) │
+         │PoE+STP  │ │PoE+STP  │       │PoE+STP  │
+         │         │ │         │       │         │
+         │GE25+26  │ │GE25+26  │       │GE25+26  │
+         │→LAG 1   │ │→LAG 1   │       │→LAG 1   │
+         │→ND6     │ │→ND6     │       │→ND6     │
+         │         │ │         │       │         │
+         │Mgmt:    │ │Mgmt:    │       │Mgmt:    │
+         │10.0.241 │ │10.0.242 │       │10.0.24x │
+         │.11/24   │ │.11/24   │       │.11/24   │
+         └─────────┘ └─────────┘       └─────────┘
+              │            │                  │
+           [APs]       [APs]             [APs]
+           VLAN 50     VLAN 50           VLAN 50
+        </div>
+        <div class="topology-legend">
+            <span><span class="legend-dot" style="background:#00e676;"></span> Access Layer (NDx-E101)</span>
+            <span><span class="legend-dot" style="background:#7c4dff;"></span> Distribution Layer (ND1)</span>
+            <span><span class="legend-dot" style="background:#ff6d00;"></span> Trunk / LAG Links</span>
+            <span><span class="legend-dot" style="background:#29b6f6;"></span> Management VLAN 241</span>
+            <span><span class="legend-dot" style="background:#ff4081;"></span> Data VLAN 50 (Bahrya)</span>
+        </div>
+    </div>
+
+    <!-- KEY TABLES -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-icon blue">📊</div>
+            <h2>Key Parameters <small>Reference before you start</small></h2>
+        </div>
+        <table class="config-table">
+            <tr><th>Parameter</th><th>ND1-E101 (Access)</th><th>ND1 (Distribution)</th></tr>
+            <tr><td><code>Hostname</code></td><td>ND1-E101</td><td>ND1</td></tr>
+            <tr><td><code>VLAN 50</code></td><td>"bahrya" — Access ports</td><td>Pass-through (trunk)</td></tr>
+            <tr><td><code>VLAN 241</code></td><td>"management" — Mgmt IP</td><td>"management" — sFlow source</td></tr>
+            <tr><td><code>VLAN 11</code></td><td>—</td><td>Uplink to Core — Mgmt IP</td></tr>
+            <tr><td><code>Mgmt IP</code></td><td>10.0.241.11/24</td><td>10.0.11.1/24</td></tr>
+            <tr><td><code>Default GW</code></td><td>10.0.241.1</td><td>10.0.11.2</td></tr>
+            <tr><td><code>Uplink</code></td><td>GE1/0/25+26 → LAG 1 → ND6</td><td>TenGE ×4 → LAG 41 → Core</td></tr>
+            <tr><td><code>Routing</code></td><td>Static only</td><td>OSPF Area 0 + Static</td></tr>
+        </table>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 1: ND1-E101 ACCESS SWITCH             -->
+    <!-- ========================================== -->
+    <div class="section" id="part1">
+        <div class="section-header">
+            <div class="section-icon green">🔌</div>
+            <h2>Part 1 — ND1-E101 (Access Switch) <small>24 Ethernet ports + 2 Gigabit uplinks · Comware v5.20</small></h2>
+        </div>
+
+        <!-- STEP 1.1 -->
+        <div class="step" id="s1-1">
+            <div class="step-head">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">Set Hostname & Super Password</div>
+                    <div class="step-desc">Name the switch for identification and set a privileged (Level 3) password to protect admin access.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">&lt;ND1-E101&gt;</span> <span class="cmd">system-view</span>
+<span class="comment">! Enter system view (global config mode)</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">sysname ND1-E101</span>
+<span class="comment">! Set the switch hostname to ND1-E101</span>
+<span class="comment">! This name appears in CLI prompts and logs</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">super password level 3 cipher <span class="highlight">YourStrongPass123</span></span>
+<span class="comment">! Set Level 3 (management) super password</span>
+<span class="comment">! 'cipher' stores it encrypted in running-config</span>
+<span class="comment">! Used when elevating from lower privilege levels</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>Comware Privilege Levels:</strong> Level 0 = Visit, Level 1 = Monitor, Level 2 = Configuration, Level 3 = Management (full admin). Always set a super password for Level 3.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.2 -->
+        <div class="step" id="s1-2">
+            <div class="step-head">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">Enable Telnet & SSH Server</div>
+                    <div class="step-desc">Activate remote management protocols so administrators can access the switch without a console cable.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">telnet server enable</span>
+<span class="comment">! Enable the Telnet server for remote CLI access</span>
+<span class="comment">! Telnet is unencrypted — use SSH in production</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">ssh server enable</span>
+<span class="comment">! Enable the SSH server for secure remote access</span>
+<span class="comment">! Requires RSA/DSA key pair to be generated first</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">ip https enable</span>
+<span class="comment">! Enable the web-based management interface (HTTPS)</span></pre>
+                </div>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>Security Note:</strong> In a production environment, disable Telnet and use only SSH. Telnet transmits credentials in plain text. Keep it enabled in the lab for learning purposes only.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.3 -->
+        <div class="step" id="s1-3">
+            <div class="step-head">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-title">Create VLANs</div>
+                    <div class="step-desc">Create VLAN 50 (bahrya — for user data/access points) and VLAN 241 (management — for switch management IP). Remove unused VLAN 1 from trunk PVID.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">vlan 50</span>
+<span class="prompt">[ND1-E101-vlan50]</span> <span class="cmd">name bahrya</span>
+<span class="prompt">[ND1-E101-vlan50]</span> <span class="cmd">quit</span>
+<span class="comment">! Create VLAN 50 and name it "bahrya"</span>
+<span class="comment">! This VLAN carries user data traffic (APs, devices)</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">vlan 241</span>
+<span class="prompt">[ND1-E101-vlan241]</span> <span class="cmd">name management</span>
+<span class="prompt">[ND1-E101-vlan241]</span> <span class="cmd">quit</span>
+<span class="comment">! Create VLAN 241 for switch management</span>
+<span class="comment">! All management traffic (SNMP, SSH, web) uses this VLAN</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">voice vlan track lldp</span>
+<span class="comment">! Enable voice VLAN tracking via LLDP for VoIP phones</span>
+<span class="comment">! Automatically assigns voice VLAN based on LLDP negotiation</span></pre>
+                </div>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Best Practice:</strong> Always name your VLANs descriptively. Run <code>display vlan</code> to verify creation. VLAN 1 exists by default but should not carry user traffic.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.4 -->
+        <div class="step" id="s1-4">
+            <div class="step-head">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Local User Accounts</div>
+                    <div class="step-desc">Create two accounts: <strong>manager</strong> (Level 3 — full admin) and <strong>monitor</strong> (Level 1 — read-only). Enable scheme-based authentication for VTY lines.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">domain system</span>
+<span class="prompt">[ND1-E101-isp-system]</span> <span class="cmd">access-limit disable</span>
+<span class="prompt">[ND1-E101-isp-system]</span> <span class="cmd">state active</span>
+<span class="prompt">[ND1-E101-isp-system]</span> <span class="cmd">idle-cut disable</span>
+<span class="prompt">[ND1-E101-isp-system]</span> <span class="cmd">self-service-url disable</span>
+<span class="prompt">[ND1-E101-isp-system]</span> <span class="cmd">quit</span>
+<span class="comment">! Configure the default "system" domain</span>
+<span class="comment">! This domain is used for local authentication</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">user-group system</span>
+<span class="prompt">[ND1-E101-ugroup-system]</span> <span class="cmd">group-attribute allow-guest</span>
+<span class="prompt">[ND1-E101-ugroup-system]</span> <span class="cmd">quit</span>
+<span class="comment">! Configure the system user group</span>
+
+<span class="comment">! --- MANAGER ACCOUNT (Level 3 - Full Admin) ---</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">local-user manager</span>
+<span class="prompt">[ND1-E101-luser-manager]</span> <span class="cmd">password cipher <span class="highlight">ManagerPass123!</span></span>
+<span class="prompt">[ND1-E101-luser-manager]</span> <span class="cmd">authorization-attribute level 3</span>
+<span class="prompt">[ND1-E101-luser-manager]</span> <span class="cmd">service-type ssh telnet</span>
+<span class="prompt">[ND1-E101-luser-manager]</span> <span class="cmd">service-type web</span>
+<span class="prompt">[ND1-E101-luser-manager]</span> <span class="cmd">quit</span>
+<span class="comment">! Create "manager" user with Level 3 (full admin) privileges</span>
+<span class="comment">! Allowed services: SSH, Telnet, and Web management</span>
+
+<span class="comment">! --- MONITOR ACCOUNT (Level 1 - Read Only) ---</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">local-user monitor</span>
+<span class="prompt">[ND1-E101-luser-monitor]</span> <span class="cmd">password cipher <span class="highlight">MonitorPass123!</span></span>
+<span class="prompt">[ND1-E101-luser-monitor]</span> <span class="cmd">authorization-attribute level 1</span>
+<span class="prompt">[ND1-E101-luser-monitor]</span> <span class="cmd">service-type ssh telnet</span>
+<span class="prompt">[ND1-E101-luser-monitor]</span> <span class="cmd">service-type web</span>
+<span class="prompt">[ND1-E101-luser-monitor]</span> <span class="cmd">quit</span>
+<span class="comment">! Create "monitor" user with Level 1 (read-only) privileges</span>
+<span class="comment">! Can view configs but cannot modify them</span></pre>
+                </div>
+                <table class="config-table">
+                    <tr><th>Account</th><th>Level</th><th>Access</th><th>Use Case</th></tr>
+                    <tr><td><code>manager</code></td><td>3 (Management)</td><td>SSH, Telnet, Web</td><td>Full configuration access</td></tr>
+                    <tr><td><code>monitor</code></td><td>1 (Monitor)</td><td>SSH, Telnet, Web</td><td>Read-only / troubleshooting</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- STEP 1.5 -->
+        <div class="step" id="s1-5">
+            <div class="step-head">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Management VLAN Interface (SVI)</div>
+                    <div class="step-desc">Assign IP address 10.0.241.11/24 to VLAN 241 interface. This is the switch's management IP for SSH, SNMP, and web access.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">interface Vlan-interface241</span>
+<span class="prompt">[ND1-E101-Vlan-interface241]</span> <span class="cmd">ip address <span class="val">10.0.241.11</span> <span class="val">255.255.255.0</span></span>
+<span class="prompt">[ND1-E101-Vlan-interface241]</span> <span class="cmd">quit</span>
+<span class="comment">! Create Layer 3 SVI for VLAN 241</span>
+<span class="comment">! IP: 10.0.241.11 with /24 subnet mask</span>
+<span class="comment">! This IP is used for all remote management access</span>
+<span class="comment">! Make sure at least one port is in VLAN 241 to bring up the SVI</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>SVI Status:</strong> The VLAN interface stays DOWN until at least one physical port in that VLAN is UP. We'll assign port E1/0/24 to VLAN 241 in Step 8 to bring up the management interface.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.6 -->
+        <div class="step" id="s1-6">
+            <div class="step-head">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Access Ports — VLAN 50 with PoE & Edge STP</div>
+                    <div class="step-desc">Configure Ethernet 1/0/1 through 1/0/22 as hybrid access ports for VLAN 50 (bahrya). Enable PoE for APs and STP edge port for fast convergence.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="range-note">
+                    <strong>⚡ Applied to ports:</strong> Ethernet1/0/1, Ethernet1/0/2, Ethernet1/0/3, Ethernet1/0/4, Ethernet1/0/5, Ethernet1/0/6, Ethernet1/0/7, Ethernet1/0/8, Ethernet1/0/9, Ethernet1/0/10, Ethernet1/0/11, Ethernet1/0/12, Ethernet1/0/13, Ethernet1/0/14, Ethernet1/0/15, Ethernet1/0/16, Ethernet1/0/17, Ethernet1/0/18, Ethernet1/0/19, Ethernet1/0/20, Ethernet1/0/21, Ethernet1/0/22
+                </div>
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH (Example for E1/0/1)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">interface Ethernet1/0/1</span>
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">port link-type hybrid</span>
+<span class="comment">! Set port to hybrid mode (Comware's flexible port type)</span>
+<span class="comment">! Hybrid can tag some VLANs and untag others</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">undo port hybrid vlan 1</span>
+<span class="comment">! Remove VLAN 1 from the hybrid allowed list</span>
+<span class="comment">! Security best practice — don't leak traffic to default VLAN</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">port hybrid vlan 50 untagged</span>
+<span class="comment">! Add VLAN 50 as untagged — connected device sees no VLAN tag</span>
+<span class="comment">! This makes it behave like an access port for VLAN 50</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">port hybrid pvid vlan 50</span>
+<span class="comment">! Set the Port VLAN ID (PVID) to 50</span>
+<span class="comment">! Untagged incoming frames are assigned to VLAN 50</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">poe enable</span>
+<span class="comment">! Enable Power over Ethernet on this port</span>
+<span class="comment">! Powers connected wireless access points (802.3af/at)</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">stp edged-port enable</span>
+<span class="comment">! Set as STP edge port (same as Cisco PortFast)</span>
+<span class="comment">! Skips STP listening/learning — goes directly to forwarding</span>
+<span class="comment">! Prevents 30-50 second delay when device connects</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/1]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Repeat for E1/0/2 through E1/0/22:</strong> Every access port has the exact same configuration. In production, use <code>port-group</code> or a script to apply to all ports at once. In the simulator, configure each port individually for learning.</div>
+                </div>
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — BULK CONFIG (All 22 ports)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! Repeat this block for ports 2 through 22:</span>
+<span class="cmd">interface Ethernet1/0/2</span>
+ <span class="cmd">port link-type hybrid</span>
+ <span class="cmd">undo port hybrid vlan 1</span>
+ <span class="cmd">port hybrid vlan 50 untagged</span>
+ <span class="cmd">port hybrid pvid vlan 50</span>
+ <span class="cmd">poe enable</span>
+ <span class="cmd">stp edged-port enable</span>
+<span class="cmd">quit</span>
+
+<span class="comment">! ... repeat for Ethernet1/0/3 through Ethernet1/0/22</span>
+<span class="comment">! (Same 6 commands per port)</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>Why Hybrid not Access?</strong> Comware's "hybrid" mode is more flexible than "access". An access port can only belong to one VLAN. A hybrid port can carry multiple VLANs — some tagged, some untagged. Using hybrid with a single untagged VLAN achieves the same result as access mode but gives you room to add a voice VLAN later.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.7 -->
+        <div class="step" id="s1-7">
+            <div class="step-head">
+                <div class="step-num">7</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Trunk Uplink — Ethernet 1/0/23</div>
+                    <div class="step-desc">Configure E1/0/23 as a trunk port carrying all VLANs to the distribution switch. Set PVID to VLAN 241 (management).</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">interface Ethernet1/0/23</span>
+<span class="prompt">[ND1-E101-Ethernet1/0/23]</span> <span class="cmd">port link-type trunk</span>
+<span class="comment">! Set port to trunk mode — carries multiple tagged VLANs</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/23]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="comment">! Allow ALL VLANs to pass through this trunk</span>
+<span class="comment">! In production, restrict to only needed VLANs for security</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/23]</span> <span class="cmd">port trunk pvid vlan 241</span>
+<span class="comment">! Set native VLAN (PVID) to 241 (management)</span>
+<span class="comment">! Untagged frames on this trunk are placed in VLAN 241</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/23]</span> <span class="cmd">quit</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.8 -->
+        <div class="step" id="s1-8">
+            <div class="step-head">
+                <div class="step-num">8</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Management Access Port — Ethernet 1/0/24</div>
+                    <div class="step-desc">Assign E1/0/24 to VLAN 241 as an access port for a directly connected management device. This also brings up the VLAN 241 SVI.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">interface Ethernet1/0/24</span>
+<span class="prompt">[ND1-E101-Ethernet1/0/24]</span> <span class="cmd">description switch-management-port</span>
+<span class="comment">! Add a description for easy identification</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/24]</span> <span class="cmd">port access vlan 241</span>
+<span class="comment">! Set as access port in VLAN 241</span>
+<span class="comment">! A laptop/NMS connected here gets management access</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/24]</span> <span class="cmd">stp edged-port enable</span>
+<span class="comment">! Enable edge port for fast STP convergence</span>
+
+<span class="prompt">[ND1-E101-Ethernet1/0/24]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>SVI Activation:</strong> After configuring this port, the Vlan-interface241 should come UP. Verify with <code>display ip interface brief</code>. If it's still DOWN, check that the physical link is connected.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.9 -->
+        <div class="step" id="s1-9">
+            <div class="step-head">
+                <div class="step-num">9</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Link Aggregation Uplink — GE1/0/25 & GE1/0/26</div>
+                    <div class="step-desc">Create a dynamic LAG (Link Aggregation Group 1) using both Gigabit ports for high-bandwidth, redundant uplink to ND6. Enable fiber combo mode.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! --- Step A: Create the Link Aggregation Group ---</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">interface Bridge-Aggregation1</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">description Connection-to-ND6</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">port trunk pvid vlan 241</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">link-aggregation mode dynamic</span>
+<span class="comment">! Use LACP (dynamic) instead of static mode</span>
+<span class="comment">! LACP detects misconfigurations and prevents loops</span>
+<span class="prompt">[ND1-E101-Bridge-Aggregation1]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- Step B: Assign physical ports to the group ---</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">interface GigabitEthernet1/0/25</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">port trunk pvid vlan 241</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">combo enable fiber</span>
+<span class="comment">! Switch the combo port to use the SFP fiber interface</span>
+<span class="comment">! (instead of the copper RJ45)</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">port link-aggregation group 1</span>
+<span class="comment">! Bind this physical port to LAG group 1</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/25]</span> <span class="cmd">quit</span>
+
+<span class="comment">! Repeat for the second member port:</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">interface GigabitEthernet1/0/26</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">port trunk pvid vlan 241</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">combo enable fiber</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">port link-aggregation group 1</span>
+<span class="prompt">[ND1-E101-GigabitEthernet1/0/26]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>Dynamic vs Static LAG:</strong> Dynamic mode uses LACP (IEEE 802.3ad) to negotiate the aggregation. Static mode just bundles ports without negotiation. Always prefer dynamic — if one side is misconfigured, LACP won't form the aggregation, preventing broadcast storms.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.10 -->
+        <div class="step" id="s1-10">
+            <div class="step-head">
+                <div class="step-num">10</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Default Route</div>
+                    <div class="step-desc">Set a static default route pointing to the distribution switch (10.0.241.1) for all traffic the access switch needs to send off-subnet.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">ip route-static <span class="val">0.0.0.0</span> <span class="val">0.0.0.0</span> <span class="val">10.0.241.1</span></span>
+<span class="comment">! Default route: send all unknown traffic to 10.0.241.1</span>
+<span class="comment">! 0.0.0.0/0 = match any destination not in local routing table</span>
+<span class="comment">! 10.0.241.1 = next-hop (distribution switch or router)</span>
+<span class="comment">! Needed for: NTP, SNMP traps, firmware downloads, etc.</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.11 -->
+        <div class="step" id="s1-11">
+            <div class="step-head">
+                <div class="step-num">11</div>
+                <div class="step-content">
+                    <div class="step-title">Configure SNMP</div>
+                    <div class="step-desc">Enable SNMP v2c with read-only community "H#@#123" and configure trap destination to the NMS server at 10.0.10.162.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent</span>
+<span class="comment">! Enable the SNMP agent process</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent sys-info version all</span>
+<span class="comment">! Enable all SNMP versions (v1, v2c, v3)</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent community read <span class="highlight">H#@#123</span></span>
+<span class="comment">! Set read-only community string for SNMP v2c</span>
+<span class="comment">! NMS can poll switch status but cannot modify config</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent log all</span>
+<span class="comment">! Enable SNMP logging for all operations</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent target-host trap address udp-domain <span class="val">10.0.10.162</span> params securityname <span class="highlight">H#@#123</span> v2c</span>
+<span class="comment">! Configure SNMP trap destination (NMS server)</span>
+<span class="comment">! Traps are unsolicited notifications (alerts, errors)</span>
+<span class="comment">! Sent via UDP to 10.0.10.162 using v2c with community "H#@#123"</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent trap enable default-route</span>
+<span class="comment">! Enable default-route change traps</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent trap queue-size 500</span>
+<span class="comment">! Set trap queue size to 500 messages</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">snmp-agent trap life 600</span>
+<span class="comment">! Set trap message lifetime to 600 seconds</span>
+<span class="comment">! If trap can't be sent within 600s, it's discarded</span></pre>
+                </div>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>Security Note:</strong> SNMP v2c uses plain-text community strings — anyone who knows "H#@#123" can read your switch data. In production, use SNMP v3 with authentication and encryption. The distribution switch (ND1) shows v3 configuration in Part 2.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1.12 -->
+        <div class="step" id="s1-12">
+            <div class="step-head">
+                <div class="step-num">12</div>
+                <div class="step-content">
+                    <div class="step-title">Configure VTY Lines & Password Recovery</div>
+                    <div class="step-desc">Set all 16 VTY lines (0-15) to use scheme authentication (username/password login) and enable password recovery as a safety net.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label access">ND1-E101 — ACCESS SWITCH</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1-E101]</span> <span class="cmd">password-recovery enable</span>
+<span class="comment">! Allow password recovery via boot menu</span>
+<span class="comment">! If you lose the password, you can boot and reset it</span>
+<span class="comment">! Disable in high-security environments</span>
+
+<span class="prompt">[ND1-E101]</span> <span class="cmd">user-interface vty 0 15</span>
+<span class="prompt">[ND1-E101-ui-vty0-15]</span> <span class="cmd">authentication-mode scheme</span>
+<span class="comment">! Use "scheme" = username + password authentication</span>
+<span class="comment">! This uses the local-user accounts (manager / monitor)</span>
+<span class="comment">! Alternative: "password" = simple password only (less secure)</span>
+
+<span class="prompt">[ND1-E101-ui-vty0-15]</span> <span class="cmd">protocol inbound telnet</span>
+<span class="comment">! Allow only Telnet inbound on VTY lines</span>
+<span class="comment">! Use "protocol inbound ssh" for SSH-only access</span>
+<span class="comment">! Use "protocol inbound all" for both</span>
+
+<span class="prompt">[ND1-E101-ui-vty0-15]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- SAVE CONFIGURATION ---</span>
+<span class="prompt">[ND1-E101]</span> <span class="cmd">return</span>
+<span class="prompt">&lt;ND1-E101&gt;</span> <span class="cmd">save</span>
+<span class="comment">! Save running-config to startup-config</span>
+<span class="comment">! Without this, all changes are lost on reboot!</span></pre>
+                </div>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Always save!</strong> HP Comware does NOT auto-save. Run <code>save</code> after every configuration session. Verify with <code>display current-configuration</code>.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 2: ND1 DISTRIBUTION SWITCH            -->
+    <!-- ========================================== -->
+    <div class="section" id="part2">
+        <div class="section-header">
+            <div class="section-icon orange">🏢</div>
+            <h2>Part 2 — ND1 (Distribution Switch) <small>Multiple modules · IRF · OSPF · sFlow · SNMP v3</small></h2>
+        </div>
+
+        <!-- STEP 2.1 -->
+        <div class="step" id="s2-1">
+            <div class="step-head">
+                <div class="step-num">13</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Trunk Downlink Ports — Module 1 (GE1/0/4 to GE1/0/23)</div>
+                    <div class="step-desc">Configure 20 Gigabit ports as trunks with individual LAG groups for connections to access switches. Each port gets its own LAG for future expansion.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="range-note">
+                    <strong>🔗 Applied to ports:</strong> GE1/0/4 through GE1/0/23 — each port is a separate trunk assigned to its own LAG group (LAG 4 through LAG 23). GE1/0/24 is in LAG 24 but is <strong>shutdown</strong>.
+                </div>
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION SWITCH (Example: GE1/0/4)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">interface GigabitEthernet1/0/4</span>
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">port link-mode bridge</span>
+<span class="comment">! Explicitly set to Layer 2 bridge mode</span>
+<span class="comment">! (Some Comware switches default to route mode)</span>
+
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">port trunk pvid vlan 241</span>
+<span class="comment">! Trunk carrying all VLANs, native VLAN = 241 (management)</span>
+
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">port link-aggregation group 4</span>
+<span class="comment">! Assign to LAG group 4</span>
+<span class="comment">! Each port has its own LAG for 1:1 access switch mapping</span>
+
+<span class="prompt">[ND1-GigabitEthernet1/0/4]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — BULK (Remaining ports)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! Repeat for GE1/0/5 through GE1/0/23 (same pattern):</span>
+<span class="cmd">interface GigabitEthernet1/0/5</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port link-type trunk</span>
+ <span class="cmd">port trunk permit vlan all</span>
+ <span class="cmd">port trunk pvid vlan 241</span>
+ <span class="cmd">port link-aggregation group 5</span>
+<span class="cmd">quit</span>
+
+<span class="comment">! GE1/0/6 → LAG 6, GE1/0/7 → LAG 7 ... GE1/0/23 → LAG 23</span>
+
+<span class="comment">! --- GE1/0/24: SHUTDOWN (reserved) ---</span>
+<span class="cmd">interface GigabitEthernet1/0/24</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port link-type trunk</span>
+ <span class="cmd">port trunk permit vlan all</span>
+ <span class="cmd">port trunk pvid vlan 241</span>
+ <span class="cmd">shutdown</span>
+<span class="comment">! Port is administratively disabled — reserved for future use</span>
+ <span class="cmd">port link-aggregation group 24</span>
+<span class="cmd">quit</span>
+
+<span class="comment">! --- GE1/0/25 to GE1/0/31: SHUTDOWN ---</span>
+<span class="comment">! All shutdown — unused ports</span>
+<span class="cmd">interface GigabitEthernet1/0/25</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">shutdown</span>
+<span class="cmd">quit</span>
+<span class="comment">! ... repeat for GE1/0/26 through GE1/0/31</span>
+
+<span class="comment">! --- GE1/0/32: Management access port ---</span>
+<span class="cmd">interface GigabitEthernet1/0/32</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port access vlan 241</span>
+<span class="comment">! Direct management connection in VLAN 241</span>
+<span class="cmd">quit</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.2 -->
+        <div class="step" id="s2-2">
+            <div class="step-head">
+                <div class="step-num">14</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Trunk Ports with sFlow Monitoring — Module 2</div>
+                    <div class="step-desc">Module 2 ports carry trunk traffic AND have sFlow sampling enabled for network traffic analysis. Some ports have flow sampling, others only counter sampling.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION (GE2/0/1 with sFlow — LAG 1)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">interface GigabitEthernet2/0/1</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">port link-mode bridge</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">port trunk pvid vlan 241</span>
+
+<span class="comment">! --- sFlow Configuration on this port ---</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">sflow flow collector 1</span>
+<span class="comment">! Send flow samples to collector 1 (defined globally)</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">sflow counter interval 30</span>
+<span class="comment">! Send interface counter data every 30 seconds</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">sflow counter collector 1</span>
+<span class="comment">! Send counter samples to collector 1</span>
+
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">port link-aggregation group 1</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/1]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — WITH FLOW SAMPLING (GE2/0/2 — LAG 2)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">interface GigabitEthernet2/0/2</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">port link-mode bridge</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">port link-type trunk</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">port trunk permit vlan all</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">port trunk pvid vlan 241</span>
+
+<span class="comment">! --- sFlow with BOTH flow and counter sampling ---</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">sflow sampling-rate 1000</span>
+<span class="comment">! Sample 1 out of every 1000 packets for flow analysis</span>
+<span class="comment">! Lower rate = more accurate but more CPU/load</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">sflow flow collector 1</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">sflow counter interval 30</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">sflow counter collector 1</span>
+
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">port link-aggregation group 2</span>
+<span class="prompt">[ND1-GigabitEthernet2/0/2]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>sFlow vs NetFlow:</strong> sFlow (sampled flow) sends statistical samples — lightweight and scalable. NetFlow/IPFIX sends records for every flow — more accurate but heavier. sFlow is preferred on high-throughput distribution switches. The collector at 10.0.10.76 receives all sFlow data (defined globally in Step 2.8).</div>
+                </div>
+                <div class="range-note">
+                    <strong>📊 Module 2 Port Summary:</strong><br>
+                    • GE2/0/1 → LAG 1 (counter only) &nbsp;• GE2/0/2 → LAG 2 (flow + counter)<br>
+                    • GE2/0/3 → LAG 3 (flow + counter) &nbsp;• GE2/0/4 → LAG 4 (flow + counter)<br>
+                    • GE2/0/5 → LAG 5 (no sFlow) &nbsp;• GE2/0/6~8 → LAG 6~8 (flow + counter)<br>
+                    • GE2/0/9 → No LAG &nbsp;• GE2/0/10 → LAG 19 (counter only — note: different number!)<br>
+                    • GE2/0/11~21 → LAG 11~21 (flow + counter) &nbsp;• GE2/0/22 → Shutdown<br>
+                    • GE2/0/23 → No LAG &nbsp;• GE2/0/24 → LAG 24 (flow + counter)
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.3 -->
+        <div class="step" id="s2-3">
+            <div class="step-head">
+                <div class="step-num">15</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Ten-Gigabit Core Uplinks — LAG 41</div>
+                    <div class="step-desc">Four Ten-Gigabit ports form LAG 41 for the high-bandwidth uplink to the core router. Only VLAN 11 is permitted (not all VLANs).</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION (4 × TenGE ports → LAG 41)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! All 4 ports use the same config — example for TenGE1/1/2:</span>
+<span class="prompt">[ND1]</span> <span class="cmd">interface Ten-GigabitEthernet1/1/2</span>
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">port link-mode bridge</span>
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">port link-type trunk</span>
+
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">undo port trunk permit vlan 1</span>
+<span class="comment">! Explicitly remove VLAN 1 from this trunk</span>
+<span class="comment">! More secure than "permit vlan all"</span>
+
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">port trunk permit vlan 11</span>
+<span class="comment">! Only allow VLAN 11 on this uplink</span>
+<span class="comment">! VLAN 11 = dedicated uplink VLAN to core</span>
+
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">port trunk pvid vlan 11</span>
+<span class="comment">! Native VLAN = 11</span>
+
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">port link-aggregation group 41</span>
+<span class="prompt">[ND1-Ten-GigabitEthernet1/1/2]</span> <span class="cmd">quit</span>
+
+<span class="comment">! Repeat for the other 3 TenGE ports:</span>
+<span class="cmd">interface Ten-GigabitEthernet1/2/2</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port link-type trunk</span>
+ <span class="cmd">undo port trunk permit vlan 1</span>
+ <span class="cmd">port trunk permit vlan 11</span>
+ <span class="cmd">port trunk pvid vlan 11</span>
+ <span class="cmd">port link-aggregation group 41</span>
+<span class="cmd">quit</span>
+
+<span class="cmd">interface Ten-GigabitEthernet2/1/2</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port link-type trunk</span>
+ <span class="cmd">undo port trunk permit vlan 1</span>
+ <span class="cmd">port trunk permit vlan 11</span>
+ <span class="cmd">port trunk pvid vlan 11</span>
+ <span class="cmd">port link-aggregation group 41</span>
+<span class="cmd">quit</span>
+
+<span class="cmd">interface Ten-GigabitEthernet2/2/2</span>
+ <span class="cmd">port link-mode bridge</span>
+ <span class="cmd">port link-type trunk</span>
+ <span class="cmd">undo port trunk permit vlan 1</span>
+ <span class="cmd">port trunk permit vlan 11</span>
+ <span class="cmd">port trunk pvid vlan 11</span>
+ <span class="cmd">port link-aggregation group 41</span>
+<span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <div><strong>Restricted Trunk:</strong> Notice the core uplink only permits VLAN 11 — not "vlan all". This is a security best practice. Only the uplink VLAN traverses this link. Inter-VLAN routing happens on the core router or on this distribution switch.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.4 -->
+        <div class="step" id="s2-4">
+            <div class="step-head">
+                <div class="step-num">16</div>
+                <div class="step-content">
+                    <div class="step-title">Configure OSPF Routing</div>
+                    <div class="step-desc">Enable OSPF process 1 in Area 0. Advertise the uplink subnet (10.0.11.0/24) and import direct routes and static routes into OSPF.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label ospf">ND1 — DISTRIBUTION — OSPF</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">ospf 1</span>
+<span class="comment">! Create OSPF process 1</span>
+
+<span class="prompt">[ND1-ospf-1]</span> <span class="cmd">import-route direct</span>
+<span class="comment">! Redistribute directly connected subnets into OSPF</span>
+<span class="comment">! This advertises all local VLAN interfaces</span>
+
+<span class="prompt">[ND1-ospf-1]</span> <span class="cmd">import-route static</span>
+<span class="comment">! Redistribute static routes into OSPF</span>
+<span class="comment">! The default route will be advertised to OSPF neighbors</span>
+
+<span class="prompt">[ND1-ospf-1]</span> <span class="cmd">area 0.0.0.0</span>
+<span class="comment">! Enter OSPF Area 0 (backbone area)</span>
+
+<span class="prompt">[ND1-ospf-1-area-0.0.0.0]</span> <span class="cmd">network <span class="val">10.0.11.0</span> <span class="val">0.0.0.255</span></span>
+<span class="comment">! Advertise the 10.0.11.0/24 subnet in Area 0</span>
+<span class="comment">! This is the uplink VLAN 11 subnet</span>
+<span class="comment">! Wildcard mask: 0.0.0.255 = inverse of /24</span>
+
+<span class="prompt">[ND1-ospf-1-area-0.0.0.0]</span> <span class="cmd">quit</span>
+<span class="prompt">[ND1-ospf-1]</span> <span class="cmd">quit</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>OSPF Area Design:</strong> The distribution switch is in Area 0 (backbone). Access switches use static routes and don't run OSPF — they're Layer 2 only. The core router is also in Area 0. In larger networks, access switches would be in stub areas or use passive interfaces.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.5 -->
+        <div class="step" id="s2-5">
+            <div class="step-head">
+                <div class="step-num">17</div>
+                <div class="step-content">
+                    <div class="step-title">Configure Static Default Route</div>
+                    <div class="step-desc">Point the default route to the core router at 10.0.11.2. This route is also redistributed into OSPF via Step 16.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">ip route-static <span class="val">0.0.0.0</span> <span class="val">0.0.0.0</span> <span class="val">10.0.11.2</span></span>
+<span class="comment">! Default route → core router (10.0.11.2)</span>
+<span class="comment">! Because of "import-route static" in OSPF,</span>
+<span class="comment">! this default route is advertised to all OSPF neighbors</span>
+<span class="comment">! Access switches receive it via the distribution layer</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.6 -->
+        <div class="step" id="s2-6">
+            <div class="step-head">
+                <div class="step-num">18</div>
+                <div class="step-content">
+                    <div class="step-title">Configure SNMP v2c & v3</div>
+                    <div class="step-desc">Configure both SNMP v2c (read + write communities) and SNMP v3 with USM user authentication (MD5 + AES128) for secure monitoring.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label snmp">ND1 — DISTRIBUTION — SNMP v2c</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">snmp-agent</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent sys-info version all</span>
+
+<span class="comment">! --- SNMP v2c Communities ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent community write <span class="highlight">H#@#123</span></span>
+<span class="comment">! Write community — allows SET operations (modify config)</span>
+<span class="comment">! ⚠️ Extremely sensitive — protect this string!</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent community read <span class="highlight">H#@#123</span></span>
+<span class="comment">! Read community — GET operations only (monitoring)</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent log all</span></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-label snmp">ND1 — DISTRIBUTION — SNMP v3 (Secure)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! --- SNMP v3 Group ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent group v3 <span class="highlight">network-team</span></span>
+<span class="comment">! Create SNMP v3 group "network-team"</span>
+<span class="comment">! Users in this group inherit group settings</span>
+
+<span class="comment">! --- SNMP v3 User ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent usm-user v3 <span class="highlight">NNM</span> <span class="highlight">network-team</span> cipher authentication-mode md5 <span class="val">$c$3$wlFTr5Juq5GIeAKxeyB19CSMtuhk1ngzoO1fT7id40G7Cw==</span> privacy-mode aes128 <span class="val">$c$3$sJPq3FhtJQNcTVXTkjXSFUwa5Ka8oaWrfkoYWdyE1UrCbw==</span></span>
+<span class="comment">! Create v3 user "NNM" in group "network-team"</span>
+<span class="comment">! Authentication: MD5 (hash for verifying identity)</span>
+<span class="comment">! Privacy: AES128 (encryption for data in transit)</span>
+<span class="comment">! Passwords stored in cipher (encrypted) form</span>
+<span class="comment">! To set plaintext: remove "cipher" keyword and use plain password</span>
+
+<span class="comment">! --- Trap Destinations (3 NMS servers) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent target-host trap address udp-domain <span class="val">10.0.10.72</span> params securityname <span class="highlight">H#@#123</span> v3</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent target-host trap address udp-domain <span class="val">10.0.10.73</span> params securityname <span class="highlight">H#@#123</span> v3</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent target-host trap address udp-domain <span class="val">10.0.10.74</span> params securityname <span class="highlight">H#@#123</span> v3</span>
+<span class="comment">! Send SNMP traps to 3 NMS servers using v3</span>
+<span class="comment">! Redundant trap receivers for high availability</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent trap enable default-route</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent trap source Vlan-interface241</span>
+<span class="comment">! Use VLAN 241 interface IP as source for traps</span>
+<span class="comment">! Ensures traps arrive from a known, routable IP</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent trap queue-size 500</span>
+<span class="prompt">[ND1]</span> <span class="cmd">snmp-agent trap life 600</span></pre>
+                </div>
+                <table class="config-table">
+                    <tr><th>SNMP Version</th><th>Auth Method</th><th>Encryption</th><th>Security</th></tr>
+                    <tr><td><code>v2c</code></td><td>Community string (plain)</td><td>None</td><td>🔴 Low</td></tr>
+                    <tr><td><code>v3 noAuthNoPriv</code></td><td>Username only</td><td>None</td><td>🟡 Medium</td></tr>
+                    <tr><td><code>v3 authNoPriv</code></td><td>MD5/SHA</td><td>None</td><td>🟡 Medium</td></tr>
+                    <tr><td><code>v3 authPriv</code> ← Used</td><td>MD5</td><td>AES128</td><td>🟢 High</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- STEP 2.7 -->
+        <div class="step" id="s2-7">
+            <div class="step-head">
+                <div class="step-num">19</div>
+                <div class="step-content">
+                    <div class="step-title">Enable DHCP & Configure NTP</div>
+                    <div class="step-desc">Enable DHCP service (for relaying or server) and sync time with NTP server at 10.0.10.10 for accurate logging.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">dhcp enable</span>
+<span class="comment">! Enable DHCP service globally</span>
+<span class="comment">! Can act as DHCP server or relay agent</span>
+<span class="comment">! For relay: configure "dhcp-select relay" on VLAN interfaces</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">ntp-service unicast-server <span class="val">10.0.10.10</span></span>
+<span class="comment">! Configure NTP unicast server for time synchronization</span>
+<span class="comment">! Accurate time is critical for:</span>
+<span class="comment">!   • Log timestamps (troubleshooting)</span>
+<span class="comment">!   • Certificate validation (HTTPS/SSH)</span>
+<span class="comment">!   • SNMP trap timestamps</span>
+<span class="comment">!   • Scheduled tasks</span>
+<span class="comment">! Verify with: display ntp-service status</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.8 -->
+        <div class="step" id="s2-8">
+            <div class="step-head">
+                <div class="step-num">20</div>
+                <div class="step-content">
+                    <div class="step-title">Configure sFlow Agent Globally</div>
+                    <div class="step-desc">Define the sFlow agent IP and collector. This is the global config that the per-port sFlow commands (Step 14) reference.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION — sFlow GLOBAL</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">sflow agent ip <span class="val">10.0.241.1</span></span>
+<span class="comment">! Set the sFlow agent IP address</span>
+<span class="comment">! This IP identifies the switch in sFlow datagrams</span>
+<span class="comment">! Must be a local interface IP (VLAN 241 in this case)</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">sflow collector 1 ip <span class="val">10.0.10.76</span> description <span class="highlight">6343</span></span>
+<span class="comment">! Define collector 1:</span>
+<span class="comment">!   IP: 10.0.10.76 (sFlow analyzer server)</span>
+<span class="comment">!   Description: "6343" (default sFlow UDP port)</span>
+<span class="comment">! All ports referencing "collector 1" send data here</span>
+<span class="comment">! Typical sFlow tools: InMon, ntopng, PRTG, SolarWinds</span></pre>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>sFlow Architecture:</strong> The agent (switch) samples packets on interfaces → sends sFlow datagrams via UDP port 6343 → to the collector (analyzer). The collector reconstructs traffic patterns. Sampling rate 1:1000 means 0.1% of packets are sampled — minimal performance impact.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2.9 -->
+        <div class="step" id="s2-9">
+            <div class="step-head">
+                <div class="step-num">21</div>
+                <div class="step-content">
+                    <div class="step-title">Configure IRF (Intelligent Resilient Framework)</div>
+                    <div class="step-desc">Configure IRF to virtualize two physical switch modules into one logical switch. Uses Ten-Gigabit ports 1/1/1, 1/2/1, 2/1/1, and 2/2/1 as IRF physical links.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label irf">ND1 — DISTRIBUTION — IRF CONFIGURATION</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! ====================================================</span>
+<span class="comment">! IRF = Intelligent Resilient Framework</span>
+<span class="comment">! Combines multiple physical switches into ONE logical switch</span>
+<span class="comment">! Benefits: unified management, cross-chassis link aggregation,</span>
+<span class="comment">!          high availability, no STP between chassis</span>
+<span class="comment">! ====================================================</span>
+
+<span class="comment">! --- IRF Port 1/1 (on IRF Member 1) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">irf-port 1/1</span>
+<span class="comment">! "1/1" = IRF member 1, IRF port 1</span>
+<span class="prompt">[ND1-irf-port1/1]</span> <span class="cmd">port group interface Ten-GigabitEthernet1/1/1 mode normal</span>
+<span class="comment">! Bind TenGE1/1/1 as IRF physical link</span>
+<span class="comment">! "mode normal" = standard IRF link</span>
+<span class="prompt">[ND1-irf-port1/1]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- IRF Port 1/2 (on IRF Member 1) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">irf-port 1/2</span>
+<span class="prompt">[ND1-irf-port1/2]</span> <span class="cmd">port group interface Ten-GigabitEthernet1/2/1 mode normal</span>
+<span class="prompt">[ND1-irf-port1/2]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- IRF Port 2/1 (on IRF Member 2) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">irf-port 2/1</span>
+<span class="prompt">[ND1-irf-port2/1]</span> <span class="cmd">port group interface Ten-GigabitEthernet2/1/1 mode normal</span>
+<span class="prompt">[ND1-irf-port2/1]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- IRF Port 2/2 (on IRF Member 2) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">irf-port 2/2</span>
+<span class="prompt">[ND1-irf-port2/2]</span> <span class="cmd">port group interface Ten-GigabitEthernet2/2/1 mode normal</span>
+<span class="prompt">[ND1-irf-port2/2]</span> <span class="cmd">quit</span>
+
+<span class="comment">! --- ACTIVATE IRF (requires reboot) ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">irf configuration active</span>
+<span class="comment">! Activate the IRF configuration</span>
+<span class="comment">! ⚠️ This triggers a reboot!</span>
+<span class="comment">! Both chassis will reboot and form the IRF fabric</span>
+<span class="comment">! After reboot, they appear as ONE switch</span>
+
+<span class="comment">! --- SAVE AND REBOOT ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">return</span>
+<span class="prompt">&lt;ND1&gt;</span> <span class="cmd">save</span>
+<span class="prompt">&lt;ND1&gt;</span> <span class="cmd">reboot</span></pre>
+                </div>
+                <div class="callout warn">
+                    <span class="callout-icon">⚠️</span>
+                    <div><strong>CRITICAL — IRF Activation Causes Reboot!</strong> After <code>irf configuration active</code>, both chassis reboot. Make sure: (1) IRF member priorities are set correctly, (2) IRF domain IDs match, (3) Physical IRF links are connected BEFORE activation, (4) You have console access in case of issues.</div>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <div><strong>IRF Topology in This Config:</strong> Member 1 has 2 IRF links (TenGE1/1/1 + TenGE1/2/1) and Member 2 has 2 IRF links (TenGE2/1/1 + TenGE2/2/1). This creates a mesh with 4 physical links — if any link fails, the IRF fabric stays connected. The data uplinks (TenGE x/1/2 and x/2/2) are in LAG 41 and carry regular traffic.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINAL CONFIG FOR ND1 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num">22</div>
+                <div class="step-content">
+                    <div class="step-title">Final: VTY Lines & Save — ND1</div>
+                    <div class="step-desc">Configure VTY authentication and save the distribution switch configuration.</div>
+                </div>
+            </div>
+            <div class="step-body">
+                <div class="code-block">
+                    <div class="code-label dist">ND1 — DISTRIBUTION — FINAL STEPS</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="prompt">[ND1]</span> <span class="cmd">user-interface aux 0 1</span>
+<span class="comment">! Configure auxiliary ports 0-1 (console/serial)</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">user-interface vty 0 15</span>
+<span class="prompt">[ND1-ui-vty0-15]</span> <span class="cmd">authentication-mode scheme</span>
+<span class="comment">! Require username/password for all remote sessions</span>
+<span class="prompt">[ND1-ui-vty0-15]</span> <span class="cmd">quit</span>
+
+<span class="prompt">[ND1]</span> <span class="cmd">ssh server enable</span>
+<span class="prompt">[ND1]</span> <span class="cmd">ip https enable</span>
+<span class="comment">! Enable SSH and web management</span>
+
+<span class="comment">! --- SAVE ---</span>
+<span class="prompt">[ND1]</span> <span class="cmd">return</span>
+<span class="prompt">&lt;ND1&gt;</span> <span class="cmd">save</span>
+<span class="comment">! 💾 SAVE! Or lose everything on reboot!</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VERIFICATION COMMANDS                      -->
+    <!-- ========================================== -->
+    <div class="section" id="verify">
+        <div class="section-header">
+            <div class="section-icon green">✅</div>
+            <h2>Verification Commands <small>Test your configuration</small></h2>
+        </div>
+
+        <div class="code-block">
+            <div class="code-label both">BOTH SWITCHES — VERIFICATION</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="comment">! ===== BASIC VERIFICATION =====</span>
+<span class="cmd">display current-configuration</span>          <span class="comment">! Show full running config</span>
+<span class="cmd">display saved-configuration</span>             <span class="comment">! Show startup config (last saved)</span>
+<span class="cmd">display version</span>                           <span class="comment">! Show firmware version</span>
+
+<span class="comment">! ===== VLAN VERIFICATION =====</span>
+<span class="cmd">display vlan</span>                               <span class="comment">! List all VLANs and their ports</span>
+<span class="cmd">display vlan 50</span>                           <span class="comment">! Show details for VLAN 50</span>
+
+<span class="comment">! ===== INTERFACE VERIFICATION =====</span>
+<span class="cmd">display interface brief</span>                   <span class="comment">! Summary of all interfaces (UP/DOWN)</span>
+<span class="cmd">display interface Ethernet1/0/1</span>          <span class="comment">! Detailed info for one port</span>
+<span class="cmd">display ip interface brief</span>               <span class="comment">! Show VLAN interface IPs and status</span>
+
+<span class="comment">! ===== LINK AGGREGATION =====</span>
+<span class="cmd">display link-aggregation summary</span>          <span class="comment">! Show all LAGs and member ports</span>
+<span class="cmd">display link-aggregation verbose</span>          <span class="comment">! Detailed LAG info (LACP status, etc.)</span>
+
+<span class="comment">! ===== ROUTING (ND1 Distribution) =====</span>
+<span class="cmd">display ip routing-table</span>                  <span class="comment">! Show IP routing table</span>
+<span class="cmd">display ospf peer</span>                         <span class="comment">! Show OSPF neighbors</span>
+<span class="cmd">display ospf routing</span>                     <span class="comment">! Show OSPF routing table</span>
+<span class="cmd">display ospf lsdb</span>                        <span class="comment">! Show OSPF link-state database</span>
+
+<span class="comment">! ===== SNMP =====</span>
+<span class="cmd">display snmp-agent community</span>              <span class="comment">! Show configured communities</span>
+<span class="cmd">display snmp-agent target-host</span>           <span class="comment">! Show trap destinations</span>
+<span class="cmd">display snmp-agent group</span>                 <span class="comment">! Show SNMP v3 groups</span>
+<span class="cmd">display snmp-agent usm-user</span>               <span class="comment">! Show SNMP v3 users</span>
+
+<span class="comment">! ===== sFlow (ND1 Distribution) =====</span>
+<span class="cmd">display sflow</span>                              <span class="comment">! Show global sFlow settings</span>
+<span class="cmd">display sflow interface</span>                  <span class="comment">! Show per-port sFlow config</span>
+
+<span class="comment">! ===== IRF (ND1 Distribution) =====</span>
+<span class="cmd">display irf configuration</span>                 <span class="comment">! Show IRF topology and member info</span>
+<span class="cmd">display irf topology</span>                      <span class="comment">! Show IRF fabric topology</span>
+
+<span class="comment">! ===== USERS & SECURITY =====</span>
+<span class="cmd">display local-user</span>                        <span class="comment">! Show local user accounts</span>
+<span class="cmd">display user-interface</span>                   <span class="comment">! Show VTY/AUX line status</span>
+<span class="cmd">display ssh server status</span>                <span class="comment">! Verify SSH is running</span>
+
+<span class="comment">! ===== NTP =====</span>
+<span class="cmd">display ntp-service status</span>                <span class="comment">! Show NTP sync status</span>
+<span class="cmd">display clock</span>                             <span class="comment">! Show current system time</span>
+
+<span class="comment">! ===== STP =====</span>
+<span class="cmd">display stp</span>                                <span class="comment">! Show STP status for all VLANs</span>
+<span class="cmd">display stp brief</span>                         <span class="comment">! Concise STP port status</span></pre>
+        </div>
+
+
+    <!-- SUMMARY -->
+    <div class="summary-box">
+        <h3>📋 Configuration Summary — What Students Built</h3>
+        <ul>
+            <li><strong>ND1-E101 Access Switch:</strong> 22 hybrid PoE ports (VLAN 50), 1 trunk uplink, 1 management port, 1 LAG uplink (2×GE), SNMP v2c, local user accounts, default route</li>
+            <li><strong>ND1 Distribution Switch:</strong> 40+ trunk ports across 2 modules with sFlow monitoring, 4×TenGE core uplink (LAG 41, VLAN 11 only), OSPF Area 0 with route redistribution, SNMP v2c + v3 (MD5/AES128), DHCP, NTP, IRF virtualization (4 IRF links)</li>
+            <li><strong>Security Implemented:</strong> Scheme authentication, SSH + Telnet, SNMP v3 with encryption, VLAN 1 removed from trunks, STP edge ports, restricted core uplink VLANs</li>
+            <li><strong>High Availability:</strong> Dynamic LAG (LACP) on all uplinks, IRF chassis virtualization with mesh IRF links, redundant SNMP trap receivers (×3)</li>
+            <li><strong>Monitoring:</strong> sFlow sampling on Module 2 ports, SNMP v2c/v3 traps to multiple NMS servers, NTP time synchronization</li>
+        </ul>
+    </div>
+
+</div>
+
+    <div class="callout warn" style="margin-bottom:40px;">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Don't forget to save!</strong> HP Comware does NOT auto-save. Run <code>save force</code> to write running-config to startup-config. If you reboot without saving, ALL changes are lost!</div>
+    </div>
+
+    <footer>
+        <p>CyberDefend Network Academy — HP Switch Lab Guide</p>
+    </footer>
+</div>
+
+<script>
+function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('cd_theme', next);
+    document.getElementById('themeLabel').textContent = next === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+}
+function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500); });
+}
+</script>
+</body>
+</html>
