@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CyberDefend · HP Switch Course</title>
+    <title>CyberDefend · Security Labs</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Added FontAwesome for the sidebar toggle icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #00e676;
@@ -242,6 +244,38 @@
     <button class="theme-toggle" onclick="toggleTheme()">
         <span id="themeLabel">Switch to Light Mode</span>
     </button>
+   
+   <div class="course-title-sidebar">
+        <h2>DPA Architecture </h2>
+    </div>
+	
+   
+   <div class="nav-item" data-lesson="DPApdf0"><span class="check-icon">📄</span> Network Roadmap</div>
+
+   <div class="nav-item" data-lesson="DPApdf1"><span class="check-icon">📄</span> DPA Switching Architecture</div>
+   <div class="nav-item" data-lesson="DPApdf2"><span class="check-icon">📄</span> Practice Labs (Packet Tracre+ eve-ng + Gns3)</div>
+
+
+  
+  <!-- ==================== CISCO SWITCH SECTION ==================== -->
+    <div class="course-title-sidebar">
+        <h2>Cisco Switch</h2>
+    </div>
+    <div class="nav-list">
+        <div class="nav-section-label">📄 CISCO COURSE MATERIAL</div>
+        <div class="nav-item active" data-lesson="ciscopdf1"><span class="check-icon">📄</span> Cisco Switch Configuration</div>
+		<div class="nav-item" data-lesson="ciscopdf2"><span class="check-icon">📄</span> Practice Labs</div>
+        <div class="nav-item" data-lesson="ciscopdf3"><span class="check-icon">📄</span> Interactive Switch lab</div>
+        
+        <div class="nav-section-label">📺 CISCO VIDEO LESSONS</div>
+        <div class="nav-item" data-lesson="ciscovid1"><span class="check-icon">📺</span> Cisco Switch Initial Setup</div>
+        <div class="nav-item" data-lesson="ciscovid2"><span class="check-icon">📺</span> Cisco VLANs & Trunks</div>
+        
+        <div class="nav-section-label">⬇️ CISCO DOWNLOADS</div>
+        <div class="nav-item" data-lesson="ciscosim"><span class="check-icon">💾</span> Download Cisco IOS Images</div>
+    </div>
+
+    <!-- ==================== HP SWITCH SECTION ==================== -->
     <div class="course-title-sidebar">
         <h2>HP Switch</h2>
     </div>
@@ -264,8 +298,10 @@
         <div class="nav-section-label">⬇️ HP DOWNLOADS</div>
         <div class="nav-item" data-lesson="sim"><span class="check-icon">💾</span> Download HP Simulator</div>
         <div class="nav-item" data-lesson="sim2"><span class="check-icon">💾</span> Download GNS3 IOS images</div>
+        
+        <!-- ==================== ARUBA SWITCH SECTION ==================== -->
         <div class="course-title-sidebar">
-        <h2>ARUBA Switch</h2>
+            <h2>ARUBA Switch</h2>
        </div>
         <div class="nav-section-label">📺 Aruba VIDEO LESSONS (4 VIDEOS)</div>
         <div class="nav-item" data-lesson="11"><span class="check-icon">⚙️</span> HPE Aruba Networking AOS-CX Basics</div>
@@ -281,7 +317,8 @@
         <div class="nav-item" data-lesson="21"><span class="check-icon">🖥️</span> Links in Aruba CX Simulator including OOBM on ESXi Server</div>
         <div class="nav-item" data-lesson="22"><span class="check-icon">🔧</span> How to Install Aruba Switch Simulator in GNS3</div>
     </div>
-    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ HP Switch Course — 4 Videos + PDF</div>
+    
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ Networking Labs Course</div>
 </div>
 
 <div class="main-content">
@@ -310,37 +347,133 @@
 
     <div class="content-wrapper">
 
-        <!-- ==================== PDF SECTION ==================== -->
-        <div id="lesson-pdf" class="pdf-card">
-            <iframe src="Cisco_vs_HP.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="FortiGate Firewall on GNS3"></iframe>
+        <div class="nav-buttons">
+            <button class="nav-btn nav-btn-prev" id="btnPrev" onclick="navigate(-1)">← Previous</button>
+            <button class="nav-btn nav-btn-next" id="btnNext" onclick="navigate(1)">Next →</button>
         </div>
 
-        <!-- ==================== PDF SECTION ==================== -->
+
+
+
+        <!-- ==================== CISCO PDF 1 ==================== -->
+        <div id="lesson-DPApdf0" class="pdf-card">
+            <iframe src="network Roadmap.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Network Roadmap"></iframe>
+        </div>
+		
+        <!-- ==================== CISCO PDF 1 ==================== -->
+        <div id="lesson-DPApdf1" class="pdf-card">
+            <iframe src="lesson-6.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="DPA Switching Architecture"></iframe>
+        </div>
+		
+        <!-- ==================== CISCO PDF 1 ==================== -->
+        <div id="lesson-DPApdf2" class="pdf-card">
+            <iframe src="lesson-15.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Practice Labs (Packet Tracre+ eve-ng + Gns3)"></iframe>
+        </div>
+		
+        <!-- ==================== CISCO PDF 1 ==================== -->
+        <div id="lesson-ciscopdf1" class="pdf-card">
+            <iframe src="lesson-11.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Cisco Switch Configuration"></iframe>
+        </div>
+        <!-- ==================== CISCO PDF 2 ==================== -->
+        <div id="lesson-ciscopdf2" class="pdf-card" style="display:none;">
+            <iframe src="lesson-14.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Practice Labs"></iframe>
+        </div>
+		
+        <!-- ==================== CISCO PDF 2 ==================== -->
+        <div id="lesson-ciscopdf3" class="pdf-card" style="display:none;">
+            <iframe src="html.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Interactive Switch lab"></iframe>
+        </div>
+
+        <!-- ==================== CISCO VIDEO 1 ==================== -->
+        <div id="lesson-ciscovid1" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 1</span>
+                <h2>Cisco Switch Initial Setup</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="ciscovid1_tab">🎬 Video</button>
+            </div>
+            <div id="ciscovid1_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VIDEO_ID_CISCO_1" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Cisco Switch Initial Setup walkthrough.</p>
+                    <a href="https://www.youtube.com/watch?v=VIDEO_ID_CISCO_1" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CISCO VIDEO 2 ==================== -->
+        <div id="lesson-ciscovid2" class="lesson-card" style="display:none;">
+            <div class="card-header">
+                <span class="lesson-badge">📺 VIDEO 2</span>
+                <h2>Cisco VLANs & Trunks</h2>
+            </div>
+            <div class="lesson-tabs">
+                <button class="tab-btn-lesson active" data-tab="ciscovid2_tab">🎬 Video</button>
+            </div>
+            <div id="ciscovid2_tab" class="tab-content active">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VIDEO_ID_CISCO_2" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="description-text">
+                    <p>Cisco VLANs & Trunks configuration.</p>
+                    <a href="https://www.youtube.com/watch?v=VIDEO_ID_CISCO_2" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CISCO DOWNLOAD ==================== -->
+        <div id="lesson-ciscosim" class="simulator-banner" style="display:none;">
+            <div class="simulator-banner-body">
+                <div class="sim-icon-big">💾</div>
+                <div class="sim-details">
+                    <h3>⬇️ Download Cisco IOS Images</h3>
+                    <p>Download Cisco IOS images for GNS3 & EVE-NG.</p>
+                    <div class="sim-links">
+                        <a href="#" target="_blank">⬇️ Download Cisco Images</a>
+                    </div>
+                </div>
+                <a href="#" target="_blank" class="btn-simulator">⬇️ Download Images</a>
+            </div>
+        </div>
+
+        <!-- ==================== HP PDF SECTION ==================== -->
+        <div id="lesson-pdf" class="pdf-card" style="display:none;">
+            <iframe src="Cisco_vs_HP.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Cisco vs HP vs Aruba"></iframe>
+        </div>
+
+        <!-- ==================== HP PDF 2 ==================== -->
         <div id="lesson-pdf2" class="pdf-card" style="display:none;">
-            <iframe src="Step_by_Step_HP.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Fortigate Lab Topology"></iframe>
+            <iframe src="Step_by_Step_HP.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Step by Step HP Switch Configuration"></iframe>
         </div>
 
-        <!-- ==================== PDF SECTION ==================== -->
+        <!-- ==================== ARUBA PDF ==================== -->
         <div id="lesson-pdf3" class="pdf-card" style="display: none;">
-            <iframe src="aruba2-add.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Fortigate Initial Command Line Setup"></iframe>
+            <iframe src="aruba2-add.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Step by Step Aruba Switch Configuration"></iframe>
         </div>
         
-        <!-- ==================== PDF SECTION ==================== -->
+        <!-- ==================== HP CONFIG ==================== -->
         <div id="lesson-pdfc" class="pdf-card" style="display:none;">
-            <iframe src="config.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Lesson Content"></iframe>
+            <iframe src="config.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Switch Configuration Config Files"></iframe>
         </div>
         
-        <!-- ==================== PDF SECTION ==================== -->
+        <!-- ==================== HP INTERACTIVE ==================== -->
         <div id="lesson-pdf4" class="pdf-card" style="display:none;">
-            <iframe src="new12.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Lesson Content"></iframe>
+            <iframe src="new12.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="INTERACTIVE TERMINAL"></iframe>
         </div>
 
-        <!-- ==================== PDF SECTION ==================== -->
+        <!-- ==================== HP CORE/DIST/EDGE ==================== -->
         <div id="lesson-pdf5" class="pdf-card" style="display:none;">
-            <iframe src="new11.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Lesson Content"></iframe>
+            <iframe src="new11.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="HP Switch Core / Dist / Edge"></iframe>
         </div>
 
-        <!-- ==================== VIDEO 1 ==================== -->
+        <!-- ==================== HP VIDEO 1 ==================== -->
         <div id="lesson-0" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -365,7 +498,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 2 ==================== -->
+        <!-- ==================== HP VIDEO 2 ==================== -->
         <div id="lesson-5" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -390,7 +523,7 @@
             </div>
         </div>
         
-        <!-- ==================== VIDEO 3 ==================== -->
+        <!-- ==================== HP VIDEO 3 ==================== -->
         <div id="lesson-1" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -416,7 +549,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 4 ==================== -->
+        <!-- ==================== HP VIDEO 4 ==================== -->
         <div id="lesson-2" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 2 / 4</span>
@@ -442,7 +575,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 5 ==================== -->
+        <!-- ==================== HP VIDEO 5 ==================== -->
         <div id="lesson-3" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 3 / 4</span>
@@ -468,7 +601,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 6 ==================== -->
+        <!-- ==================== HP VIDEO 6 ==================== -->
         <div id="lesson-4" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 4 / 4</span>
@@ -494,7 +627,7 @@
             </div>
         </div>
 
-        <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
+        <!-- ==================== HP SIMULATOR DOWNLOAD ==================== -->
         <div id="lesson-sim" class="simulator-banner" style="display:none;">
             <div class="simulator-banner-body">
                 <div class="sim-icon-big">💾</div>
@@ -510,7 +643,7 @@
             </div>
         </div>
         
-        <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
+        <!-- ==================== HP GNS3 DOWNLOAD ==================== -->
         <div id="lesson-sim2" class="simulator-banner" style="display:none;">
             <div class="simulator-banner-body">
                 <div class="sim-icon-big">💾</div>
@@ -525,7 +658,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 7 ==================== -->
+        <!-- ==================== ARUBA VIDEO 1 ==================== -->
         <div id="lesson-11" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -546,7 +679,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 8 ==================== -->
+        <!-- ==================== ARUBA VIDEO 2 ==================== -->
         <div id="lesson-12" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 2 / 4</span>
@@ -567,7 +700,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 9 ==================== -->
+        <!-- ==================== ARUBA VIDEO 3 ==================== -->
         <div id="lesson-13" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 3 / 4</span>
@@ -588,12 +721,12 @@
             </div>
         </div>
 
-        <!-- ==================== PDF CONFIG ==================== -->
+        <!-- ==================== ARUBA CONFIG FILES ==================== -->
         <div id="lesson-pdfconfig" class="pdf-card" style="display:none;">
-            <iframe src="arubaconfig.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Lesson Content"></iframe>
+            <iframe src="arubaconfig.html?embed=true" style="width:100%; height:100%; flex:1; border:none; display:block;" title="Aruba Switch Configuration Files"></iframe>
         </div>
 
-        <!-- ==================== SIMULATOR DOWNLOAD BANNER ==================== -->
+        <!-- ==================== ARUBA GNS3 DOWNLOAD ==================== -->
         <div id="lesson-sim3" class="simulator-banner" style="display:none;">
             <div class="simulator-banner-body">
                 <div class="sim-icon-big">💾</div>
@@ -611,7 +744,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIDEO 10 ==================== -->
+        <!-- ==================== ARUBA VIDEO 4 ==================== -->
         <div id="lesson-20" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -636,7 +769,7 @@
             </div>
         </div>
         
-        <!-- ==================== VIDEO 11 ==================== -->
+        <!-- ==================== ARUBA VIDEO 5 ==================== -->
         <div id="lesson-21" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -661,7 +794,7 @@
             </div>
         </div>
         
-        <!-- ==================== VIDEO 12 ==================== -->
+        <!-- ==================== ARUBA VIDEO 6 ==================== -->
         <div id="lesson-22" class="lesson-card" style="display:none;">
             <div class="card-header">
                 <span class="lesson-badge">📺 VIDEO 1 / 4</span>
@@ -721,7 +854,7 @@
     });
 
     // ========== LESSON ORDER ==========
-    const lessonOrder = ['pdf', 'pdf2', 'pdfc', 'pdf4', 'pdf5', '0', '5', '1', '2', '3', '4', 'sim', 'sim2', '11', '12', '13', 'pdf3', 'pdfconfig', 'sim3', '20', '21', '22'];
+    const lessonOrder = ['ciscopdf1', 'ciscopdf2', 'ciscovid1', 'ciscovid2', 'ciscosim', 'pdf', 'pdf2', 'pdfc', 'pdf4', 'pdf5', '0', '5', '1', '2', '3', '4', 'sim', 'sim2', '11', '12', '13', 'pdf3', 'pdfconfig', 'sim3', '20', '21', '22'];
     let currentIndex = 0;
 
     function showLesson(id) {
@@ -819,6 +952,12 @@
         const badge = document.querySelector('.comment-fab-badge');
         badge.textContent = parseInt(badge.textContent) + 1;
     }
+
+    // ========== INITIALIZE DEFAULT LESSON ON PAGE LOAD ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load the very first lesson in the array (ciscopdf1) by default
+        showLesson('ciscopdf1'); 
+    });
 </script>
 </body>
 </html>
