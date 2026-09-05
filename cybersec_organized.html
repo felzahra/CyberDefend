@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend · Cybersecurity Training Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --link-fg: #00e676;
+            --code-bg: #0d0d0d;
+            --code-border: #1e3a1e;
+        }
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --link-fg: #027e9e;
+            --code-bg: #f5f5f5;
+            --code-border: #c8e6c9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        
+        /* SIDEBAR TOGGLE BUTTON */
+        #sidebarToggle {
+            position: fixed;
+            top: 18px; 
+            left: 320px; /* Width of sidebar */
+            z-index: 9999;
+            width: 24px;
+            height: 44px;
+            background: var(--primary);
+            color: var(--primary-fg);
+            border: none;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+            transition: left 0.3s ease;
+        }
+        body.sidebar-hidden #sidebarToggle { left: 0; }
+        body.sidebar-hidden .sidebar { display: none; }
+        
+        .sidebar { width: 320px; background: var(--darkened-bg); border-right: 1px solid var(--hairline-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; height: 100vh; position: sticky; top: 0; transition: background 0.3s, border-color 0.3s; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .brand { padding: 24px; border-bottom: 1px solid var(--hairline-color); background: linear-gradient(135deg, var(--darkened-bg) 0%, var(--body-bg) 100%); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: var(--primary); color: var(--primary-fg); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 12px rgba(0,230,118,0.2); }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 800; color: var(--body-loud-color); }
+        .logo-text span { font-size: 0.65rem; color: var(--primary); font-weight: 600; letter-spacing: 1px; }
+        .tagline { font-size: 0.7rem; color: var(--body-quiet-color); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .back-link { padding: 16px 20px; display: block; color: var(--link-fg); text-decoration: none; font-size: 0.8rem; font-weight: 500; border-bottom: 1px solid var(--hairline-color); }
+        .back-link:hover { background: var(--selected-bg); }
+        .theme-toggle { cursor: pointer; border: 1px solid var(--hairline-color); padding: 8px 12px; background: var(--body-bg); margin: 16px 20px; border-radius: 10px; width: calc(100% - 40px); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--body-fg); transition: 0.2s; }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+        .course-title-sidebar { padding: 0 20px 16px; margin-top: 10px; border-bottom: 1px solid var(--hairline-color); }
+        .course-title-sidebar h2 { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+        .nav-list { padding: 16px 0; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 12px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; color: var(--body-fg); }
+        .nav-item:hover, .nav-item.active { background: var(--selected-bg); color: var(--link-fg); font-weight: 600; border-left: 3px solid var(--primary); }
+        .check-icon { font-size: 1.1rem; min-width: 24px; }
+        .nav-section-label { padding: 8px 20px 4px; font-size: 0.7rem; color: var(--primary); font-weight: 600; }
+        
+        /* RIGHT PANEL FIXES */
+        .main-content { flex: 1; overflow: hidden; height: 100vh; background: var(--body-bg); display: flex; flex-direction: column; transition: background 0.3s; }
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a, .top-nav-links .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; pointer-events: auto; cursor: pointer; }
+        .top-nav-links > a:hover, .top-nav-links .nav-dropdown > a:hover { color: var(--body-fg); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; border: none; }
+        .top-nav-links a.login-btn:hover { opacity: 0.9; }
+        
+        /* HEADER ANIMATION */
+        .cable-anim-container { width: 150px; height: 20px; position: relative; overflow: hidden; display: flex; align-items: center; gap: 2px; margin-left: auto; margin-right: 20px; }
+        .cable-line { flex: 1; height: 2px; background: var(--hairline-color); position: relative; }
+        .cable-line::after { content: ''; position: absolute; top: -3px; left: -30%; width: 30%; height: 8px; background: var(--primary); border-radius: 4px; animation: flowRight 2s infinite linear; }
+        @keyframes flowRight { 0% { left: -30%; } 100% { left: 100%; } }
+
+        .content-wrapper { flex: 1; width: 100%; display: flex; flex-direction: column; padding: 0; box-sizing: border-box; min-height: 0; }
+        
+        /* WELCOME / DEFAULT CONTENT */
+        .welcome-container { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
+        .welcome-container h1 { font-size: 2.5rem; margin-bottom: 16px; color: var(--body-loud-color); }
+        .welcome-container p { font-size: 1.1rem; color: var(--body-quiet-color); margin-bottom: 32px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .info-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 32px; transition: transform 0.2s, border-color 0.2s; }
+        .info-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .info-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 16px; }
+        .info-card h3 { font-size: 1.2rem; margin-bottom: 12px; color: var(--body-loud-color); }
+        .info-card p { font-size: 0.9rem; color: var(--body-quiet-color); margin: 0; }
+
+        /* FAQ SECTION */
+        .faq-section { margin-top: 60px; }
+        .faq-item { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+        .faq-q { padding: 18px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--body-loud-color); }
+        .faq-q i { transition: transform 0.3s; }
+        .faq-item.active .faq-q i { transform: rotate(180deg); }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 24px; color: var(--body-quiet-color); font-size: 0.9rem; line-height: 1.6; }
+        .faq-item.active .faq-a { max-height: 200px; padding: 0 24px 18px; }
+
+        /* IFRAME STYLES */
+        .lab-iframe { width: 100%; flex: 1; border: none; display: none; min-height: 0; }
+
+        footer { text-align: center; margin-top: auto; font-size: 0.8rem; color: var(--body-quiet-color); padding: 20px 40px; border-top: 1px solid var(--hairline-color); background: var(--header-bg); flex-shrink: 0; }
+
+        @media (max-width: 780px) {
+            .sidebar { width: 280px; }
+            .content-wrapper { padding: 20px; }
+            #sidebarToggle { display: none; }
+            .cable-anim-container { display: none; }
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--body-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 8px; }
+    </style>
+</head>
+<body>
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+<button id="sidebarToggle" title="Hide/Show Sidebar"><i class="fas fa-chevron-left"></i></button>
+
+<div class="sidebar">
+    <div class="brand">
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <div class="logo-text">
+                <h1>CyberDefend</h1>
+                <span>SECURITY HUB</span>
+            </div>
+        </div>
+        <div class="tagline">Master Networking & Cybersecurity Labs</div>
+    </div>
+    <a href="#" class="back-link">← Back to Main Dashboard</a>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeLabel">Switch to Light Mode</span>
+    </button>
+    
+    <div class="course-title-sidebar">
+        <h2>Training Tracks</h2>
+    </div>
+    <div class="nav-list">
+        <div class="nav-section-label">🚀 START HERE: INSTALLATIONS</div>
+        <div class="nav-item active" data-url="welcome.html"><span class="check-icon">🏠</span> Welcome & Overview</div>
+        <div class="nav-item" data-url="install_gns3.html"><span class="check-icon">💾</span> Install GNS3 & EVE-NG</div>
+        <div class="nav-item" data-url="install_paloalto.html"><span class="check-icon">🔥</span> Install Palo Alto Firewall</div>
+        <div class="nav-item" data-url="install_fortinet.html"><span class="check-icon">🛡️</span> Install Fortinet Firewall</div>
+        <div class="nav-item" data-url="install_cisco.html"><span class="check-icon">🌐</span> Install Cisco IOS Images</div>
+
+        
+        <div class="nav-section-label">🛠️ TOOLS & APPS</div>
+        <div class="nav-item" data-url="tools_kali.html"><span class="check-icon">🐉</span> Kali Linux Setup</div>
+        <div class="nav-item" data-url="tools_wireshark.html"><span class="check-icon">🦈</span> Wireshark Analysis</div>
+        <div class="nav-item" data-url="tools_nmap.html"><span class="check-icon">📡</span> Nmap Scanning</div>
+        <div class="nav-item" data-url="tools_metasploit.html"><span class="check-icon">💣</span> Metasploit Framework</div>
+		<div class="nav-section-label">⚔️ Cybersecurity Fundamentals Begin Here</div>
+	    <div class="nav-item" data-url="encyclopedia.html"><span class="check-icon">🕵️</span> Cybersecurity Fundamentals</div>        
+
+        <div class="nav-section-label">⚔️ ATTACK LABS</div>
+        <div class="nav-item" data-url="attack_mitm.html"><span class="check-icon">🕵️</span> Man-in-the-Middle (MITM)</div>
+        <div class="nav-item" data-url="attack_ddos.html"><span class="check-icon">💥</span> DDoS Attack Lab</div>
+        <div class="nav-item" data-url="attack_phishing.html"><span class="check-icon">📧</span> Phishing Simulation</div>
+        <div class="nav-item" data-url="attack_ransomware.html"><span class="check-icon">🔒</span> Ransomware Simulation</div>
+		
+		
+		
+		<div class="nav-item" data-url="live-monitor.html"><span class="check-icon">💥</span> Live Threat Monitor</div>
+		<div class="nav-item" data-url="begin1.html"><span class="check-icon">💥</span> Beginner Pentest Labs</div>
+		<div class="nav-item" data-url="88888.html"><span class="check-icon">💥</span> Attack Phases</div>
+		<div class="nav-item" data-url="second.html"><span class="check-icon">💥</span> Attack LABS p1</div>
+		<div class="nav-item" data-url="third.html"><span class="check-icon">💥</span> Attack LABS p2</div>
+		<div class="nav-item" data-url="fourth.html"><span class="check-icon">💥</span>Attack LABS p3</div>
+		<div class="nav-item" data-url="wireshark-lab.html"><span class="check-icon">💥</span> Wireshark GUI Labs</div>
+		<div class="nav-item" data-url="logs.html"><span class="check-icon">💥</span> Log Analysis</div>
+		<div class="nav-item" data-url="crack.html"><span class="check-icon">💥</span> Exploitation & Cracking</div>
+		<div class="nav-item" data-url="kali50tools.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI</div>
+		<div class="nav-item" data-url="kali50tools3.html"><span class="check-icon">🐉</span> Kali Toolset Console</div>
+		<div class="nav-item" data-url="kali50tools2.html"><span class="check-icon">🐉</span> Top 50 Kali tool CLI+ GUI</div>
+		<div class="nav-item" data-url="BurpSuite.html"><span class="check-icon">💥</span> Burp Suite</div>
+		<div class="nav-item" data-url="active-directory-attack-lab.html"><span class="check-icon">💥</span> Active Directory Attack Lab</div>
+		<div class="nav-item" data-url="soc-tools.html"><span class="check-icon">💥</span> 20 Essential SOC Tools</div>
+
+
+	 
+
+
+        <div class="nav-section-label">📺 Roadmaps</div>
+        <div class="nav-item" data-url="Roadmaps.html"><span class="check-icon">🎬</span> Roadmap</div>
+    </div>
+    <div style="margin-top: auto; padding: 18px; font-size: 0.6rem; color: var(--body-quiet-color); border-top: 1px solid var(--hairline-color); text-align: center;">⚡ CyberDefend Hub v1.0</div>
+</div>
+
+<div class="main-content">
+    <nav class="top-nav">
+        <div class="top-nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <div class="nav-dropdown">
+                <a href="courses.html">Courses ▾</a>
+            </div>
+            <a href="messages.html">📝 Tasks</a>
+            <a href="login.html" class="login-btn">Login</a>
+        </div>
+        <!-- Animated Packet Header -->
+        <div class="cable-anim-container">
+            <div class="cable-line"></div>
+            <i class="fas fa-circle" style="color: var(--primary); font-size: 6px;"></i>
+            <div class="cable-line"></div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper" id="contentWrapper">
+        
+        <!-- DEFAULT WELCOME CONTENT -->
+        <div class="welcome-container" id="welcomeContent">
+            <h1>Welcome to the CyberDefend Hub</h1>
+            <p>Select a lab or tool from the left panel to begin your training. Start with the installations if you are setting up your environment for the first time.</p>
+            
+            <div class="cards-grid">
+                <div class="info-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Step 1: Install Lab</h3>
+                    <p>Install GNS3 or EVE-NG, then load your firewall and router images. Click "Install GNS3" to begin.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>Step 2: Build Topology</h3>
+                    <p>Drag and drop devices to build the enterprise network topology (Access, Dist, Core, FW).</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-syringe"></i>
+                    <h3>Step 3: Execute Attacks</h3>
+                    <p>Use Kali Linux to launch simulated attacks against your network infrastructure.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Step 4: Mitigate</h3>
+                    <p>Configure Palo Alto and Fortinet firewalls to detect and block the attacks.</p>
+                </div>
+            </div>
+
+            <!-- FAQ SECTION -->
+            <div class="faq-section">
+                <h2 style="margin-bottom: 20px; color: var(--body-loud-color);">Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFAQ(this)">Where do I start? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-a">If you are new to network labs, start with the "Install GNS3 & EVE-NG" link in the left panel. Once your simulator is running, proceed to install the firewall images (Palo Alto, Fortinet).</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFAQ(this)">How do I simulate an attack? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-a">Navigate to the "Attack Labs" section in the left panel. Each lab contains step-by-step instructions on how to use tools like Kali Linux, Nmap, and Metasploit to simulate the attack.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFAQ(this)">What if the page is blank when I click a link? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-a">The hub loads separate HTML files. Ensure that the files (e.g., <code>install_gns3.html</code>) exist in the same directory structure as this main page.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IFRAME FOR LABS -->
+        <iframe class="lab-iframe" id="labFrame" src="about:blank"></iframe>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 CyberDefend Network Academy. All rights reserved. | Hands-on Networking & Security Labs</p>
+    </footer>
+</div>
+
+<script>
+    // SIDEBAR TOGGLE LOGIC
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.body.classList.toggle('sidebar-hidden');
+        const icon = this.querySelector('i');
+        if (document.body.classList.contains('sidebar-hidden')) {
+            icon.classList.remove('fa-chevron-left');
+            icon.classList.add('fa-chevron-right');
+        } else {
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-left');
+        }
+    });
+
+    // NAVIGATION & IFRAME LOADING LOGIC
+    const navItems = document.querySelectorAll('.nav-item[data-url]');
+    const labFrame = document.getElementById('labFrame');
+    const welcomeContent = document.getElementById('welcomeContent');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            
+            // Update active state
+            navItems.forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
+
+            // Load content
+            if (url === 'welcome.html' || url === '#') {
+                labFrame.style.display = 'none';
+                welcomeContent.style.display = 'block';
+            } else {
+                labFrame.src = url;
+                labFrame.style.display = 'block';
+                welcomeContent.style.display = 'none';
+            }
+        });
+    });
+
+    // THEME TOGGLE
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('cd_theme', next);
+        document.getElementById('themeLabel').textContent = next === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+
+    // FAQ ACCORDION
+    function toggleFAQ(element) {
+        const parent = element.parentElement;
+        parent.classList.toggle('active');
+    }
+</script>
+</body>
+</html>

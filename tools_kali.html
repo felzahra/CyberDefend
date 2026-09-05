@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberDefend Academy · Cybersecurity Roadmap</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== THEME VARIABLES (DARK MODE DEFAULT) ========== */
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --border-color: #353535;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --header-bg: #1a1a1a;
+            --input-bg: #242424;
+        }
+
+        /* ========== LIGHT MODE ========== */
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --border-color: #eef2f8;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --header-bg: #ffffff;
+            --input-bg: #f9fbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--body-bg); color: var(--body-fg); display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* ========== TOP NAVIGATION BAR ========== */
+        .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: var(--header-bg); border-bottom: 1px solid var(--hairline-color); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-icon { background: var(--primary); color: var(--primary-fg); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,230,118,0.2); }
+        .nav-brand-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--body-loud-color); line-height: 1.2; }
+        .nav-brand-text span { font-size: 0.6rem; color: var(--body-quiet-color); font-weight: 600; }
+        
+        .top-nav-links { display: flex; gap: 25px; align-items: center; }
+        .top-nav-links > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; }
+        .top-nav-links > a:hover { color: var(--body-fg); }
+        .top-nav-links > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .top-nav-links a.login-btn { background: var(--primary); color: var(--primary-fg); padding: 8px 18px; border-radius: 8px; }
+
+        /* DROPDOWN MENU STYLES */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown > a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.2s; padding: 5px 0; border-bottom: 2px solid transparent; display: inline-block; }
+        .nav-dropdown > a:hover { color: var(--body-fg); }
+        .nav-dropdown > a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--darkened-bg);
+            min-width: 260px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 1000;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-dropdown-content a {
+            color: var(--body-fg);
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-bottom: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: var(--selected-bg);
+            color: var(--primary);
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .nav-dropdown-content::-webkit-scrollbar { width: 4px; }
+        .nav-dropdown-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        /* ========== MAIN CONTENT & LAYOUT ========== */
+        .main-content { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 30px; align-items: flex-start; }
+        
+        /* Back Buttons Styling */
+        .sidebar-back-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-back-btn { display: block; text-align: center; background: var(--selected-bg); color: var(--body-fg); padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .sidebar-back-btn:hover { background: var(--darkened-bg); border-color: var(--primary); color: var(--primary); }
+        
+        /* ========== LEFT SIDEBAR PANEL ========== */
+        .sidebar { width: 300px; flex-shrink: 0; background: var(--header-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 20px; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; }
+        .sidebar-header h3 { font-size: 0.9rem; color: var(--body-quiet-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--hairline-color); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin-bottom: 8px; }
+        .sidebar-nav ul li a { display: block; padding: 12px 15px; border-radius: 10px; text-decoration: none; color: var(--body-quiet-color); font-size: 0.9rem; font-weight: 600; transition: 0.2s; border: 1px solid transparent; }
+        .sidebar-nav ul li a:hover { background: var(--selected-bg); color: var(--body-fg); }
+        .sidebar-nav ul li a.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: rgba(0, 230, 118, 0.3); }
+        
+        /* ========== RIGHT CONTENT AREA ========== */
+        .content-area { flex: 1; min-width: 0; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5rem; color: var(--body-loud-color); margin-bottom: 10px; }
+        .page-header p { color: var(--body-quiet-color); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* ========== CONTENT STYLES ========== */
+        .section-title { position: relative; margin-bottom: 2rem; padding-bottom: 0.5rem; color: var(--body-loud-color); font-weight: 700; font-size: 1.8rem; margin-top: 3rem; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background-color: var(--primary); border-radius: 2px; }
+        .text-block { color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .text-block strong { color: var(--body-fg); }
+        
+        .tool-title { font-size: 1.3rem; color: var(--body-loud-color); margin-top: 2rem; margin-bottom: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .tool-title i { color: var(--primary); }
+        
+        ul, ol { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+
+        /* Code Blocks */
+        pre { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--hairline-color); overflow-x: auto; margin: 1.5rem 0; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.5; color: var(--body-fg); white-space: pre-wrap; word-wrap: break-word; }
+        pre code { color: var(--primary); }
+        .inline-code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: var(--primary); }
+
+        /* Custom Tables */
+        .custom-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; background: var(--darkened-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline-color); }
+        .custom-table th, .custom-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--hairline-color); }
+        .custom-table th { background: var(--selected-bg); color: var(--primary); font-weight: 700; }
+        .custom-table tr:last-child td { border-bottom: none; }
+        .custom-table td strong { color: var(--body-loud-color); }
+
+        /* Term Grid (For Cybersecurity Terms) */
+        .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin: 2rem 0; }
+        .term-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 10px; padding: 15px; transition: 0.2s; }
+        .term-card:hover { border-color: var(--primary); }
+        .term-card h4 { color: var(--primary); margin-bottom: 5px; font-size: 0.95rem; }
+        .term-card p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.4; margin: 0; }
+
+        /* Large Stacked Figures */
+        .large-figure { display: flex; flex-direction: column; align-items: center; margin: 2rem auto; max-width: 800px; background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; padding: 15px; transition: border-color 0.2s; }
+        .large-figure:hover { border-color: var(--primary); }
+        .large-figure img { width: 100%; border-radius: 8px; object-fit: contain; max-height: 800px; background: var(--body-bg); }
+        .large-figure figcaption { font-size: 0.9rem; color: var(--body-quiet-color); margin-top: 1rem; text-align: center; font-style: italic; }
+
+        /* Custom Alert Box */
+        .alert-info-custom { background-color: var(--selected-bg); border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; color: var(--body-fg); }
+        .alert-info-custom h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .alert-info-custom p { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.6; }
+        .alert-info-custom ul { color: var(--body-quiet-color); font-size: 0.95rem; line-height: 1.8; padding-left: 20px; margin-top: 10px; }
+
+        /* ========== LESSON NAVIGATION BUTTONS ========== */
+        .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--hairline-color); }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--darkened-bg); color: var(--body-fg); padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--hairline-color); transition: 0.2s; }
+        .nav-btn:hover { background: var(--selected-bg); border-color: var(--primary); color: var(--primary); }
+        .nav-btn.next { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .nav-btn.next:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ========== FOOTER ========== */
+        footer { margin-top: auto; background: var(--header-bg); border-top: 1px solid var(--hairline-color); padding: 40px 40px 20px 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .footer-col h3 { font-size: 1.1rem; color: var(--body-loud-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .footer-col p { color: var(--body-quiet-color); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: var(--body-quiet-color); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .footer-btn { display: inline-block; background: var(--primary); color: var(--primary-fg); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--hairline-color); color: var(--body-quiet-color); font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .top-nav-links a { font-size: 0.8rem; }
+            .page-header h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .footer-col h3 { justify-content: center; }
+            .footer-col ul { padding: 0; }
+            .lesson-nav { flex-direction: column; gap: 15px; }
+            .main-content { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; max-height: none; margin-bottom: 20px; }
+            .custom-table { font-size: 0.8rem; }
+            .custom-table th, .custom-table td { padding: 10px; }
+        }
+    </style>
+	<style>
+        :root { --primary: #00e676; --body-bg: #0a0a0a; --body-fg: #e0e0e0; --dark-bg: #111; --hairline: #1e1e1e; --code-bg: #0d0d0d; --tip: #00e676; --warn: #f9a825; }
+        html[data-theme="light"] { --primary: #00897b; --body-bg: #f8f9fa; --body-fg: #2c3e50; --dark-bg: #fff; --hairline: #e0e0e0; --code-bg: #f5f5f5; --tip: #00897b; --warn: #f57c00; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .hero { background: var(--dark-bg); border-left: 5px solid var(--primary); padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        h2 { border-bottom: 2px solid var(--hairline); padding-bottom: 10px; margin: 30px 0 20px; }
+        .step { background: var(--dark-bg); border: 1px solid var(--hairline); border-radius: 10px; margin-bottom: 15px; padding: 20px; }
+        .step h3 { color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .step-num { background: var(--primary); color: #000; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; }
+        pre { background: var(--code-bg); border: 1px solid var(--hairline); border-radius: 8px; padding: 15px; overflow-x: auto; color: #d4d4d4; margin-top: 10px; }
+        code { font-family: 'Courier New', monospace; color: var(--tip); }
+        .cmd { color: #ff8a80; }
+        .comment { color: #546e7a; font-style: italic; }
+        .callout { padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--warn); background: rgba(249,168,37,0.05); }
+        .callout strong { color: var(--warn); }
+    </style>
+</head>
+<body>
+<!-- CHECK SAVED THEME IMMEDIATELY -->
+<script>
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+
+
+<!-- MAIN CONTENT WRAPPER (Flexbox Row) -->
+<div class="main-content">
+    
+   
+
+    <div class="content-area">
+        <div class="page-header">
+            <h1>Kali Linux: Setup, Labs & Penetration Testing</h1>
+            <p>Learn how to download, install, and configure Kali Linux, build a safe virtual lab, integrate it with network simulators, and execute basic penetration testing methodologies.</p>
+        </div>
+
+            <figure class="large-figure">
+                <img src="https://www.kali.org/blog/kali-linux-2026-1-release/images/banner-2026.1-release.jpg" alt="Downloading Kali Linux Interface">
+            </figure>
+
+        <!-- Section 1: Download & Installation -->
+        <section id="download-install">
+            <h2 class="section-title">1. Download & Installation</h2>
+            <p class="text-block">Kali Linux is the premier platform for penetration testing. To get started, you need to download the appropriate image from the official Offensive Security website. For beginners, it is highly recommended to run Kali as a Virtual Machine (VM) inside a hypervisor like VirtualBox or VMware.</p>
+
+            <figure class="large-figure">
+                <img src="https://www.kali.org/docs/installation/hard-disk-install/boot-installer.png" alt="Downloading Kali Linux Interface">
+                <figcaption>Figure 1: The official Kali Linux download page offering multiple architectures and VM images.</figcaption>
+            </figure>
+
+            <h3 class="tool-title">Installation Steps:</h3>
+            <ul>
+                <li><strong>Download the Image:</strong> Go to <span class="inline-code">kali.org/get-kali</span> and select the "Virtual Machines" tab. Download the pre-built image for your hypervisor (VirtualBox or VMware).</li>
+                <li><strong>Import the VM:</strong> Open your hypervisor and double-click the downloaded <span class="inline-code">.ova</span> or <span class="inline-code">.ovf</span> file to import Kali. Accept the default hardware settings (2GB RAM, 2 CPUs minimum).</li>
+                <li><strong>Default Credentials:</strong> The default username is <span class="inline-code">kali</span> and the password is <span class="inline-code">kali</span>.</li>
+                <li><strong>Update the System:</strong> Open the terminal and run the following commands to ensure all tools are up to date:
+                    <pre><code>sudo apt update && sudo apt full-upgrade -y</code></pre>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Section 2: Basic Usage -->
+        <section id="basic-usage">
+            <h2 class="section-title">2. Basic Usage & Navigation</h2>
+            <p class="text-block">Kali Linux uses the XFCE desktop environment by default, which is lightweight and highly customizable. Tools are categorized by phases of penetration testing (e.g., Information Gathering, Vulnerability Analysis, Exploitation Tools) accessible via the application menu.</p>
+
+            <figure class="large-figure">
+                <img src="https://media.geeksforgeeks.org/wp-content/uploads/20260619113923401890/Screenshot-2026-06-19-113909.png" alt="Linux Terminal and Code">
+                <figcaption>Figure 2: The command-line interface is where the majority of Kali tools are executed.</figcaption>
+            </figure>
+            
+            <p class="text-block">To get comfortable, practice basic Linux commands:</p>
+            <ul>
+                <li><span class="inline-code">pwd</span> (Print working directory)</li>
+                <li><span class="inline-code">ls -la</span> (List all files and permissions)</li>
+                <li><span class="inline-code">cd /path/to/folder</span> (Change directory)</li>
+                <li><span class="inline-code">ifconfig</span> or <span class="inline-code">ip a</span> (Check network interfaces and IP address)</li>
+            </ul>
+        </section>
+
+        <!-- Section 3: Building a Lab -->
+        <section id="build-lab">
+            <h2 class="section-title">3. Building a Virtual Penetration Testing Lab</h2>
+            <p class="text-block">Never test your skills against systems you do not own or have explicit permission to test. Building a local virtual lab is the safest and most effective way to learn. A standard lab consists of an "Attacker" VM (Kali Linux) and one or more "Target" VMs.</p>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-flask"></i> Essential Target VMs for Your Lab</h4>
+                <ul>
+                    <li><strong>Metasploitable 2:</strong> An intentionally vulnerable Ubuntu Linux VM designed specifically for practicing Metasploit.</li>
+                    <li><strong>DVWA (Damn Vulnerable Web Application):</strong> A PHP/MySQL web application with vulnerabilities at varying difficulty levels.</li>
+                    <li><strong>Windows XP/7 (Isolated):</strong> Older, unpatched Windows VMs (available via Microsoft IE/Edge VMs) for practicing exploit development and SMB vulnerabilities like EternalBlue.</li>
+                </ul>
+            </div>
+                        <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhu2t9rrrqlu7I61oc1mRRHo50AIx1Vm5eUOMljeY8sF-NyeyljYNpYHo&s=10" alt="Metasploitable 2 Terminal">
+                <figcaption>Figure 3: Metasploitable 2 - An intentionally vulnerable Ubuntu Linux VM designed specifically for practicing Metasploit.</figcaption>
+            </figure>
+            <p class="text-block"><strong>Metasploitable 2:</strong> This is the go-to target for beginners. It contains intentionally vulnerable services running on ports like FTP (vsftpd 2.3.4), SSH, and Telnet. It is perfect for learning how to use the Metasploit Framework.</p>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKwrbIKxmHkcl_fGUJyeXP2aGbwBN4OTY6NJ8ey4W9_8fAfjxzU6az0ft7&s=10" alt="Web Application Code">
+                <figcaption>Figure 4: DVWA (Damn Vulnerable Web Application) - A PHP/MySQL web application with vulnerabilities at varying difficulty levels.</figcaption>
+            </figure>
+            <p class="text-block"><strong>DVWA:</strong> Hosted on a web server (like Apache on Kali), DVWA allows you to practice web application attacks like SQL Injection, Cross-Site Scripting (XSS), and Command Injection. It has a "Security Level" slider so you can start with easy bypasses and work your way up to hard.</p>
+
+            <figure class="large-figure">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbyiJzxgl3yGPPI-iu_swC-NuIpwdRL4xTqhOh_ncXAw&s=10" alt="Windows XP Desktop">
+                <figcaption>Figure 5: Windows XP/7 (Isolated) - Older, unpatched Windows VMs for practicing exploit development and SMB vulnerabilities.</figcaption>
+            </figure>
+            <p class="text-block">Ensure all VMs are attached to the same "Host-Only" or "Internal Network" adapter in your hypervisor settings. This isolates the lab from your physical network and the internet, preventing accidental exposure of vulnerable machines.</p>
+        </section>
+
+        <!-- Section 4: Integrating with GNS3 / EVE-NG -->
+        <section id="gns3-eve">
+            <h2 class="section-title">4. Integrating Kali with GNS3 & EVE-NG</h2>
+            <p class="text-block">For advanced network penetration testing, you need to simulate complex enterprise topologies. Tools like GNS3 and EVE-NG allow you to run real router and switch operating systems (like Cisco IOS) alongside your Kali VM.</p>
+
+            <figure class="large-figure">
+                <img src="https://www.mdpi.com/applsci/applsci-15-10219/article_deploy/html/images/applsci-15-10219-g016-550.jpg" alt="Data Center Network Cables">
+                <figcaption>Figure 3: Simulating complex network topologies allows for realistic routing and firewall penetration testing.</figcaption>
+            </figure>
+
+            <h3 class="tool-title">Integration Methods:</h3>
+            <ul>
+                <li><strong>Method 1 (QEMU/VirtualBox Integration):</strong> In GNS3, you can add your existing Kali VirtualBox or VMware VM as a "node." Drag the Kali node onto the canvas and connect its interface directly to a simulated Cisco router.</li>
+                <li><strong>Method 2 (EVE-NG QEMU Image):</strong> In EVE-NG, upload the Kali Linux QEMU image (<span class="inline-code">.qcow2</span>) to the <span class="inline-code">/opt/unetlab/addons/qemu/</span> directory. You can then drag and drop Kali into your EVE-NG topology like any other network device.</li>
+            </ul>
+            <p class="text-block">This setup allows you to practice attacking routed networks, bypassing ACLs, and testing Intrusion Detection Systems (IDS) like Snort or Suricata placed in between.</p>
+        </section>
+
+        <!-- Section 5: How to Use for Penetration Testing -->
+        <section id="pentest-usage">
+            <h2 class="section-title">5. How to Use Kali for Penetration Testing</h2>
+            <p class="text-block">Penetration testing follows a structured methodology. Here is a basic workflow using Kali tools against a target in your lab (e.g., <span class="inline-code">192.168.1.100</span>).</p>
+
+            <h3 class="tool-title"><i class="fas fa-search"></i> Step 1: Network Scanning (Nmap)</h3>
+            <p class="text-block">First, discover open ports and services running on the target.</p>
+            <pre><code>nmap -sC -sV -p- 192.168.1.100</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-bug"></i> Step 2: Vulnerability Analysis</h3>
+            <p class="text-block">Once you know the services (e.g., an outdated FTP server), search for exploits using <span class="inline-code">Searchsploit</span> or launch Nessus/OpenVAS to scan for known CVEs.</p>
+            <pre><code>searchsploit ftp vsftpd 2.3.4</code></pre>
+
+            <h3 class="tool-title"><i class="fas fa-skull-crossbones"></i> Step 3: Exploitation (Metasploit)</h3>
+            <p class="text-block">Use the Metasploit Framework to exploit the discovered vulnerability and gain a shell on the target machine.</p>
+            <pre><code>msfconsole
+use exploit/unix/ftp/vsftpd_234_backdoor
+set RHOSTS 192.168.1.100
+exploit</code></pre>
+
+            <div class="alert-info-custom">
+                <h4><i class="fas fa-lightbulb"></i> Pro Tip</h4>
+                <p>Always document your steps. In a real engagement, reporting is 70% of the job. Use tools like CherryTree or Dradis (pre-installed in Kali) to keep track of your findings, commands, and screenshots.</p>
+            </div>
+        </section>
+		
+		
+		
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('cd_theme') || 'dark');</script>
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-dragon"></i> Kali Linux Setup</h1>
+        <p>Install the ultimate penetration testing OS to simulate attacks against your network.</p>
+    </div>
+
+    <div class="step">
+        <h3><div class="step-num">1</div> Download Pre-built VM</h3>
+        <p>Download the pre-built Kali Linux VMware or VirtualBox image from the official site. This is easier than installing from an ISO.</p>
+        <pre><span class="comment"># Open browser and navigate to:</span>
+https://www.kali.org/get-kali/#kali-platforms</pre>
+    </div>
+
+    <div class="step">
+        <h3><div class="step-num">2</div> Import to Hypervisor</h3>
+        <p>Extract the 7z file. Double-click the <code>.ovf</code> file to import it into VMware or VirtualBox. Allocate at least 4GB RAM and 2 CPU cores.</p>
+        <div class="callout">
+            <strong>Default Credentials:</strong> <code>kali</code> / <code>kali</code>
+        </div>
+    </div>
+
+    <div class="step">
+        <h3><div class="step-num">3</div> Network Configuration (Lab Link)</h3>
+        <p>To connect Kali to your EVE-NG/GNS3 topology, set Kali's network adapter to "Host-Only" or "Bridged". Then, in your simulator, drag a "Cloud" node and link it to the same virtual adapter.</p>
+    </div>
+
+    <div class="step">
+        <h3><div class="step-num">4</div> Update Kali</h3>
+        <p>Always update Kali before running tools.</p>
+        <pre><span class="cmd">sudo apt update</span> && <span class="cmd">sudo apt full-upgrade</span> -y</pre>
+    </div>
+</div>
+
+
+
+        <!-- PREVIOUS / NEXT BUTTONS -->
+        <div class="lesson-nav">
+            <a href="#" class="nav-btn prev">
+                <i class="fas fa-arrow-left"></i> Previous
+            </a>
+            <a href="#" class="nav-btn next">
+                Next <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- AUTOMATE PREV / NEXT BUTTONS SCRIPT -->
+<script>
+    // 1. DEFINE YOUR LESSON ORDER HERE (Must match the sidebar exactly)
+    const lessons = [
+        "network-security.html",
+        "network-roadmap.html",
+        "security-roadmap.html",
+        "labs.html",
+        "lesson-3.html",
+        "lesson-4.html",
+        "nessus.html",
+        "ids-ips.html",
+        "snort-suricata.html",
+        "dmz.html",
+        "nat.html",
+        "vpn.html",
+        "kali-tools.html",
+        "lesson-6.html",
+        "lesson-7.html",
+        "lesson-8.html",
+        "lesson-9.html",
+        "lesson-10.html",
+        "lesson-11.html",
+        "lesson-12.html"
+    ];
+
+    // 2. Get current page filename
+    let path = window.location.pathname;
+    let currentPage = path.substring(path.lastIndexOf('/') + 1) || "index.html";
+
+    // 3. Find current page index
+    let currentIndex = lessons.indexOf(currentPage);
+
+    // 4. Update buttons if page is in the list
+    const prevBtn = document.querySelector('.nav-btn.prev');
+    const nextBtn = document.querySelector('.nav-btn.next');
+
+    if (currentIndex !== -1) {
+        // Handle Previous Button
+        if (currentIndex > 0 && prevBtn) {
+            prevBtn.setAttribute('href', lessons[currentIndex - 1]);
+        }
+        
+        // Handle Next Button
+        if (currentIndex < lessons.length - 1 && nextBtn) {
+            nextBtn.setAttribute('href', lessons[currentIndex + 1]);
+        }
+    }
+</script>
+
+
+</body>
+</html>
