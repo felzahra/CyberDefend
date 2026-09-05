@@ -1,241 +1,356 @@
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Welcome to CyberDefend</title>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-		<style>
-			:root {
-				--primary: #00e676;
-				--primary-fg: #000000;
-				--body-fg: #ffffff;
-				--body-bg: #121212;
-				--body-quiet-color: #b0b0b0;
-				--body-loud-color: #ffffff;
-				--hairline-color: #272727;
-				--darkened-bg: #1e1e1e;
-				--selected-bg: #2a2a2a;
-				--link-fg: #00e676;
-				--cisco-color: #1e88e5;
-				--pa-color: #fa582d;
-				--fg-color: #e53935;
-				--soc-color: #ab47bc;
-			}
-			html[data-theme="light"] {
-				--primary: #02b3e4;
-				--primary-fg: #ffffff;
-				--body-fg: #1a2c3e;
-				--body-bg: #f5f7fc;
-				--body-quiet-color: #5c6f87;
-				--body-loud-color: #0b2b3b;
-				--hairline-color: #e6edf4;
-				--darkened-bg: #ffffff;
-				--selected-bg: #e9f4fa;
-				--link-fg: #027e9e;
-				--cisco-color: #1565c0;
-				--pa-color: #e64a19;
-				--fg-color: #d32f2f;
-				--soc-color: #8e24aa;
-			}
-			* { margin: 0; padding: 0; box-sizing: border-box; }
-			body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; overflow-x: hidden; }
-			.page-container { max-width: 1000px; margin: 0 auto; padding: 60px 40px; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CyberDefend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-fg: #000000;
+            --body-fg: #ffffff;
+            --body-bg: #121212;
+            --body-quiet-color: #b0b0b0;
+            --body-loud-color: #ffffff;
+            --hairline-color: #272727;
+            --darkened-bg: #1e1e1e;
+            --selected-bg: #2a2a2a;
+            --link-fg: #00e676;
+            --cisco-color: #1e88e5;
+            --pa-color: #fa582d;
+            --fg-color: #e53935;
+            --soc-color: #ab47bc;
 
-			.hero { text-align: center; margin-bottom: 60px; }
-			.hero h1 { font-size: 2.8rem; margin-bottom: 16px; color: var(--body-loud-color); }
-			.hero p { font-size: 1.2rem; color: var(--body-quiet-color); max-width: 800px; margin: 0 auto; }
+            /* SVG Roadmap Variables */
+            --card-bg: var(--darkened-bg);
+            --border-color: var(--hairline-color);
+            --road-color: var(--body-quiet-color);
+            --road-dash: rgba(255,255,255,0.25);
+            --shadow-color: 0 4px 24px rgba(0,0,0,0.3);
+            --accent-bg: rgba(0,230,118,0.07);
+        }
+        html[data-theme="light"] {
+            --primary: #02b3e4;
+            --primary-fg: #ffffff;
+            --body-fg: #1a2c3e;
+            --body-bg: #f5f7fc;
+            --body-quiet-color: #5c6f87;
+            --body-loud-color: #0b2b3b;
+            --hairline-color: #e6edf4;
+            --darkened-bg: #ffffff;
+            --selected-bg: #e9f4fa;
+            --link-fg: #027e9e;
+            --cisco-color: #1565c0;
+            --pa-color: #e64a19;
+            --fg-color: #d32f2f;
+            --soc-color: #8e24aa;
 
-			/* WELCOME CARDS */
-			.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 80px; }
-			.info-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 32px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
-			.info-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-			.info-card i { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
-			.info-card h3 { font-size: 1.3rem; margin-bottom: 12px; color: var(--body-loud-color); }
-			.info-card p { font-size: 0.95rem; color: var(--body-quiet-color); }
+            /* SVG Roadmap Variables Light Mode */
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --road-color: #334155;
+            --road-dash: rgba(0,0,0,0.1);
+            --shadow-color: 0 4px 24px rgba(0,0,0,0.06);
+            --accent-bg: rgba(2,179,228,0.07);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); color: var(--body-fg); line-height: 1.7; overflow-x: hidden; transition: background .3s, color .3s; }
+        .page-container { max-width: 1100px; margin: 0 auto; padding: 60px 40px; }
 
-			/* ROADMAP SECTION */
-			.roadmap-section { position: relative; padding: 40px 0; }
-			.roadmap-title { text-align: center; font-size: 2.2rem; color: var(--body-loud-color); margin-bottom: 60px; position: relative; z-index: 2; }
-			
-			/* The vertical line */
-			.roadmap-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--hairline-color); transform: translateX(-50%); z-index: 1; }
-			
-			/* Animated packet on the line */
-			.roadmap-packet { position: absolute; left: 50%; width: 16px; height: 16px; background: var(--primary); border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 15px var(--primary); animation: packetFlow 4s infinite ease-in-out; z-index: 2; }
-			@keyframes packetFlow { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .hero { text-align: center; margin-bottom: 60px; }
+        .hero h1 { font-size: 2.8rem; margin-bottom: 16px; color: var(--body-loud-color); }
+        .hero p { font-size: 1.2rem; color: var(--body-quiet-color); max-width: 800px; margin: 0 auto; }
 
-			.roadmap-step { position: relative; margin-bottom: 50px; width: 50%; padding: 0 40px; z-index: 2; }
-			.roadmap-step.left { left: 0; text-align: right; }
-			.roadmap-step.right { left: 50%; text-align: left; }
+        /* WELCOME CARDS */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 80px; }
+        .info-card { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 20px; padding: 32px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
+        .info-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .info-card i { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
+        .info-card h3 { font-size: 1.3rem; margin-bottom: 12px; color: var(--body-loud-color); }
+        .info-card p { font-size: 0.95rem; color: var(--body-quiet-color); }
 
-			/* Dot on the line */
-			.roadmap-dot { position: absolute; top: 20px; width: 20px; height: 20px; background: var(--darkened-bg); border: 4px solid var(--primary); border-radius: 50%; z-index: 3; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-			.roadmap-step.left .roadmap-dot { right: -10px; }
-			.roadmap-step.right .roadmap-dot { left: -10px; }
+        /* ROADMAP SECTION (SVG) */
+        .cards-wrap { position: relative; z-index: 1; padding: 0 0 60px; display: flex; flex-direction: column; gap: 36px; }
+        .path-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px;
+            overflow: hidden; box-shadow: var(--shadow-color); transition: background .3s, border-color .3s, box-shadow .3s;
+        }
+        .path-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .card-head {
+            display: flex; align-items: center; justify-content: space-between; padding: 20px 28px;
+            border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px;
+        }
+        .card-head-left { display: flex; align-items: center; gap: 14px; }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: #fff; flex-shrink: 0;
+        }
+        .card-head h3 { font-size: 1.15rem; font-weight: 800; color: var(--body-loud-color); }
+        .card-head p { font-size: .75rem; color: var(--body-quiet-color); margin-top: 2px; }
+        .card-badge {
+            font-size: .7rem; font-weight: 700; padding: 5px 14px; border-radius: 20px;
+            background: var(--accent-bg); color: var(--primary); border: 1px solid var(--border-color);
+        }
+        .svg-wrap { overflow-x: auto; padding: 10px 0 0; }
+        .svg-wrap::-webkit-scrollbar { height: 4px; }
+        .svg-wrap::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-			.roadmap-content { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-left: 4px solid var(--primary); padding: 24px; border-radius: 12px; display: inline-block; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-			.roadmap-step.left .roadmap-content { border-left: none; border-right: 4px solid var(--primary); }
-			
-			.roadmap-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 12px; display: block; }
-			.roadmap-step.left .roadmap-icon { margin-left: auto; }
-			
-			.roadmap-content h3 { font-size: 1.4rem; color: var(--body-loud-color); margin-bottom: 8px; }
-			.roadmap-content p { font-size: 0.9rem; color: var(--body-quiet-color); }
+        /* SVG INTERNAL STYLES */
+        .road-bg { fill: none; stroke: var(--road-color); stroke-width: 28; stroke-linecap: round; stroke-linejoin: round; opacity: .15; }
+        .road-surface { fill: none; stroke: var(--road-color); stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
+        .road-dash { fill: none; stroke: var(--road-dash); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 12 10; }
+        .node-group { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: transform .25s, filter .25s; }
+        .node-group:hover { transform: scale(1.18); filter: drop-shadow(0 0 14px var(--glow, #02b3e4)); }
+        .node-circle { stroke: var(--card-bg); stroke-width: 4; }
+        .node-text { fill: #fff; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 16px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+        .node-label { fill: var(--body-fg); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12.5px; text-anchor: middle; pointer-events: none; }
+        .node-sublabel { fill: var(--body-quiet-color); font-family: 'Inter', sans-serif; font-weight: 400; font-size: 9.5px; text-anchor: middle; pointer-events: none; }
+        .start-finish-text { fill: #fff; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 11px; text-anchor: middle; dominant-baseline: central; pointer-events: none; letter-spacing: .5px; }
 
-			/* Custom colors for roadmap steps */
-			.step-blue .roadmap-dot { border-color: var(--cisco-color); } .step-blue .roadmap-content { border-color: var(--cisco-color); } .step-blue .roadmap-icon { color: var(--cisco-color); }
-			.step-orange .roadmap-dot { border-color: var(--pa-color); } .step-orange .roadmap-content { border-color: var(--pa-color); } .step-orange .roadmap-icon { color: var(--pa-color); }
-			.step-red .roadmap-dot { border-color: var(--fg-color); } .step-red .roadmap-content { border-color: var(--fg-color); } .step-red .roadmap-icon { color: var(--fg-color); }
-			.step-purple .roadmap-dot { border-color: var(--soc-color); } .step-purple .roadmap-content { border-color: var(--soc-color); } .step-purple .roadmap-icon { color: var(--soc-color); }
+        /* PATH DRAW ANIMATION */
+        .path-card .road-surface, .path-card .road-dash, .path-card .road-bg {
+            stroke-dasharray: 5000; stroke-dashoffset: 5000;
+        }
+        .path-card.visible .road-bg { animation: drawRoad 1.8s .1s ease forwards; }
+        .path-card.visible .road-surface { animation: drawRoad 1.8s .15s ease forwards; }
+        .path-card.visible .road-dash { animation: drawRoad 1.8s .6s ease forwards; }
+        @keyframes drawRoad { to { stroke-dashoffset: 0; } }
+        .path-card .node-group { opacity: 0; transform: scale(0.3); }
+        .path-card.visible .node-group { animation: popIn .4s ease forwards; }
+        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
 
-			/* FAQ SECTION */
-			.faq-section { margin-top: 80px; }
-			.faq-title { text-align: center; font-size: 2.2rem; color: var(--body-loud-color); margin-bottom: 40px; }
-			.faq-item { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
-			.faq-q { padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--body-loud-color); font-size: 1.1rem; }
-			.faq-q i { transition: transform 0.3s; color: var(--primary); }
-			.faq-item.active .faq-q i { transform: rotate(180deg); }
-			.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 24px; color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; }
-			.faq-item.active .faq-a { max-height: 200px; padding: 0 24px 20px; }
+        /* FAQ SECTION */
+        .faq-section { margin-top: 80px; }
+        .faq-title { text-align: center; font-size: 2.2rem; color: var(--body-loud-color); margin-bottom: 40px; }
+        .faq-item { background: var(--darkened-bg); border: 1px solid var(--hairline-color); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+        .faq-q { padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--body-loud-color); font-size: 1.1rem; }
+        .faq-q i { transition: transform 0.3s; color: var(--primary); }
+        .faq-item.active .faq-q i { transform: rotate(180deg); }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 24px; color: var(--body-quiet-color); font-size: 1rem; line-height: 1.6; }
+        .faq-item.active .faq-a { max-height: 200px; padding: 0 24px 20px; }
 
-			@media (max-width: 768px) {
-				.roadmap-line { left: 20px; }
-				.roadmap-packet { left: 20px; }
-				.roadmap-step { width: 100%; left: 0 !important; text-align: left !important; padding-left: 50px; padding-right: 10px; }
-				.roadmap-step .roadmap-dot { left: 10px; right: auto; }
-				.roadmap-step.left .roadmap-content { border-right: none; border-left: 4px solid var(--primary); }
-				.roadmap-step.left .roadmap-icon { margin-left: 0; }
-			}
-		</style>
-	</head>
-	<body>
-	<script>
-		// Sync theme with parent window
-		const savedTheme = localStorage.getItem('cd_theme') || 'dark';
-		document.documentElement.setAttribute('data-theme', savedTheme);
-		window.addEventListener('message', (event) => {
-			if (event.data.type === 'themeUpdate') {
-				document.documentElement.setAttribute('data-theme', event.data.theme);
-			}
-		});
-	</script>
+        @media (max-width: 768px) {
+            .page-container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            .card-head { padding: 16px 18px; }
+            .card-head h3 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Sync theme with parent window (Dashboard)
+    const savedTheme = localStorage.getItem('cd_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'themeUpdate') {
+            document.documentElement.setAttribute('data-theme', event.data.theme);
+        }
+    });
+</script>
 
-	<div class="page-container">
-		<!-- HERO SECTION -->
-		<div class="hero">
-			<h1>Cyber Range & Training Portal</h1>
-			<p>Select a lab or tool from the left panel to begin your training. Start with the installations if you are setting up your environment for the first time. Follow the roadmap below to structure your learning.</p>
-		</div>
+<div class="page-container">
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <h1>Cyber Range & Training Portal</h1>
+        <p>Select a lab or tool from the left panel to begin your training. Start with the installations if you are setting up your environment for the first time. Follow the roadmap below to structure your learning.</p>
+    </div>
 
-		<!-- WELCOME CARDS -->
-		<div class="cards-grid">
-			<div class="info-card">
-				<i class="fas fa-rocket"></i>
-				<h3>Step 1: Install Lab</h3>
-				<p>Install GNS3 or EVE-NG, then load your firewall and router images.</p>
-			</div>
-			<div class="info-card">
-				<i class="fas fa-network-wired"></i>
-				<h3>Step 2: Build Topology</h3>
-				<p>Drag and drop devices to build the enterprise network topology.</p>
-			</div>
-			<div class="info-card">
-				<i class="fas fa-syringe"></i>
-				<h3>Step 3: Execute Attacks</h3>
-				<p>Use Kali Linux to launch simulated attacks against your infrastructure.</p>
-			</div>
-			<div class="info-card">
-				<i class="fas fa-shield-alt"></i>
-				<h3>Step 4: Mitigate</h3>
-				<p>Configure Palo Alto and Fortinet firewalls to detect and block attacks.</p>
-			</div>
-		</div>
+    <!-- WELCOME CARDS -->
+    <div class="cards-grid">
+        <div class="info-card">
+            <i class="fas fa-rocket"></i>
+            <h3>Step 1: Install Lab</h3>
+            <p>Install GNS3 or EVE-NG, then load your firewall and router images.</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-network-wired"></i>
+            <h3>Step 2: Build Topology</h3>
+            <p>Drag and drop devices to build the enterprise network topology.</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-syringe"></i>
+            <h3>Step 3: Execute Attacks</h3>
+            <p>Use Kali Linux to launch simulated attacks against your infrastructure.</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Step 4: Mitigate</h3>
+            <p>Configure Palo Alto and Fortinet firewalls to detect and block attacks.</p>
+        </div>
+    </div>
 
-		<!-- CYBERSECURITY ROADMAP -->
-		<div class="roadmap-section">
-			<h2 class="roadmap-title">Cybersecurity Career Roadmap</h2>
-			<div class="roadmap-line"></div>
-			<div class="roadmap-packet"></div> <!-- Animated packet -->
+    <!-- CYBERSECURITY ROADMAP (SVG) -->
+    <div class="cards-wrap" id="cardsWrap"></div>
 
-			<!-- Step 1: Fundamentals -->
-			<div class="roadmap-step left">
-				<div class="roadmap-dot"></div>
-				<div class="roadmap-content">
-					<i class="fas fa-book roadmap-icon"></i>
-					<h3>1. Cybersecurity Fundamentals</h3>
-					<p>Understand core concepts: CIA Triad, Threat Vectors, Cryptography basics, and Network Protocols. (Section: Cybersecurity Fundamentals Begin Here)</p>
-				</div>
-			</div>
+    <!-- FAQ SECTION -->
+    <div class="faq-section">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <div class="faq-q" onclick="toggleFAQ(this)">Where do I start? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">If you are new to network labs, start with the "Install GNS3 & EVE-NG" link in the left panel. Once your simulator is running, proceed to install the firewall images (Palo Alto, Fortinet).</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-q" onclick="toggleFAQ(this)">How do I simulate an attack? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Navigate to the "Attack Labs" section in the left panel. Each lab contains step-by-step instructions on how to use tools like Kali Linux, Nmap, and Metasploit to simulate the attack.</div>
+        </div>
 
-			<!-- Step 2: Networking -->
-			<div class="roadmap-step right step-blue">
-				<div class="roadmap-dot"></div>
-				<div class="roadmap-content">
-					<i class="fas fa-network-wired roadmap-icon"></i>
-					<h3>2. Networking & Infrastructure</h3>
-					<p>Master Cisco routing and switching. Build topologies with Access, Distribution, and Core layers. (Section: Installations & Tools)</p>
-				</div>
-			</div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="toggleFAQ(this)">What if the page is blank when I click a link? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">The hub loads separate HTML files. Ensure that the files (e.g., <code>install_gns3.html</code>) exist in the same directory structure as this main page.</div>
+        </div>
+    </div>
+</div>
 
-			<!-- Step 3: Firewalls -->
-			<div class="roadmap-step left step-orange">
-				<div class="roadmap-dot"></div>
-				<div class="roadmap-content">
-					<i class="fas fa-fire roadmap-icon"></i>
-					<h3>3. Firewall Configuration</h3>
-					<p>Learn Next-Generation Firewall (NGFW) setup. Configure Palo Alto, Fortinet, and implement NAT, VPNs, and Policies. (Section: Install Firewalls)</p>
-				</div>
-			</div>
+<script>
+    function toggleFAQ(element) {
+        const parent = element.parentElement;
+        parent.classList.toggle('active');
+    }
 
-			<!-- Step 4: Attacks -->
-			<div class="roadmap-step right step-red">
-				<div class="roadmap-dot"></div>
-				<div class="roadmap-content">
-					<i class="fas fa-skull-crossbones roadmap-icon"></i>
-					<h3>4. Attack & Exploitation</h3>
-					<p>Learn how hackers think. Simulate MITM, DDoS, Phishing, and Ransomware using Kali Linux tools. (Section: Attack Labs)</p>
-				</div>
-			</div>
+    /* ========== CIRCLE COLORS ========== */
+    const CC = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e'];
 
-			<!-- Step 5: Defense / SOC -->
-			<div class="roadmap-step left step-purple">
-				<div class="roadmap-dot"></div>
-				<div class="roadmap-content">
-					<i class="fas fa-user-shield roadmap-icon"></i>
-					<h3>5. Defense & SOC Analyst</h3>
-					<p>Monitor networks, analyze logs with Wireshark, and use SIEM tools to detect and respond to incidents. (Section: SOC Analyst Tools)</p>
-				</div>
-			</div>
-		</div>
+    /* ========== PLAYLIST DATA (Only CyberSecurity Roadmap) ========== */
+    const playlists = [
+        {
+            title: 'CyberSecurity Roadmap',
+            desc: 'Network Fundamentals, firewalls, Linux, KALI , Pentest',
+            icon: 'fa-network-wired',
+            color: '#02b3e4',
+            steps: [
+                { n: 'Networking CCNA R&S', l: 'https://www.youtube.com/watch?v=VMI1z5h5Jy4&list=PLLlr6jKKdyK3JYsGq_jEcNx-EHF4lqXHP' },
+                { n: 'CCNA security', l: 'https://www.youtube.com/watch?v=8SPaWhv-9H8&list=PLLlr6jKKdyK2GhxtDaFympthZ2OvsvuZZ' },
+                { n: 'Linux Operating System', l: 'https://www.youtube.com/watch?v=EIjr6HSTJss&list=PLLlr6jKKdyK0Cc3Bm-3kFutfwIgMlgcT9' },
+                { n: 'Programming & Scripting', l: 'https://www.youtube.com/watch?v=mvZHDpCHphk&list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs' },    
+                { n: 'CompTIA Security+', l: 'https://www.youtube.com/watch?v=dWH6BqyxRmc&list=PLLlr6jKKdyK3C22AuU70h5xWe0ePmsbT7' },	 
+                { n: 'penetration test', l: 'https://www.youtube.com/watch?v=eUpk9Mnw6Zw&list=PLLlr6jKKdyK0S3btGkOyBUu8XyHXXJrCs' },
+                { n: 'Kali Linux Ethical Hacking', l: 'https://www.youtube.com/watch?v=AnwgxRtWXLI&list=PLhfrWIlLOoKMe1UeUideULQvEgCgQ3a1B' },
+                { n: 'Web Application Penetration', l: 'https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLFp3U4AOU6ACPUGth26yLFOMNIVuE67u4' },
+                { n: 'Blue Teaming / SOC Analyst', l: 'https://youtube.com/playlist?list=PLG6KGSNK4PuDdqYkOuIlAoNmwtLg5wyYJ&si=NIDNOSLeFlvzTk23' },
+                { n: '30-Day SOC Analyst Challenge', l: 'https://youtube.com/playlist?list=PLG6KGSNK4PuBb0OjyDIdACZnb8AoNBeq6&si=0QIIve7ucFBAlHZT' }
+            ]
+        }
+    ];
 
-		<!-- FAQ SECTION -->
-		<div class="faq-section">
-			<h2 class="faq-title">Frequently Asked Questions</h2>
-			
-			<div class="faq-item">
-				<div class="faq-q" onclick="toggleFAQ(this)">Where do I start? <i class="fas fa-chevron-down"></i></div>
-				<div class="faq-a">If you are new to network labs, start with the "Install GNS3 & EVE-NG" link in the left panel. Once your simulator is running, proceed to install the firewall images (Palo Alto, Fortinet).</div>
-			</div>
-			
-			<div class="faq-item">
-				<div class="faq-q" onclick="toggleFAQ(this)">How do I simulate an attack? <i class="fas fa-chevron-down"></i></div>
-				<div class="faq-a">Navigate to the "Attack Labs" section in the left panel. Each lab contains step-by-step instructions on how to use tools like Kali Linux, Nmap, and Metasploit to simulate the attack.</div>
-			</div>
+    /* ========== SVG GENERATOR ========== */
+    function buildSVG(pl) {
+        const cols = 3, count = pl.steps.length;
+        const rows = Math.ceil((count + 2) / cols);
+        const rowH = 120, startY = 58, padX = 110;
+        const colW = 280;
+        const svgW = padX * 2 + colW * (cols - 1);
+        const svgH = startY + (rows - 1) * rowH + 50;
 
-			<div class="faq-item">
-				<div class="faq-q" onclick="toggleFAQ(this)">What if the page is blank when I click a link? <i class="fas fa-chevron-down"></i></div>
-				<div class="faq-a">The hub loads separate HTML files. Ensure that the files (e.g., <code>install_gns3.html</code>) exist in the same directory structure as this main page.</div>
-			</div>
-		</div>
-	</div>
+        const nodes = [];
+        nodes.push({ label: 'START', link: null, color: '#22c55e', type: 'terminal' });
+        pl.steps.forEach((s, i) => nodes.push({ label: s.n, link: s.l, color: CC[i % CC.length], type: 'step' }));
+        nodes.push({ label: 'FINISH', link: null, color: '#ef4444', type: 'terminal' });
 
-	<script>
-		function toggleFAQ(element) {
-			const parent = element.parentElement;
-			parent.classList.toggle('active');
-		}
-	</script>
-	</body>
-	</html>
+        const positions = nodes.map((_, i) => {
+            const row = Math.floor(i / cols);
+            let col = i % cols;
+            if (row % 2 === 1) col = cols - 1 - col;
+            return { x: padX + col * colW, y: startY + row * rowH };
+        });
+
+        let d = `M ${positions[0].x},${positions[0].y}`;
+        for (let i = 1; i < positions.length; i++) {
+            const p = positions[i - 1], c = positions[i];
+            const pRow = Math.floor((i - 1) / cols), cRow = Math.floor(i / cols);
+            if (cRow !== pRow) {
+                const bulge = c.x > svgW / 2 ? 90 : -90;
+                d += ` C ${p.x + bulge},${p.y} ${c.x + bulge},${c.y} ${c.x},${c.y}`;
+            } else {
+                d += ` L ${c.x},${c.y}`;
+            }
+        }
+
+        let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="min-width:${svgW}px;width:100%;height:auto;display:block">`;
+
+        svg += `<defs>`;
+        nodes.forEach((n, i) => {
+            svg += `<filter id="glow_${pl.icon.replace(/[^a-z]/gi, '')}_${i}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur"/><feFlood flood-color="${n.color}" flood-opacity="0.5" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+        });
+        svg += `</defs>`;
+
+        svg += `<path class="road-bg" d="${d}"/>`;
+        svg += `<path class="road-surface" d="${d}"/>`;
+        svg += `<path class="road-dash" d="${d}"/>`;
+
+        nodes.forEach((n, i) => {
+            const { x, y } = positions[i];
+            const row = Math.floor(i / cols);
+            const labelAbove = row % 2 === 1;
+            const labelY = labelAbove ? y - 32 : y + 38;
+            const subY = labelAbove ? y - 20 : y + 50;
+            const r = n.type === 'terminal' ? 20 : 22;
+            const delay = 0.3 + i * 0.12;
+            const filterId = `glow_${pl.icon.replace(/[^a-z]/gi, '')}_${i}`;
+
+            if (n.link) {
+                svg += `<a href="${n.link}" target="_blank" rel="noopener noreferrer" class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
+            } else {
+                svg += `<g class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
+            }
+
+            svg += `<circle class="node-circle" cx="${x}" cy="${y}" r="${r}" fill="${n.color}"/>`;
+
+            if (n.type === 'terminal') {
+                svg += `<text class="start-finish-text" x="${x}" y="${y}">${n.label}</text>`;
+            } else {
+                svg += `<text class="node-text" x="${x}" y="${y}">${i}</text>`;
+            }
+
+            svg += `<text class="node-label" x="${x}" y="${labelY}">${n.label}</text>`;
+
+            if (n.link) {
+                svg += `<text class="node-sublabel" x="${x}" y="${subY}">Click to open →</text>`;
+                svg += `</a>`;
+            } else {
+                svg += `</g>`;
+            }
+        });
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    /* ========== RENDER CARDS ========== */
+    const wrap = document.getElementById('cardsWrap');
+    playlists.forEach(pl => {
+        const card = document.createElement('section');
+        card.className = 'path-card';
+        card.innerHTML = `
+            <div class="card-head">
+                <div class="card-head-left">
+                    <div class="card-icon" style="background:${pl.color}"><i class="fas ${pl.icon}"></i></div>
+                    <div>
+                        <h3>${pl.title}</h3>
+                        <p>${pl.desc}</p>
+                    </div>
+                </div>
+                <div class="card-badge">${pl.steps.length} Steps</div>
+            </div>
+            <div class="svg-wrap">${buildSVG(pl)}</div>
+        `;
+        wrap.appendChild(card);
+    });
+
+    /* ========== INTERSECTION OBSERVER FOR ANIMATIONS ========== */
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                obs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.path-card').forEach(c => obs.observe(c));
+</script>
+</body>
+</html>
