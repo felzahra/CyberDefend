@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberDefend · Network Beginner Roadmap</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--fg:#1a2c3e;--fg-muted:#5c6f87;--primary:#02b3e4;--card:#ffffff;
+  --border:#e2e8f0;--road:#334155;--road-dash:rgba(255,255,255,0.35);
+  --accent-bg:rgba(2,179,228,0.07);--shadow:0 4px 24px rgba(0,0,0,0.06);
+  --map-dot:rgba(2,179,228,0.06);--header-bg:#ffffff;
+}
+html[data-theme="dark"]{
+  --bg:#0d1117;--fg:#e6edf3;--fg-muted:#8b949e;--primary:#58a6ff;--card:#161b22;
+  --border:#21262d;--road:#6e7681;--road-dash:rgba(255,255,255,0.12);
+  --accent-bg:rgba(88,166,255,0.07);--shadow:0 4px 24px rgba(0,0,0,0.3);
+  --map-dot:rgba(88,166,255,0.04);--header-bg:#161b22;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);transition:background .3s,color .3s;min-height:100vh}
+
+/* ========== SUBTLE MAP BACKGROUND ========== */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle 1px,var(--map-dot) 1px,transparent 1px),
+    radial-gradient(ellipse 600px 400px at 20% 30%,rgba(2,179,228,0.03),transparent),
+    radial-gradient(ellipse 500px 350px at 75% 65%,rgba(2,179,228,0.025),transparent);
+  background-size:32px 32px,100% 100%,100% 100%;
+}
+
+/* ========== TOP NAV ========== */
+.top-nav{
+  position:sticky;top:0;z-index:100;display:flex;align-items:center;
+  justify-content:space-between;padding:14px 32px;background:var(--header-bg);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(12px);transition:background .3s;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo{background:var(--primary);color:#fff;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.nav-brand h1{font-size:1rem;font-weight:800;color:var(--fg)}
+.nav-right{display:flex;gap:16px;align-items:center}
+.theme-btn{
+  cursor:pointer;border:1px solid var(--border);padding:7px 14px;background:var(--card);
+  border-radius:8px;font-family:inherit;font-weight:600;font-size:.8rem;color:var(--fg);transition:.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary)}
+.nav-link{color:var(--fg-muted);text-decoration:none;font-size:.85rem;font-weight:600;padding:5px 0;border-bottom:2px solid transparent;transition:.2s}
+.nav-link:hover{color:var(--fg);border-bottom-color:var(--primary)}
+
+/* ========== HERO ========== */
+.hero{
+  position:relative;z-index:1;text-align:center;padding:60px 24px 40px;max-width:800px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);
+  color:var(--primary);font-size:.72rem;font-weight:700;padding:5px 14px;
+  border-radius:20px;border:1px solid var(--border);margin-bottom:16px;letter-spacing:.3px;
+}
+.hero h2{font-size:2.4rem;font-weight:900;color:var(--fg);margin-bottom:12px;letter-spacing:-.5px;line-height:1.15}
+.hero h2 i{color:var(--primary);margin-right:6px}
+.hero p{font-size:1rem;color:var(--fg-muted);line-height:1.7;max-width:600px;margin:0 auto}
+
+/* ========== PLAYLIST CARDS ========== */
+.cards-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px 60px;display:flex;flex-direction:column;gap:36px}
+.path-card{
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  overflow:hidden;box-shadow:var(--shadow);transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.path-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;padding:20px 28px;
+  border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;
+}
+.card-head-left{display:flex;align-items:center;gap:14px}
+.card-icon{
+  width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;color:#fff;flex-shrink:0;
+}
+.card-head h3{font-size:1.15rem;font-weight:800;color:var(--fg)}
+.card-head p{font-size:.75rem;color:var(--fg-muted);margin-top:2px}
+.card-badge{
+  font-size:.7rem;font-weight:700;padding:5px 14px;border-radius:20px;
+  background:var(--accent-bg);color:var(--primary);border:1px solid var(--border);
+}
+.svg-wrap{overflow-x:auto;padding:10px 0 0}
+.svg-wrap::-webkit-scrollbar{height:4px}
+.svg-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+/* ========== SVG INTERNAL STYLES ========== */
+.road-bg{fill:none;stroke:var(--road);stroke-width:28;stroke-linecap:round;stroke-linejoin:round;opacity:.15}
+.road-surface{fill:none;stroke:var(--road);stroke-width:22;stroke-linecap:round;stroke-linejoin:round}
+.road-dash{fill:none;stroke:var(--road-dash);stroke-width:2;stroke-linecap:round;stroke-dasharray:12 10}
+.node-group{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:transform .25s,filter .25s}
+.node-group:hover{transform:scale(1.18);filter:drop-shadow(0 0 14px var(--glow,#02b3e4))}
+.node-circle{stroke:var(--card);stroke-width:4}
+.node-text{fill:#fff;font-family:'Inter',sans-serif;font-weight:800;font-size:16px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.node-label{fill:var(--fg);font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;text-anchor:middle;pointer-events:none}
+.node-sublabel{fill:var(--fg-muted);font-family:'Inter',sans-serif;font-weight:400;font-size:9.5px;text-anchor:middle;pointer-events:none}
+.start-finish-text{fill:#fff;font-family:'Inter',sans-serif;font-weight:800;font-size:11px;text-anchor:middle;dominant-baseline:central;pointer-events:none;letter-spacing:.5px}
+
+/* ========== PATH DRAW ANIMATION ========== */
+.path-card .road-surface,
+.path-card .road-dash,
+.path-card .road-bg{
+  stroke-dasharray:5000;stroke-dashoffset:5000;
+}
+.path-card.visible .road-bg{animation:drawRoad 1.8s .1s ease forwards}
+.path-card.visible .road-surface{animation:drawRoad 1.8s .15s ease forwards}
+.path-card.visible .road-dash{animation:drawRoad 1.8s .6s ease forwards}
+@keyframes drawRoad{to{stroke-dashoffset:0}}
+.path-card .node-group{opacity:0;transform:scale(0.3)}
+.path-card.visible .node-group{animation:popIn .4s ease forwards}
+@keyframes popIn{to{opacity:1;transform:scale(1)}}
+
+/* ========== FOOTER ========== */
+.page-footer{
+  position:relative;z-index:1;text-align:center;padding:32px 24px;
+  border-top:1px solid var(--border);font-size:.75rem;color:var(--fg-muted);
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .hero h2{font-size:1.7rem}
+  .hero{padding:40px 16px 28px}
+  .cards-wrap{padding:0 12px 40px}
+  .card-head{padding:16px 18px}
+  .card-head h3{font-size:1rem}
+  .top-nav{padding:12px 16px}
+  .nav-link{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-logo">🛡️</div>
+    <h1>CyberDefend</h1>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-link">Dashboard</a>
+    <a href="labs.html" class="nav-link">Labs</a>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+      <i class="fas fa-moon" id="themeIcon"></i> <span id="themeTxt">Dark</span>
+    </button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><i class="fas fa-route"></i> LEARNING PATHS</div>
+  <h2><i class="fas fa-shield-halved"></i> Choose Your Path</h2>
+  <p>Follow the roadmap from START to FINISH. Each step is a clickable lesson — video, slides, or hands-on lab. Complete all paths to master enterprise security.</p>
+</section>
+
+<div class="cards-wrap" id="cardsWrap"></div>
+
+<footer class="page-footer">🛡️ CyberDefend Academy · Part of Accenture · All paths lead to mastery</footer>
+
+<script>
+/* ===== FORCE ALL LINKS TO OPEN IN NEW TAB ===== */
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href]').forEach(a => {
+        const h = a.getAttribute('href');
+        if (h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:')) {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener noreferrer');
+        }
+    });
+});
+</script>
+<script>
+/* ========== THEME ========== */
+const saved=localStorage.getItem('cd_theme')||'light';
+document.documentElement.setAttribute('data-theme',saved);
+function toggleTheme(){
+  const c=document.documentElement.getAttribute('data-theme');
+  const n=c==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem('cd_theme',n);
+  document.getElementById('themeIcon').className=n==='dark'?'fas fa-sun':'fas fa-moon';
+  document.getElementById('themeTxt').textContent=n==='dark'?'Light':'Dark';
+}
+
+/* ========== CIRCLE COLORS ========== */
+const CC=['#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#f43f5e'];
+
+/* ========== PLAYLIST DATA (ONLY NETWORK BEGINNER) ========== */
+const playlists=[
+  {
+    title:'Network Beginner Roadmap',
+    desc:'Install Packet Tracer, GNS3, Vmware, VirtualBox',
+    icon:'fa-network-wired',
+    color:'#ef4444',
+    steps:[
+      {n:'Networking Basic Concepts',l:'https://www.youtube.com/watch?v=q6tUCEUqxTQ&list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c'},
+      {n:' Cisco Packet Tracer',l:'https://youtu.be/zjmHvjHscz0'},
+      {n:'IP Address & Subnetting ',l:'https://www.youtube.com/watch?v=Nnv36wG_iCI&list=PL8s4OGp06498kNuy0Sduw93gqNg-XD1_H&pp=0gcJCf4COCosWNin'},
+      {n:'CCNA course',l:'https://www.youtube.com/watch?v=03MsMSTjjvo&list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD'},
+      {n:'Virtualization',l:'https://www.youtube.com/watch?v=9zKVL1v3nVE&t=136s'},
+      {n:'VMware Workstation',l:'https://youtu.be/NqNggLarMXU'},
+      {n:'Virtual Box',l:'https://youtu.be/SGXX1OhbKco'},
+      {n:'Kali Linux',l:'https://youtu.be/n_SCQSAEKI0?list=PLs-5OWGJ9l6WZ9vvt7VcNP1GjfIeImR0P'},
+      {n:'GNS3 Installation',l:'https://youtu.be/PTaCLZHM6lg'},
+      {n:'GNS3 with VMware',l:'https://youtu.be/J_Ab7L9Rc-k?list=PLOgdNIxMNJ28qYcFZ97k7VZHZ_JaB5VPT'},
+      {n:'VMware windows VM',l:'https://youtu.be/t3PAufBUX9o'},
+      {n:'GNS3 Tutorial',l:'https://www.youtube.com/watch?v=CT5pThgC8bo&list=PLZURQ_XyXLwB5BUDb18M9btWX0WWUNXMR'},
+      {n:'EVE-NG',l:'https://www.youtube.com/watch?v=g9JXZRitMpc&list=PLAqaqJU4wzYWxFj-AZiqarxZ704P9IvVY'},
+      {n:'Download Here',l:'https://filecr.com/home/?'}
+    ]
+  }
+];
+
+/* ========== SVG GENERATOR ========== */
+function buildSVG(pl){
+  const cols=3, count=pl.steps.length;
+  const rows=Math.ceil((count+2)/cols);
+  const rowH=120, startY=58, padX=110;
+  const colW=280;
+  const svgW=padX*2+colW*(cols-1);
+  const svgH=startY+(rows-1)*rowH+50;
+
+  /* Calculate node positions (serpentine) */
+  const nodes=[];
+  nodes.push({label:'START',link:null,color:'#22c55e',type:'terminal'});
+  pl.steps.forEach((s,i)=>nodes.push({label:s.n,link:s.l,color:CC[i%CC.length],type:'step'}));
+  nodes.push({label:'FINISH',link:null,color:'#ef4444',type:'terminal'});
+
+  const positions=nodes.map((_,i)=>{
+    const row=Math.floor(i/cols);
+    let col=i%cols;
+    if(row%2===1) col=cols-1-col;
+    return{x:padX+col*colW, y:startY+row*rowH};
+  });
+
+  /* Build serpentine path */
+  let d=`M ${positions[0].x},${positions[0].y}`;
+  for(let i=1;i<positions.length;i++){
+    const p=positions[i-1], c=positions[i];
+    const pRow=Math.floor((i-1)/cols), cRow=Math.floor(i/cols);
+    if(cRow!==pRow){
+      const bulge=c.x>svgW/2?90:-90;
+      d+=` C ${p.x+bulge},${p.y} ${c.x+bulge},${c.y} ${c.x},${c.y}`;
+    }else{
+      d+=` L ${c.x},${c.y}`;
+    }
+  }
+
+  /* Build SVG elements */
+  let svg=`<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="min-width:${svgW}px;width:100%;height:auto;display:block">`;
+
+  /* Defs for glow filters */
+  svg+=`<defs>`;
+  nodes.forEach((n,i)=>{
+    svg+=`<filter id="glow_${pl.icon.replace(/[^a-z]/gi,'')}_${i}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur"/><feFlood flood-color="${n.color}" flood-opacity="0.5" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  });
+  svg+=`</defs>`;
+
+  /* Road layers */
+  svg+=`<path class="road-bg" d="${d}"/>`;
+  svg+=`<path class="road-surface" d="${d}"/>`;
+  svg+=`<path class="road-dash" d="${d}"/>`;
+
+  /* Nodes */
+  nodes.forEach((n,i)=>{
+    const{x,y}=positions[i];
+    const row=Math.floor(i/cols);
+    const labelAbove=row%2===1;
+    const labelY=labelAbove?y-32:y+38;
+    const subY=labelAbove?y-20:y+50;
+    const r=n.type==='terminal'?20:22;
+    const delay=0.3+i*0.12;
+    const filterId=`glow_${pl.icon.replace(/[^a-z]/gi,'')}_${i}`;
+
+    if(n.link){
+      svg+=`<a href="${n.link}" class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
+    }else{
+      svg+=`<g class="node-group" style="--glow:${n.color};animation-delay:${delay}s" filter="url(#${filterId})">`;
+    }
+
+    svg+=`<circle class="node-circle" cx="${x}" cy="${y}" r="${r}" fill="${n.color}"/>`;
+
+    if(n.type==='terminal'){
+      svg+=`<text class="start-finish-text" x="${x}" y="${y}">${n.label}</text>`;
+    }else{
+      svg+=`<text class="node-text" x="${x}" y="${y}">${i}</text>`;
+    }
+
+    svg+=`<text class="node-label" x="${x}" y="${labelY}">${n.label}</text>`;
+
+    if(n.link){
+      svg+=`<text class="node-sublabel" x="${x}" y="${subY}">Click to open →</text>`;
+      svg+=`</a>`;
+    }else{
+      svg+=`</g>`;
+    }
+  });
+
+  svg+=`</svg>`;
+  return svg;
+}
+
+/* ========== RENDER CARDS ========== */
+const wrap=document.getElementById('cardsWrap');
+playlists.forEach(pl=>{
+  const card=document.createElement('section');
+  card.className='path-card';
+  card.innerHTML=`
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="card-icon" style="background:${pl.color}"><i class="fas ${pl.icon}"></i></div>
+        <div>
+          <h3>${pl.title}</h3>
+          <p>${pl.desc}</p>
+        </div>
+      </div>
+      <div class="card-badge">${pl.steps.length} Steps</div>
+    </div>
+    <div class="svg-wrap">${buildSVG(pl)}</div>
+  `;
+  wrap.appendChild(card);
+});
+
+/* ========== INTERSECTION OBSERVER FOR ANIMATIONS ========== */
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.15});
+document.querySelectorAll('.path-card').forEach(c=>obs.observe(c));
+</script>
+</body>
+</html>
