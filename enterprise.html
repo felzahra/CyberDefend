@@ -41,18 +41,33 @@
         .nav-dropdown-content a:hover { background-color: var(--selected-bg); color: var(--primary); }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
 
+        /* ========== SIDEBAR TOGGLE BUTTON ========== */
+        #sidebarToggle {
+            position: fixed; top: 100px; left: 320px; z-index: 999;
+            width: 24px; height: 44px; background: var(--primary); color: var(--primary-fg);
+            border: none; border-radius: 0 12px 12px 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2); transition: left 0.3s ease;
+        }
+        body.sidebar-hidden #sidebarToggle { left: 0; }
+        body.sidebar-hidden .left-panel { display: none; }
+
         /* ========== MAIN LAYOUT ========== */
         .main-container { max-width: 1400px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; gap: 40px; align-items: flex-start; }
         
         /* Left Panel */
-        .left-panel { width: 320px; flex-shrink: 0; position: sticky; top: 100px; }
-        .panel-title { font-size: 1.2rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); }
+        .left-panel { width: 320px; flex-shrink: 0; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 5px; }
+        .left-panel::-webkit-scrollbar { width: 6px; }
+        .left-panel::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .panel-title { font-size: 1.2rem; font-weight: 700; color: var(--body-loud-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); position: sticky; top: 0; background: var(--body-bg); z-index: 2; }
         
-        .left-course-item { display: flex; align-items: center; gap: 15px; background: #ffffff; border: 1px solid var(--hairline-color); border-radius: 16px; padding: 12px; margin-bottom: 15px; text-decoration: none; color: var(--body-fg); transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .left-course-item { display: flex; align-items: center; gap: 15px; background: #ffffff; border: 1px solid var(--hairline-color); border-radius: 16px; padding: 12px; margin-bottom: 15px; text-decoration: none; color: var(--body-fg); transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; }
         .left-course-item:hover { border-color: var(--primary); background: var(--selected-bg); transform: translateX(5px); box-shadow: 0 4px 12px rgba(2,179,228,0.1); }
         .left-course-img { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #ffffff; flex-shrink: 0; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .left-course-info { flex: 1; min-width: 0; }
         .left-course-info h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--body-loud-color); }
         .left-course-info p { font-size: 0.75rem; color: var(--body-quiet-color); }
+        .premium-badge-left { font-size: 0.55rem; background: #FFD700; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: auto; }
 
         /* Right Panel */
         .right-panel { flex: 1; min-width: 0; }
@@ -87,7 +102,8 @@
             .top-nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .top-nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; }
             .main-container { flex-direction: column; gap: 20px; }
-            .left-panel { width: 100%; position: relative; top: 0; }
+            .left-panel { width: 100%; position: relative; top: 0; max-height: none; }
+            #sidebarToggle { display: none; }
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
         }
     </style>
@@ -114,10 +130,10 @@
                 <a href="DPA.html">DPA Summer Training Course</a>
                 <a href="level3.html">1- Introduction to Cybersecurity</a>
                 <a href="cybersecurity-course.html">2- Cybersecurity Course</a>
-                <a href="#" id="dropCyberBtn3">3- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropCyberBtn4">4- Cybersecurity Course (Paid)</a>
-                <a href="#" id="dropAiBtn1">Level-1 AI</a>
-                <a href="#" id="dropAiBtn2">Level2-AI</a>
+                <a href="#" class="paid-course-trigger" data-column="Course_3" data-name="Course 3">3- Cybersecurity Course (Paid)</a>
+                <a href="#" class="paid-course-trigger" data-column="Course_4" data-name="Course 4">4- Cybersecurity Course (Paid)</a>
+                <a href="#" class="paid-course-trigger" data-column="Level_1_AI" data-name="Level-1 AI">Level-1 AI</a>
+                <a href="#" class="paid-course-trigger" data-column="Level_2_AI" data-name="Level2-AI">Level2-AI</a>
                 <a href="networking.html">CyberSecurity Reading Slides</a>
                 <a href="routing-switching.html">English CyberSecurity Course</a>
                 <a href="aws foundation.html">AWS Cloud Foundation</a>
@@ -201,13 +217,28 @@
     </div>
 </nav>
 
+<!-- SIDEBAR TOGGLE BUTTON -->
+<button id="sidebarToggle" title="Hide/Show Sidebar">
+    <i class="fas fa-chevron-left"></i>
+</button>
+
 <!-- ========== MAIN LAYOUT ========== -->
 <div class="main-container">
     
     <!-- LEFT PANEL: COURSE IMAGES/LINKS -->
     <aside class="left-panel">
         <div class="panel-title">Main Categories</div>
-        
+
+        <a href="cybersec_organized.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <i class="fas fa-fire-flame-curved"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>CyberSecurity Training Portal</h4>
+                <p>Cyber Range & Training Portal</p>
+            </div>
+        </a>
+
         <a href="labs.html" class="left-course-item">
             <div class="left-course-img" style="background: linear-gradient(135deg, #02b3e4, #027e9e);">
                 <i class="fas fa-shield-halved"></i>
@@ -258,17 +289,150 @@
             </div>
         </a>
 
-        <a href="cybersec_organized.html" class="left-course-item">
-            <div class="left-course-img" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
-                <i class="fas fa-fire-flame-curved"></i>
+        <a href="2026.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #ef4444, #c62828);">
+                <i class="fas fa-video"></i>
             </div>
             <div class="left-course-info">
-                <h4>CyberSecurity Training Portal</h4>
-                <p>Cyber Range & Training Portal</p>
+                <h4>Summer Lectures</h4>
+                <p>Recorded Sessions & Videos</p>
             </div>
         </a>
 
-        <!-- NEW TAB: Useful Links -->
+        <a href="Curriculum.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Curriculum & Roadmaps</h4>
+                <p>Core Tracks & Modules</p>
+            </div>
+        </a>
+
+        <a href="DPA.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <i class="fas fa-building-columns"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>DPA Summer Training</h4>
+                <p>Damietta Port Authority</p>
+            </div>
+        </a>
+
+        <a href="level3.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #22c55e, #15803d);">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Intro to Cybersecurity</h4>
+                <p>Foundations & Core Concepts</p>
+            </div>
+        </a>
+
+        <a href="cybersecurity-course.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                <i class="fas fa-user-secret"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Cybersecurity Course</h4>
+                <p>Attack Types, SIEM, Hunting</p>
+            </div>
+        </a>
+
+        <div class="left-course-item paid-course-trigger" data-column="Course_3" data-name="Course 3 (Paid)" style="cursor: pointer;">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #eab308, #ca8a04);">
+                <i class="fas fa-swords"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Course 3 (Paid)</h4>
+                <p>Advanced Hands-on Labs</p>
+            </div>
+            <span class="premium-badge-left">PREMIUM</span>
+        </div>
+
+        <div class="left-course-item paid-course-trigger" data-column="Course_4" data-name="Course 4 (Paid)" style="cursor: pointer;">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #14b8a6, #0f766e);">
+                <i class="fas fa-gem"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Course 4 (Paid)</h4>
+                <p>Red Teaming & Defense</p>
+            </div>
+            <span class="premium-badge-left">PREMIUM</span>
+        </div>
+
+        <div class="left-course-item paid-course-trigger" data-column="Level_1_AI" data-name="Level-1 AI" style="cursor: pointer;">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #ec4899, #be185d);">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Level-1 AI</h4>
+                <p>Artificial Intelligence Basics</p>
+            </div>
+            <span class="premium-badge-left">PREMIUM</span>
+        </div>
+
+        <div class="left-course-item paid-course-trigger" data-column="Level_2_AI" data-name="Level2-AI" style="cursor: pointer;">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Level2-AI</h4>
+                <p>Advanced AI Concepts</p>
+            </div>
+            <span class="premium-badge-left">PREMIUM</span>
+        </div>
+
+        <a href="networking.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #0ea5e9, #0369a1);">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Reading Slides</h4>
+                <p>CyberSecurity Topics</p>
+            </div>
+        </a>
+
+        <a href="routing-switching.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>English Course</h4>
+                <p>Full English CyberSecurity</p>
+            </div>
+        </a>
+
+        <a href="aws foundation.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #f97316, #c2410c);">
+                <i class="fas fa-cloud"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>AWS Cloud Foundation</h4>
+                <p>AWS Cloud Solutions</p>
+            </div>
+        </a>
+
+        <a href="digital comm.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #64748b, #334155);">
+                <i class="fas fa-satellite-dish"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Digital Comm</h4>
+                <p>Protocols & Transmission</p>
+            </div>
+        </a>
+
+        <a href="wireless comm.html" class="left-course-item">
+            <div class="left-course-img" style="background: linear-gradient(135deg, #f43f5e, #be123c);">
+                <i class="fas fa-wifi"></i>
+            </div>
+            <div class="left-course-info">
+                <h4>Wireless Comm</h4>
+                <p>RF Tech & WLAN Config</p>
+            </div>
+        </a>
+
         <a href="links.html" class="left-course-item">
             <div class="left-course-img" style="background: linear-gradient(135deg, #64748b, #334155);">
                 <i class="fas fa-link"></i>
@@ -345,18 +509,19 @@
                     <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
                 </div>
             </a>
-        </div>
 
-        <a href="cybersec_organized.html" class="left-course-item">
-            <div class="left-course-img" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
-                <i class="fas fa-fire-flame-curved"></i>
-            </div>
-       <div class="card-body">
+            <!-- Card 6 -->
+            <a href="cybersec_organized.html" class="course-card">
+                <div class="card-img-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                    <i class="fas fa-fire-flame-curved"></i>
+                </div>
+                <div class="card-body">
                     <h3>CyberSecurity Training Portal</h3>
-                    <p>Cyber Range & Training Portal</p>
+                    <p>Cyber Range & Training Portal. All tracks, tools, and labs organized in one place.</p>
                     <div class="card-link">View Course <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </a>
         </div>
-        </a>
 
         <h2 class="section-title">All Other Courses</h2>
         <div class="right-panel-grid">
@@ -417,7 +582,7 @@
                 </div>
             </a>
 
-            <div id="cyberCourseBtn" class="course-card">
+            <div class="course-card paid-course-trigger" data-column="Course_3" data-name="Course 3 (Paid)">
                 <span class="premium-badge">PREMIUM</span>
                 <div class="card-img-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">
                     <i class="fas fa-swords"></i>
@@ -429,7 +594,7 @@
                 </div>
             </div>
 
-            <div id="cyberCourseBtn2" class="course-card">
+            <div class="course-card paid-course-trigger" data-column="Course_4" data-name="Course 4 (Paid)">
                 <span class="premium-badge">PREMIUM</span>
                 <div class="card-img-header" style="background: linear-gradient(135deg, #14b8a6, #0f766e);">
                     <i class="fas fa-gem"></i>
@@ -441,7 +606,7 @@
                 </div>
             </div>
 
-            <div id="aiCourseBtn1" class="course-card">
+            <div class="course-card paid-course-trigger" data-column="Level_1_AI" data-name="Level-1 AI">
                 <span class="premium-badge">PREMIUM</span>
                 <div class="card-img-header" style="background: linear-gradient(135deg, #ec4899, #be185d);">
                     <i class="fas fa-robot"></i>
@@ -453,7 +618,7 @@
                 </div>
             </div>
 
-            <div id="aiCourseBtn2" class="course-card">
+            <div class="course-card paid-course-trigger" data-column="Level_2_AI" data-name="Level2-AI">
                 <span class="premium-badge">PREMIUM</span>
                 <div class="card-img-header" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
                     <i class="fas fa-brain"></i>
@@ -577,15 +742,20 @@
 </div>
 
 <script>
-    // Basic theme toggle if needed
-    function toggleTheme() {
-        const html = document.documentElement;
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', newTheme);
-    }
+    // ===== SIDEBAR TOGGLE LOGIC =====
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.body.classList.toggle('sidebar-hidden');
+        const icon = this.querySelector('i');
+        if (document.body.classList.contains('sidebar-hidden')) {
+            icon.classList.remove('fa-chevron-left');
+            icon.classList.add('fa-chevron-right');
+        } else {
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-left');
+        }
+    });
 
-    // ===== PAID COURSE MODAL LOGIC (From index.html) =====
+    // ===== PAID COURSE MODAL LOGIC =====
     var GOOGLE_CLIENT_ID = '541265811974-g4j0gg04kmfabp75qgkkdvgplknnsb43.apps.googleusercontent.com';
     var PAID_COURSES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1BENpP0XaCNTQd4BplJpL_78gpvxPJb2JIgvvQgGG5Qw/export?format=csv&gid=0';
     var requestedCourseColumn = null;
@@ -642,42 +812,22 @@
         google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
     }
 
+    // Unified Event Listener for Paid Course Buttons (Left Panel + Right Panel + Dropdown)
     document.addEventListener('click', function(event) {
         var loginModal = document.getElementById('loginModal');
         var courseNameText = document.getElementById('modalCourseName');
+        var paidBtn = event.target.closest('.paid-course-trigger');
         
-        if (event.target.closest('#cyberCourseBtn') || event.target.closest('#dropCyberBtn3')) {
+        if (paidBtn) {
             event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Course_3';
-            courseNameText.innerText = "Please log in to verify access for Course 3.";
+            requestedCourseColumn = paidBtn.getAttribute('data-column');
+            var courseName = paidBtn.getAttribute('data-name');
+            courseNameText.innerText = "Please log in to verify access for " + courseName + ".";
             document.getElementById('loginError').innerHTML = "";
             loginModal.style.display = 'flex';
             setTimeout(renderGoogleButton, 100);
         }
-        if (event.target.closest('#cyberCourseBtn2') || event.target.closest('#dropCyberBtn4')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Course_4';
-            courseNameText.innerText = "Please log in to verify access for Course 4.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-        if (event.target.closest('#aiCourseBtn1') || event.target.closest('#dropAiBtn1')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Level_1_AI';
-            courseNameText.innerText = "Please log in to verify access for Level-1 AI.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
-        if (event.target.closest('#aiCourseBtn2') || event.target.closest('#dropAiBtn2')) {
-            event.preventDefault(); event.stopPropagation();
-            requestedCourseColumn = 'Level_2_AI';
-            courseNameText.innerText = "Please log in to verify access for Level2-AI.";
-            document.getElementById('loginError').innerHTML = "";
-            loginModal.style.display = 'flex';
-            setTimeout(renderGoogleButton, 100);
-        }
+        
         if (event.target.closest('#closeModalBtn')) { loginModal.style.display = 'none'; }
         if (event.target === loginModal) { loginModal.style.display = 'none'; }
     });
