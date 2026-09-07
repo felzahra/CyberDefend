@@ -525,9 +525,71 @@ const quizzes = {
 
 const quizCompleted = {};
 
+// UPDATED renderSideBySide function to handle slideEmbed2
 function renderSideBySide(d) {
-    return `<div class="side-by-side"><div class="side-col video-col"><h3>🎬 Video</h3><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe></div></div><a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div><div class="side-col slides-col"><h3>📊 Reading Material</h3><div class="slides-container"><div class="slides-wrapper"><iframe src="${d.slideEmbed}" allowfullscreen></iframe></div></div><div class="slide-hint">📌 Use <strong>arrow buttons</strong> to navigate. Click <strong>Fullscreen</strong> for best view.</div></div></div><div class="description-text"><p>${d.desc}</p><div class="info-grid"><p>${d.topics}</p></div></div><div class="downloads-section"><h3>📥 Downloads</h3><div class="downloads-list"><div class="download-item"><div class="download-info"><h4>📘 ${d.title} - Lecture Slides</h4><p>Open in Google Slides (new tab)</p></div><a href="${EDIT_BASE.replace('ID', d.slideEditId)}" target="_blank" class="btn-download">Open in new tab ↗</a></div></div></div>`;
+    let secondSlide = '';
+    if (d.slideEmbed2) {
+        secondSlide = `
+        <div class="slides-container" style="margin-top: 20px;">
+            <div class="slides-wrapper">
+                <iframe src="${d.slideEmbed2}" allowfullscreen></iframe>
+            </div>
+        </div>
+        <div class="slide-hint">📌 Additional Slides - Use <strong>arrow buttons</strong> to navigate.</div>`;
+    }
+
+    let secondDownload = '';
+    if (d.slideEditId2) {
+        secondDownload = `
+        <div class="download-item">
+            <div class="download-info">
+                <h4>📘 ${d.title} - Additional Slides</h4>
+                <p>Open in Google Slides (new tab)</p>
+            </div>
+            <a href="${EDIT_BASE.replace('ID', d.slideEditId2)}" target="_blank" class="btn-download">Open in new tab ↗</a>
+        </div>`;
+    }
+
+    return `<div class="side-by-side">
+        <div class="side-col video-col">
+            <h3>🎬 Video</h3>
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+        </div>
+        <div class="side-col slides-col">
+            <h3>📊 Reading Material</h3>
+            <div class="slides-container">
+                <div class="slides-wrapper">
+                    <iframe src="${d.slideEmbed}" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="slide-hint">📌 Use <strong>arrow buttons</strong> to navigate. Click <strong>Fullscreen</strong> for best view.</div>
+            ${secondSlide}
+        </div>
+    </div>
+    <div class="description-text">
+        <p>${d.desc}</p>
+        <div class="info-grid"><p>${d.topics}</p></div>
+    </div>
+    <div class="downloads-section">
+        <h3>📥 Downloads</h3>
+        <div class="downloads-list">
+            <div class="download-item">
+                <div class="download-info">
+                    <h4>📘 ${d.title} - Lecture Slides</h4>
+                    <p>Open in Google Slides (new tab)</p>
+                </div>
+                <a href="${EDIT_BASE.replace('ID', d.slideEditId)}" target="_blank" class="btn-download">Open in new tab ↗</a>
+            </div>
+            ${secondDownload}
+        </div>
+    </div>`;
 }
+
 function renderVideoOnly(d) {
     return `<div class="single-video"><div class="video-container"><div class="video-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe></div></div><a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a></div><div class="description-text"><p>${d.desc}</p><div class="info-grid"><p>${d.topics}</p></div></div><div class="downloads-section"><h3>📥 Downloads</h3><div class="no-material">📝 No reading material available for this session.</div></div>`;
 }
