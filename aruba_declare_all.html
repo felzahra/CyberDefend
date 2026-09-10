@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damietta Port Authority - Network Configuration Detailed Breakdown</title>
+    <style>
+        :root {
+            --primary: #0F172A;
+            --accent: #2563EB;
+            --edge-color: #059669;
+            --core-color: #7C3AED;
+            --core-sec-color: #9333EA;
+            --dist-color: #D97706;
+            --dist-sec-color: #F59E0B;
+            --vip-color: #0EA5E9;
+            --firewall-color: #DC2626;
+            --internet-color: #475569;
+            --vsx-link-color: #EC4899;
+            --mgmt-vlan-color: #0EA5E9;
+            --voice-vlan-color: #D97706;
+            --data-vlan-color: #059669;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --code-bg: #1E293B;
+            --code-text: #38BDF8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #1E293B);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        header h1 { font-size: 28px; margin-bottom: 8px; }
+        header p { color: #94A3B8; font-size: 15px; }
+
+        /* Side-by-Side Layout */
+        .row-layout {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: stretch;
+        }
+        .col-half { flex: 1; display: flex; flex-direction: column; }
+
+        .device-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .device-header {
+            padding: 16px 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .device-header.edge { background-color: var(--edge-color); }
+        .device-header.core-prim { background-color: var(--core-color); }
+        .device-header.core-sec { background-color: var(--core-sec-color); }
+        .device-header.dist-prim { background-color: var(--dist-color); }
+        .device-header.dist-sec { background-color: var(--dist-sec-color); }
+        .device-header h2 { font-size: 18px; font-weight: 600; }
+        .device-header span { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+
+        .config-list { padding: 20px; }
+        .config-item { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+        .config-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .code-block {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 8px;
+        }
+        .explanation { font-size: 14px; color: var(--text-main); }
+
+        /* ===== ANIMATED GRAPH STYLES ===== */
+        .graph-container {
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            margin: 30px auto;
+        }
+        .graph-title {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* VSX Plotting Graph Styles */
+        .plot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .plot-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .plot-label {
+            width: 130px;
+            text-align: right;
+            padding-right: 15px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .plot-node {
+            width: 110px;
+            text-align: center;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-weight: 700;
+            font-size: 13px;
+            background: #F8FAFC;
+            border: 2px solid var(--text-muted);
+            padding: 8px;
+            border-radius: 8px;
+            z-index: 2;
+        }
+        .node-prim { border-color: var(--core-color); color: var(--core-color); }
+        .node-sec { border-color: var(--core-sec-color); color: var(--core-sec-color); }
+        .node-prim-dist { border-color: var(--dist-color); color: var(--dist-color); }
+        .node-sec-dist { border-color: var(--dist-sec-color); color: var(--dist-sec-color); }
+        .plot-node small { display: block; font-size: 9px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
+
+        .plot-line {
+            flex-grow: 1;
+            height: 4px;
+            background: #CBD5E1;
+            position: relative;
+            margin: 0 8px;
+        }
+        .plot-vip {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--vip-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(14, 165, 233, 0.4);
+            z-index: 3;
+        }
+
+        .packet {
+            position: absolute;
+            top: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: syncFlow 2.5s infinite linear;
+            box-shadow: 0 0 8px var(--accent);
+        }
+        .packet.vsx-sync { background: var(--core-color); box-shadow: 0 0 8px var(--core-color); }
+        .packet.ospf-flow { background: var(--edge-color); box-shadow: 0 0 8px var(--edge-color); animation-duration: 3s; animation-delay: 1s; }
+        .packet.route-flow { background: var(--firewall-color); box-shadow: 0 0 8px var(--firewall-color); animation-duration: 2s; }
+
+        @keyframes syncFlow {
+            0% { left: 0; opacity: 0; transform: scale(0.5); }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; transform: scale(1); }
+            100% { left: 95%; opacity: 0; transform: scale(0.5); }
+        }
+
+        /* Core Switch Topology Snippet Styles */
+        .topology-row { display: flex; justify-content: center; align-items: center; width: 100%; max-width: 800px; position: relative; margin-bottom: 10px; gap: 20px; }
+        .node-box { background: white; border: 3px solid var(--text-muted); border-radius: 8px; padding: 15px 25px; text-align: center; font-weight: bold; font-size: 14px; min-width: 180px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); z-index: 2; }
+        .node-core-prim { border-color: var(--core-color); color: var(--core-color); }
+        .node-core-sec { border-color: var(--core-sec-color); color: var(--core-sec-color); }
+        .isl-link { flex-grow: 1; height: 6px; background: #CBD5E1; position: relative; margin: 0 10px; border-radius: 3px; }
+        .lag-group { display: flex; flex-direction: column; gap: 6px; width: 100px; position: relative; }
+        .lag-line { height: 4px; background: #94A3B8; border-radius: 2px; position: relative; overflow: hidden; }
+        .lag-line::after { content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: var(--accent); animation: lagFlow 1.5s infinite linear; }
+        @keyframes lagFlow { 0% { left: -40%; } 100% { left: 100%; } }
+
+        /* Topology & Routing Chain Styles */
+        .chain-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .chain-node {
+            background: white;
+            border: 3px solid var(--text-muted);
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            min-width: 160px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            z-index: 2;
+        }
+        .chain-node small { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 4px; }
+        .chain-node.endpoint { border-color: var(--edge-color); color: var(--edge-color); }
+        .chain-node.edge-sw { border-color: var(--edge-color); color: var(--edge-color); }
+        .chain-node.dist-sw { border-color: var(--dist-color); color: var(--dist-color); }
+        .chain-node.core-sw { border-color: var(--core-color); color: var(--core-color); }
+        .chain-node.firewall { border-color: var(--firewall-color); color: var(--firewall-color); }
+        .chain-node.internet { border-color: var(--internet-color); color: var(--internet-color); }
+
+        .chain-link {
+            position: relative;
+            height: 6px;
+            width: 100px;
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+        .chain-link.vertical { width: 6px; height: 100%; min-height: 60px; }
+        
+        .link-label {
+            position: absolute;
+            background: white;
+            padding: 3px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .chain-link.horizontal .link-label {
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .chain-link.vertical .link-label {
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%);
+            margin-left: 10px;
+        }
+        
+        .chain-link.untagged { background: var(--edge-color); }
+        .chain-link.tagged { background: var(--accent); }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .legend-line { width: 20px; height: 4px; border-radius: 2px; }
+        
+        .section-divider { margin: 60px 0 30px; border-bottom: 2px solid var(--border); position: relative; }
+        .section-divider h3 { background: var(--bg); padding-right: 15px; position: absolute; top: -12px; left: 20px; color: var(--primary); font-size: 20px; }
+
+        /* ===== GIANT MASTER MULTI-NODE TOPOLOGY STYLES ===== */
+        .giant-topo {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 50px 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+        .giant-topo h2 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            min-width: 1100px;
+        }
+        .topo-content { display: flex; flex-direction: column; align-items: center; min-width: 1100px; gap: 30px; }
+        
+        /* Core Tier */
+        .topo-core-pair { display: flex; justify-content: center; align-items: center; gap: 60px; position: relative; z-index: 2; }
+        .topo-box { background: white; border: 3px solid var(--text-muted); padding: 15px 25px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); min-width: 180px; }
+        .topo-box small { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 4px; }
+        .topo-box.core-prim { border-color: var(--core-color); color: var(--core-color); }
+        .topo-box.core-sec { border-color: var(--core-sec-color); color: var(--core-sec-color); }
+        .topo-box.dist-prim { border-color: var(--dist-color); color: var(--dist-color); }
+        .topo-box.dist-sec { border-color: var(--dist-sec-color); color: var(--dist-sec-color); }
+        .topo-box.edge { border-color: var(--edge-color); color: var(--edge-color); padding: 10px 15px; font-size: 12px; min-width: 120px; }
+        
+        .topo-link-h { height: 8px; background: var(--vsx-link-color); width: 60px; border-radius: 4px; position: relative; }
+        .topo-link-h .label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: white; padding: 2px 8px; border: 1px solid var(--vsx-link-color); color: var(--vsx-link-color); border-radius: 10px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        
+        .topo-trunk-down {
+            width: 6px; height: 50px; background: var(--accent); position: relative; margin-bottom: -10px; z-index: 1;
+        }
+        .topo-trunk-down::after {
+            content: ''; position: absolute; top: 0; left: -3px; width: 12px; height: 12px; background: var(--accent); border-radius: 50%;
+            animation: trunkFlow 2s infinite linear; box-shadow: 0 0 8px var(--accent);
+        }
+        @keyframes trunkFlow { 0% { top: 0; opacity: 1; } 100% { top: 40px; opacity: 0; } }
+
+        .topo-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; text-align: center; }
+        
+        /* Distribution Grid (8 Nodes) */
+        .topo-dist-grid { display: flex; justify-content: center; gap: 15px; width: 100%; }
+        .topo-dist-col { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; min-width: 120px; }
+        
+        /* VSX Pair Group (Aggregated Primary & Secondary) */
+        .topo-dist-pair-group {
+            border: 2px dashed var(--dist-color);
+            border-radius: 12px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: #FFFBEB;
+            position: relative;
+            width: 100%;
+        }
+        .topo-dist-pair-group::before {
+            content: 'VSX Pair';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FFFFFF;
+            padding: 0 8px;
+            font-size: 10px;
+            color: var(--dist-color);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .topo-isl-v { width: 4px; height: 20px; background: var(--vsx-link-color); border-radius: 2px; }
+        
+        /* Edge Cluster */
+        .topo-edge-cluster { display: flex; gap: 5px; margin-top: 5px; justify-content: center; }
+        .topo-edge-line-down { width: 4px; height: 20px; background: var(--edge-color); margin-bottom: -5px; }
+        
+        @media (max-width: 900px) {
+            .row-layout { flex-direction: column; }
+            .plot-grid { grid-template-columns: 1fr; }
+            .chain-wrapper { flex-direction: column; }
+            .chain-link { width: 6px; height: 40px; min-height: 40px; }
+            .chain-link.vertical .link-label { top: 50%; left: 100%; transform: translateY(-50%); margin-left: 10px; }
+            .giant-topo { overflow-x: scroll; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Damietta Port Authority Project</h1>
+        <p>Comprehensive Line-by-Line Technical Analysis, VSX Topologies, VLAN Tagging Flows, & Next-Hop Routing</p>
+    </header>
+
+    <!-- GIANT MASTER MULTI-NODE TOPOLOGY GRAPH -->
+    <div class="giant-topo">
+        <h2>Complete Enterprise Topology: Core to 8 Distribution Nodes to Edge</h2>
+        <div class="topo-content">
+            
+            <!-- Core VSX Pair -->
+            <div class="topo-label">Core VSX Pair</div>
+            <div class="topo-core-pair">
+                <div class="topo-box core-prim">DPA-Core-Primary<small>VIP: 10.0.2.1</small></div>
+                <div class="topo-link-h"><span class="label">ISL LAG 128</span></div>
+                <div class="topo-box core-sec">DPA-Core-Secondary<small>VIP: 10.0.2.1</small></div>
+            </div>
+
+            <!-- Downlink Trunk -->
+            <div class="topo-trunk-down"></div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--accent); margin-top: -20px; margin-bottom: 20px;">MC-LAG Trunks to All Nodes</div>
+
+            <!-- Distribution Grid (ND1 to ND8) -->
+            <div class="topo-label">Distribution Nodes (Aggregated VSX Pairs)</div>
+            <div class="topo-dist-grid">
+                
+                <!-- ND1 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND1-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND1-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND2 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND2-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND2-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND3 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND3-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND3-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND4 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND4-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND4-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND5 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND5-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND5-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND6 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND6-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND6-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND7 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND7-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND7-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+                <!-- ND8 -->
+                <div class="topo-dist-col">
+                    <div class="topo-dist-pair-group">
+                        <div class="topo-box dist-prim" style="padding: 8px; font-size: 11px; min-width: 90px;">ND8-Prim</div>
+                        <div class="topo-isl-v"></div>
+                        <div class="topo-box dist-sec" style="padding: 8px; font-size: 11px; min-width: 90px;">ND8-Sec</div>
+                    </div>
+                    <div class="topo-edge-line-down"></div>
+                    <div class="topo-edge-cluster">
+                        <div class="topo-box edge">Edge</div>
+                        <div class="topo-box edge">Edge</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="legend" style="margin-top: 50px;">
+                <div class="legend-item"><div class="legend-line" style="background: var(--core-color)"></div>Core Switches (VIP)</div>
+                <div class="legend-item"><div class="legend-line" style="background: var(--dist-color)"></div>Distribution VSX Pairs</div>
+                <div class="legend-item"><div class="legend-line" style="background: var(--edge-color)"></div>Edge Access Switches</div>
+                <div class="legend-item"><div class="legend-line" style="background: var(--vsx-link-color)"></div>VSX ISL Sync</div>
+                <div class="legend-item"><div class="legend-line" style="background: var(--accent)"></div>MC-LAG Trunks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDGE SWITCH SECTION -->
+    <div class="row-layout">
+        <div class="col-half">
+            <div class="device-section">
+                <div class="device-header edge">
+                    <h2>1. Edge Access Switch</h2>
+                    <span>Model: Aruba 2930F</span>
+                </div>
+                <div class="config-list">
+                    <div class="config-item">
+                        <div class="code-block">hostname "ND4-E425"</div>
+                        <div class="explanation">Defines the device hostname in the network as "ND4-E425".</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">trunk 9-10 trk1 lacp</div>
+                        <div class="explanation">Bundles physical ports 9 and 10 into a logical aggregated link (`Trk1`) using LACP protocol for redundancy.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">vlan 44
+ name "voice-phone"
+ tagged 1-8,Trk1
+ voice</div>
+                        <div class="explanation">Creates Voice VLAN 44, tags ports 1–8 and uplink `Trk1`, and applies `voice` QoS prioritization for IP telephony traffic.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">vlan 140
+ name "Hardware-Lab"
+ untagged 1-8
+ tagged Trk1</div>
+                        <div class="explanation">Configures VLAN 140 for Hardware Lab: Access ports 1–8 are untagged, while uplink `Trk1` passes traffic tagged.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">vlan 244
+ name "Switch-Managment"
+ ip address 10.0.244.35 255.255.255.0</div>
+                        <div class="explanation">Configures VLAN 244 for switch management and assigns host IP `10.0.244.35/24`.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAGGED/UNTAGGED VLAN FLOW GRAPH -->
+        <div class="col-half">
+            <div class="graph-container" style="height: 100%; margin: 0; display: flex; flex-direction: column; justify-content: center;">
+                <div class="graph-title">VLAN Flow: Tagged & Untagged Links</div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+                    
+                    <!-- Endpoints -->
+                    <div style="display: flex; gap: 80px; margin-bottom: 10px;">
+                        <div class="chain-node endpoint" style="min-width: 140px;">IP Phone<small>VLAN 44</small></div>
+                        <div class="chain-node endpoint" style="min-width: 140px;">Lab PC<small>VLAN 140</small></div>
+                    </div>
+
+                    <!-- Untagged Links -->
+                    <div style="display: flex; gap: 80px; height: 80px;">
+                        <div class="chain-link vertical untagged">
+                            <span class="link-label">Untagged</span>
+                        </div>
+                        <div class="chain-link vertical untagged">
+                            <span class="link-label">Untagged</span>
+                        </div>
+                    </div>
+
+                    <!-- Edge Switch -->
+                    <div class="chain-node edge-sw" style="margin-bottom: 10px;">Edge Switch<small>ND4-E425</small></div>
+
+                    <!-- Tagged Link 1 -->
+                    <div style="height: 80px; display: flex; justify-content: center; align-items: center;">
+                        <div class="chain-link vertical tagged">
+                            <span class="link-label">Tagged Trk1 (VLANs 44, 140, 244)</span>
+                        </div>
+                    </div>
+
+                    <!-- Distribution Switch -->
+                    <div class="chain-node dist-sw" style="margin-bottom: 10px;">Distribution Switch<small>ND4-prim / ND4-Sec</small></div>
+
+                    <!-- Tagged Link 2 -->
+                    <div style="height: 80px; display: flex; justify-content: center; align-items: center;">
+                        <div class="chain-link vertical tagged">
+                            <span class="link-label">Tagged MC-LAG 244 (All VLANs)</span>
+                        </div>
+                    </div>
+
+                    <!-- Core Switch -->
+                    <div class="chain-node core-sw">Core Switch<small>DPA-Core-Prim / Sec</small></div>
+
+                </div>
+                <div class="legend" style="margin-top: 40px;">
+                    <div class="legend-item"><div class="legend-line" style="background: var(--edge-color)"></div>Untagged Access Port</div>
+                    <div class="legend-item"><div class="legend-line" style="background: var(--accent)"></div>Tagged Trunk Port</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"><h3>Core Switch VSX High-Availability</h3></div>
+
+    <!-- CORE SWITCH ANIMATED GRAPH (Snippet Added Here) -->
+    <div class="graph-container">
+        <div class="graph-title">Core Switch VSX High-Availability Topology</div>
+        <div class="topology-row">
+            <div class="node-box node-core-prim">DPA-Core-Primary<br><small>(Role: Primary)</small></div>
+            <div class="isl-link">
+                <div class="packet vsx-sync"></div>
+                <div class="packet vsx-sync" style="animation-delay: 1s;"></div>
+            </div>
+            <div class="node-box node-core-sec">DPA-Core-Secondary<br><small>(Role: Secondary)</small></div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: -10px; text-align: center;">Inter-Switch Link (LAG 128) - VSX Sync & Keepalive</div>
+        
+        <div class="topology-row" style="margin-top: 20px;">
+            <div class="lag-group">
+                <div class="lag-line"></div><div class="lag-line"></div>
+            </div>
+            <div class="lag-group">
+                <div class="lag-line"></div><div class="lag-line"></div>
+            </div>
+        </div>
+        <div class="topology-row" style="margin-top: -10px;">
+            <div style="font-size: 12px; color: var(--text-muted); width: 100px; text-align: center;">MC-LAG to Firewalls/PA</div>
+            <div style="width: 20px;"></div> <!-- spacer -->
+            <div style="font-size: 12px; color: var(--text-muted); width: 100px; text-align: center;">MC-LAG to Distribution</div>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--core-color)"></div>VSX Sync Traffic</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--accent)"></div>Active Data Traffic</div>
+        </div>
+    </div>
+
+
+    <!-- CORE SWITCH IP PLOT GRAPH -->
+    <div class="graph-container">
+        <div class="graph-title">Core Switch IP Plot: Primary, Virtual (Active-Gateway), & Secondary</div>
+        <div class="plot-grid">
+            <div class="plot-row">
+                <div class="plot-label">Keepalive Link</div>
+                <div class="plot-node node-prim">10.0.4.2<small>Source (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">Heartbeat<small>10.0.4.0/24</small></div>
+                    <div class="packet vsx-sync"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.4.3<small>Peer (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 2 (Mgmt)</div>
+                <div class="plot-node node-prim">10.0.2.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.2.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync"></div>
+                    <div class="packet ospf-flow" style="animation-delay: 1.2s;"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.2.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 4 (Servers)</div>
+                <div class="plot-node node-prim">172.28.4.13<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 172.28.4.1<small>vMAC: 02:01:72:00:00:02</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 0.5s;"></div>
+                </div>
+                <div class="plot-node node-sec">172.28.4.14<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 242 (ND2 Mgmt)</div>
+                <div class="plot-node node-prim">10.0.242.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.242.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 1s;"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.242.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 243 (ND3 Mgmt)</div>
+                <div class="plot-node node-prim">10.0.243.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.243.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 1.5s;"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.243.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 244 (ND4 Mgmt)</div>
+                <div class="plot-node node-prim">10.0.244.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.244.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.244.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 245 (ND5 Mgmt)</div>
+                <div class="plot-node node-prim">10.0.245.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.245.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 0.8s;"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.245.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 246 (ND6 Mgmt)</div>
+                <div class="plot-node node-prim">10.0.246.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.246.1<small>vMAC: 02:01:00:00:00:02</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 2s;"></div>
+                </div>
+                <div class="plot-node node-sec">10.0.246.3<small>Phys IP (Sec)</small></div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--core-color)"></div>VSX Sync Traffic</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--edge-color)"></div>OSPF/Data Flow</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--vip-color)"></div>Shared Virtual IP</div>
+        </div>
+    </div>
+
+    <!-- CORE PRIMARY & SECONDARY SIDE-BY-SIDE -->
+    <div class="row-layout">
+        <!-- Core Primary -->
+        <div class="col-half">
+            <div class="device-section">
+                <div class="device-header core-prim">
+                    <h2>2. Core Switch - Primary</h2>
+                    <span>ArubaOS-CX</span>
+                </div>
+                <div class="config-list">
+                    <div class="config-item">
+                        <div class="code-block">hostname DPA-Core-Primary</div>
+                        <div class="explanation">Sets the device hostname as the primary Core Switch of Damietta Port Authority.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">spanning-tree priority 0</div>
+                        <div class="explanation">Forces this primary core switch to act as the Root Bridge for the entire network.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface lag 128
+ description ISL-link
+ vlan trunk native 1 tag
+ lacp mode active</div>
+                        <div class="explanation">Defines the Inter-Switch Link (ISL) high-speed interconnect dedicated to state synchronization with the Secondary switch.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 2
+ ip address 10.0.2.2/24
+ active-gateway ip mac 02:01:00:00:00:02
+ active-gateway ip 10.0.2.1</div>
+                        <div class="explanation">Primary physical IP is `10.0.2.2`. Shares Virtual IP `10.0.2.1` to ensure hosts experience no routing disruption during failover.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 244
+ ip address 10.0.244.2/24
+ active-gateway ip mac 02:01:00:00:00:02
+ active-gateway ip 10.0.244.1</div>
+                        <div class="explanation">ND4 Management VLAN. Primary physical IP `10.0.244.2`. Shares Virtual IP `10.0.244.1` with Secondary.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">vsx
+ role primary
+ keepalive peer 10.0.4.3 source 10.0.4.2</div>
+                        <div class="explanation">Sets role to `primary` and configures keepalive heartbeat source IP `10.0.4.2` peering with `10.0.4.3`.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Secondary -->
+        <div class="col-half">
+            <div class="device-section">
+                <div class="device-header core-sec">
+                    <h2>3. Core Switch - Secondary</h2>
+                    <span>ArubaOS-CX</span>
+                </div>
+                <div class="config-list">
+                    <div class="config-item">
+                        <div class="code-block">hostname DPA-Core-Secondary</div>
+                        <div class="explanation">Sets the device hostname as the secondary Core Switch in the VSX cluster.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">spanning-tree priority 1</div>
+                        <div class="explanation">Spanning Tree priority set higher than Primary. Acts as the backup Root Bridge if Primary fails.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface lag 128
+ description ISL-link
+ vlan trunk native 1 tag
+ lacp mode active</div>
+                        <div class="explanation">Mirrors the ISL configuration to establish the high-speed interconnect required for VSX synchronization.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 2
+ ip address 10.0.2.3/24
+ active-gateway ip mac 02:01:00:00:00:02
+ active-gateway ip 10.0.2.1</div>
+                        <div class="explanation">Secondary physical IP is `10.0.2.3`. Shares the exact same Virtual MAC and Virtual IP (`10.0.2.1`) as Primary.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 244
+ ip address 10.0.244.3/24
+ active-gateway ip mac 02:01:00:00:00:02
+ active-gateway ip 10.0.244.1</div>
+                        <div class="explanation">ND4 Management VLAN. Secondary physical IP `10.0.244.3`. Shares Virtual IP `10.0.244.1` with Primary.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">vsx
+ role secondary
+ keepalive peer 10.0.4.2 source 10.0.4.3</div>
+                        <div class="explanation">Sets role to `secondary`. Keepalive source and peer IPs are reversed to complete the bidirectional heartbeat.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"><h3>Distribution Node 4 VSX Topology</h3></div>
+
+    <!-- DISTRIBUTION SWITCH ANIMATED GRAPH -->
+    <div class="graph-container">
+        <div class="graph-title">Distribution Node 4 IP Plot: Primary, Virtual (Active-Gateway), & Secondary</div>
+        <div class="plot-grid">
+            <div class="plot-row">
+                <div class="plot-label">Keepalive Link</div>
+                <div class="plot-node node-prim-dist">10.0.4.41<small>Source (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">Heartbeat<small>10.0.4.0/24</small></div>
+                    <div class="packet vsx-sync"></div>
+                </div>
+                <div class="plot-node node-sec-dist">10.0.4.42<small>Peer (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 44 (Voice)</div>
+                <div class="plot-node node-prim-dist">10.0.44.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.44.1<small>vMAC: 02:01:00:04:41:01</small></div>
+                    <div class="packet vsx-sync"></div>
+                    <div class="packet ospf-flow" style="animation-delay: 0.5s;"></div>
+                </div>
+                <div class="plot-node node-sec-dist">10.0.44.3<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 16 (Data)</div>
+                <div class="plot-node node-prim-dist">10.0.16.3<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.16.1<small>vMAC: 02:01:00:04:41:01</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 1.5s;"></div>
+                </div>
+                <div class="plot-node node-sec-dist">10.0.16.2<small>Phys IP (Sec)</small></div>
+            </div>
+
+            <div class="plot-row">
+                <div class="plot-label">VLAN 244 (Mgmt)</div>
+                <div class="plot-node node-prim-dist">10.0.244.2<small>Phys IP (Prim)</small></div>
+                <div class="plot-line">
+                    <div class="plot-vip">VIP: 10.0.244.1<small>vMAC: 02:01:00:04:41:01</small></div>
+                    <div class="packet vsx-sync" style="animation-delay: 0.8s;"></div>
+                </div>
+                <div class="plot-node node-sec-dist">10.0.244.3<small>Phys IP (Sec)</small></div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--dist-color)"></div>VSX Sync Traffic</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--edge-color)"></div>OSPF/Data Flow</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--vip-color)"></div>Shared Virtual IP</div>
+        </div>
+    </div>
+
+    <!-- DISTRIBUTION PRIMARY & SECONDARY SIDE-BY-SIDE -->
+    <div class="row-layout">
+        <!-- Dist Primary -->
+        <div class="col-half">
+            <div class="device-section">
+                <div class="device-header dist-prim">
+                    <h2>4. Distribution Switch - Primary</h2>
+                    <span>ArubaOS-CX (ND4-prim)</span>
+                </div>
+                <div class="config-list">
+                    <div class="config-item">
+                        <div class="code-block">hostname ND4-prim</div>
+                        <div class="explanation">Sets the hostname for the primary Distribution Switch in Node 4.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface lag 244 multi-chassis
+ vlan trunk native 14
+ vlan trunk allowed all
+ lacp mode active</div>
+                        <div class="explanation">Uplink MC-LAG connection towards the Core Switches. Native VLAN is 14, carrying all routed subnets.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 44
+ ip address 10.0.44.2/24
+ active-gateway ip mac 02:01:00:04:41:01
+ active-gateway ip 10.0.44.1
+ ip helper-address 10.0.10.12</div>
+                        <div class="explanation">Voice VLAN 44. Primary physical IP `10.0.44.2`. Virtual Gateway IP `10.0.44.1`. DHCP relay forwards requests to `10.0.10.12`.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 16
+ vsx-sync active-gateways
+ ip address 10.0.16.3/24
+ active-gateway ip 10.0.16.1</div>
+                        <div class="explanation">Data VLAN 16. Primary physical IP `10.0.16.3`. Shares Virtual Gateway IP `10.0.16.1` with Secondary switch.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 244
+ ip address 10.0.244.2/24
+ active-gateway ip mac 02:01:00:04:41:01
+ active-gateway ip 10.0.244.1</div>
+                        <div class="explanation">Management VLAN 244. Primary physical IP `10.0.244.2`. Shares Virtual IP `10.0.244.1` with Secondary.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">ip route 0.0.0.0/0 10.0.14.2</div>
+                        <div class="explanation">Default Route directing all non-local traffic up to the Core Switch SVI interface `10.0.14.2`.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dist Secondary -->
+        <div class="col-half">
+            <div class="device-section">
+                <div class="device-header dist-sec">
+                    <h2>5. Distribution Switch - Secondary</h2>
+                    <span>ArubaOS-CX (ND4-Sec)</span>
+                </div>
+                <div class="config-list">
+                    <div class="config-item">
+                        <div class="code-block">hostname ND4-Secondary</div>
+                        <div class="explanation">Sets the hostname for the secondary Distribution Switch in Node 4.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface lag 244 multi-chassis
+ vlan trunk native 14
+ vlan trunk allowed all
+ lacp mode active</div>
+                        <div class="explanation">Mirrors the MC-LAG uplink to Core, allowing simultaneous active links to both Core switches.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 44
+ ip address 10.0.44.3/24
+ active-gateway ip mac 02:01:00:04:41:01
+ active-gateway ip 10.0.44.1</div>
+                        <div class="explanation">Secondary physical IP `10.0.44.3`. Shares Virtual IP `10.0.44.1` and vMAC for transparent endpoint gateway failover.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 16
+ vsx-sync active-gateways
+ ip address 10.0.16.2/24
+ active-gateway ip 10.0.16.1</div>
+                        <div class="explanation">Data VLAN 16 on Secondary. Physical IP `10.0.16.2`. Shares Virtual Gateway IP `10.0.16.1` with Primary switch.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">interface vlan 244
+ ip address 10.0.244.3/24
+ active-gateway ip mac 02:01:00:04:41:01
+ active-gateway ip 10.0.244.1</div>
+                        <div class="explanation">Management VLAN 244 on Secondary. Physical IP `10.0.244.3`. Shares Virtual IP `10.0.244.1` with Primary.</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="code-block">ip route 0.0.0.0/0 10.0.14.2</div>
+                        <div class="explanation">Mirrors the Primary's default route, ensuring that if failover occurs, traffic is still correctly forwarded up to the Core switches.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"><h3>Next-Hop Routing Flow</h3></div>
+
+    <!-- NEXT HOP ROUTING GRAPH -->
+    <div class="graph-container">
+        <div class="graph-title">Default Route Path & Next-Hop IPs</div>
+        <div class="chain-wrapper">
+            <div class="chain-node dist-sw">Distribution SW<small>VLANs 44, 16, 244, etc.</small></div>
+            
+            <div class="chain-link horizontal">
+                <div class="packet route-flow"></div>
+                <span class="link-label">Next-Hop: 10.0.14.2</span>
+            </div>
+            
+            <div class="chain-node core-sw">Core SW SVI<small>VLAN 14 (IP: 10.0.14.2)</small></div>
+            
+            <div class="chain-link horizontal">
+                <div class="packet route-flow" style="animation-delay: 1s;"></div>
+                <span class="link-label">Next-Hop: 10.0.250.1</span>
+            </div>
+            
+            <div class="chain-node firewall">Perimeter Firewall<small>IP: 10.0.250.1</small></div>
+            
+            <div class="chain-link horizontal">
+                <div class="packet route-flow" style="animation-delay: 2s;"></div>
+                <span class="link-label">Internet / WAN</span>
+            </div>
+            
+            <div class="chain-node internet">Internet</div>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--firewall-color)"></div>External Route Traffic</div>
+            <div class="legend-item"><div class="legend-line" style="background: var(--dist-color)"></div>Distribution Layer</div>
+            <div class="legend-item"><div class="legend-line" style="background: var(--core-color)"></div>Core Layer</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
