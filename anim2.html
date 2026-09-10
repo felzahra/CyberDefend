@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Hierarchy Routing Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B1026;
+    --panel: #151C3A;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --accent-internet: #38BDF8;
+    --accent-router: #A78BFA;
+    --accent-firewall: #F87171;
+    --accent-core: #FBBF24;
+    --accent-dist: #34D399;
+    --accent-access: #60A5FA;
+    --accent-pc: #F472B6;
+    --line-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Changed to flex-start to prevent vertical clipping */
+    min-height: 100vh; /* Changed to min-height */
+    padding: 40px 20px; /* Added padding to prevent edge clipping */
+    overflow-y: auto; /* Allow scrolling if needed */
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+  }
+
+  .network-stage {
+    position: relative;
+    width: 850px;
+    height: 760px; /* Increased height to prevent bottom cropping */
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: visible; /* Changed to visible so labels don't clip */
+  }
+
+  /* Background Grid */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    border-radius: 16px;
+  }
+
+  /* SVG Lines */
+  svg.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  path.link {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6;
+    animation: dash 1s linear infinite;
+  }
+  @keyframes dash { to { stroke-dashoffset: -12; } }
+
+  /* Nodes */
+  .node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 8px;
+    width: 110px; /* Increased width to fit IP addresses */
+    height: 70px; /* Increased height */
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .node i { font-size: 18px; margin-bottom: 2px; display: block; }
+  .node-label { opacity: 0.8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-top:1px; }
+  
+  /* New IP Label Style */
+  .node-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  /* Node Colors */
+  .internet { border-color: var(--accent-internet); color: var(--accent-internet); }
+  .router { border-color: var(--accent-router); color: var(--accent-router); }
+  .firewall { border-color: var(--accent-firewall); color: var(--accent-firewall); }
+  .core { border-color: var(--accent-core); color: var(--accent-core); }
+  .dist { border-color: var(--accent-dist); color: var(--accent-dist); }
+  .access { border-color: var(--accent-access); color: var(--accent-access); }
+  .pc { 
+    border-color: var(--accent-pc); 
+    color: var(--accent-pc); 
+    width: 80px; 
+    height: 60px; 
+    font-size: 10px;
+  }
+  .pc i { font-size: 14px; margin-bottom: 2px; }
+  .pc .node-ip { font-size: 8px; }
+
+  /* Layer Labels */
+  .layer-label {
+    position: absolute;
+    left: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 10;
+    border-left: 2px solid currentColor;
+    padding-left: 8px;
+  }
+
+  /* Packets (Moving Dots) */
+  .packet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    offset-rotate: auto;
+  }
+
+  .packet.blue { background: var(--accent-internet); box-shadow: 0 0 12px var(--accent-internet); }
+  .packet.green { background: var(--accent-dist); box-shadow: 0 0 12px var(--accent-dist); }
+  .packet.orange { background: var(--accent-core); box-shadow: 0 0 12px var(--accent-core); }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+</style>
+</head>
+<body>
+
+<h1>Hierarchical Network Routing Design (with IP Addressing)</h1>
+
+<div class="network-stage" id="stage">
+  <div class="grid-bg"></div>
+
+  <!-- Layer Labels (Adjusted Y positions for taller stage) -->
+  <div class="layer-label" style="top: 30px; color: var(--accent-internet);">Internet / WAN</div>
+  <div class="layer-label" style="top: 130px; color: var(--accent-router);">Edge Router</div>
+  <div class="layer-label" style="top: 240px; color: var(--accent-firewall);">Security / Firewall</div>
+  <div class="layer-label" style="top: 350px; color: var(--accent-core);">Core Layer</div>
+  <div class="layer-label" style="top: 470px; color: var(--accent-dist);">Distribution Layer</div>
+  <div class="layer-label" style="top: 600px; color: var(--accent-access);">Access Layer</div>
+
+  <!-- SVG Connections (Adjusted Y coordinates) -->
+  <svg class="connections" viewBox="0 0 850 760">
+    <!-- Vertical Trunk -->
+    <path id="path-internet" class="link" d="M425 90 L425 130" />
+    <path id="path-router" class="link" d="M425 200 L425 240" />
+    <path id="path-firewall" class="link" d="M425 310 L425 350" />
+    
+    <!-- Core to Dist -->
+    <path id="path-core-left" class="link" d="M425 420 L212.5 470" />
+    <path id="path-core-right" class="link" d="M425 420 L637.5 470" />
+
+    <!-- Dist to Access -->
+    <path id="path-dist1-acc1" class="link" d="M212.5 540 L106.25 600" />
+    <path id="path-dist1-acc2" class="link" d="M212.5 540 L318.75 600" />
+    <path id="path-dist2-acc3" class="link" d="M637.5 540 L531.25 600" />
+    <path id="path-dist2-acc4" class="link" d="M637.5 540 L743.75 600" />
+
+    <!-- Access to PCs -->
+    <path id="path-acc1-pc" class="link" d="M106.25 670 L106.25 700" />
+    <path id="path-acc2-pc" class="link" d="M318.75 670 L318.75 700" />
+    <path id="path-acc3-pc" class="link" d="M531.25 670 L531.25 700" />
+    <path id="path-acc4-pc" class="link" d="M743.75 670 L743.75 700" />
+  </svg>
+
+  <!-- Nodes (Adjusted top/left coordinates) -->
+  <!-- Internet -->
+  <div class="node internet" style="top: 20px; left: 370px;">
+    <i>🌐</i> Internet
+    <div class="node-label">Public DNS</div>
+    <div class="node-ip">8.8.8.8</div>
+  </div>
+
+  <!-- Router -->
+  <div class="node router" style="top: 130px; left: 370px;">
+    <i>🛰️</i> Edge Router
+    <div class="node-label">WAN / LAN</div>
+    <div class="node-ip">203.0.113.2</div>
+  </div>
+
+  <!-- Firewall -->
+  <div class="node firewall" style="top: 240px; left: 370px;">
+    <i>🛡️</i> Firewall
+    <div class="node-label">Security</div>
+    <div class="node-ip">10.0.0.2</div>
+  </div>
+
+  <!-- Core Switch -->
+  <div class="node core" style="top: 350px; left: 370px;">
+    <i>🟡</i> Core SW
+    <div class="node-label">L3 Routing</div>
+    <div class="node-ip">10.0.0.1</div>
+  </div>
+
+  <!-- Distribution Switches -->
+  <div class="node dist" style="top: 470px; left: 157.5px;">
+    <i>🟢</i> Dist SW 1
+    <div class="node-label">VLAN 10, 20</div>
+    <div class="node-ip">10.1.10.1</div>
+  </div>
+  <div class="node dist" style="top: 470px; left: 582.5px;">
+    <i>🟢</i> Dist SW 2
+    <div class="node-label">VLAN 30, 40</div>
+    <div class="node-ip">10.1.30.1</div>
+  </div>
+
+  <!-- Access Switches -->
+  <div class="node access" style="top: 600px; left: 51.25px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 10</div>
+    <div class="node-ip">10.1.10.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 263.75px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 20</div>
+    <div class="node-ip">10.1.20.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 476.25px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 30</div>
+    <div class="node-ip">10.1.30.2</div>
+  </div>
+  <div class="node access" style="top: 600px; left: 688.75px;">
+    <i>🔵</i> Access SW
+    <div class="node-label">VLAN 40</div>
+    <div class="node-ip">10.1.40.2</div>
+  </div>
+
+  <!-- PCs -->
+  <div class="node pc" style="top: 700px; left: 66.25px;">
+    <i>💻</i> PC 1
+    <div class="node-ip">10.1.10.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 278.75px;">
+    <i>💻</i> PC 2
+    <div class="node-ip">10.1.20.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 491.25px;">
+    <i>💻</i> PC 3
+    <div class="node-ip">10.1.30.10</div>
+  </div>
+  <div class="node pc" style="top: 700px; left: 703.75px;">
+    <i>💻</i> PC 4
+    <div class="node-ip">10.1.40.10</div>
+  </div>
+
+  <!-- Packets will be injected here by JS -->
+  <div id="packet-container"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-internet)"></div> Internet Traffic (Ingress)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dist)"></div> Inter-VLAN Routing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-pc)"></div> Client Traffic (Egress)</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('packet-container');
+
+  // Paths defined for JS animation (Match the new SVG coordinates)
+  const routes = [
+    {
+      // Internet to PC1
+      name: 'internet-to-pc1',
+      path: 'M425 90 L425 130 L425 200 L425 240 L425 310 L425 350 L425 420 L212.5 470 L212.5 540 L106.25 600 L106.25 670 L106.25 700',
+      color: 'blue',
+      duration: 4500,
+      delay: 0
+    },
+    {
+      // Internet to PC4
+      name: 'internet-to-pc4',
+      path: 'M425 90 L425 130 L425 200 L425 240 L425 310 L425 350 L425 420 L637.5 470 L637.5 540 L743.75 600 L743.75 670 L743.75 700',
+      color: 'blue',
+      duration: 5000,
+      delay: 1500
+    },
+    {
+      // PC2 to PC3 (Internal Routing through Dist -> Core -> Dist)
+      name: 'pc2-to-pc3',
+      path: 'M318.75 700 L318.75 670 L318.75 600 L212.5 540 L212.5 470 L425 420 L637.5 470 L637.5 540 L531.25 600 L531.25 670 L531.25 700',
+      color: 'green',
+      duration: 5500,
+      delay: 500
+    },
+    {
+      // PC3 to Internet (Upload)
+      name: 'pc3-to-internet',
+      path: 'M531.25 700 L531.25 670 L531.25 600 L637.5 540 L637.5 470 L425 420 L425 350 L425 310 L425 240 L425 200 L425 130 L425 90',
+      color: 'orange',
+      duration: 4500,
+      delay: 2000
+    }
+  ];
+
+  function createPacket(route) {
+    const packet = document.createElement('div');
+    packet.className = `packet ${route.color}`;
+    packet.style.offsetPath = `path('${route.path}')`;
+    packet.style.animation = `movePacket ${route.duration}ms linear infinite`;
+    packet.style.animationDelay = `${route.delay}ms`;
+    container.appendChild(packet);
+  }
+
+  // Inject keyframes dynamically to control movement
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @keyframes movePacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+
+  // Create multiple packets per route for continuous flow
+  routes.forEach(route => {
+    // Create 3 packets per route with staggered delays
+    createPacket(route);
+    // Add delay variations for continuous stream
+    const route2 = {...route, delay: route.delay + route.duration / 3};
+    createPacket(route2);
+    const route3 = {...route, delay: route.delay + 2 * (route.duration / 3)};
+    createPacket(route3);
+  });
+
+</script>
+</body>
+</html>
