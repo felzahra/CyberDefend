@@ -13,8 +13,10 @@
         html[data-theme="dark"]{--primary:#00e676;--primary-fg:#000;--body-fg:#fff;--body-bg:#121212;--body-quiet-color:#b0b0b0;--body-loud-color:#fff;--hairline-color:#272727;--border-color:#353535;--darkened-bg:#1e1e1e;--selected-bg:#2a2a2a;--selected-row:#242424;--message-warning-bg:#2a251a;--header-bg:#1a1a1a;--link-fg:#00e676;--shadow:0 4px 24px rgba(0,0,0,.3)}
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--body-bg);color:var(--body-fg);display:flex;height:100vh;overflow:hidden;transition:background .3s,color .3s}
-        .sidebar{width:320px;background:var(--darkened-bg);border-right:1px solid var(--hairline-color);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;position:relative;transition:background .3s,border-color .3s}
+        .sidebar{width:320px;background:var(--darkened-bg);border-right:1px solid var(--hairline-color);display:flex;flex-direction:column;overflow-y:auto;overflow-x:visible;flex-shrink:0;position:relative;transition:background .3s,border-color .3s;z-index:10}
         .sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:10px}
+        .sidebar::-webkit-scrollbar:horizontal{display:none} /* Hide horizontal scrollbar for cleaner look */
+        
         .brand{padding:24px 24px 16px;border-bottom:1px solid var(--hairline-color);background:linear-gradient(135deg,var(--darkened-bg) 0%,var(--body-bg) 100%)}
         .logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}
         .logo-icon{background:var(--primary);color:var(--primary-fg);width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 6px 12px rgba(0,230,118,.2)}
@@ -133,8 +135,8 @@
         .search-indexed-dot.ready{background:#22c55e;animation:none}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-        /* ===== TREE MENU CSS ===== */
-        .sidebar-tree-section { padding: 10px 20px; border-top: 1px solid var(--hairline-color); margin-top: 10px; }
+        /* ===== TREE MENU CSS (FLYOUT RIGHT) ===== */
+        .sidebar-tree-section { padding: 10px 20px; border-top: 1px solid var(--hairline-color); margin-top: 10px; position: relative; }
         .sidebar-tree-title { font-size: .8rem; font-weight: 700; color: var(--body-quiet-color); text-transform: uppercase; margin-bottom: 10px; letter-spacing: .5px; }
         .sidebar-tree-controls { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
         #sidebarSearch { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--hairline-color); background: var(--body-bg); color: var(--body-fg); font-family: inherit; font-size: 0.8rem; outline: none; transition: border-color 0.2s; }
@@ -142,14 +144,49 @@
         .tree-action-btns { display: flex; gap: 8px; }
         .tree-action-btns button { flex: 1; background: var(--selected-bg); border: 1px solid var(--hairline-color); color: var(--body-fg); padding: 6px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
         .tree-action-btns button:hover { border-color: var(--primary); color: var(--primary); }
+        
         ul.tree, ul.tree ul { list-style: none; margin: 0; padding: 0; }
-        ul.tree ul { margin-left: 18px; border-left: 1px dashed var(--hairline-color); padding-left: 12px; display: none; } /* Starts closed */
-        ul.tree li { margin: 6px 0; position: relative; }
-        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--body-fg); font-size: 0.84rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        ul.tree li { margin: 6px 0; position: relative; /* Required for absolute positioning of sub-tree */ }
+        ul.tree li > span, ul.tree li > a { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--body-fg); font-size: 0.84rem; font-weight: 500; cursor: pointer; transition: 0.2s; background: transparent; }
         ul.tree li > span:hover, ul.tree li > a:hover { background: var(--selected-bg); color: var(--primary); }
         ul.tree li > a.active { background: var(--selected-bg); color: var(--primary); font-weight: 700; }
+        
         .toggle-icon { width: 16px; text-align: center; font-size: 0.7rem; color: var(--body-quiet-color); transition: transform 0.2s; flex-shrink: 0; }
-        .expanded > .toggle-icon { transform: rotate(90deg); }
+        ul.tree li:hover > * > .toggle-icon, ul.tree li.expanded > * > .toggle-icon { transform: rotate(90deg); }
+
+        /* Sub-tree Flyout Box (Shows on Hover via JS or Expanded via Click) */
+        ul.tree ul.sub-tree {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            min-width: 240px;
+            margin-left: 5px; /* Small gap between parent and flyout */
+            background: var(--darkened-bg);
+            border: 1px solid var(--hairline-color);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            z-index: 1001;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* When expanded via click (mobile/touch), show inline relatively */
+        ul.tree li.expanded > ul.sub-tree {
+            display: block;
+            position: relative;
+            left: auto;
+            top: auto;
+            margin: 6px 0 6px 10px;
+            box-shadow: none;
+            border: 1px solid var(--hairline-color);
+        }
+        /* Flyout Scrollbar */
+        ul.tree ul.sub-tree::-webkit-scrollbar { width: 4px; }
+        ul.tree ul.sub-tree::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        /* Level styling */
         .level-1 > span, .level-1 > a { font-weight: 700; font-size: 0.88rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--hairline-color); padding-bottom: 8px; margin-bottom: 4px; }
         .level-1 > span:hover, .level-1 > a:hover { background: transparent; }
         .level-2 > a, .level-2 > span { font-weight: 600; font-size: 0.82rem; }
@@ -663,12 +700,10 @@ renderPlaylists();
                 renderSidebarTree(children, ul, level + 1, numPrefix);
                 li.appendChild(ul);
                 
+                // Keep click-to-toggle for mobile/touch devices
                 itemElement.addEventListener('click', (e) => {
-                    if (!node.link) {
-                        e.preventDefault();
-                    }
-                    itemElement.classList.toggle('expanded');
-                    ul.style.display = ul.style.display === 'block' ? 'none' : 'block';
+                    if (!node.link) e.preventDefault();
+                    li.classList.toggle('expanded'); 
                 });
             } else if (!node.link) {
                 itemElement.style.cursor = 'default';
@@ -692,17 +727,11 @@ renderPlaylists();
 
     // ===== TREE CONTROLS FUNCTIONS =====
     function expandAllTree() {
-        document.querySelectorAll('#sidebarTree ul.sub-tree').forEach(ul => {
-            ul.style.display = 'block';
-            if (ul.previousElementSibling) ul.previousElementSibling.classList.add('expanded');
-        });
+        document.querySelectorAll('#sidebarTree li').forEach(li => li.classList.add('expanded'));
     }
 
     function collapseAllTree() {
-        document.querySelectorAll('#sidebarTree ul.sub-tree').forEach(ul => {
-            ul.style.display = 'none';
-            if (ul.previousElementSibling) ul.previousElementSibling.classList.remove('expanded');
-        });
+        document.querySelectorAll('#sidebarTree li').forEach(li => li.classList.remove('expanded'));
     }
 
     function filterTree() {
@@ -733,14 +762,52 @@ renderPlaylists();
         // Ensure all visible items are expanded so the matched children are visible
         allItems.forEach(li => {
             if (li.style.display !== 'none') {
-                const ul = li.querySelector(':scope > ul.sub-tree');
-                if (ul) {
-                    ul.style.display = 'block';
-                    if (li.firstChild) li.firstChild.classList.add('expanded');
-                }
+                li.classList.add('expanded');
             }
         });
     }
+
+    // ===== FLYOUT MENU FOR SIDEBAR (To prevent CSS clipping) =====
+    function setupSidebarFlyout() {
+        document.querySelectorAll('#sidebarTree li').forEach(li => {
+            const subTree = li.querySelector(':scope > ul.sub-tree');
+            if (!subTree) return;
+
+            let hideTimeout;
+
+            li.addEventListener('mouseenter', () => {
+                clearTimeout(hideTimeout);
+                // If it's expanded via click, don't flyout (let it stay inline)
+                if (li.classList.contains('expanded')) return;
+
+                const rect = li.getBoundingClientRect();
+                subTree.style.position = 'fixed';
+                subTree.style.top = `${rect.top}px`;
+                subTree.style.left = `${rect.right}px`;
+                subTree.style.display = 'block';
+                subTree.style.zIndex = '10000';
+            });
+
+            const hideMenu = () => {
+                hideTimeout = setTimeout(() => {
+                    if (!li.classList.contains('expanded')) {
+                        subTree.style.display = 'none';
+                        subTree.style.position = ''; // Reset to CSS default
+                        subTree.style.top = '';
+                        subTree.style.left = '';
+                        subTree.style.zIndex = '';
+                    }
+                }, 300); // 300ms delay to allow moving mouse to submenu
+            };
+
+            li.addEventListener('mouseleave', hideMenu);
+            subTree.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+            subTree.addEventListener('mouseleave', hideMenu);
+        });
+    }
+
+    // Call the flyout setup after the tree is rendered
+    setupSidebarFlyout();
 
     // ===== PAID COURSE MODAL TRIGGER FOR TREE LINKS =====
     document.querySelectorAll('.paid-tree-link').forEach(a => {
