@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firewall HA, Policies & NAT Lab Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        nav {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+        }
+        nav h1 { margin: 0; font-size: 1.5em; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 15px; flex-wrap: wrap; }
+        nav ul li a { color: #ecf0f1; text-decoration: none; font-weight: bold; transition: color 0.3s; font-size: 14px; }
+        nav ul li a:hover { color: #e74c3c; }
+
+        /* Layout */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .section { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; margin-top: 0; }
+        h3 { color: #2980b9; margin-top: 30px; border-left: 4px solid #2980b9; padding-left: 10px; }
+        p { font-size: 16px; margin-bottom: 15px; }
+
+        /* Images */
+        .img-container { text-align: center; margin: 30px 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .img-container img { max-width: 100%; height: auto; display: block; }
+        .img-caption { background: #f8f9fa; padding: 10px; font-size: 14px; color: #666; font-style: italic; }
+
+        /* Info Boxes */
+        .info-box { background: #e8f4f8; border-left: 5px solid #2980b9; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .warning-box { background: #fdf2f2; border-left: 5px solid #e74c3c; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .success-box { background: #e8f8e8; border-left: 5px solid #27ae60; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .info-box strong, .warning-box strong, .success-box strong { font-weight: bold; }
+
+        /* Terminal / CLI */
+        .terminal {
+            background: #1e1e1e;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        .terminal-header {
+            background: #333;
+            color: #ddd;
+            padding: 8px 15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .terminal-dots span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .terminal-body {
+            padding: 20px;
+            color: #d4d4d4;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .cmd { color: #569cd6; }
+        .val { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .prompt { color: #dcdcaa; }
+        .action { color: #c586c0; }
+
+        /* Copy Button */
+        .copy-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+        .copy-btn:hover { background: #c0392b; }
+
+        /* Summary Cards */
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .summary-grid { grid-template-columns: 1fr; } }
+        .summary-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-top: 4px solid #2c3e50; }
+        .summary-card h4 { margin-top: 0; color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h1>🔥 Firewall HA, Policies & NAT Lab</h1>
+        <ul>
+            <li><a href="#fortigate-ha">1. FGT HA</a></li>
+            <li><a href="#srx-ha">2. SRX HA</a></li>
+            <li><a href="#policies-nat">3. Policies & NAT</a></li>
+            <li><a href="#summary">4. Summary</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Intro -->
+        <div class="section">
+            <h2>Lab Overview: High Availability, Policies & NAT</h2>
+            <p>Welcome to the advanced Firewall Lab! In this exercise, you will configure two different vendor firewalls for High Availability (HA), create Security Policies (Permit/Deny), and configure Network Address Translation (NAT) to allow traffic to flow securely.</p>
+            
+            <div class="img-container">
+                <img src="https://images.unsplash.com/photo-1558494949-efc5272811f3?q=80&w=1200&auto=format&fit=crop" alt="Server Room Network Infrastructure">
+                <div class="img-caption">Figure 1: A redundant network infrastructure. Two firewalls act as one logical unit.</div>
+            </div>
+            
+            <div class="info-box">
+                <strong>Key Concept: Traffic Flow</strong><br>
+                Traffic flows from the Internet (WAN) -> Firewall -> Core Switch -> Internal Zones. <br>
+                1. <strong>NAT</strong> translates private IPs to public IPs.<br>
+                2. <strong>Policies</strong> act as bouncers, deciding which traffic is permitted (allowed) or denied (blocked).
+            </div>
+        </div>
+
+        <!-- PART 1: FortiGate HA -->
+        <div class="section" id="fortigate-ha">
+            <h2>Part 1: FortiGate Active-Active HA</h2>
+            <p><strong>Scenario:</strong> Two FortiGate 600Cs configured for Active-Active HA. Master Priority: 110, Slave Priority: 100. Heartbeat links are port3 and port4.</p>
+
+            <h3>Step 1: Configure HA Heartbeat and Mode</h3>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>FGT-MASTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-fgt-1')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-fgt-1"><span class="prompt">FGT-MASTER #</span> <span class="cmd">config system ha</span>
+    <span class="cmd">set</span> group-name <span class="val">"FGT-HA"</span>
+    <span class="cmd">set</span> mode <span class="val">a-a</span> <span class="comment"># Active-Active</span>
+    <span class="cmd">set</span> hbdev <span class="val">"port3" 50 "port4" 50</span>
+    <span class="cmd">set</span> session-pickup <span class="val">enable</span>
+    <span class="cmd">set</span> priority <span class="val">110</span> <span class="comment"># Master wins election</span>
+    <span class="cmd">set</span> monitor <span class="val">"port11" "port13"</span>
+<span class="prompt">FGT-MASTER (ha) #</span> <span class="cmd">end</span></div>
+            </div>
+            <div class="warning-box"><strong>Student Task:</strong> Run this on the Slave firewall, but change priority to <strong>100</strong>.</div>
+
+            <h3>Step 2: Configure Dedicated Management & Redundant IPs</h3>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>FGT-MASTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-fgt-2')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-fgt-2"><span class="comment"># Dedicate mgmt1 so it doesn't sync IPs</span>
+<span class="prompt">FGT-MASTER #</span> <span class="cmd">config system ha</span>
+    <span class="cmd">set</span> ha-mgmt-status <span class="val">enable</span>
+    <span class="cmd">set</span> ha-mgmt-interface <span class="val">"mgmt1"</span>
+<span class="prompt">FGT-MASTER (ha) #</span> <span class="cmd">end</span>
+
+<span class="comment"># Configure Floating IPs on Master (Syncs to Slave)</span>
+<span class="prompt">FGT-MASTER #</span> <span class="cmd">config system interface</span>
+    <span class="cmd">edit</span> <span class="val">"port11"</span> <span class="comment"># WAN</span>
+        <span class="cmd">set</span> ip <span class="val">41.33.25.10 255.255.255.128</span>
+    <span class="cmd">next</span>
+    <span class="cmd">edit</span> <span class="val">"port13"</span> <span class="comment"># Inside to Core Switch</span>
+        <span class="cmd">set</span> ip <span class="val">10.0.251.254 255.255.255.0</span>
+    <span class="cmd">next</span>
+<span class="prompt">FGT-MASTER (interface) #</span> <span class="cmd">end</span></div>
+            </div>
+        </div>
+
+        <!-- PART 2: Juniper SRX HA -->
+        <div class="section" id="srx-ha">
+            <h2>Part 2: Juniper SRX Chassis Cluster</h2>
+            <p><strong>Scenario:</strong> Two SRX firewalls linked by a Fabric cable. Node 0 is Primary (100), Node 1 is Backup (1).</p>
+
+            <h3>Step 1: Enable Cluster & Redundancy Groups</h3>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>SRX-CLUSTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-srx-1')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-srx-1"><span class="comment"># Run on Node 0 shell: set chassis cluster cluster-id 1 node 0 reboot</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> chassis cluster reth-count <span class="val">10</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> chassis cluster redundancy-group <span class="val">0</span> node <span class="val">0</span> priority <span class="val">100</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> chassis cluster redundancy-group <span class="val">1</span> node <span class="val">0</span> priority <span class="val">100</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> interfaces fab0 fabric-options member-interfaces <span class="val">ge-0/0/0</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> interfaces fab1 fabric-options member-interfaces <span class="val">ge-4/0/0</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">commit</span></div>
+            </div>
+
+            <h3>Step 2: Configure RETH Interfaces & Zones</h3>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>SRX-CLUSTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-srx-2')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-srx-2"><span class="comment"># Create reth1 (External Zone) and assign physical ports to it</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> interfaces reth1 redundant-ether-options redundancy-group <span class="val">1</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> interfaces reth1 unit 0 family inet address <span class="val">10.0.251.1/24</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> interfaces ge-0/0/1 gigether-options redundant-parent <span class="val">reth1</span>
+
+<span class="comment"># Assign interface to Security Zone</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security zones security-zone <span class="val">external</span> interfaces reth1.0
+<span class="prompt">root@cluster#</span> <span class="cmd">commit</span></div>
+            </div>
+        </div>
+
+        <!-- PART 3: Policies & NAT -->
+        <div class="section" id="policies-nat">
+            <h2>Part 3: Security Policies & NAT (Permit/Deny)</h2>
+            <p>Now that HA is configured, we must write rules to allow or block traffic. We also need NAT to translate private IPs to public IPs.</p>
+
+            <div class="img-container">
+                <img src="https://images.unsplash.com/photo-1544197150-b99a543bbd7f?q=80&w=1200&auto=format&fit=crop" alt="Network Cables and Switches">
+                <div class="img-caption">Figure 2: Traffic flowing through the firewall based on Permit/Deny rules.</div>
+            </div>
+
+            <h3>Step 1: FortiGate Policies & VIP (Destination NAT)</h3>
+            <p>We will create a Virtual IP (VIP) to map our public WAN IP to a private internal Web Server. Then, we write a policy to permit internet users to access it. Finally, we block Guest Wi-Fi from accessing the internal network.</p>
+            
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>FGT-MASTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-fgt-pol')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-fgt-pol"><span class="comment"># 1. Create Destination NAT (VIP) for Web Server</span>
+<span class="prompt">FGT-MASTER #</span> <span class="cmd">config firewall vip</span>
+    <span class="cmd">edit</span> <span class="val">"WebServer_VIP"</span>
+        <span class="cmd">set</span> extip <span class="val">41.33.25.10</span>
+        <span class="cmd">set</span> mappedip <span class="val">10.0.10.44</span> <span class="comment"># Internal Server IP</span>
+        <span class="cmd">set</span> extintf <span class="val">"port11"</span>
+    <span class="cmd">next</span>
+<span class="prompt">FGT-MASTER (vip) #</span> <span class="cmd">end</span>
+
+<span class="comment"># 2. Policy: PERMIT Internet to Web Server (Port 80)</span>
+<span class="prompt">FGT-MASTER #</span> <span class="cmd">config firewall policy</span>
+    <span class="cmd">edit</span> <span class="val">1</span>
+        <span class="cmd">set</span> name <span class="val">"Allow_Inbound_Web"</span>
+        <span class="cmd">set</span> srcintf <span class="val">"port11"</span>
+        <span class="cmd">set</span> dstintf <span class="val">"port13"</span>
+        <span class="cmd">set</span> action <span class="action">accept</span>
+        <span class="cmd">set</span> srcaddr <span class="val">"all"</span>
+        <span class="cmd">set</span> dstaddr <span class="val">"WebServer_VIP"</span>
+        <span class="cmd">set</span> service <span class="val">"HTTP"</span>
+        <span class="cmd">set</span> schedule <span class="val">"always"</span>
+    <span class="cmd">next</span>
+
+    <span class="comment"># 3. Policy: DENY Guest Wi-Fi to Internal Network</span>
+    <span class="cmd">edit</span> <span class="val">2</span>
+        <span class="cmd">set</span> name <span class="val">"Block_Guest_to_Inside"</span>
+        <span class="cmd">set</span> srcintf <span class="val">"port10"</span> <span class="comment"># Guest Port</span>
+        <span class="cmd">set</span> dstintf <span class="val">"port13"</span> <span class="comment"># Inside Port</span>
+        <span class="cmd">set</span> action <span class="action">deny</span>
+        <span class="cmd">set</span> srcaddr <span class="val">"all"</span>
+        <span class="cmd">set</span> dstaddr <span class="val">"all"</span>
+        <span class="cmd">set</span> service <span class="val">"ALL"</span>
+        <span class="cmd">set</span> schedule <span class="val">"always"</span>
+    <span class="cmd">next</span>
+<span class="prompt">FGT-MASTER (policy) #</span> <span class="cmd">end</span></div>
+            </div>
+
+            <div class="info-box">
+                <strong>Student Note:</strong> In FortiGate, if <code>action</code> is set to <code>accept</code> and <code>nat</code> is not explicitly set, it uses the routing table to determine if Source NAT is needed. For Destination NAT, the <code>dstaddr</code> must point to the VIP object, not "all".
+            </div>
+
+            <h3>Step 2: Juniper SRX Policies & Source NAT</h3>
+            <p>We will configure Source NAT so internal users can browse the internet. Then, we will create a security policy to permit outbound traffic, and explicitly deny the Wireless zone from accessing the Server Management zone.</p>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <span>SRX-CLUSTER (CLI)</span>
+                    <button class="copy-btn" onclick="copyCode('code-srx-pol')">Copy</button>
+                </div>
+                <div class="terminal-body" id="code-srx-pol"><span class="comment"># 1. Configure Source NAT (Internal to External)</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security nat source rule-set NAT_Outbound from zone <span class="val">internal</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security nat source rule-set NAT_Outbound to zone <span class="val">external</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security nat source rule-set NAT_Outbound rule 1 match source-address <span class="val">10.0.250.0/24</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security nat source rule-set NAT_Outbound rule 1 then source-nat <span class="action">interface</span>
+
+<span class="comment"># 2. Policy: PERMIT Internal to External (Internet Access)</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">internal</span> to-zone <span class="val">external</span> policy Allow-Outbound match source-address <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">internal</span> to-zone <span class="val">external</span> policy Allow-Outbound match destination-address <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">internal</span> to-zone <span class="val">external</span> policy Allow-Outbound match application <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">internal</span> to-zone <span class="val">external</span> policy Allow-Outbound then permit
+
+<span class="comment"># 3. Policy: DENY Wireless-RDT to Server-Mgt</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">Wireless-RDT</span> to-zone <span class="val">server-mgt</span> policy Block-Wireless match source-address <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">Wireless-RDT</span> to-zone <span class="val">server-mgt</span> policy Block-Wireless match destination-address <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">Wireless-RDT</span> to-zone <span class="val">server-mgt</span> policy Block-Wireless match application <span class="val">any</span>
+<span class="prompt">root@cluster#</span> <span class="cmd">set</span> security policies from-zone <span class="val">Wireless-RDT</span> to-zone <span class="val">server-mgt</span> policy Block-Wireless then deny
+
+<span class="prompt">root@cluster#</span> <span class="cmd">commit</span></div>
+            </div>
+            
+            <div class="success-box">
+                <strong>Concept Check!</strong><br>
+                Notice how SRX separates NAT configuration from Policy configuration. You build the NAT rule-set first, but traffic won't match it until you write a Security Policy that <code>permit</code>s the traffic between those two zones!
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="section" id="summary">
+            <h2>4. Lab Summary & Student Notes</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4>HA & Floating IPs</h4>
+                    <p>Both firewalls use Floating IPs. Active node owns the IP. If it dies, standby takes it. Users never notice a downtime.</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Security Policies</h4>
+                    <p>Policies act as gatekeepers. Default action is usually DENY. You must explicitly write rules to PERMIT traffic from one zone to another.</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Source NAT (SNAT)</h4>
+                    <p>Translates a private IP (e.g., 10.0.0.5) to a public IP (e.g., 41.33.25.10) so internal users can reach the internet.</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Destination NAT (DNAT)</h4>
+                    <p>Translates a public IP to a private IP. Used when hosting a web server inside your network that needs to be accessible from the internet.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            // Create a range to select the text cleanly
+            const range = document.createRange();
+            range.selectNode(codeElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                
+                // Change button text to show success
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.backgroundColor = "#27ae60"; // Green
+                
+                // Revert button after 2 seconds
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "#e74c3c"; // Original Red
+                }, 2000);
+            } catch(err) {
+                console.error('Failed to copy: ', err);
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+</body>
+</html>

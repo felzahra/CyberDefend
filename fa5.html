@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPA Network Topology, Core Switch & Command Explanations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { text-align: center; color: #1a1a1a; margin-bottom: 10px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 40px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1em; }
+
+        /* Topology Container - Minimized Width & Fixed Height */
+        .topology-wrapper { width: 100%; padding-bottom: 20px; }
+        .topology-container {
+            position: relative;
+            width: 1200px;
+            height: 1500px; /* Expanded height to prevent bottom cropping */
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            background-image: linear-gradient(#eef2f7 1px, transparent 1px), linear-gradient(90deg, #eef2f7 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow: visible; /* Ensure nothing is hidden */
+        }
+
+        /* SVG Lines */
+        .svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .traffic-line { stroke-width: 3; fill: none; stroke-dasharray: 8; animation: dash 1s linear infinite; }
+        .ha-link { stroke: #f39c12; stroke-width: 5; stroke-dasharray: 10, 10; animation: dash 1.5s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -20; } }
+
+        /* Generic Node Styles */
+        .node {
+            position: absolute; border-radius: 8px; text-align: center;
+            display: flex; flex-direction: column; z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15); background: #fff;
+        }
+        .node-header { padding: 6px; color: white; font-weight: bold; border-top-left-radius: 8px; border-top-right-radius: 8px; font-size: 12px; }
+        .node-body { padding: 8px; font-size: 11px; color: #333; flex-grow: 1; }
+
+        .port-list { text-align: left; margin-top: 0; }
+        .port-item { background: #f8f9fa; border-left: 3px solid #333; padding: 3px 5px; margin-bottom: 3px; border-radius: 2px; font-size: 10px; }
+        .port-item.redundant { border-left-color: #e74c3c; background: #fdf2f2; font-weight: bold; }
+        .port-item.mgmt { border-left-color: #27ae60; background: #f0fff4; }
+        .port-item.core { border-left-color: #2980b9; background: #eff6ff; font-weight: bold; }
+        
+        .label-tag { font-size: 9px; padding: 1px 3px; border-radius: 3px; color: white; margin-left: 4px; }
+        .tag-red { background: #e74c3c; }
+        .tag-mgmt { background: #27ae60; }
+        .tag-core { background: #2980b9; }
+
+        /* Specific Layouts - Adjusted for 1200px width */
+        .wan-cloud { top: 20px; left: 520px; width: 160px; height: 70px; background: #ecf0f1; border: 2px solid #bdc3c7; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 10; }
+        
+        .router { top: 140px; left: 490px; width: 220px; border: 3px solid #34495e; }
+        .router .node-header { background: #34495e; }
+
+        .core-switch { top: 300px; left: 460px; width: 280px; border: 3px solid #8e44ad; }
+        .core-switch .node-header { background: #8e44ad; }
+
+        .fgt-master { top: 520px; left: 200px; width: 200px; border: 3px solid #c0392b; }
+        .fgt-slave { top: 520px; left: 800px; width: 200px; border: 3px solid #e74c3c; }
+        .fgt-master .node-header { background: #c0392b; }
+        .fgt-slave .node-header { background: #e74c3c; }
+
+        .srx-node0 { top: 900px; left: 200px; width: 200px; border: 3px solid #1a5276; }
+        .srx-node1 { top: 900px; left: 800px; width: 200px; border: 3px solid #2980b9; }
+        .srx-node0 .node-header { background: #1a5276; }
+        .srx-node1 .node-header { background: #2980b9; }
+
+        /* Zones */
+        .zone-box { border: 2px dashed #aaa; background: rgba(255,255,255,0.9); border-radius: 10px; padding: 8px; position: absolute; z-index: 5; text-align: center; font-size: 11px; width: 160px; }
+        .zone-title { font-weight: bold; font-size: 12px; color: #555; margin-bottom: 4px; text-transform: uppercase; }
+        
+        /* FGT Zones - Right Side */
+        .z-fgt-wan { top: 520px; left: 1030px; border-color: #c0392b; }
+        .z-fgt-dmz { top: 640px; left: 1030px; border-color: #e67e22; }
+        .z-fgt-data { top: 760px; left: 1030px; border-color: #8e44ad; }
+        /* FGT Zones - Left Side */
+        .z-fgt-rekaba { top: 520px; left: 10px; border-color: #2980b9; }
+        .z-fgt-guest { top: 640px; left: 10px; border-color: #27ae60; }
+        .z-fgt-faz { top: 760px; left: 10px; border-color: #d35400; }
+
+        /* SRX Zones - Right Side */
+        .z-srx-servers { top: 900px; left: 1030px; border-color: #8e44ad; }
+        .z-srx-internal { top: 1020px; left: 1030px; border-color: #27ae60; }
+        .z-srx-external { top: 1140px; left: 1030px; border-color: #c0392b; }
+        /* SRX Zones - Left Side */
+        .z-srx-wireless { top: 900px; left: 10px; border-color: #2980b9; }
+        .z-srx-secmgt { top: 1020px; left: 10px; border-color: #d35400; }
+        .z-srx-srvmgt { top: 1140px; left: 10px; border-color: #16a085; }
+
+        /* Command Explanations Section */
+        .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .explain-box { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; }
+        .explain-step { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .explain-step:last-child { border-bottom: none; }
+        .explain-step h3 { margin: 0 0 10px 0; color: #2980b9; font-size: 16px; }
+        .explain-cmd { background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 5px; font-family: 'Consolas', monospace; margin-bottom: 10px; white-space: pre-wrap; font-size: 13px; }
+        .explain-text { font-size: 14px; line-height: 1.5; color: #444; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+        .mgmt-highlight { color: #27ae60; font-weight: bold; }
+        .core-highlight { color: #8e44ad; font-weight: bold; }
+    </style>
+	    <style>
+               
+        /* Specific Layouts */
+        
+
+        .port-list {
+            text-align: left;
+            margin-top: 5px;
+        }
+        .port-item {
+            background: #f8f9fa;
+            border-left: 3px solid #333;
+            padding: 2px 6px;
+            margin-bottom: 2px;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+
+       
+
+        .config-box {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-content {
+            padding: 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 500px;
+            line-height: 1.5;
+        }
+        .cmd { color: #569cd6; }
+        .val { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .highlight { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+
+    <h1>DPA Network Infrastructure, Core Switch & HA IPs</h1>
+    <p class="subtitle">Organized Top-to-Bottom Flow: WAN -> Router -> Core Switch -> Firewalls -> Zones</p>
+
+    <div class="topology-wrapper">
+        <div class="topology-container">
+            
+            <svg class="svg-layer">
+                <!-- WAN to Router -->
+                <path d="M 600 90 L 600 140" stroke="#34495e" class="traffic-line" />
+                
+                <!-- Router to Core Switch -->
+                <path d="M 600 200 L 600 300" stroke="#8e44ad" class="traffic-line" />
+
+                <!-- Core Switch to Firewalls -->
+                <path d="M 460 400 C 460 460, 400 460, 400 520" stroke="#c0392b" class="traffic-line" />
+                <path d="M 740 400 C 740 460, 800 460, 800 520" stroke="#e74c3c" class="traffic-line" />
+
+                <!-- FGT HA Heartbeat -->
+                <path d="M 400 650 L 800 650" stroke="#f39c12" class="ha-link" />
+
+                <!-- Core Switch to SRX Nodes -->
+                <path d="M 460 400 C 460 700, 400 700, 400 900" stroke="#1a5276" class="traffic-line" />
+                <path d="M 740 400 C 740 700, 800 700, 800 900" stroke="#2980b9" class="traffic-line" />
+
+                <!-- SRX Fabric Link -->
+                <path d="M 400 1040 L 800 1040" stroke="#8e44ad" class="ha-link" />
+
+                <!-- FGT Master (Left) to Left Zones -->
+                <path d="M 200 560 L 170 560" stroke="#2980b9" class="traffic-line" />
+                <path d="M 200 680 L 170 680" stroke="#27ae60" class="traffic-line" />
+                <path d="M 200 800 L 170 800" stroke="#d35400" class="traffic-line" />
+
+                <!-- FGT Slave (Right) to Right Zones -->
+                <path d="M 1000 560 L 1030 560" stroke="#c0392b" class="traffic-line" />
+                <path d="M 1000 680 L 1030 680" stroke="#e67e22" class="traffic-line" />
+                <path d="M 1000 800 L 1030 800" stroke="#8e44ad" class="traffic-line" />
+
+                <!-- SRX Node 0 (Left) to Left Zones -->
+                <path d="M 200 960 L 170 960" stroke="#2980b9" class="traffic-line" />
+                <path d="M 200 1080 L 170 1080" stroke="#d35400" class="traffic-line" />
+                <path d="M 200 1200 L 170 1200" stroke="#16a085" class="traffic-line" />
+
+                <!-- SRX Node 1 (Right) to Right Zones -->
+                <path d="M 1000 960 L 1030 960" stroke="#8e44ad" class="traffic-line" />
+                <path d="M 1000 1080 L 1030 1080" stroke="#27ae60" class="traffic-line" />
+                <path d="M 1000 1200 L 1030 1200" stroke="#c0392b" class="traffic-line" />
+            </svg>
+
+            <!-- Internet / WAN -->
+            <div class="wan-cloud">INTERNET / WAN</div>
+
+            <!-- Edge Router -->
+            <div class="node router">
+                <div class="node-header">EDGE ROUTER</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item">WAN IP: 41.33.25.1/25</div>
+                        <div class="port-item core">LAN IP: 10.0.251.1/24 <span class="label-tag tag-core">To Core</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Switch -->
+            <div class="node core-switch">
+                <div class="node-header">CORE SWITCH / L3 BACKBONE</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item core">GigE0/1 <span class="label-tag tag-core">To Router</span><br>IP: 10.0.251.2/24</div>
+                        <div class="port-item core">GigE0/2 <span class="label-tag tag-core">To FGT</span><br>VLAN 251 (10.0.251.254)</div>
+                        <div class="port-item core">GigE0/3 <span class="label-tag tag-core">To SRX</span><br>VLAN 251 (10.0.251.254)</div>
+                        <div class="port-item core">GigE0/4 <span class="label-tag tag-core">Servers VLAN</span><br>VLAN 10 (10.0.10.1/24)</div>
+                        <div class="port-item core">GigE0/5 <span class="label-tag tag-core">Data VLAN</span><br>VLAN 100 (172.16.100.1/24)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FortiGate Master -->
+            <div class="node fgt-master">
+                <div class="node-header">FGT PRIMARY (MASTER)<br>FG600C3912800613<br>Pri: 110</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item mgmt">mgmt1 <span class="label-tag tag-mgmt">Mgmt IP</span><br>10.0.254.101/24</div>
+                        <div class="port-item redundant">port11 (WAN) <span class="label-tag tag-red">Red IP</span><br>41.33.25.10/25</div>
+                        <div class="port-item redundant">port13 (Inside) <span class="label-tag tag-red">Red IP</span><br>10.0.251.254/24</div>
+                        <div class="port-item redundant">port12 (Data) <span class="label-tag tag-red">Red IP</span><br>172.16.100.254/24</div>
+                        <div class="port-item redundant">port14 (DMZ) <span class="label-tag tag-red">Red IP</span><br>10.0.192.1/24</div>
+                        <div class="port-item">port9 (Customs) 192.168.1.10</div>
+                        <div class="port-item">port3/port4 <span class="label-tag tag-mgmt">HA HB</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FortiGate Slave -->
+            <div class="node fgt-slave">
+                <div class="node-header">FGT SECONDARY (SLAVE)<br>FG600C3912802003<br>Pri: 100</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item mgmt">mgmt1 <span class="label-tag tag-mgmt">Mgmt IP</span><br>10.0.254.102/24</div>
+                        <div class="port-item redundant">port11 (WAN) <span class="label-tag tag-red">Red IP</span><br>41.33.25.10/25</div>
+                        <div class="port-item redundant">port13 (Inside) <span class="label-tag tag-red">Red IP</span><br>10.0.251.254/24</div>
+                        <div class="port-item redundant">port12 (Data) <span class="label-tag tag-red">Red IP</span><br>172.16.100.254/24</div>
+                        <div class="port-item redundant">port14 (DMZ) <span class="label-tag tag-red">Red IP</span><br>10.0.192.1/24</div>
+                        <div class="port-item">port9 (Customs) 192.168.1.10</div>
+                        <div class="port-item">port3/port4 <span class="label-tag tag-mgmt">HA HB</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SRX Node 0 -->
+            <div class="node srx-node0">
+                <div class="node-header">SRX NODE 0 (Primary)<br>DPA-SRX-FW1<br>RG0:100 | RG1:100</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item mgmt">fxp0 <span class="label-tag tag-mgmt">Mgmt IP</span><br>10.254.254.1/24</div>
+                        <div class="port-item redundant">reth1 (External) <span class="label-tag tag-red">Red</span><br>10.0.251.1/24</div>
+                        <div class="port-item redundant">reth9 (Servers) <span class="label-tag tag-red">Red</span><br>10.0.10.2/24</div>
+                        <div class="port-item redundant">reth7 (Internal) <span class="label-tag tag-red">Red</span><br>10.0.250.250/24</div>
+                        <div class="port-item redundant">reth4 (Wireless) <span class="label-tag tag-red">Red</span><br>10.0.247.2/24</div>
+                        <div class="port-item redundant">reth3 (Sec-Mgt) <span class="label-tag tag-red">Red</span><br>10.0.254.1/24</div>
+                        <div class="port-item redundant">reth2 (Srv-Mgt) <span class="label-tag tag-red">Red</span><br>10.0.9.1/24</div>
+                        <div class="port-item">ge-0/0/0 <span class="label-tag tag-mgmt">fab0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SRX Node 1 -->
+            <div class="node srx-node1">
+                <div class="node-header">SRX NODE 1 (Secondary)<br>DPA-SRX-FW2<br>RG0:1 | RG1:1</div>
+                <div class="node-body">
+                    <div class="port-list">
+                        <div class="port-item mgmt">fxp0 <span class="label-tag tag-mgmt">Mgmt IP</span><br>10.254.254.2/24</div>
+                        <div class="port-item redundant">reth1 (External) <span class="label-tag tag-red">Red</span><br>10.0.251.1/24</div>
+                        <div class="port-item redundant">reth9 (Servers) <span class="label-tag tag-red">Red</span><br>10.0.10.2/24</div>
+                        <div class="port-item redundant">reth7 (Internal) <span class="label-tag tag-red">Red</span><br>10.0.250.250/24</div>
+                        <div class="port-item redundant">reth4 (Wireless) <span class="label-tag tag-red">Red</span><br>10.0.247.2/24</div>
+                        <div class="port-item redundant">reth3 (Sec-Mgt) <span class="label-tag tag-red">Red</span><br>10.0.254.1/24</div>
+                        <div class="port-item redundant">reth2 (Srv-Mgt) <span class="label-tag tag-red">Red</span><br>10.0.9.1/24</div>
+                        <div class="port-item">ge-4/0/0 <span class="label-tag tag-mgmt">fab1</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FGT ZONES -->
+            <div class="zone-box z-fgt-wan"><div class="zone-title">WAN_NET Zone</div>port11<br>41.33.25.10/25</div>
+            <div class="zone-box z-fgt-dmz"><div class="zone-title">External DMZ Zone</div>port14<br>10.0.192.1/24</div>
+            <div class="zone-box z-fgt-data"><div class="zone-title">Data Zone</div>port12<br>172.16.100.254/24</div>
+            <div class="zone-box z-fgt-rekaba"><div class="zone-title">Rekaba Zone</div>port19<br>172.16.9.9/24</div>
+            <div class="zone-box z-fgt-guest"><div class="zone-title">Guest Wireless Zone</div>port10<br>11.0.253.1/24</div>
+            <div class="zone-box z-fgt-faz"><div class="zone-title">FortiAnalyser Zone</div>port18<br>10.0.252.1/24</div>
+
+            <!-- SRX ZONES -->
+            <div class="zone-box z-srx-external"><div class="zone-title">External Zone</div>reth1.0<br>10.0.251.1/24</div>
+            <div class="zone-box z-srx-servers"><div class="zone-title">Servers Zone</div>reth9.0<br>10.0.10.2/24</div>
+            <div class="zone-box z-srx-internal"><div class="zone-title">Internal Zone</div>reth7.0<br>10.0.250.250/24</div>
+            <div class="zone-box z-srx-wireless"><div class="zone-title">Wireless-RDT Zone</div>reth4.0<br>10.0.247.2/24</div>
+            <div class="zone-box z-srx-secmgt"><div class="zone-title">Sec-Mgt Zone</div>reth3.0<br>10.0.254.1/24</div>
+            <div class="zone-box z-srx-srvmgt"><div class="zone-title">Server-Mgt Zone</div>reth2.0<br>10.0.9.1/24</div>
+
+        </div>
+    </div>
+
+    <h2>Command Declarations & Step-by-Step Explanations</h2>
+    <div class="explanation-grid">
+        
+        <!-- FortiGate Explanations -->
+        <div class="explain-box">
+            <h2>FortiGate HA & IP Configuration</h2>
+            
+            <div class="explain-step">
+                <h3>1. HA Group & Mode Configuration</h3>
+                <div class="explain-cmd">config system ha
+    set group-name "FGT-HA"
+    set mode a-a
+    set hbdev "port3" 50 "port4" 50
+end</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> This creates the High Availability cluster named "FGT-HA". <br>
+                    - <span class="highlight">mode a-a</span>: Sets the cluster to Active-Active, meaning both firewalls process traffic simultaneously.<br>
+                    - <span class="highlight">hbdev</span>: Defines port3 and port4 as Heartbeat interfaces (priority 50). These links are used by the firewalls to check if the other one is alive and to synchronize session tables. They do NOT carry user traffic IPs.
+                </p>
+            </div>
+
+            <div class="explain-step">
+                <h3>2. Dedicated Management Interface</h3>
+                <div class="explain-cmd">set ha-mgmt-status enable
+set ha-mgmt-interface "mgmt1"</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> In an HA cluster, all regular interfaces share the exact same IP addresses (floating IPs). To access each firewall individually for troubleshooting, a dedicated management interface is reserved. This tells the FortiGate to keep <span class="mgmt-highlight">mgmt1</span> out of the HA synchronization, allowing Node 1 to use <b>10.0.254.101</b> and Node 2 to use <b>10.0.254.102</b>.
+                </p>
+            </div>
+
+            <div class="explain-step">
+                <h3>3. Redundant (Floating) IP Addresses</h3>
+                <div class="explain-cmd">config system interface
+    edit "port13"
+        set ip 10.0.251.254 255.255.255.0
+        set alias "inside"
+    next
+end</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> Because this is an HA cluster, the IP address assigned to the inside interface (port13) acts as a <span class="highlight">Redundant/Floating IP</span>. <br>
+                    - The Active node currently "owns" this IP and processes the traffic.<br>
+                    - If the Active node fails, the Standby node takes over this exact IP address, ensuring network traffic is uninterrupted. Both firewalls connect down to the <span class="core-highlight">Core Switch</span> using this IP.
+                </p>
+            </div>
+        </div>
+
+        <!-- SRX Explanations -->
+        <div class="explain-box">
+            <h2>Juniper SRX Cluster & IP Configuration</h2>
+            
+            <div class="explain-step">
+                <h3>1. Chassis Cluster & Redundancy Groups</h3>
+                <div class="explain-cmd">chassis {
+    cluster {
+        reth-count 10;
+        redundancy-group 0 {
+            node 0 priority 100;
+            node 1 priority 1;
+        }
+    }
+}</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> This command enables the SRX chassis cluster.<br>
+                    - <span class="highlight">reth-count 10</span>: Allows up to 10 Redundant Ethernet interfaces.<br>
+                    - <span class="highlight">redundancy-group 0</span>: Controls the Control Plane (Routing Engine). Node 0 is Primary (100), Node 1 is Backup (1).<br>
+                </p>
+            </div>
+
+            <div class="explain-step">
+                <h3>2. Dedicated Management IP (fxp0)</h3>
+                <div class="explain-cmd">groups {
+    node0 {
+        interfaces {
+            fxp0 {
+                unit 0 {
+                    family inet {
+                        address 10.254.254.1/24;
+                    }
+                }
+            }
+        }
+    }
+}</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> The SRX uses configuration groups to apply specific settings to individual nodes. <br>
+                    - The <span class="mgmt-highlight">fxp0</span> interface is the dedicated physical management port. <br>
+                    - Node 0 is explicitly assigned <b>10.254.254.1</b> and Node 1 is assigned <b>10.254.254.2</b>. These IPs are unique per node and do NOT float, allowing direct SSH access to each chassis.
+                </p>
+            </div>
+
+            <div class="explain-step">
+                <h3>3. Redundant Ethernet (reth) Floating IPs</h3>
+                <div class="explain-cmd">interfaces {
+    reth1 {
+        redundant-ether-options {
+            redundancy-group 1;
+        }
+        unit 0 {
+            family inet {
+                address 10.0.251.1/24;
+            }
+        }
+    }
+}</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> A Redundant Ethernet interface (<span class="highlight">reth</span>) bundles physical ports from Node 0 and Node 1 into a single virtual interface.<br>
+                    - It connects up to the <span class="core-highlight">Core Switch</span>.<br>
+                    - The IP address (e.g., <b>10.0.251.1</b>) is the <span class="highlight">Redundant/Floating IP</span>. Whichever node is active for RG1 will use this IP to route traffic. If Node 0 dies, Node 1 takes the IP seamlessly.
+                </p>
+            </div>
+        </div>
+
+        <!-- Core Switch Explanation -->
+        <div class="explain-box" style="grid-column: span 2;">
+            <h2>Core Switch & Router Connectivity</h2>
+            <div class="explain-step" style="border-bottom: none;">
+                <h3>1. Transit and VLAN Configuration</h3>
+                <div class="explain-cmd">// Router Configuration
+interface GigabitEthernet0/0/1
+  description WAN_LINK
+  ip address 41.33.25.1 255.255.255.128
+!
+interface GigabitEthernet0/0/2
+  description TO_CORE_SWITCH
+  ip address 10.0.251.1 255.255.255.0
+
+// Core Switch L3 Configuration
+interface Vlan251
+  description TRANSIT_TO_ROUTER
+  ip address 10.0.251.2 255.255.255.0
+!
+interface Vlan10
+  description SERVERS_ZONE
+  ip address 10.0.10.1 255.255.255.0
+!
+interface Vlan100
+  description DATA_ZONE
+  ip address 172.16.100.1 255.255.255.0</div>
+                <p class="explain-text">
+                    <strong>Explanation:</strong> Traffic flows logically from the Internet, into the Edge Router, and down into the <span class="core-highlight">Core Switch</span>.<br>
+                    - The Core Switch acts as the central backbone. It routes the <b>10.0.251.0/24</b> transit network between the Router, the FortiGate (10.0.251.254), and the SRX (10.0.251.1).<br>
+                    - It also holds the SVI (Switch Virtual Interface) IPs for internal zones like the Servers (<b>10.0.10.1</b>) and Data (<b>172.16.100.1</b>), allowing the firewalls to route traffic to these subnets correctly.
+                </p>
+            </div>
+        </div>
+
+    </div>
+	
+	
+	   <div class="config-section">
+        <!-- FortiGate Commands -->
+        <div class="config-box">
+            <div class="config-header">FortiGate HA & Interface Commands</div>
+            <div class="config-content"><span class="comment"># FortiGate Primary (110) & Secondary (100) Identical Config</span>
+config system ha
+    <span class="cmd">set</span> group-name <span class="val">"FGT-HA"</span>
+    <span class="cmd">set</span> mode <span class="val">a-a</span>
+    <span class="cmd">set</span> password <span class="val">ENC bPXuvcs5...</span>
+    <span class="cmd">set</span> hbdev <span class="val">"port3" 50 "port4" 50</span>
+    <span class="cmd">set</span> session-pickup <span class="val">enable</span>
+    <span class="cmd">set</span> ha-mgmt-status <span class="val">enable</span>
+    <span class="cmd">set</span> ha-mgmt-interface <span class="val">"mgmt1"</span>
+    <span class="cmd">set</span> override <span class="val">enable</span>
+    <span class="cmd">set</span> priority <span class="val">110</span> <span class="comment"># Set to 100 on Slave</span>
+    <span class="cmd">set</span> monitor <span class="val">"port9" "port10" "port11" "port12" "port13" "port14" "port18" "port19"</span>
+end
+
+config system interface
+    edit <span class="val">"port11"</span>
+        <span class="cmd">set</span> ip <span class="val">41.33.25.10 255.255.255.128</span>
+        <span class="cmd">set</span> alias <span class="val">"WAN_NET"</span>
+    next
+    edit <span class="val">"port13"</span>
+        <span class="cmd">set</span> ip <span class="val">10.0.251.254 255.255.255.0</span>
+        <span class="cmd">set</span> alias <span class="val">"inside"</span>
+    next
+    edit <span class="val">"port12"</span>
+        <span class="cmd">set</span> ip <span class="val">172.16.100.254 255.255.255.0</span>
+        <span class="cmd">set</span> alias <span class="val">"Data"</span>
+    next
+    edit <span class="val">"port14"</span>
+        <span class="cmd">set</span> ip <span class="val">10.0.192.1 255.255.255.0</span>
+        <span class="cmd">set</span> alias <span class="val">"External DMZ"</span>
+    next
+    edit <span class="val">"port9"</span>
+        <span class="cmd">set</span> ip <span class="val">192.168.1.10 255.255.255.0</span>
+        <span class="cmd">set</span> alias <span class="val">"Customs"</span>
+    next
+    edit <span class="val">"port19"</span>
+        <span class="cmd">set</span> ip <span class="val">172.16.9.9 255.255.255.0</span>
+        <span class="cmd">set</span> alias <span class="val">"Rekaba"</span>
+    next
+end</div>
+        </div>
+
+        <!-- SRX Cluster & Interface Commands -->
+        <div class="config-box">
+            <div class="config-header">Juniper SRX Chassis Cluster & Interfaces</div>
+            <div class="config-content"><span class="comment"># SRX Chassis Cluster Config (Node 0 & Node 1)</span>
+chassis {
+    cluster {
+        reth-count <span class="val">10</span>;
+        redundancy-group <span class="val">0</span> {
+            node <span class="val">0</span> priority <span class="val">100</span>;
+            node <span class="val">1</span> priority <span class="val">1</span>;
+        }
+        redundancy-group <span class="val">1</span> {
+            node <span class="val">0</span> priority <span class="val">100</span>;
+            node <span class="val">1</span> priority <span class="val">1</span>;
+            interface-monitor {
+                ge-0/0/1 weight <span class="val">255</span>;
+                ge-4/0/1 weight <span class="val">255</span>;
+                <span class="comment"># ... other monitored ports ...</span>
+            }
+        }
+    }
+}
+
+interfaces {
+    <span class="comment"># Fabric Links</span>
+    fab0 { fabric-options { member-interfaces { ge-0/0/0; } } }
+    fab1 { fabric-options { member-interfaces { ge-4/0/0; } } }
+
+    <span class="comment"># Redundant Ethernet Interfaces mapping to Zones</span>
+    reth1 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.251.1/24</span>; } } <span class="comment"># External Zone</span>
+    }
+    reth2 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.9.1/24</span>; } } <span class="comment"># Server-Mgt Zone</span>
+    }
+    reth3 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.254.1/24</span>; } } <span class="comment"># Sec-Mgt Zone</span>
+    }
+    reth4 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.247.2/24</span>; } } <span class="comment"># Wireless-RDT Zone</span>
+    }
+    reth7 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.250.250/24</span>; } } <span class="comment"># Internal Zone</span>
+    }
+    reth9 {
+        redundant-ether-options { redundancy-group <span class="val">1</span>; }
+        unit 0 { family inet { address <span class="val">10.0.10.2/24</span>; } } <span class="comment"># Servers Zone</span>
+    }
+}</div>
+        </div>
+
+        <!-- SRX Zones Commands -->
+        <div class="config-box">
+            <div class="config-header">Juniper SRX Security Zones Declaration</div>
+            <div class="config-content">security {
+    zones {
+        security-zone <span class="highlight">internal</span> {
+            interfaces { reth7.0 { ... } }
+        }
+        security-zone <span class="highlight">external</span> {
+            host-inbound-traffic { system-services { ping; } }
+            interfaces { reth1.0; }
+        }
+        security-zone <span class="highlight">server-mgt</span> {
+            host-inbound-traffic { system-services { ping; traceroute; } }
+            interfaces { reth2.0; }
+        }
+        security-zone <span class="highlight">sec-mgt</span> {
+            host-inbound-traffic { system-services { all; } }
+            interfaces { reth3.0 { ... } }
+        }
+        security-zone <span class="highlight">servers</span> {
+            host-inbound-traffic { system-services { ping; traceroute; } }
+            interfaces { reth9.0; }
+        }
+        security-zone <span class="highlight">Wireless-RDT</span> {
+            interfaces { reth4.0 { ... } }
+        }
+        security-zone <span class="highlight">test</span> {
+            <span class="comment"># Empty/Test zone</span>
+        }
+    }
+}
+            
+<span class="comment"># Example Security Policies block extracted from config</span>
+security {
+    policies {
+        from-zone <span class="highlight">internal</span> to-zone <span class="highlight">external</span> {
+            policy AllowAll {
+                match { source-address any; destination-address any; application any; }
+                then { permit; }
+            }
+        }
+        from-zone <span class="highlight">internal</span> to-zone <span class="highlight">servers</span> {
+            policy AllowAll {
+                match { source-address [ 10.0.136.0/24 ... ]; destination-address any; application any; }
+                then { permit; }
+            }
+        }
+        from-zone <span class="highlight">servers</span> to-zone <span class="highlight">server-mgt</span> {
+            policy AllowAll { ... }
+        }
+        <span class="comment"># ... Many other inter-zone policies declared ...</span>
+    }
+}</div>
+        </div>
+    </div>
+	
+
+</body>
+</html>
