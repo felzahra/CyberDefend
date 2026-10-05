@@ -372,10 +372,11 @@
 
     <div class="nav-list">
         <div class="section-title">📺 2026 SUMMER LECTURES & SLIDES</div>
+        <div class="nav-item active" data-slide="v_oct5"><span class="check-icon">📅</span> 5 oct 2026</div>
         <div class="nav-item" data-slide="v_aug1"><span class="check-icon">📅</span> 19 aug 2026</div>
         <div class="nav-item" data-slide="v_aug2"><span class="check-icon">📅</span> 23 aug 2026</div>
         <div class="nav-item" data-slide="v_aug3"><span class="check-icon">📅</span> 26 aug 2026</div>
-        <div class="nav-item active" data-slide="v1"><span class="check-icon">📅</span> 15 july 2026 summer</div>
+        <div class="nav-item" data-slide="v1"><span class="check-icon">📅</span> 15 july 2026 summer</div>
         <div class="nav-item" data-slide="v2"><span class="check-icon">📅</span> 19-7-2026 summer</div>
         <div class="nav-item" data-slide="v3"><span class="check-icon">📅</span> 22-7-2026 summer</div>
         <div class="nav-item" data-slide="v3b"><span class="check-icon">📅</span> CyberSecurity General Lec</div>
@@ -397,8 +398,8 @@
 <div class="main-content">
     <div class="slides-card">
         <div class="card-header">
-            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 9</span>
-            <h2 id="slide-title">19 aug 2026</h2>
+            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 10</span>
+            <h2 id="slide-title">5 oct 2026</h2>
             <div class="sub" id="slide-sub">Session · Summer Training 2026</div>
         </div>
         <div class="content-area" id="content-area"></div>
@@ -488,18 +489,19 @@ themeToggle.addEventListener('click', () => {
 const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true';
 const COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec';
 
-const slideOrder = ['v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
+const slideOrder = ['v_oct5','v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
 
 const items = {
-    v_aug1: { title: '19 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 9', badgeClass: 'badge-video', videoId: 'FgB5n2pLC2E', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 19 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
-    v_aug2: { title: '23 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 2 / 9', badgeClass: 'badge-video', videoId: 'MXvpk6M69PM', slideEmbed: 'https://docs.google.com/presentation/d/1J4577AModr4QUrpZG2pn-3B67kT26g8U/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 23 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
-    v_aug3: { title: '26 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 3 / 9', badgeClass: 'badge-video', videoId: 'xE35A6V_I80', slideEmbed: 'https://docs.google.com/presentation/d/1WFZpVmm2zYx-FQFOLwIlt6DMIWo-Loy5/embed?start=false&loop=false&delayms=3000', slideEditId: '1WFZpVmm2zYx-FQFOLwIlt6DMIWo-Loy5', slideEmbed2: 'https://docs.google.com/presentation/d/1VNKH9G-vloIVSFTS1R61oGCmGtUlGmZV/embed?start=false&loop=false&delayms=3000', slideEditId2: '1VNKH9G-vloIVSFTS1R61oGCmGtUlGmZV', desc: 'Recorded session for 26 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
-    v1: { title: '15 july 2026 summer', sub: 'Session 1 · Summer Training', badge: 'VIDEO 4 / 9', badgeClass: 'badge-video', videoId: 'Cu2lvvfuOug', slideEmbed: 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/embed?start=false&loop=false&delayms=3000', slideEditId: '16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R', desc: 'Recorded session for 15 july 2026 summer training.', topics: '📅 Topics: Summer training introductory concepts and lab overviews.', type: 'side-by-side' },
-    v2: { title: '19-7-2026 summer', sub: 'Session 2 · Summer Training', badge: 'VIDEO 5 / 9', badgeClass: 'badge-video', videoId: 'SuGy_q0HCnQ', slideEmbed: 'https://docs.google.com/presentation/d/1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er/embed?start=false&loop=false&delayms=3000', slideEditId: '1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er', desc: 'Recorded session for 19-7-2026 summer training.', topics: '📅 Topics: Advanced networking and security concepts.', type: 'side-by-side' },
-    v3: { title: '22-7-2026 summer', sub: 'Session 3 · Summer Training', badge: 'VIDEO 6 / 9', badgeClass: 'badge-video', videoId: 'N8oFOsIPOz0', slideEmbed: 'https://docs.google.com/presentation/d/1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo/embed?start=false&loop=false&delayms=3000', slideEditId: '1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo', desc: 'Recorded session for 22-7-2026 summer training.', topics: '📅 Topics: Cybersecurity tools and threat hunting basics.', type: 'side-by-side' },
-    v3b: { title: 'CyberSecurity General Lec', sub: 'General Lecture · Cybersecurity', badge: 'VIDEO 7 / 9', badgeClass: 'badge-video', videoId: 'sopv4UA0GHQ', slideEmbed: null, slideEditId: null, desc: 'CyberSecurity General Lecture covering fundamental cybersecurity concepts.', topics: '📅 Topics: General cybersecurity fundamentals and overview.', type: 'video-only' },
-    v4: { title: '2025 Session 1', sub: 'Summer Training · 2025', badge: 'VIDEO 8 / 9', badgeClass: 'badge-video', videoId: 'a5ifbdJSrvQ', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 1.', topics: '📅 Topics: Summer training introductory concepts.', type: 'video-only' },
-    v5: { title: '2025 Session 2', sub: 'Summer Training · 2025', badge: 'VIDEO 9 / 9', badgeClass: 'badge-video', videoId: 'IFKd4MR4nBg', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 2.', topics: '📅 Topics: Advanced training concepts and hands-on labs.', type: 'video-only' },
+    v_oct5: { title: '5 oct 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'Fv6xuGJGNjI', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 5 oct 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
+    v_aug1: { title: '19 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 2 / 10', badgeClass: 'badge-video', videoId: 'FgB5n2pLC2E', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 19 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
+    v_aug2: { title: '23 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 3 / 10', badgeClass: 'badge-video', videoId: 'MXvpk6M69PM', slideEmbed: 'https://docs.google.com/presentation/d/1J4577AModr4QUrpZG2pn-3B67kT26g8U/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 23 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
+    v_aug3: { title: '26 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 4 / 10', badgeClass: 'badge-video', videoId: 'xE35A6V_I80', slideEmbed: 'https://docs.google.com/presentation/d/1WFZpVmm2zYx-FQFOLwIlt6DMIWo-Loy5/embed?start=false&loop=false&delayms=3000', slideEditId: '1WFZpVmm2zYx-FQFOLwIlt6DMIWo-Loy5', slideEmbed2: 'https://docs.google.com/presentation/d/1VNKH9G-vloIVSFTS1R61oGCmGtUlGmZV/embed?start=false&loop=false&delayms=3000', slideEditId2: '1VNKH9G-vloIVSFTS1R61oGCmGtUlGmZV', desc: 'Recorded session for 26 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
+    v1: { title: '15 july 2026 summer', sub: 'Session 1 · Summer Training', badge: 'VIDEO 5 / 10', badgeClass: 'badge-video', videoId: 'Cu2lvvfuOug', slideEmbed: 'https://docs.google.com/presentation/d/16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R/embed?start=false&loop=false&delayms=3000', slideEditId: '16ck85iwMH8g7Q2-6MlZ7nkI0UQ_KTU4R', desc: 'Recorded session for 15 july 2026 summer training.', topics: '📅 Topics: Summer training introductory concepts and lab overviews.', type: 'side-by-side' },
+    v2: { title: '19-7-2026 summer', sub: 'Session 2 · Summer Training', badge: 'VIDEO 6 / 10', badgeClass: 'badge-video', videoId: 'SuGy_q0HCnQ', slideEmbed: 'https://docs.google.com/presentation/d/1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er/embed?start=false&loop=false&delayms=3000', slideEditId: '1DgFCRXHcf19h8SQh5We-L6ouCjDgk2er', desc: 'Recorded session for 19-7-2026 summer training.', topics: '📅 Topics: Advanced networking and security concepts.', type: 'side-by-side' },
+    v3: { title: '22-7-2026 summer', sub: 'Session 3 · Summer Training', badge: 'VIDEO 7 / 10', badgeClass: 'badge-video', videoId: 'N8oFOsIPOz0', slideEmbed: 'https://docs.google.com/presentation/d/1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo/embed?start=false&loop=false&delayms=3000', slideEditId: '1VTr78OfmRi80Ifn-pgSN6-Ik7JtuPcIo', desc: 'Recorded session for 22-7-2026 summer training.', topics: '📅 Topics: Cybersecurity tools and threat hunting basics.', type: 'side-by-side' },
+    v3b: { title: 'CyberSecurity General Lec', sub: 'General Lecture · Cybersecurity', badge: 'VIDEO 8 / 10', badgeClass: 'badge-video', videoId: 'sopv4UA0GHQ', slideEmbed: null, slideEditId: null, desc: 'CyberSecurity General Lecture covering fundamental cybersecurity concepts.', topics: '📅 Topics: General cybersecurity fundamentals and overview.', type: 'video-only' },
+    v4: { title: '2025 Session 1', sub: 'Summer Training · 2025', badge: 'VIDEO 9 / 10', badgeClass: 'badge-video', videoId: 'a5ifbdJSrvQ', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 1.', topics: '📅 Topics: Summer training introductory concepts.', type: 'video-only' },
+    v5: { title: '2025 Session 2', sub: 'Summer Training · 2025', badge: 'VIDEO 10 / 10', badgeClass: 'badge-video', videoId: 'IFKd4MR4nBg', slideEmbed: null, slideEditId: null, desc: 'Recorded session for 2025 Summer Training - Session 2.', topics: '📅 Topics: Advanced training concepts and hands-on labs.', type: 'video-only' },
     s1: { title: 'Summer 2025 Training', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A/embed?start=false&loop=false&delayms=3000&slide=id.p369', slideEditId: '1vBAsS6Jfj2v-plkvjc9iZ18HLs0EM8Fsdr2s07xfl-A', type: 'slides-only' },
     s2: { title: 'Cybersecurity Course (Part 1)', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe/embed?start=false&loop=false&delayms=3000&slide=id.p1', slideEditId: '19JBm34vqhDlfYckO_3xZFeGnQ6OsWMNe', type: 'slides-only' },
     s3: { title: 'Cybersecurity Course (Part 2)', sub: 'Reading Material · Slides Only', badge: '📊 SLIDES', badgeClass: 'badge-slides', slideEmbed: 'https://docs.google.com/presentation/d/1bpruoSya8s3yshmLkUVxBzAsoes_fHEb/embed?start=false&loop=false&delayms=3000&slide=id.p1', slideEditId: '1bpruoSya8s3yshmLkUVxBzAsoes_fHEb', type: 'slides-only' },
@@ -680,7 +682,7 @@ document.getElementById('quizSubmitBtn').addEventListener('click', function() {
     document.getElementById('quizCompletedBadge').style.display = 'inline-block';
 });
 
-let currentSlideId = 'v_aug1';
+let currentSlideId = 'v_oct5';
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
@@ -812,7 +814,7 @@ cmtSendBtn.addEventListener('click', async () => {
 });
 
 // Initialize with first slide
-activate('v_aug1');
+activate('v_oct5');
 </script>
 </body>
 </html>
