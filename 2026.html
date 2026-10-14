@@ -372,7 +372,8 @@
 
     <div class="nav-list">
         <div class="section-title">📺 2026 SUMMER LECTURES & SLIDES</div>
-        <div class="nav-item active" data-slide="v_oct12"><span class="check-icon">📅</span> 12 oct 2026</div>
+        <div class="nav-item active" data-slide="v_oct14"><span class="check-icon">📅</span> 14 oct 2026</div>
+        <div class="nav-item" data-slide="v_oct12"><span class="check-icon">📅</span> 12 oct 2026</div>
         <div class="nav-item" data-slide="v_oct5"><span class="check-icon">📅</span> 5 oct 2026</div>
         <div class="nav-item" data-slide="v_aug1"><span class="check-icon">📅</span> 19 aug 2026</div>
         <div class="nav-item" data-slide="v_aug2"><span class="check-icon">📅</span> 23 aug 2026</div>
@@ -400,7 +401,7 @@
     <div class="slides-card">
         <div class="card-header">
             <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 10</span>
-            <h2 id="slide-title">12 oct 2026</h2>
+            <h2 id="slide-title">14 oct 2026</h2>
             <div class="sub" id="slide-sub">Session · Summer Training 2026</div>
         </div>
         <div class="content-area" id="content-area"></div>
@@ -490,9 +491,10 @@ themeToggle.addEventListener('click', () => {
 const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true';
 const COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec';
 
-const slideOrder = ['v_oct12','v_oct5','v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
+const slideOrder = ['v_oct14','v_oct12','v_oct5','v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
 
 const items = {
+    v_oct14: { title: '14 oct 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'CQ9mvmlkCio', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 14 oct 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
     v_oct12: { title: '12 oct 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'bSkJyfqNwSQ', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 12 oct 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
     v_oct5: { title: '5 oct 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'Fv6xuGJGNjI', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 5 oct 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
     v_aug1: { title: '19 aug 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 2 / 10', badgeClass: 'badge-video', videoId: 'FgB5n2pLC2E', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 19 aug 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
@@ -684,7 +686,7 @@ document.getElementById('quizSubmitBtn').addEventListener('click', function() {
     document.getElementById('quizCompletedBadge').style.display = 'inline-block';
 });
 
-let currentSlideId = 'v_oct12';
+let currentSlideId = 'v_oct14';
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
@@ -816,7 +818,7 @@ cmtSendBtn.addEventListener('click', async () => {
 });
 
 // Initialize with first slide
-activate('v_oct12');
+activate('v_oct14');
 </script>
 </body>
 </html>
