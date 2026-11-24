@@ -200,6 +200,7 @@
         .lesson-badge { font-size: 0.7rem; font-weight: 600; display: inline-block; padding: 4px 12px; border-radius: 30px; margin-bottom: 12px; letter-spacing: 0.3px; }
         .badge-video { color: var(--error-fg); background: var(--message-error-bg); }
         .badge-slides { color: var(--primary); background: var(--selected-bg); }
+        .badge-multislides { color: var(--primary); background: var(--selected-bg); }
         .card-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--body-loud-color); margin: 8px 0 8px 0; }
         .sub { color: var(--body-quiet-color); font-size: 0.85rem; }
         .content-area { padding: 24px 28px 28px 28px; }
@@ -215,6 +216,11 @@
         .slides-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .single-video { max-width: 800px; margin: 0 auto 20px; }
         .single-slides { max-width: 800px; margin: 0 auto 20px; }
+        .cascade-video { max-width: 1000px; margin: 0 auto 25px; }
+        .cascade-slides { display: flex; flex-direction: column; gap: 25px; max-width: 1000px; margin: 0 auto; }
+        .cascade-slide-block { background: var(--selected-row); border-radius: 18px; padding: 16px; border-left: 4px solid var(--primary); }
+        .cascade-slide-block h4 { font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cascade-slide-block .slides-container { background: var(--body-bg); }
         .info-grid { background: var(--selected-row); border-radius: 18px; padding: 18px 24px; margin: 16px 0 0; border-left: 4px solid var(--primary); }
         .btn-youtube { display: inline-flex; align-items: center; gap: 8px; background: #ff0000; color: white; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; text-decoration: none; margin-top: 12px; transition: 0.2s; }
         .btn-youtube:hover { background: #cc0000; transform: scale(0.98); }
@@ -372,7 +378,8 @@
 
     <div class="nav-list">
         <div class="section-title">📺 2026 SUMMER LECTURES & SLIDES</div>
-        <div class="nav-item active" data-slide="v_nov18"><span class="check-icon">📅</span> 18 nov 2026</div>
+        <div class="nav-item active" data-slide="v_nov23"><span class="check-icon">📅</span> 23 nov 2026</div>
+        <div class="nav-item" data-slide="v_nov18"><span class="check-icon">📅</span> 18 nov 2026</div>
         <div class="nav-item" data-slide="v_nov16"><span class="check-icon">📅</span> 16 nov 2026</div>
         <div class="nav-item" data-slide="v_nov11"><span class="check-icon">📅</span> 11 nov 2026</div>
         <div class="nav-item" data-slide="v_oct19"><span class="check-icon">📅</span> 19 oct 2026</div>
@@ -404,8 +411,8 @@
 <div class="main-content">
     <div class="slides-card">
         <div class="card-header">
-            <span class="lesson-badge badge-video" id="slide-badge">VIDEO 1 / 10</span>
-            <h2 id="slide-title">18 nov 2026</h2>
+            <span class="lesson-badge badge-multislides" id="slide-badge">📊 4 SLIDES</span>
+            <h2 id="slide-title">23 nov 2026</h2>
             <div class="sub" id="slide-sub">Session · Summer Training 2026</div>
         </div>
         <div class="content-area" id="content-area"></div>
@@ -495,9 +502,10 @@ themeToggle.addEventListener('click', () => {
 const EDIT_BASE = 'https://docs.google.com/presentation/d/ID/edit?usp=sharing&ouid=104090745064154362309&rtpof=true&sd=true';
 const COMMENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNKVvnHqCkvDMPoaoC_qjagMrumCtUd8V7NTvltqXLdbSp8C2q_v2_Sg7xnxNQN1-WTg/exec';
 
-const slideOrder = ['v_nov18','v_nov16','v_nov11','v_oct19','v_oct14','v_oct12','v_oct5','v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
+const slideOrder = ['v_nov23','v_nov18','v_nov16','v_nov11','v_oct19','v_oct14','v_oct12','v_oct5','v_aug1','v_aug2','v_aug3','v1','v2','v3','v3b','v4','v5','s1','s2','s3','s4','s5','s6'];
 
 const items = {
+	v_nov23: { title: '23 nov 2026', sub: 'Session · Summer Training 2026 (4 Slides)', badge: '📊 4 SLIDES', badgeClass: 'badge-multislides', videoId: 'lOl-yZAc0LI', slideEmbed1: 'https://docs.google.com/presentation/d/1ejOkFfgMO1bIWLVXA_3FNxybPfNkdmtL/embed?start=false&loop=false&delayms=3000', slideEditId1: '1ejOkFfgMO1bIWLVXA_3FNxybPfNkdmtL', slideEmbed2: 'https://docs.google.com/presentation/d/1YDhjTeO3phb8Xssihf1sa8T0v2kqDe56/embed?start=false&loop=false&delayms=3000', slideEditId2: '1YDhjTeO3phb8Xssihf1sa8T0v2kqDe56', slideEmbed3: 'https://docs.google.com/presentation/d/1EvYbNhpPI86vbCQ4OtLbepPODx51vZnv/embed?start=false&loop=false&delayms=3000', slideEditId3: '1EvYbNhpPI86vbCQ4OtLbepPODx51vZnv', slideEmbed4: 'https://docs.google.com/presentation/d/1RjCJp6eGzAqA-lXcGYhLn2j-GtWx6vSB/embed?start=false&loop=false&delayms=3000', slideEditId4: '1RjCJp6eGzAqA-lXcGYhLn2j-GtWx6vSB', desc: 'Recorded session for 23 nov 2026 summer training — with 4 reading slide decks cascaded below the video.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals, network visibility, switch configuration, and hands-on exercises.', type: 'multi-slides-cascade' },
     v_nov18: { title: '18 nov 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: '4vRuDsfJOa8', slideEmbed: 'https://docs.google.com/presentation/d/1tMKkcOxb_LHifWY4ZuoiyJYOk1xICpVS/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 18 nov 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
     v_nov16: { title: '16 nov 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'nrDU7lT8oDA', slideEmbed: 'https://docs.google.com/presentation/d/1tMKkcOxb_LHifWY4ZuoiyJYOk1xICpVS/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 16 nov 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
     v_nov11: { title: '11 nov 2026', sub: 'Session · Summer Training 2026', badge: 'VIDEO 1 / 10', badgeClass: 'badge-video', videoId: 'G1EfdOL-5Fs', slideEmbed: 'https://docs.google.com/presentation/d/1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp/embed?start=false&loop=false&delayms=3000', slideEditId: '1xCD4isXueyV03KnRRpwLQo-8Vl5nvEYp', desc: 'Recorded session for 11 nov 2026 summer training.', topics: '📅 Topics: Summer training session covering cybersecurity fundamentals and hands-on exercises.', type: 'side-by-side' },
@@ -538,6 +546,51 @@ const quizzes = {
 };
 
 const quizCompleted = {};
+
+// NEW: Render function for 4 cascaded slides + video
+function renderMultiSlidesCascade(d) {
+    let html = `<div class="cascade-video">
+        <h3 style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; color: var(--error-fg);">🎬 Video Lecture</h3>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube-nocookie.com/embed/${d.videoId}?rel=0" allowfullscreen></iframe>
+            </div>
+        </div>
+        <a href="https://www.youtube.com/watch?v=${d.videoId}" target="_blank" class="btn-youtube">▶️ Watch on YouTube</a>
+    </div>`;
+
+    html += `<div class="cascade-slides">
+        <h3 style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">📊 Reading Material — 4 Slide Decks (Cascaded Below)</h3>`;
+
+    const slideLabels = ['Slide Deck 1', 'Slide Deck 2', 'Slide Deck 3', 'Slide Deck 4'];
+    for (let i = 1; i <= 4; i++) {
+        const embed = d['slideEmbed' + i];
+        const editId = d['slideEditId' + i];
+        if (embed) {
+            html += `
+            <div class="cascade-slide-block">
+                <h4>📊 ${slideLabels[i-1]}</h4>
+                <div class="slides-container">
+                    <div class="slides-wrapper">
+                        <iframe src="${embed}" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="slide-hint">📌 Use <strong>arrow buttons</strong> to navigate. Click <strong>Fullscreen</strong> for best view.</div>
+                <div style="margin-top: 10px;">
+                    <a href="${EDIT_BASE.replace('ID', editId)}" target="_blank" class="btn-download">Open in new tab ↗</a>
+                </div>
+            </div>`;
+        }
+    }
+    html += `</div>`;
+
+    html += `<div class="description-text" style="max-width: 1000px; margin: 20px auto 0;">
+        <p>${d.desc}</p>
+        <div class="info-grid"><p>${d.topics}</p></div>
+    </div>`;
+
+    return html;
+}
 
 // UPDATED renderSideBySide function to handle slideEmbed2
 function renderSideBySide(d) {
@@ -694,7 +747,7 @@ document.getElementById('quizSubmitBtn').addEventListener('click', function() {
     document.getElementById('quizCompletedBadge').style.display = 'inline-block';
 });
 
-let currentSlideId = 'v_nov18';
+let currentSlideId = 'v_nov23';
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
@@ -734,6 +787,7 @@ function activate(slideId) {
     subEl.textContent = d.sub;
     if (d.type === 'side-by-side') area.innerHTML = renderSideBySide(d);
     else if (d.type === 'video-only') area.innerHTML = renderVideoOnly(d);
+    else if (d.type === 'multi-slides-cascade') area.innerHTML = renderMultiSlidesCascade(d);
     else area.innerHTML = renderSlidesOnly(d);
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const active = document.querySelector(`.nav-item[data-slide="${slideId}"]`);
@@ -826,7 +880,7 @@ cmtSendBtn.addEventListener('click', async () => {
 });
 
 // Initialize with first slide
-activate('v_nov18');
+activate('v_nov23');
 </script>
 </body>
 </html>
